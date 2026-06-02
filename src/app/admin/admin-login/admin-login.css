@@ -1,0 +1,305 @@
+
+/* ── Variables ────────────────────────────────────────────── */
+:root {
+  --brand: #6366f1;
+  --brand-dark: #4f46e5;
+  --brand-glow: rgba(99, 102, 241, 0.35);
+  --surface: #0f0f13;
+  --surface-2: #18181f;
+  --surface-3: #22222c;
+  --border: rgba(255,255,255,0.08);
+  --text-primary: #f4f4f6;
+  --text-muted: rgba(244,244,246,0.45);
+  --success: #22c55e;
+  --error: #ef4444;
+  --radius: 14px;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Wrapper ──────────────────────────────────────────────── */
+.login-wrapper {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Background Effects ───────────────────────────────────── */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.bg-glow {
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--brand-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: driftGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes driftGlow {
+  from { transform: translate(0, 0); }
+  to { transform: translate(80px, 60px); }
+}
+
+/* ── Brand Panel ─────────────────────────────────────────── */
+.brand-panel {
+  flex: 0 0 42%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.brand-panel::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+}
+
+.brand-content {
+  max-width: 340px;
+  animation: fadeSlideUp 0.8s ease both;
+}
+
+.brand-icon {
+  width: 56px;
+  height: 56px;
+  color: var(--brand);
+  margin-bottom: 28px;
+}
+
+.brand-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.brand-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--text-primary);
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+
+.brand-subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.brand-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ── Form Panel ─────────────────────────────────────────── */
+.form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeSlideUp 0.8s 0.15s ease both;
+}
+
+.form-header {
+  margin-bottom: 36px;
+}
+
+.form-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.8px;
+  margin-bottom: 6px;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── Angular Material Overrides ─────────────────────────── */
+.full-width {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  margin-bottom: 8px;
+}
+
+.mat-mdc-form-field .mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: var(--radius);
+  --mdc-outlined-text-field-outline-color: var(--border);
+  --mdc-outlined-text-field-focus-outline-color: var(--brand);
+  --mdc-outlined-text-field-label-text-color: var(--text-muted);
+  --mdc-outlined-text-field-input-text-color: var(--text-primary);
+  --mdc-outlined-text-field-caret-color: var(--brand);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-icon-prefix,
+.mat-mdc-form-field .mat-mdc-form-field-icon-suffix {
+  color: var(--text-muted);
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-prefix {
+  color: var(--brand);
+}
+
+/* ── Login Button ───────────────────────────────────────── */
+.login-btn {
+  height: 52px !important;
+  border-radius: var(--radius) !important;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%) !important;
+
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 24px var(--brand-glow) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+  margin-top: 8px;
+}
+
+.login-btn:hover:not([disabled]) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 36px var(--brand-glow) !important;
+}
+
+.login-btn:active:not([disabled]) {
+  transform: translateY(0);
+}
+
+.login-btn[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.form-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  justify-content: center;
+}
+
+.form-footer mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+/* ── Snackbar Global Styles ─────────────────────────────── */
+::ng-deep .snack-success .mdc-snackbar__surface {
+  background: #14532d !important;
+  border: 1px solid #22c55e;
+  border-radius: 10px !important;
+  color: #dcfce7 !important;
+}
+
+::ng-deep .snack-error .mdc-snackbar__surface {
+  background: #450a0a !important;
+  border: 1px solid #ef4444;
+  border-radius: 10px !important;
+  color: #fee2e2 !important;
+}
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .brand-panel {
+    flex: none;
+    padding: 40px 24px 28px;
+  }
+
+  .brand-panel::after {
+    display: none;
+  }
+
+  .brand-title {
+    font-size: 36px;
+  }
+
+  .form-panel {
+    padding: 24px 20px 40px;
+  }
+}

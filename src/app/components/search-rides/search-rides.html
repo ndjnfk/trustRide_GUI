@@ -1,0 +1,162 @@
+<div class="sr-page mt-5">
+
+  <!-- ══ Search Card (same as dashboard) ══ -->
+  <div class="search-card mt-3">
+    <div class="search-strip">
+
+      <!-- FROM -->
+      <div class="sf" #fromRef>
+        <div class="sf-label">Leaving from</div>
+        <div class="sf-row">
+          <i class="ti ti-map-pin"></i>
+          <input
+            class="sf-val sf-input"
+            [(ngModel)]="fromValue"
+            (input)="onFromInput()"
+            (focus)="focusFrom()"
+            placeholder="City, area or station…"
+            autocomplete="off"
+          />
+        </div>
+        <ul class="sf-dropdown" *ngIf="showFromDropdown && fromFiltered.length">
+          <li *ngFor="let area of fromFiltered" (mousedown)="selectFrom(area)">
+            <i class="ti ti-map-pin"></i> {{ area }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- SWAP -->
+      <div class="sf-swap" title="Swap" (click)="swap()">
+        <i class="ti ti-arrows-right-left"></i>
+      </div>
+
+      <!-- TO -->
+      <div class="sf" #toRef>
+        <div class="sf-label">Going to</div>
+        <div class="sf-row">
+          <i class="ti ti-map-pin-filled"></i>
+          <input
+            class="sf-val sf-input"
+            [(ngModel)]="toValue"
+            (input)="onToInput()"
+            (focus)="focusTo()"
+            placeholder="Your destination…"
+            autocomplete="off"
+          />
+        </div>
+        <ul class="sf-dropdown" *ngIf="showToDropdown && toFiltered.length">
+          <li *ngFor="let area of toFiltered" (mousedown)="selectTo(area)">
+            <i class="ti ti-map-pin-filled"></i> {{ area }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- WHEN -->
+      <div class="sf" style="flex:0.7">
+        <div class="sf-label">When</div>
+        <div class="sf-row">
+          <i class="ti ti-calendar"></i>
+          <select class="sf-val sf-select" (change)="onDateChange($event)">
+            <option *ngFor="let d of dateOptions" [value]="d.value">
+              {{ d.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PASSENGERS -->
+      <div class="sf" style="flex:0.55">
+        <div class="sf-label">Passengers</div>
+        <div class="sf-row passenger-row">
+          <i class="ti ti-users"></i>
+          <div class="passenger-ctrl">
+            <button class="pass-btn" (click)="decrementPassengers()" [disabled]="passengers <= 1">&minus;</button>
+            <span class="pass-val">{{ passengers }}</span>
+            <button class="pass-btn" (click)="incrementPassengers()" [disabled]="passengers >= 4">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+      <button class="search-go" (click)="search()">
+        <i class="ti ti-search"></i> Search
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ══ Results (popup-style card) ══ -->
+  <div class="rp-container">
+
+    <!-- Header -->
+    <div class="rp-header">
+      <div class="rp-route">
+        <span class="rp-city">{{ from || '—' }}</span>
+        <i class="ti ti-arrow-narrow-right"></i>
+        <span class="rp-city">{{ to || '—' }}</span>
+      </div>
+      <span class="rp-count">{{ rides.length }} ride{{ rides.length !== 1 ? 's' : '' }} found</span>
+      <button class="rp-close" (click)="close()">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!rides.length" class="rp-empty">
+      <i class="ti ti-mood-empty"></i>
+      <p>No rides to show. Use the search bar above.</p>
+    </div>
+
+    <!-- Ride List -->
+    <div *ngIf="rides.length" class="rp-list row g-3">
+      <div class="rp-card col-12 col-md-6" *ngFor="let ride of rides"
+           (click)="openRideDetail(ride.ride_id)"
+           style="cursor:pointer">
+
+        <div class="rp-driver-row">
+          <div class="rp-avatar">
+            {{ ride.driver_name.charAt(0).toUpperCase() }}
+          </div>
+          <div class="rp-driver-info">
+            <span class="rp-driver-name">{{ ride.driver_name }}</span>
+            <span class="rp-status" [class.active]="ride.status === 'active'">
+              {{ ride.status | titlecase }}
+            </span>
+          </div>
+          <div class="rp-price">
+            &#8377;{{ ride.price_per_seat }}<span class="rp-per">/seat</span>
+          </div>
+        </div>
+
+        <div class="rp-details">
+          <div class="rp-detail-item">
+            <i class="ti ti-clock"></i>
+            <span>{{ formatTime(ride.departure_time) }}</span>
+          </div>
+          <div class="rp-detail-item">
+            <i class="ti ti-armchair"></i>
+            <span>{{ ride.available_seats }} seat{{ ride.available_seats !== 1 ? 's' : '' }} available</span>
+          </div>
+        </div>
+
+        <div class="rp-route-pill">
+          <span><i class="ti ti-map-pin"></i> {{ ride.from }}</span>
+          <span class="rp-dash"></span>
+          <span><i class="ti ti-map-pin-filled"></i> {{ ride.to }}</span>
+        </div>
+
+        <div class="book_btn">
+          <button
+            type="button"
+            class="book-btn btn"
+            (click)="bookRide(ride, $event)"
+            [disabled]="loadingRides.has(ride.ride_id)"
+          >
+            {{ loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

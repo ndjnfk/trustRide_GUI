@@ -1,0 +1,41 @@
+<div class="cd-wrap">
+  <div class="cd-header">
+    <div class="cd-icon">❌</div>
+    <h2 class="cd-title">Cancel Ride?</h2>
+    <p class="cd-sub">{{ data.ride.start_location.name }} → {{ data.ride.end_location.name }}</p>
+  </div>
+
+  <div class="cd-body">
+    <p class="cd-label">Why are you cancelling this ride?</p>
+
+    <select
+      class="cd-select form-select"
+      [(ngModel)]="selectedReason"
+    >
+      <option value="" disabled>Select a reason...</option>
+      <option *ngFor="let r of reasons" [value]="r">{{ r }}</option>
+    </select>
+
+    <div class="cd-custom" *ngIf="selectedReason === 'Other'">
+      <textarea
+        class="cd-textarea form-control"
+        placeholder="Please specify your reason..."
+        [(ngModel)]="customReason"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <p class="cd-warn">⚠️ This action cannot be undone.</p>
+  </div>
+
+  <div class="cd-footer d-flex flex-column flex-sm-row gap-2">
+    <button class="cd-btn-cancel btn flex-fill" (click)="close()">Go Back</button>
+    <button
+      class="cd-btn-confirm btn flex-fill"
+      [disabled]="!canConfirm"
+      (click)="confirm()"
+    >
+      Confirm Cancellation
+    </button>
+  </div>
+</div>

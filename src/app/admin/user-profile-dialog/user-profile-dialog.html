@@ -1,0 +1,79 @@
+<div class="profile-dialog">
+
+  <div class="profile-header">
+
+    <div class="avatar">
+      {{ user.fullName?.charAt(0) }}
+    </div>
+
+    <div>
+      <h2>{{ user.fullName }}</h2>
+      <p>{{ user.job_title }}</p>
+    </div>
+
+  </div>
+
+  <div class="profile-grid">
+
+    <div class="item">
+      <label>Email</label>
+      <span>{{ user.userEmail }}</span>
+    </div>
+
+    <div class="item">
+      <label>Phone</label>
+      <span>{{ user.phoneNumber }}</span>
+    </div>
+
+    <div class="item">
+      <label>Gender</label>
+      <span>{{ user.gender }}</span>
+    </div>
+
+    <div class="item">
+      <label>Status</label>
+      <span>{{ user.status }}</span>
+    </div>
+
+    <div class="item">
+      <label>Verification</label>
+      <span>{{ user.verificationStatus }}</span>
+    </div>
+
+    <div class="item">
+      <label>Company</label>
+      <span>{{ user.professionalVerification?.company_name }}</span>
+    </div>
+
+    <div class="item">
+      <label>Job Title</label>
+      <span>{{ user.professionalVerification?.job_title }}</span>
+    </div>
+
+    <div class="item">
+      <label>Work Email</label>
+      <span>{{ user.professionalVerification?.work_email }}</span>
+    </div>
+
+    <!-- <div class="item">
+      <label>LinkedIn</label>
+
+      <a
+        [href]="user.professionalVerification?.linkedin_url"
+        target="_blank"
+      >
+        Open Profile
+      </a>
+    </div> -->
+
+  </div>
+
+  
+
+  <div class="dialog-actions">
+    <button mat-flat-button mat-dialog-close>
+      Close
+    </button>
+  </div>
+
+</div>

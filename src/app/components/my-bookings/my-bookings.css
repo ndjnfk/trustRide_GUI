@@ -1,0 +1,4 @@
+/* All styles for this component have been moved to src/styles.css
+   under the "MY BOOKINGS COMPONENT STYLES" section.
+   Rules are scoped with the .bookings-page wrapper class so they
+   do not collide with .route-line / .section-label used elsewhere. */

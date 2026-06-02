@@ -1,0 +1,244 @@
+<header class="header" [class.header--scrolled]="isScrolled">
+    <div class="header__inner d-flex align-items-center justify-content-between gap-3">
+
+        <!-- Brand -->
+        <a class="header__brand d-flex align-items-center gap-2 text-decoration-none" routerLink="/" (click)="closeMobileMenu()">
+            <!-- <div class="header__logo">
+                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="2" y="18" width="6" height="12" rx="2" fill="#3b82f6" />
+                    <rect x="11" y="10" width="6" height="20" rx="2" fill="#3b82f6" opacity="0.75" />
+                    <rect x="20" y="4" width="6" height="26" rx="2" fill="#3b82f6" opacity="0.5" />
+                    <circle cx="27" cy="4" r="3" fill="#f59e0b" />
+                </svg>
+            </div> -->
+            <span class="header__brand-name"><span class="header__brand-accent">Trust <span class="logo_color2">Ride<span class="teg_sre">SRE</span></span></span></span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="header__nav" aria-label="Main navigation" *ngIf="isLoggedIn()" >
+            <ul class="header__nav-list">
+                <li>
+                    <a class="header__nav-link" routerLink="/get-ride" routerLinkActive="header__nav-link--active">
+                        My Rides
+                    </a>
+                </li>
+                <li>
+                    <a class="header__nav-link" routerLink="/available-rides" routerLinkActive="header__nav-link--active">
+                        Explore Rides
+                    </a>
+                </li>
+                <li>
+                    <a class="header__nav-link" routerLink="/get-bookings" routerLinkActive="header__nav-link--active">
+                       My Bookings
+                    </a>
+                </li>
+                <!-- <li>
+                    <a class="header__nav-link" routerLink="/passinger-list" routerLinkActive="header__nav-link--active">
+                       Passinger List
+                    </a>
+                </li> -->
+            </ul>
+        </nav>
+
+        <!-- Actions -->
+        <div class="header__actions d-flex align-items-center gap-2">
+
+            <!-- Live indicator -->
+            <div class="header__live" *ngIf="hasActiveRides | async">
+                <span class="header__pulse"></span>
+                <span class="header__live-count">Live</span>
+            </div>
+
+            <!-- Install app (PWA) -->
+            <button type="button" class="header__btn-install" *ngIf="canInstallApp()"
+                (click)="installApp()" aria-label="Install app" title="Install TrustRides app">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span class="header__btn-label">Install app</span>
+            </button>
+
+            <!-- Create button -->
+            <a class="header__btn-create " id="create-pool" routerLink="/create-ride" (click)="closeMobileMenu()" *ngIf="isLoggedIn()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span class="header__btn-label" >Publish Ride</span>
+            </a>
+            <a class="header__btn-create" routerLink="/login" *ngIf="!isLoggedIn()">
+
+                <span class="header__btn-label">sign in</span>
+            </a>
+            <!-- User menu -->
+            <div class="user-menu" *ngIf="isLoggedIn()" (click)="toggleDropdown($event)">
+                <button class="header__avatar" [class.header__avatar--open]="isUserDropdownOpen" aria-label="User menu">
+                    <span class="header__avatar-initials">{{ userData?.fullName }}</span>
+                    <span class="header__avatar-initials">
+                        {{ getInitials(userData?.Name) }}
+                    </span>
+                </button>
+
+                <div class="header__dropdown" *ngIf="isUserDropdownOpen" role="menu">
+                    <div class="header__dropdown-user">
+                        <strong>{{ userData?.Name }}</strong>
+                        <small>{{ userData?.Email }}</small>
+                    </div>
+                    <div class="header__dropdown-divider"></div>
+                    <!-- <a class="header__dropdown-item" routerLink="/profile">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Profile
+                    </a> -->
+                    <a class="header__dropdown-item" routerLink="/about-you">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Profile
+                    </a>
+                    <a class="header__dropdown-item" routerLink="/company-members">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Company Members
+                    </a>
+                      <a class="header__dropdown-item" routerLink="/rating-show">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        rating
+                    </a>
+                    <!-- <a class="header__dropdown-item" routerLink="/settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        Settings
+                    </a> -->
+                    <div class="header__dropdown-divider"></div>
+                    <a class="header__dropdown-item header__dropdown-item--danger" routerLink="/logout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <aside class="header__mobile-drawer" [class.header__mobile-drawer--open]="isMobileMenuOpen">
+
+        <!-- Drawer Header (gradient with user info) -->
+        <div class="drawer__header">
+            <button class="drawer__close" (click)="toggleMobileMenu()" aria-label="Close menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <div class="drawer__user">
+                <div class="drawer__avatar">
+                    <span>{{ getInitials(userData?.Name) || 'U' }}</span>
+                </div>
+                <div class="drawer__user-info">
+                    <strong>{{ userData?.Name || 'Welcome' }}</strong>
+                    <small>{{ userData?.Email || 'Tap to explore rides' }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="drawer__nav" aria-label="Mobile navigation">
+            <!-- <span class="drawer__nav-label">Menu</span> -->
+            <ul class="header__mobile-nav">
+                <li *ngFor="let item of navItems">
+                    <a class="header__mobile-link" [routerLink]="item.route"
+                        routerLinkActive="header__mobile-link--active" (click)="closeMobileMenu()">
+                        <span class="drawer__icon">
+                            <ng-container [ngSwitch]="item.icon">
+                                <svg *ngSwitchCase="'car'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 17h14M5 17l-1.5-4.5a2 2 0 0 1 .1-1.6l1.7-3.4A3 3 0 0 1 8 6h8a3 3 0 0 1 2.7 1.5l1.7 3.4a2 2 0 0 1 .1 1.6L19 17M5 17v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2M19 17v2a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2"/>
+                                    <circle cx="7.5" cy="14.5" r="1"/>
+                                    <circle cx="16.5" cy="14.5" r="1"/>
+                                </svg>
+                                <svg *ngSwitchCase="'compass'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                                </svg>
+                                <svg *ngSwitchCase="'ticket'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/>
+                                    <line x1="13" y1="7" x2="13" y2="17"/>
+                                </svg>
+                                <svg *ngSwitchCase="'user'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                <svg *ngSwitchCase="'users'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                                <svg *ngSwitchCase="'star'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </ng-container>
+                        </span>
+                        <span class="drawer__link-label">{{ item.label }}</span>
+                        <svg class="drawer__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer actions -->
+        <div class="drawer__footer">
+            <button type="button" class="drawer__install" *ngIf="canInstallApp()" (click)="installApp()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Install App
+            </button>
+            <a class="drawer__cta" routerLink="/create-ride" (click)="closeMobileMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Publish a Ride
+            </a>
+            <a class="drawer__signout" routerLink="/logout" (click)="closeMobileMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div class="header__overlay" [class.header__overlay--visible]="isMobileMenuOpen" (click)="closeMobileMenu()"
+        aria-hidden="true">
+    </div>
+</header>

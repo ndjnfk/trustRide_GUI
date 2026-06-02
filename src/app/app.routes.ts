@@ -1,0 +1,121 @@
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+
+  //     {
+  //   path: '',
+
+  //   loadComponent: () =>
+  //     import('../app/components/dashboard/dashboard')
+  //       .then(m => m.Dashboard),
+  // },
+  {
+    path: 'dashboard',
+    loadComponent: () => import('../app/components/dashboard/dashboard').then((m) => m.Dashboard),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('../app/components/register/register').then((m) => m.Register),
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('../app/components/login/login').then((m) => m.LoginComponent),
+  },
+
+  {
+    path: 'logout',
+    loadComponent: () => import('../app/components/logout/logout').then((m) => m.LogoutComponent),
+  },
+  {
+    path: 'auth/set-security-question',
+    loadComponent: () =>
+      import('../app/components/security-ques/security-ques').then((m) => m.SecurityQues),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('../app/components/forget-password/forget-password').then((m) => m.ForgetPassword),
+  },
+  {
+    path: 'create-ride',
+    loadComponent: () =>
+      import('../app/components/create-ride/create-ride').then((m) => m.CreateRide),
+  },
+  {
+    path: 'get-ride',
+    loadComponent: () => import('../app/components/my-ride/my-ride').then((m) => m.MyRide),
+  },
+  {
+    path: 'available-rides',
+    loadComponent: () =>
+      import('../app/components/available-rides/available-rides').then((m) => m.AvailableRides),
+  },
+  {
+    path: 'get-bookings',
+    loadComponent: () =>
+      import('../app/components/my-bookings/my-bookings').then((m) => m.MyBookings),
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('../app/components/profile/profile').then((m) => m.Profile),
+  },
+  {
+    path: 'admin/login',
+    loadComponent: () => import('../app/admin/admin-login/admin-login').then((m) => m.AdminLogin),
+  },
+  {
+    path: 'admin/dashboard',
+    loadComponent: () =>
+      import('../app/admin/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboard),
+  },
+  {
+    path: 'admin/rides',
+    loadComponent: () => import('../app/admin/rides/rides').then((m) => m.Rides),
+  },
+  {
+    path: 'ride-detail',
+    loadComponent: () =>
+      import('../app/components/one-ride-details/one-ride-details').then((m) => m.OneRideDetails),
+  },
+  {
+    path: 'search-rides',
+    loadComponent: () =>
+      import('../app/components/search-rides/search-rides').then((m) => m.SearchRides),
+  },
+   {
+    path: 'rating-show',
+    loadComponent: () =>
+      import('../app/components/rating/rating').then((m) => m.Rating),
+  },
+   {
+    path: 'review',
+    loadComponent: () =>
+      import('../app/components/review/review').then((m) => m.Review),
+  },
+   {
+    path: 'company-members',
+    loadComponent: () =>
+      import('../app/components/company-members/company-members').then((m) => m.CompanyMembers),
+  },
+  {
+    path: 'about-you',
+    loadComponent: () =>
+      import('../app/components/about-you/about-you').then((m) => m.AboutYou),
+  },
+  {
+    path: 'my-profile',
+    loadComponent: () =>
+      import('../app/components/my-profile/my-profile').then((m) => m.MyProfile),
+  },
+   {
+    path: 'review/:ride_id',
+    loadComponent: () =>
+      import('../app/components/review/review').then((m) => m.Review),
+  },
+  {
+    path: 'edit-profile',
+    loadComponent: () =>
+      import('../app/components/edit-profile/edit-profile').then((m) => m.EditProfile),
+  },
+];

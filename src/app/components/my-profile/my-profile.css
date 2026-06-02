@@ -1,0 +1,45 @@
+ .profile-card {
+    /* max-width: 420px; */
+    margin: auto;
+    border-radius: 18px;
+  }
+
+  .profile-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+  }
+
+  .verified-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #0d6efd;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border: 2px solid white;
+  }
+
+  .verified-item,
+  .about-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+
+  .about-item i,
+  .verified-item i {
+    font-size: 18px;
+  }
+
+  hr {
+    opacity: 0.15;
+  }

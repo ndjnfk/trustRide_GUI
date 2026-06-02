@@ -1,0 +1,88 @@
+<div class="rating-page mx-auto py-5">
+  <!-- Title -->
+   <div class="d-flex justify-content-center pt-4 pt-lg-5">
+      <h2 class="rating-title text-center  text-underline">Ratings</h2>
+   </div>
+
+  <!-- Tabs -->
+   @if (showGivenTab) {
+  <ul class="nav rating-tabs">
+    <li class="nav-item flex-fill text-center">
+      <button
+        type="button"
+        class="nav-link w-100"
+        [class.active]="activeTab === 'received'"
+        (click)="setTab('received')"
+      >
+        Received
+      </button>
+    </li>
+    
+      <li class="nav-item flex-fill text-center">
+        <button
+          type="button"
+          class="nav-link w-100"
+          [class.active]="activeTab === 'given'"
+          (click)="setTab('given')"
+        >
+          Given
+        </button>
+      </li>
+  </ul>
+     }
+  <!-- Summary — sirf received tab pe -->
+  @if (activeTab === 'received') {
+    <div class="rating-summary">
+      <div class="rating-average">{{ average }}</div>
+      <div class="rating-count">{{ totalRatings }} ratings</div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="rating-breakdown">
+      @for (item of breakdown; track item.label) {
+        <div class="d-flex justify-content-between align-items-center breakdown-row">
+          <span class="breakdown-label">{{ item.label }}</span>
+          <span class="breakdown-count">{{ item.count }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="section-divider"></div>
+  }
+
+  <!-- Reviews -->
+  <div class="rating-reviews">
+    @if (isLoading) {
+      <div class="text-center py-4">
+        <span>Loading...</span>
+      </div>
+    } @else {
+      @for (review of reviews; track review.name) {
+        <div class="review-item" (click)="goToProfile(review.userId)">
+          <div class="d-flex align-items-center review-head">
+            <div class="review-avatar">
+              @if (review.avatar) {
+                <img [src]="review.avatar" [alt]="review.name" />
+              } @else {
+                <i class="ti ti-user"></i>
+              }
+            </div>
+            <div class="review-name">
+              {{ review.name }}
+              @if (review.verified) {
+                <i class="ti ti-circle-check-filled verified-icon"></i>
+              }
+            </div>
+            <i class="ti ti-chevron-right review-chevron ms-auto"></i>
+          </div>
+
+          <div class="review-rating">{{ review.rating }}</div>
+          <p class="review-comment">{{ review.comment }}</p>
+          <div class="review-date">{{ review.date }}</div>
+        </div>
+      } @empty {
+        <div class="empty-state text-center">No ratings to show yet.</div>
+      }
+    }
+  </div>
+</div>

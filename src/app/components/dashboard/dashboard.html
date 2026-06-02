@@ -1,0 +1,504 @@
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-blob hero-blob-3"></div>
+
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <i class="ti ti-trending-up"></i>
+      Trust our Ride
+    </div>
+
+    <h1>
+      For the  <br/>
+      Professionals, By the Professionals
+    </h1>
+
+    <!-- <p class="hero-sub">
+       
+    </p> -->
+  </div>
+
+</section>
+
+ <!-- Search Card -->
+<section class="search_sec">
+  <div class="search-card">
+    <div class="search-strip">
+
+      <!-- FROM -->
+      <div class="sf sf_radius" #fromRef>
+        <div class="sf-label">Leaving from</div>
+        <div class="sf-row">
+          <i class="ti ti-map-pin"></i>
+          <input
+            class="sf-val sf-input"
+            [(ngModel)]="fromValue"
+            (input)="onFromInput()"
+            (focus)="focusFrom()"
+            placeholder="City, area or station…"
+            autocomplete="off"
+          />
+        </div>
+        <!-- Dropdown -->
+        <ul class="sf-dropdown" *ngIf="showFromDropdown && fromFiltered.length">
+          <li
+            *ngFor="let area of fromFiltered"
+            (mousedown)="selectFrom(area)"
+          >
+            <i class="ti ti-map-pin"></i> {{ area }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- SWAP -->
+      <div class="sf-swap" title="Swap" (click)="swap()">
+        <i class="ti ti-arrows-right-left"></i>
+      </div>
+
+      <!-- TO -->
+      <div class="sf" #toRef>
+        <div class="sf-label">Going to</div>
+        <div class="sf-row">
+          <i class="ti ti-map-pin-filled"></i>
+          <input
+            class="sf-val sf-input"
+            [(ngModel)]="toValue"
+            (input)="onToInput()"
+            (focus)="focusTo()"
+            placeholder="Your destination…"
+            autocomplete="off"
+          />
+        </div>
+        <!-- Dropdown -->
+        <ul class="sf-dropdown" *ngIf="showToDropdown && toFiltered.length">
+          <li
+            *ngFor="let area of toFiltered"
+            (mousedown)="selectTo(area)"
+          >
+            <i class="ti ti-map-pin-filled"></i> {{ area }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- WHEN -->
+      <!-- <div class="sf" style="flex:0.6">
+        <div class="sf-label">When</div>
+        <div class="sf-row date-toggle-row">
+          <i class="ti ti-calendar"></i>
+          <div class="date-toggle">
+            <button
+              class="dt-btn"
+              [class.active]="selectedDate === 'today'"
+              (click)="selectedDate = 'today'"
+            >Today</button>
+            <button
+              class="dt-btn"
+              [class.active]="selectedDate === 'tomorrow'"
+              (click)="selectedDate = 'tomorrow'"
+            >Tomorrow</button>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- WHEN — 7-day dropdown -->
+      <div class="sf" style="flex:0.7">
+        <div class="sf-label">When</div>
+        <div class="sf-row">
+          <i class="ti ti-calendar"></i>
+          <select class="sf-val sf-select"  (change)="onDateChange($event)">
+            <option *ngFor="let d of dateOptions" [value]="d.value">
+              {{ d.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PASSENGERS -->
+      <div class="sf sf_passenger" style="flex:0.55">
+        <div class="sf-label">Passengers</div>
+        <div class="sf-row passenger-row">
+          <i class="ti ti-users"></i>
+          <div class="passenger-ctrl">
+            <button
+              class="pass-btn"
+              (click)="decrementPassengers()"
+              [disabled]="passengers <= 1"
+            >−</button>
+            <span class="pass-val">{{ passengers }}</span>
+            <button
+              class="pass-btn"
+              (click)="incrementPassengers()"
+              [disabled]="passengers >= 4"
+            >+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+      <button class="search-go" (click)="search()">
+        <i class="ti ti-search"></i> Search
+      </button>
+
+
+    </div>
+  </div>
+</section>
+<!-- ══ TRUST BAR ══ -->
+
+<section class="trust_sec container-fluid">
+  <div class="row mx-0">
+    <div class="col-sm-4 d-flex justify-content-center">
+      <div class="trust_item d-flex justify-content-center align-items-center gap-3">
+        <div class="trust_icon mb-0 wi_blue"><i class="ti ti-shield-check"></i></div>
+        <div class="trust_text d-flex flex-column">
+          <strong>ID Verified</strong>
+          <span class="text-secondary fs-12 fw-medium">Riders & passengers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4 d-flex justify-content-center">
+      <div class="trust_item d-flex justify-content-center align-items-center gap-3">
+        <div class="trust_icon mb-0 wi_green"><i class="ti ti-users"></i></div>
+        <div class="trust_text d-flex flex-column">
+          <strong>100+ members</strong>
+          <span class="text-secondary fs-12 fw-medium">Active community</span>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="col-sm-4 d-flex justify-content-center">
+      <div class="trust_item d-flex justify-content-center align-items-center gap-3">
+        <div class="trust_icon mb-0 wi_warn"><i class="ti ti-map-route"></i></div>
+        <div class="trust_text d-flex flex-column">
+          <strong>4+ routes</strong>
+          <span class="text-secondary fs-12 fw-medium">Across India</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ WHY SECTION ══ -->
+<section class="why_sec py-3 py-md-5 container-fluid">
+  <div class="text-center col-md-7 col-lg-5 mx-auto ">
+    <div class="section_label">Why millions choose TrustRideSRE</div>
+    <div class="section_title">Your journey, your way</div>
+    <div class="section_sub">TrustRideSRE reimagined for Saharanpur — safe, affordable, and community-powered travel on Gurgaon route.</div>
+  </div>
+  <div class="why-grid pb-4 pb-md-5">
+    <div class="row g-3">
+      <!-- <div class="col-12 col-md-4">
+        <div class="why-card reveal reveal-delay-1 h-100">
+          <div class="why-icon wi-blue"><i class="ti ti-route"></i></div>
+          <h3>Travel everywhere</h3>
+          <p>Explore all over India with countless TrustRide rides on popular and off-beat routes, any day of the week.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="why-card reveal reveal-delay-2 h-100">
+          <div class="why-icon wi-green"><i class="ti ti-coin"></i></div>
+          <h3>Prices like nowhere</h3>
+          <p>Benefit from great-value shared costs. Split fuel and toll expenses with your rider and save up to 70% vs trains.</p>
+        </div>
+      </div> -->
+      <div class="col-12 col-md-4">
+        <div class="why-card reveal reveal-delay-3 h-100">
+          <div class="why-icon wi-warn"><i class="ti ti-shield-check"></i></div>
+          <h3>Ride with confidence</h3>
+          <p>Feel secure knowing you're riding with members who have Verified Profiles, ratings, and reviews.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ PROMO 1 — OFFER A RIDE ══ -->
+<div class="promo reveal">
+  <div class="promo-img">
+    <!-- Inline SVG illustration -->
+    <svg viewBox="0 0 480 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;top:0;left:0">
+      <defs>
+        <radialGradient id="bg1" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="#0d2248"/>
+          <stop offset="100%" stop-color="#001536"/>
+        </radialGradient>
+        <linearGradient id="road1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0057FF" stop-opacity=".6"/>
+          <stop offset="100%" stop-color="#00C9A7" stop-opacity=".6"/>
+        </linearGradient>
+      </defs>
+      <rect width="480" height="440" fill="url(#bg1)"/>
+      <!-- Road -->
+      <rect x="60" y="260" width="360" height="40" rx="8" fill="#0f2a4a"/>
+      <rect x="60" y="275" width="360" height="10" rx="3" fill="url(#road1)" opacity=".3"/>
+      <!-- Dashes -->
+      <rect x="100" y="277" width="40" height="6" rx="3" fill="rgba(255,255,255,.15)"/>
+      <rect x="200" y="277" width="40" height="6" rx="3" fill="rgba(255,255,255,.15)"/>
+      <rect x="300" y="277" width="40" height="6" rx="3" fill="rgba(255,255,255,.15)"/>
+      <!-- Car body -->
+      <rect x="140" y="228" width="200" height="50" rx="12" fill="#0057FF"/>
+      <rect x="160" y="210" width="160" height="30" rx="8" fill="#1a6fff"/>
+      <!-- Windows -->
+      <rect x="168" y="215" width="60" height="22" rx="5" fill="rgba(255,255,255,.18)"/>
+      <rect x="252" y="215" width="60" height="22" rx="5" fill="rgba(255,255,255,.18)"/>
+      <!-- Wheels -->
+      <circle cx="185" cy="278" r="22" fill="#0a1628"/>
+      <circle cx="185" cy="278" r="13" fill="#162236"/>
+      <circle cx="185" cy="278" r="5" fill="#0057FF"/>
+      <circle cx="295" cy="278" r="22" fill="#0a1628"/>
+      <circle cx="295" cy="278" r="13" fill="#162236"/>
+      <circle cx="295" cy="278" r="5" fill="#0057FF"/>
+      <!-- Glow under car -->
+      <ellipse cx="240" cy="305" rx="100" ry="10" fill="#0057FF" opacity=".15"/>
+      <!-- People silhouettes -->
+      <circle cx="210" cy="195" r="14" fill="#1a6fff" opacity=".7"/>
+      <circle cx="270" cy="195" r="14" fill="#00C9A7" opacity=".7"/>
+      <!-- Stars / particles -->
+      <circle cx="80"  cy="100" r="2" fill="#0057FF" opacity=".5"/>
+      <circle cx="400" cy="80"  r="3" fill="#00C9A7" opacity=".4"/>
+      <circle cx="350" cy="180" r="2" fill="#fff" opacity=".2"/>
+      <circle cx="130" cy="160" r="1.5" fill="#fff" opacity=".15"/>
+      <!-- Money icon hint -->
+      <rect x="380" y="130" width="60" height="60" rx="16" fill="rgba(0,201,167,.12)" stroke="rgba(0,201,167,.2)" stroke-width="1.5"/>
+      <text x="410" y="168" font-size="24" text-anchor="middle" fill="#00C9A7">₹</text>
+    </svg>
+  </div>
+  <div class="promo-content">
+    <div class="promo-tag"><i class="ti ti-coin"></i> For Riders</div>
+    <div class="promo-title">Publish your ride.</div>
+    <div class="promo-desc">
+    TrustRideSRE as a rider to turn your empty seats into lower travel costs. It's simple: publish your ride and get passengers to share your fuel and toll expenses.
+    </div>
+   
+    
+  </div>
+</div>
+
+<!-- ══ PROMO 2 — ALERTS ══ -->
+<div class="promo flip reveal" style="border-top:1px solid var(--border)">
+  <div class="promo-img">
+    <svg viewBox="0 0 480 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;top:0;left:0">
+      <defs>
+        <radialGradient id="bg2" cx="60%" cy="40%" r="70%">
+          <stop offset="0%" stop-color="#0e2a1a"/>
+          <stop offset="100%" stop-color="#001536"/>
+        </radialGradient>
+      </defs>
+      <rect width="480" height="440" fill="url(#bg2)"/>
+      <!-- Phone shape -->
+      <rect x="160" y="80" width="160" height="280" rx="20" fill="#0f2a1f" stroke="rgba(0,201,167,.3)" stroke-width="2"/>
+      <!-- Screen -->
+      <rect x="170" y="100" width="140" height="240" rx="12" fill="#0a1f14"/>
+      <!-- Notification card 1 -->
+      <rect x="178" y="120" width="124" height="52" rx="8" fill="rgba(0,201,167,.15)" stroke="rgba(0,201,167,.25)" stroke-width="1"/>
+      <circle cx="196" cy="136" r="8" fill="#00C9A7" opacity=".8"/>
+      <rect x="210" y="129" width="70" height="7" rx="3" fill="rgba(255,255,255,.5)"/>
+      <rect x="210" y="141" width="50" height="5" rx="2" fill="rgba(255,255,255,.25)"/>
+      <rect x="178" y="155" width="84" height="13" rx="4" fill="rgba(0,201,167,.3)"/>
+      <!-- Notification card 2 -->
+      <rect x="178" y="184" width="124" height="52" rx="8" fill="rgba(0,87,255,.12)" stroke="rgba(0,87,255,.2)" stroke-width="1"/>
+      <circle cx="196" cy="200" r="8" fill="#0057FF" opacity=".8"/>
+      <rect x="210" y="193" width="70" height="7" rx="3" fill="rgba(255,255,255,.4)"/>
+      <rect x="210" y="205" width="50" height="5" rx="2" fill="rgba(255,255,255,.2)"/>
+      <rect x="178" y="219" width="64" height="13" rx="4" fill="rgba(0,87,255,.3)"/>
+      <!-- Bell icon -->
+      <rect x="330" y="110" width="70" height="70" rx="18" fill="rgba(0,201,167,.1)" stroke="rgba(0,201,167,.2)" stroke-width="1.5"/>
+      <text x="365" y="153" font-size="28" text-anchor="middle" fill="#00C9A7">🔔</text>
+      <!-- Glow -->
+      <ellipse cx="240" cy="360" rx="120" ry="15" fill="#00C9A7" opacity=".08"/>
+    </svg>
+  </div>
+  <div class="promo-content">
+    <div class="promo-tag" style="background:#e6faf6;color:var(--secondary);border-color:rgba(0,201,167,.2)"><i class="ti ti-bell"></i>For Users</div>
+    <div class="promo-title">Never miss<br/>a Ride!</div>
+    <div class="promo-desc">
+        Finding the right ride at the right time can be tricky — riders usually post 
+  their rides a few days before departure. Keep checking back regularly so you 
+  never miss an available seat on your route. We're working on a notification 
+  system to make this even easier for you soon!
+    </div>
+   
+  </div>
+</div>
+
+<!-- ══ POPULAR ROUTES ══ -->
+<section class="routes-section">
+  <div class="routes-header reveal">
+    <div>
+      <div class="section_label">Trending today</div>
+      <div class="section_title">Popular routes</div>
+    </div>
+    <!-- <button class="view-all-btn">View all routes <i class="ti ti-arrow-right"></i></button> -->
+  </div>
+
+ <div class="routes-grid row g-3">
+
+  <!-- Route 1: Gurgaon → Saharanpur (Baghpat) -->
+   <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-1">
+    <div class="rt-from d-flex">Gurgaon  <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 440</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Saharanpur</div>
+    <div class="rt-via">via UER2 · Sonipat · Baghpat · Shamli</div>
+   </div>
+  </div>
+
+   <!-- Route 4: Gurgaon → Saharanpur (Dhaula Kuan) -->
+    <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-3">
+    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Saharanpur</div>
+    <div class="rt-via">via Dhaula Kuan · Delhi-Dehradun Expressway · UER2</div>
+    </div>
+  </div>
+
+
+  <!-- Route 2: Gurgaon → Saharanpur (Panipat) -->
+   <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-3">
+    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 460</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Saharanpur</div>
+    <div class="rt-via">via UER2 · Sonipat · Panipat · Shamli</div>
+   </div>
+  </div>
+
+  
+
+  <!-- Route 3: Gurgaon → Saharanpur (Kundali Expressway) -->
+   <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-1">
+    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Saharanpur</div>
+    <div class="rt-via">via UER2 · Kundali · Delhi-Dehradun Expressway</div>
+   </div>
+  </div>
+
+ 
+
+     <!-- Route 1 Reverse: Saharanpur → Gurgaon (Baghpat) -->
+   <div class="col-12 col-md-6 col-xl-3">
+      <div class="route-tile reveal reveal-delay-2">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 440</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Gurgaon</div>
+    <div class="rt-via">via Shamli · Baghpat · Sonipat · UER2</div>
+  </div>
+   </div>
+
+
+
+  <!-- Route 4 Reverse: Saharanpur → Gurgaon (Dhaula Kuan) -->
+    <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-4">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Gurgaon</div>
+    <div class="rt-via">via UER2 · Delhi-Dehradun Expressway · Dhaula Kuan</div>
+    </div>
+  </div>
+
+   <!-- Route 3 Reverse: Saharanpur → Gurgaon (Kundali Expressway) -->
+    <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-2">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Gurgaon</div>
+    <div class="rt-via">via Delhi-Dehradun Expressway · Kundali · UER2</div>
+    </div>
+    </div>
+    <!-- Route 2 Reverse: Saharanpur → Gurgaon (Panipat) -->
+   <div class="col-12 col-md-6 col-xl-3">
+  <div class="route-tile reveal reveal-delay-4">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 460</span></div>
+    <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+    <div class="rt-to">Gurgaon</div>
+    <div class="rt-via">via Shamli · Panipat · Sonipat · UER2</div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="how-section">
+  <div class="how-header reveal">
+    <div class="section_label">Simple process</div>
+    <div class="section_title">How it works</div>
+    <div class="section_sub">Four easy steps to your next TrustRideSRE</div>
+  </div>
+
+  <div class="how-steps row g-3 g-md-4">
+    <div class="how-connector"></div>
+    <div class="how-step reveal col-6 col-lg-3">
+      <div class="step-num">Step 01</div>
+      <div class="step-icon"><i class="ti ti-user-plus"></i></div>
+      <div class="step-title">Sign up</div>
+      <div class="step-desc">Create a free account with ID verification for a safe community.</div>
+    </div>
+    <div class="how-step reveal reveal-delay-1 col-6 col-lg-3">
+      <div class="step-num">Step 02</div>
+      <div class="step-icon"><i class="ti ti-search"></i></div>
+      <div class="step-title">Search a ride</div>
+      <div class="step-desc">Enter route, date and seats. Browse verified riders instantly.</div>
+    </div>
+    <div class="how-step reveal reveal-delay-2 col-6 col-lg-3">
+      <div class="step-num">Step 03</div>
+      <div class="step-icon"><i class="ti ti-calendar-check"></i></div>
+      <div class="step-title">Book online</div>
+      <div class="step-desc">Reserve your seat securely. Rider confirms within minutes.</div>
+    </div>
+    <div class="how-step reveal reveal-delay-3 col-6 col-lg-3">
+      <div class="step-num">Step 04</div>
+      <div class="step-icon"><i class="ti ti-star"></i></div>
+      <div class="step-title">Rate & review</div>
+      <div class="step-desc">Leave a review and help build a trustworthy community.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ APP DOWNLOAD ══ -->
+<!-- <section class="app-banner reveal">
+  <div>
+    <div class="app-label">Mobile app</div>
+    <div class="app-title">Your TrustRide,<br/>right in your pocket</div>
+    <div class="app-sub">Book rides on the go , book your ride — all from the TrustRide app.</div>
+    <div class="app-btns d-flex flex-column flex-sm-row gap-2 gap-sm-3 flex-wrap">
+      <div class="app-store-btn d-inline-flex align-items-center gap-2">
+        <i class="ti ti-brand-google-play"></i>
+        <div class="asb-text">
+          <span class="asb-small">Get it on</span>
+          <span class="asb-big">Google Play</span>
+        </div>
+      </div>
+      <div class="app-store-btn d-inline-flex align-items-center gap-2">
+        <i class="ti ti-brand-apple"></i>
+        <div class="asb-text">
+          <span class="asb-small">Download on the</span>
+          <span class="asb-big">App Store</span>
+        </div>
+      </div>
+    </div>
+    <div class="app-rating">
+      <div class="app-rating-stars">
+        <i class="ti ti-star-filled"></i><i class="ti ti-star-filled"></i>
+        <i class="ti ti-star-filled"></i><i class="ti ti-star-filled"></i><i class="ti ti-star-half-filled"></i>
+      </div>
+     
+    </div>
+  </div>
+  <div class="app-visual">
+    <div class="phone-mockup">
+      <i class="ti ti-device-mobile"></i>
+      <span>TrustRide App</span>
+    </div>
+  </div>
+</section> -->

@@ -1,0 +1,62 @@
+<!-- rides-popup.component.html -->
+<div class="rp-container">
+
+  <!-- Header -->
+  <div class="rp-header">
+    <div class="rp-route">
+      <span class="rp-city">{{ from }}</span>
+      <i class="ti ti-arrow-narrow-right"></i>
+      <span class="rp-city">{{ to }}</span>
+    </div>
+    <span class="rp-count">{{ rides.length }} ride{{ rides.length !== 1 ? 's' : '' }} found</span>
+    <button class="rp-close" (click)="close()">
+      <i class="ti ti-x"></i>
+    </button>
+  </div>
+
+  <!-- Ride List -->
+  <div class="rp-list row g-3">
+    <!-- ride-popup.html — rp-card pe click add karo -->
+<div class="rp-card col-12 col-md-6" *ngFor="let ride of rides"
+     (click)="openRideDetail(ride.ride_id)"
+     style="cursor:pointer">
+
+      <!-- Driver row -->
+      <div class="rp-driver-row">
+        <div class="rp-avatar">
+          {{ ride.driver_name.charAt(0).toUpperCase() }}
+        </div>
+        <div class="rp-driver-info">
+          <span class="rp-driver-name">{{ ride.driver_name }}</span>
+          <span class="rp-status" [class.active]="ride.status === 'active'">
+            {{ ride.status | titlecase }}
+          </span>
+        </div>
+        <div class="rp-price">
+          ₹{{ ride.price_per_seat }}<span class="rp-per">/seat</span>
+        </div>
+      </div>
+
+      <!-- Details row -->
+      <div class="rp-details">
+        <div class="rp-detail-item">
+          <i class="ti ti-clock"></i>
+          <span>{{ formatTime(ride.departure_time) }}</span>
+        </div>
+        <div class="rp-detail-item">
+          <i class="ti ti-armchair"></i>
+          <span>{{ ride.available_seats }} seat{{ ride.available_seats !== 1 ? 's' : '' }} available</span>
+        </div>
+      </div>
+
+      <!-- Route pill -->
+      <div class="rp-route-pill">
+        <span><i class="ti ti-map-pin"></i> {{ ride.from }}</span>
+        <span class="rp-dash"></span>
+        <span><i class="ti ti-map-pin-filled"></i> {{ ride.to }}</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>

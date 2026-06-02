@@ -1,0 +1,168 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="admin-rides-container">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-left">
+          <h1 class="page-title">All Rides</h1>
+          <span class="total-badge">{{ totalRides }} rides</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      @if (error) {
+        <div class="error-state">
+          <span class="error-icon">⚠️</span>
+          <p>{{ error }}</p>
+          <button class="retry-btn" (click)="fetchRides()">Retry</button>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading && !error) {
+        <div class="table-wrapper">
+          <table class="rides-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Route</th>
+                <th>Rider</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Departure</th>
+                <th>Seats</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Bookings</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ride of rides; track ride.ride_id; let i = $index) {
+                <tr class="ride-row">
+                  <td class="index-cell">{{ i + 1 }}</td>
+                  <td class="route-cell">
+                    <div class="route">
+                      <span class="from">{{ ride.start_location?.name }}</span>
+                      <span class="arrow">→</span>
+                      <span class="to">{{ ride.end_location?.name }}</span>
+                    </div>
+                  </td>
+                  <td class="rider-cell">
+                    <div class="rider-info">
+                      <div class="avatar">{{ ride.driver?.fullName?.charAt(0) | uppercase }}</div>
+                      <span class="rider-name">{{ ride.driver?.fullName }}</span>
+                    </div>
+                  </td>
+                  <td class="email-cell">{{ ride.driver?.userEmail }}</td>
+                  <td class="phone-cell">{{ ride.driver?.phoneNumber }}</td>
+                  <td class="date-cell">{{ ride.departure_time | date: 'dd MMM yyyy, hh:mm a' }}</td>
+                  <td class="seats-cell">{{ ride.available_seats }}</td>
+                  <td class="price-cell">₹{{ ride.price_per_seat }}</td>
+                  <td class="status-cell">
+                    <span class="status-badge" [ngClass]="ride.status">{{ ride.status }}</span>
+                  </td>
+                  <td class="action-cell">
+                    <button class="bookings-btn" (click)="openBookings(ride)">
+                      <span class="btn-icon">📋</span>
+                      {{ ride.total_bookings }}
+                    </button>
+                  </td>
+                  <td class="action-cell">
+
+ 
+  <button
+    class="delete-btn"
+    (click)="deleteRide(ride)"
+    [disabled]="deletingRideId === ride.ride_id"
+  >
+    @if (deletingRideId === ride.ride_id) {
+      <span class="delete-spinner"></span>
+    } @else {
+      🗑️
+    }
+  </button>
+</td>
+ 
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      <!-- Empty -->
+      @if (!loading && !error && rides.length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">🚗</span>
+          <p>No rides found</p>
+        </div>
+      }
+
+    </div>
+  </main>
+</div>
+
+<!-- Bookings Popup -->
+@if (selectedRide) {
+  <div class="popup-overlay" (click)="closePopup()">
+    <div class="popup" (click)="$event.stopPropagation()">
+
+      <div class="popup-header">
+        <div class="popup-title-wrap">
+          <h2 class="popup-title">Bookings</h2>
+          <div class="popup-route">
+            {{ selectedRide.start_location?.name }}
+            <span class="arrow">→</span>
+            {{ selectedRide.end_location?.name }}
+          </div>
+        </div>
+        <button class="close-btn" (click)="closePopup()">✕</button>
+      </div>
+
+      <div class="popup-body">
+        @if (selectedRide.bookings.length === 0) {
+          <div class="no-bookings">
+            <span>🎫</span>
+            <p>No bookings for this ride</p>
+          </div>
+        }
+
+        @for (booking of selectedRide.bookings; track booking.booking_id) {
+          <div class="booking-card">
+            <div class="booking-top">
+              <div class="passenger-avatar">
+                {{ booking.passenger?.fullName?.charAt(0) | uppercase }}
+              </div>
+              <div class="passenger-details">
+                <p class="passenger-name">{{ booking.passenger?.fullName }}</p>
+                <p class="passenger-email">{{ booking.passenger?.userEmail }}</p>
+                <p class="passenger-phone">📞 {{ booking.passenger?.phoneNumber }}</p>
+              </div>
+              <span class="booking-status" [ngClass]="booking.booking_status">
+                {{ booking.booking_status }}
+              </span>
+            </div>
+
+            @if (booking.review) {
+              <div class="review-section">
+                <div class="stars">
+                  @for (star of getStars(booking.review.rating); track $index) {
+                    <span class="star filled">★</span>
+                  }
+                  @for (star of getEmptyStars(booking.review.rating); track $index) {
+                    <span class="star empty">★</span>
+                  }
+                </div>
+                <p class="review-comment">"{{ booking.review.comment }}"</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}

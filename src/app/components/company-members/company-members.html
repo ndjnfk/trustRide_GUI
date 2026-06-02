@@ -1,0 +1,86 @@
+<section class="members-section">
+
+  <!-- Decorative blobs -->
+  <div class="bg-blob blob-a"></div>
+  <div class="bg-blob blob-b"></div>
+
+  <div class="container-fluid py-5">
+
+    <!-- ═══════════ HEADER ═══════════ -->
+    <div class="members-header">
+      <div class="header-badge">
+        <i class="bi bi-building"></i>
+        <span>Company Directory</span>
+      </div>
+
+      <h1 class="header-title text-capitilize">
+        {{ companyName || 'Our Members' }}
+      </h1>
+
+      <p class="header-sub">
+        Meet the talented people you share your workspace with
+      </p>
+
+      <div class="header-stats">
+        <div class="stat-pill">
+          <span class="stat-num">{{ totalNumbers }}</span>
+          <span class="stat-lbl">Total Members</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ MEMBERS GRID ═══════════ -->
+    <div class="row g-4" *ngIf="members.length > 0">
+
+      <div
+        class="col-12 col-sm-6 col-lg-3 col-xxl-3"
+        *ngFor="let member of members; let i = index"
+      >
+        <div class="member-card" (click)="goToProfile(member._id)" [style.animation-delay.ms]="i * 60">
+
+          <!-- Top accent strip -->
+          <div class="card-accent"></div>
+
+          <!-- Avatar -->
+          <div class="avatar-wrap">
+            <div class="avatar-ring">
+              <img
+                *ngIf="member.avatarUrl"
+                [src]="imageBaseUrl + member.avatarUrl"
+                [alt]="member.fullName"
+                class="avatar-img"
+              />
+              <div *ngIf="!member.avatarUrl" class="avatar-initials">
+                {{ getInitials(member.fullName) }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="card-info">
+            <h5 class="member-name" [title]="member.fullName">
+              {{ member.fullName }}
+            </h5>
+
+            <p class="member-email" [title]="member.userEmail">
+              <i class="bi bi-envelope-fill"></i>
+              <span>{{ member.userEmail }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ EMPTY STATE ═══════════ -->
+    <div class="empty-state" *ngIf="members.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-people"></i>
+      </div>
+      <h4>No company members yet</h4>
+      <p>Members from your company will appear here once they join</p>
+    </div>
+
+  </div>
+
+</section>

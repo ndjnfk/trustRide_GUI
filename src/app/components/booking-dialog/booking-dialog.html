@@ -1,0 +1,101 @@
+ <div class="bd-wrap">
+      <div class="bd-header">
+        <div class="bd-route">
+          <span class="bd-city">{{ data.ride.from }}</span>
+          <span class="bd-arrow">→</span>
+          <span class="bd-city">{{ data.ride.to }}</span>
+        </div>
+        <div class="bd-meta">
+            
+          <span><i class="ti ti-calendar"></i> {{ formatDate(data.ride.departure_time) }}</span>
+          <span><i class="ti ti-clock"></i> {{ formatTime(data.ride.departure_time) }}</span>
+          <span><i class="ti ti-currency-rupee"></i> {{ data.ride.price_per_seat }}/seat</span>
+          <span><i class="ti ti-armchair"></i> {{ data.ride.available_seats }} seats left</span>
+        </div>
+      </div>
+
+      <div class="bd-body">
+        <p class="bd-subtitle">Select Passengers</p>
+
+        <!-- MALE -->
+        <div class="bd-passenger-row">
+          <div class="bd-gender-info">
+            <div class="bd-gender-icon male">
+              <i class="ti ti-man"></i>
+            </div>
+            <span class="bd-gender-label">Male</span>
+          </div>
+          <div class="bd-counter">
+            <button class="bd-btn" (click)="decrement('male')" [disabled]="males <= 0">−</button>
+            <span class="bd-count">{{ males }}</span>
+            <button class="bd-btn" (click)="increment('male')" [disabled]="total >= data.ride.available_seats">+</button>
+          </div>
+        </div>
+
+        <!-- FEMALE -->
+        <div class="bd-passenger-row">
+          <div class="bd-gender-info">
+            <div class="bd-gender-icon female">
+              <i class="ti ti-woman"></i>
+            </div>
+            <span class="bd-gender-label">Female</span>
+          </div>
+          <!-- SAME FAMILY TOGGLE -->
+
+          <div class="bd-counter">
+            <button class="bd-btn" (click)="decrement('female')" [disabled]="females <= 0">−</button>
+            <span class="bd-count">{{ females }}</span>
+            <button class="bd-btn" (click)="increment('female')" [disabled]="total >= data.ride.available_seats">+</button>
+          </div>
+        </div>
+
+        <!-- TOTAL SUMMARY -->
+        <div class="bd-summary" *ngIf="total > 0">
+          <div class="bd-summary-row">
+            <span>Total Passengers</span>
+            <span class="bd-total-val">{{ total }}</span>
+          </div>
+          <div class="bd-summary-row">
+            <span>Total Fare</span>
+            <span class="bd-fare">₹{{ total * data.ride.price_per_seat }}</span>
+          </div>
+        </div>
+        <div class="bd-family-row">
+  <div class="bd-family-info">
+    <div class="bd-gender-icon family">
+      <i class="ti ti-users"></i>
+    </div>
+    <div>
+      <span class="bd-gender-label">Same Family</span>
+      <!-- <span class="bd-family-hint">2M + 2F restriction lifted</span> -->
+    </div>
+  </div>
+  <div class="bd-toggle-wrap">
+    <button 
+      class="bd-toggle"
+      [class.active]="isSameFamily"
+      (click)="isSameFamily = !isSameFamily"
+    >
+      <span class="bd-toggle-knob"></span>
+    </button>
+  </div>
+</div>
+
+        <div class="bd-empty" *ngIf="total === 0">
+          <i class="ti ti-users"></i>
+          <span>Select at least 1 passenger</span>
+        </div>
+      </div>
+
+      <div class="bd-footer d-flex flex-column flex-sm-row gap-2">
+        <button class="bd-cancel btn flex-fill" (click)="close()">Cancel</button>
+        <button
+          class="bd-confirm btn flex-fill"
+          [disabled]="total === 0"
+          (click)="confirm()"
+        >
+          <i class="ti ti-check"></i>
+          <span> Confirm {{ total > 0 ? total + ' Seat' + (total > 1 ? 's' : '') : 'Booking' }} </span>
+        </button>
+      </div>
+    </div>

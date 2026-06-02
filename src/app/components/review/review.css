@@ -1,0 +1,138 @@
+.review-section {
+   
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f7fb;
+   padding-top: 90px;
+    padding-bottom: 80px;
+}
+
+.review-card {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.review-header {
+  margin-bottom: 25px;
+}
+
+.review-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.review-header p {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.rating-wrapper {
+  margin-bottom: 22px;
+}
+
+.rating-wrapper label,
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.stars {
+  display: flex;
+  gap: 10px;
+}
+
+.stars i {
+  font-size: 34px;
+  color: #d1d5db;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.stars i.active {
+  color: #fbbf24;
+}
+
+.stars i:hover {
+  transform: scale(1.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+textarea,
+input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+textarea:focus,
+input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+}
+
+.submit-btn {
+  width: 100%;
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-1px);
+  background: #1d4ed8;
+}
+
+@media (max-width: 576px) {
+
+  .review-card {
+    padding: 22px;
+  }
+
+  .review-header h2 {
+    font-size: 24px;
+  }
+
+  .stars i {
+    font-size: 28px;
+  }
+}
+
+.review-heading {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-left: 4px solid #3b82f6;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.review-heading strong {
+  color: #1e293b;
+  font-weight: 600;
+}

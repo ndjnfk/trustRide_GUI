@@ -1,0 +1,78 @@
+
+
+
+
+
+<div class="sidebar-overlay" [class.active]="isMobileOpen" (click)="closeSidebar()"></div>
+
+<div class="sidebar" [class.mobile-open]="isMobileOpen">
+  
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <span class="logo-icon">⚡</span>
+    <span class="logo-text">Admin Panel</span>
+  </div>
+
+  <!-- Nav Links -->
+  <nav class="sidebar-nav">
+    <!-- <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Dashboard</span>
+    </a> -->
+    <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="nav-icon">👥</span>
+      <span class="nav-label">Users</span>
+    </a>
+    <a routerLink="/admin/rides" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="nav-icon">🚗</span>
+      <span class="nav-label">Rides</span>
+    </a>
+    <!-- <a routerLink="/admin/bookings" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Bookings</span>
+    </a>
+    <a routerLink="/admin/reviews" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="nav-icon">⭐</span>
+      <span class="nav-label">Reviews</span>
+    </a>
+    <a routerLink="/admin/settings" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Settings</span>
+    </a> -->
+  </nav>
+  <!-- Danger Zone -->
+<div class="danger-zone">
+  <button 
+    class="danger-btn" 
+    (click)="clearRedis()"
+    [disabled]="isClearingRedis">
+    <mat-icon>memory</mat-icon>
+    <span>{{ isClearingRedis ? 'Clearing...' : 'Clear Redis' }}</span>
+  </button>
+
+  <button 
+    class="danger-btn" 
+    (click)="clearMongo()"
+    [disabled]="isClearingMongo">
+    <mat-icon>delete_forever</mat-icon>
+    <span>{{ isClearingMongo ? 'Clearing...' : 'Clear Mongo' }}</span>
+  </button>
+</div>
+
+  <!-- Logout -->
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()" [title]="isCollapsed ? 'Logout' : ''">
+      <span class="material-icons">logout</span>
+      <span *ngIf="!isCollapsed">Logout</span>
+    </button>
+
+  </div>
+
+</div>
+
+<!-- Mobile Hamburger Button -->
+<button class="hamburger-btn" (click)="toggleSidebar()">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>

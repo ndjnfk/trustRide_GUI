@@ -1,0 +1,530 @@
+/* rides-list.component.css */
+
+:host {
+  --border: rgba(0, 0, 0, 0.08);
+  --accent: #3b82f6;
+  --accent-soft: rgba(59, 130, 246, 0.10);
+  --accent2: #2563eb;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --green: #22c55e;
+  --green-soft: rgba(34, 197, 94, 0.10);
+  --red: #ef4444;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+  --radius: 14px;
+  --radius-sm: 8px;
+  font-family: 'Sora', sans-serif;
+}
+
+.rides-page {
+  min-height: 100vh;
+  background: var(--bg_light1);
+  color: var(--text-primary);
+  padding-bottom: 60px;
+}
+
+/* ── Header ── */
+.logo-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.5));
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 300;
+  margin-top: 1px;
+}
+
+.count-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.count-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Filter Section ── */
+.filter-section {
+  margin-top: 24px;
+}
+
+.filter-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.filter-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 8px;
+}
+
+.filter-input {
+  background: var(--light_1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Route Buttons */
+.route-btn {
+  background: var(--light_1);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  transition: all 0.2s;
+}
+
+.route-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.route-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.route-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  padding: 10px 18px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.clear-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ── State Containers ── */
+.state-container {
+  gap: 16px;
+}
+
+.state-msg {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin: 0;
+}
+
+.error-icon, .empty-icon {
+  font-size: 40px;
+}
+
+.error-text {
+  color: var(--red);
+}
+
+.retry-btn {
+  background: var(--light_1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  padding: 10px 24px;
+  transition: all 0.2s;
+}
+
+.retry-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Rides Section ── */
+.rides-section {
+  margin-top: 28px;
+}
+
+/* ── Ride Card ── */
+.ride-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  animation: fadeIn 0.3s ease both;
+}
+
+.ride-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card Top */
+.card-top {
+  padding: 20px 20px 0;
+}
+
+.city {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.from-city { color: var(--accent2); }
+.to-city   { color: var(--text-primary); }
+
+.route-arrow {
+  gap: 2px;
+  color: var(--text-muted);
+  flex: 1;
+  min-width: 40px;
+}
+
+.arrow-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--text-muted));
+}
+
+.arrow-head {
+  font-size: 8px;
+  color: var(--text-muted);
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.status-active {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Divider */
+.card-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 20px;
+}
+
+/* Card Body */
+.card-body-custom {
+  padding: 0 20px;
+}
+
+.detail-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.detail-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+}
+
+.detail-value {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* Card Footer */
+.card-footer-custom {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--light_1);
+  border-top: 1px solid var(--border);
+}
+
+.price-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.price-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.book-btn {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 22px;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  white-space: nowrap;
+}
+
+.book-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+
+.book-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Route via tag ── */
+.route-via-tag {
+  font-size: 11.5px;
+  color: #94a3b8;
+  padding: 4px 0 2px;
+  letter-spacing: 0.2px;
+}
+
+.via-label {
+  font-style: italic;
+  margin-right: 3px;
+  color: #cbd5e1;
+}
+
+/* ── SEAT STATS SECTION ── */
+.seat-stats-wrapper {
+  margin: 0 16px 8px;
+}
+
+.seat-stats-toggle {
+  padding: 10px 14px;
+  background: #f8faff;
+  border: 1px solid #e0e8ff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #445;
+  transition: background 0.2s;
+}
+
+.seat-stats-toggle:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.seat-stats-toggle:not(:disabled):hover {
+  background: #eef2ff;
+}
+
+.toggle-arrow {
+  font-size: 11px;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.toggle-arrow.open {
+  transform: rotate(180deg);
+}
+
+.seat-stats {
+  border: 1px solid #e0e8ff;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 12px 14px;
+  background: #f8faff;
+  animation: slideDown 0.25s ease;
+  margin-top: -4px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.seat-stat-item {
+  border-radius: 10px;
+  padding: 8px 10px;
+  min-width: 0;
+}
+
+.stat-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.7;
+  line-height: 1.2;
+}
+
+.stat-count {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.male-stat {
+  background: #e8f0ff;
+  color: #2255cc;
+}
+
+.female-stat {
+  background: #ffe8f5;
+  color: #cc2277;
+}
+
+.remaining-stat {
+  background: #e6fff2;
+  color: #1a8a4a;
+}
+
+.total-stat {
+  background: #fff8e6;
+  color: #996600;
+}
+
+/* ── Responsive Tweaks ── */
+@media (max-width: 575.98px) {
+  .brand {
+    font-size: 18px;
+  }
+
+  .count-num {
+    font-size: 22px;
+  }
+
+  .city {
+    font-size: 14px;
+    line-height: 1.25;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .route-arrow {
+    flex: 0 0 24px;
+    min-width: 24px;
+  }
+
+  .card-top {
+    padding: 16px 16px 0;
+  }
+
+  .card-divider {
+    margin: 12px 16px;
+  }
+
+  .card-body-custom {
+    padding: 0 16px;
+  }
+
+  .card-footer-custom {
+    padding: 14px 16px;
+  }
+
+  .price-value {
+    font-size: 18px;
+  }
+
+  .book-btn {
+    padding: 8px 18px;
+    font-size: 12px;
+  }
+
+  .seat-stats-wrapper {
+    margin: 0 12px 8px;
+  }
+}

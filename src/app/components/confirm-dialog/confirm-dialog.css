@@ -1,0 +1,72 @@
+/* confirm-dialog.component.css */
+
+:host ::ng-deep .mat-mdc-dialog-container {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.dialog-wrapper {
+  padding: 8px;
+  background: #ffffff;
+}
+
+/* Title */
+h2[mat-dialog-title] {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 4px 0;
+  padding: 16px 20px 8px;
+}
+
+/* Content */
+mat-dialog-content {
+  font-size: 14px;
+  color: #555770;
+  padding: 0 20px 16px !important;
+  margin: 0 !important;
+  line-height: 1.6;
+}
+
+/* Actions */
+mat-dialog-actions {
+  padding: 12px 20px 16px !important;
+  margin: 0 !important;
+  border-top: 1px solid #e8eaf0;
+  gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Cancel Button */
+mat-dialog-actions button[mat-button] {
+  color: #5c6bc0;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1.5px solid #c5cae9;
+  border-radius: 8px;
+  padding: 6px 20px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+mat-dialog-actions button[mat-button]:hover {
+  background: #e8eaf6;
+}
+
+/* Delete Button */
+mat-dialog-actions button[mat-raised-button] {
+  background: #1565c0 !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 8px;
+  padding: 6px 20px;
+  border: none;
+  box-shadow: none !important;
+  transition: background 0.2s;
+}
+
+mat-dialog-actions button[mat-raised-button]:hover {
+  background: #0d47a1 !important;
+}

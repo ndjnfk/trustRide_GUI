@@ -1,0 +1,79 @@
+<section class="edit-profile-page py-5">
+  <div class="container-fluid py-4">
+    <div class="edit-card">
+
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn back-btn" (click)="goBack()"><i class="ti ti-arrow-left"></i></button>
+        <h3 class="fw-bold mb-0">Edit Profile</h3>
+        <button class="btn cancel-btn" (click)="cancel()">Cancel</button>
+      </div>
+
+      <!-- Profile Image -->
+      <div class="text-center profile-section">
+        <div class="profile-image-wrapper mx-auto">
+          <img [src]="avatarPreview" class="profile-image" alt="" />
+          <div class="verified-badge"><i class="ti ti-check"></i></div>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" hidden (change)="onAvatarChange($event)" />
+        <button class="btn change-photo-btn mt-3" onclick="document.getElementById('avatarInput').click()">
+          <i class="ti ti-camera me-2"></i>Change Photo
+        </button>
+      </div>
+
+      <hr>
+
+      <!-- Personal Details -->
+      <div class="section-box">
+        <h4 class="section-title">Personal Details</h4>
+
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control custom-input" [(ngModel)]="form.fullName">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Phone Number</label>
+          <input type="text" class="form-control custom-input" [(ngModel)]="form.phoneNumber">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">City</label>
+          <input type="text" class="form-control custom-input" [(ngModel)]="form.city">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">About You</label>
+          <textarea rows="4" class="form-control custom-input" [(ngModel)]="form.aboutUser"></textarea>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="section-box">
+        <h4 class="section-title">Preferences</h4>
+        <div class="row g-3">
+          <div class="col-md-6" *ngFor="let pref of allPreferences">
+            <div class="preference-box">
+              <div class="d-flex align-items-center gap-3">
+                <i class="ti {{ pref.icon }}"></i>
+                <span>{{ pref.label }}</span>
+              </div>
+              <div class="form-check form-switch m-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="isSelected(pref.key)"
+                  (change)="togglePref(pref.key)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <button class="btn save-btn mt-4" (click)="saveChanges()">Save Changes</button>
+
+    </div>
+  </div>
+</section>

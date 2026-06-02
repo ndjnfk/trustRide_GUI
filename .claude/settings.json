@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(ls -la main.ts)",
+      "Bash(ls -la src/main.ts)",
+      "Bash(ls -la src/main.server.ts)",
+      "Bash(git log *)",
+      "Bash(awk 'NR>=40 && NR<=53' \"d:/rs_digitech/professional_polling_GUI/src/app/components/header/header.html\")",
+      "PowerShell($f=\"d:\\\\rs_digitech\\\\professional_polling_GUI\\\\src\\\\app\\\\components\\\\header\\\\header.html\"; \\(Get-Item $f\\).Length; \\(Get-Content $f\\).Count; Get-Content $f | Select-Object -Skip 39 -First 14)",
+      "PowerShell($j = Get-Command java -ErrorAction SilentlyContinue; if\\($j\\){ \"java: $\\($j.Source\\)\"; java -version } else { \"java: NOT in PATH\" }; \"ANDROID_HOME=$env:ANDROID_HOME\"; \"ANDROID_SDK_ROOT=$env:ANDROID_SDK_ROOT\"; $as = Test-Path \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\"; \"Android SDK at LOCALAPPDATA: $as\"; $studio = Test-Path \"C:\\\\Program Files\\\\Android\\\\Android Studio\"; \"Android Studio installed: $studio\")",
+      "Bash(npm install *)",
+      "Bash(npx cap *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(JSON.stringify\\({...p.dependencies,...p.devDependencies},null,0\\)\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(JSON.stringify\\({...p.dependencies,...p.devDependencies}\\)\\)\")",
+      "Bash(node -e \"const s=require\\('./node_modules/@angular/build/src/builders/application/schema.json'\\); console.log\\('serviceWorker:', JSON.stringify\\(s.properties.serviceWorker\\)\\); console.log\\('index:', JSON.stringify\\(s.properties.index?.type\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@angular/service-worker/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\('SW:', require\\('@angular/service-worker/package.json'\\).version\\)\")",
+      "Bash(node scripts/generate-pwa-icons.mjs)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:4000/)"
+    ]
+  }
+}

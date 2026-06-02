@@ -1,0 +1,301 @@
+<!-- profile.component.html -->
+<div class="profile-page">
+
+  <div class="glow-orb orb-a"></div>
+  <div class="glow-orb orb-b"></div>
+
+  <!-- ── Loading ── -->
+  <div class="state-center" *ngIf="isLoading">
+    <div class="pulse-ring"></div>
+    <p class="state-txt">Loading your profile…</p>
+  </div>
+
+  <!-- ── Error ── -->
+  <div class="state-center" *ngIf="error && !isLoading">
+    <span class="state-emoji">⚠️</span>
+    <p class="state-txt error">{{ error }}</p>
+    <button class="btn-primary btn" (click)="loadAll()">Retry</button>
+  </div>
+
+  <!-- ── Main ── -->
+  <div class="main-wrap" *ngIf="!isLoading && !error">
+
+    <!-- ═══════════════ HERO / AVATAR STRIP ═══════════════ -->
+    <div class="hero-strip">
+      <div class="hero-bg-pattern">
+         Verified Profile
+      </div>
+
+      <div class="hero-top">
+        <div class="avatar-zone d-flex justify-content-center align-items-center gap-3">
+          <div class="avatar-ring">
+            @if(avatarPreview){
+              <img [src]="avatarPreview" class="avatar-img" alt="avatar" />
+            }@else {
+              <div class="avatar-initials">{{ getInitials() }}</div>
+            }
+
+            <label class="avatar-upload-btn" title="Change photo">
+              <input type="file" accept="image/*" (change)="onAvatarChange($event)" hidden />
+              📷
+            </label>
+          </div>
+
+          <div class="hero-info">
+          <h1 class="hero-name">{{ profile.fullName || 'Your Name' }}</h1>
+          <p class="hero-email">{{ profile.userEmail }}</p>
+        </div>
+      </div>
+
+        
+      </div>
+
+      <div class="hero-divider"></div>
+
+      <div class="hero-badges">
+        <span class="hbadge hbadge-rides">
+          <i class="ti ti-car"></i>
+          <span class="hbadge-label">Total Rides</span>
+          <span class="hbadge-value">47</span>
+        </span>
+        <span class="hbadge hbadge-code">#{{ profile.userCode }}</span>
+        <span class="hbadge hbadge-status" [class.active]="profile.status === 'active'">
+          <span class="status-dot" [class.active]="profile.status === 'active'"></span>
+          {{ profile.status === 'active' ? 'Active' : 'Inactive' }}
+        </span>
+        <span class="hbadge hbadge-verify">{{ verificationBadge(profile.verificationStatus) }}</span>
+      </div>
+    </div>
+<!-- ═══════════════ COMPLETION BAR ═══════════════ -->
+<div class="completion-wrap" *ngIf="!isLoading && !error">
+  <div class="completion-header">
+    <span class="completion-label">Profile completeness</span>
+    <span class="completion-pct" [style.color]="completionColor">{{ completionPercent }}%</span>
+  </div>
+
+  <div class="completion-bar-bg">
+    <div class="completion-bar-fill"
+         [style.width.%]="completionPercent"
+         [style.background]="completionColor">
+    </div>
+  </div>
+
+  <div class="completion-items">
+    <div class="completion-item"
+         *ngFor="let item of completionItems"
+         [class.done]="item.done">
+      <span class="ci-dot" [class.done]="item.done"></span>
+      <span class="ci-label">{{ item.label }}</span>
+      <span class="ci-icon">{{ item.done ? '✓' : '–' }}</span>
+    </div>
+  </div>
+</div>
+    <!-- ═══════════════ TABS ═══════════════ -->
+    <div class="tabs-bar">
+      <button class="tab-btn" [class.active]="activeTab === 'personal'" (click)="setTab('personal')">
+        <span class="tab-icon">👤</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'professional'" (click)="setTab('professional')">
+        <span class="tab-icon">🏢</span> 
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'vehicles'" (click)="setTab('vehicles')">
+        <span class="tab-icon">🚗</span> 
+      </button>
+      <div class="tab-ink" [class.mid]="activeTab === 'professional'" [class.right]="activeTab === 'vehicles'"></div>
+    </div>
+
+    <!-- ═══════════════ PERSONAL TAB ═══════════════ -->
+    <div class="tab-panel" *ngIf="activeTab === 'personal'">
+      <div class="form-card">
+        <div class="form-card-header">
+          <h2 class="card-title">Personal Information</h2>
+          <p class="card-sub">Update your name, gender and phone number</p>
+        </div>
+
+        <div class="row g-3 px-3 py-3">
+          <div class="field-group full col-12">
+            <label class="field-label">Full Name</label>
+            <input class="field-input" type="text" [(ngModel)]="profile.fullName" placeholder="Your full name" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Email Address</label>
+            <input class="field-input disabled" type="email" [value]="profile.userEmail" disabled />
+            <p class="field-hint">Email cannot be changed</p>
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Phone Number</label>
+            <input class="field-input" type="tel" [(ngModel)]="profile.phoneNumber" placeholder="10-digit number" />
+          </div>
+
+          <div class="field-group full col-12">
+            <label class="field-label">Gender</label>
+            <div class="gender-pills">
+              <button class="gender-pill" [class.selected]="profile.gender === 'male'" (click)="profile.gender = 'male'" type="button">♂ Male</button>
+              <button class="gender-pill" [class.selected]="profile.gender === 'female'" (click)="profile.gender = 'female'" type="button">♀ Female</button>
+              <button class="gender-pill" [class.selected]="profile.gender === 'other'" (click)="profile.gender = 'other'" type="button">⚧ Other</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button class="btn-primary btn" (click)="savePersonal()" [disabled]="isSaving">
+            <span *ngIf="!isSaving">Save Changes</span>
+            <span *ngIf="isSaving" class="saving-txt"><span class="dot-spin"></span> Saving…</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ PROFESSIONAL TAB ═══════════════ -->
+    <div class="tab-panel" *ngIf="activeTab === 'professional'">
+      <div class="form-card">
+        <div class="form-card-header">
+          <h2 class="card-title">Professional Verification</h2>
+          <p class="card-sub">Upload your work details for driver verification</p>
+        
+          <span class="verify-chip" *ngIf="hasProfDoc">{{ verificationBadge(profDoc.verification_status) }}</span>
+        </div>
+
+        <div class="row g-3 p-3">
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Company Name</label>
+            <input class="field-input" type="text" [(ngModel)]="profDoc.company_name" placeholder="Where do you work?" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Job Title</label>
+            <input class="field-input" type="text" [(ngModel)]="profDoc.job_title" placeholder="Your designation" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Work Email</label>
+            <input class="field-input" type="email" [(ngModel)]="profDoc.work_email" placeholder="you@company.com" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">LinkedIn URL</label>
+            <input class="field-input" type="url" [(ngModel)]="profDoc.linkedin_url" placeholder="linkedin.com/in/..." />
+          </div>
+
+          <!-- ID Card Upload -->
+          <div class="field-group full col-12">
+            <label class="field-label">ID Card / Work Badge</label>
+            <label class="upload-zone" [class.has-file]="idCardPreview || profDoc.id_card_url">
+              <input type="file" accept="image/*,.pdf" (change)="onIdCardChange($event)" hidden />
+              <ng-container *ngIf="!idCardPreview && !profDoc.id_card_url">
+                <span class="upload-icon">📎</span>
+                <span class="upload-txt">Click to upload ID card</span>
+                <span class="upload-hint">JPG, PNG or PDF · max 5MB</span>
+              </ng-container>
+              <ng-container *ngIf="idCardPreview">
+                <img [src]="idCardPreview" class="id-preview" alt="ID preview" />
+                <span class="upload-change">Click to change</span>
+              </ng-container>
+              <ng-container *ngIf="!idCardPreview && profDoc.id_card_url">
+                <span class="upload-icon">✅</span>
+                <span class="upload-txt">ID card uploaded</span>
+                <span class="upload-change">Click to replace</span>
+              </ng-container>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button class="btn-primary btn" (click)="saveProfessional()" [disabled]="isSaving">
+            <span *ngIf="!isSaving">{{ hasProfDoc ? 'Update Details' : 'Submit for Verification' }}</span>
+            <span *ngIf="isSaving" class="saving-txt"><span class="dot-spin"></span> Saving…</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ VEHICLES TAB ═══════════════ -->
+    <div class="tab-panel" *ngIf="activeTab === 'vehicles'">
+
+      <!-- Vehicle list -->
+      <div class="row g-3" *ngIf="!showVehicleForm">
+        <div class="vehicle-card col-12 col-md-6 col-xl-4" *ngFor="let v of vehicles">
+          <div class="vc-top">
+            <span class="vc-icon">{{ vehicleIcon(v.vehicle_type) }}</span>
+            <div class="vc-info">
+              <p class="vc-model">{{ v.model }}</p>
+              <p class="vc-plate">{{ v.plate_number }}</p>
+            </div>
+            <div class="vc-actions">
+              <button class="icon-btn edit-btn" (click)="openEditVehicle(v)" title="Edit">✏️</button>
+              <button class="icon-btn del-btn" (click)="deleteVehicle(v)" title="Delete">🗑️</button>
+            </div>
+          </div>
+          <div class="vc-details">
+            <span class="vc-chip">{{ v.vehicle_type | titlecase }}</span>
+            <span class="vc-chip">🎨 {{ v.color }}</span>
+            <span class="vc-chip">💺 {{ v.seat_capacity }} seats</span>
+          </div>
+        </div>
+
+        <!-- Empty -->
+        <div class="empty-vehicles" *ngIf="vehicles.length === 0">
+          <span class="empty-icon">🚗</span>
+          <p class="empty-txt">No vehicles added yet</p>
+          <p class="empty-sub">Add your vehicle to offer rides</p>
+        </div>
+
+        <button class="add-vehicle-btn btn" (click)="openAddVehicle()">
+          <span>＋</span> Add Vehicle
+        </button>
+      </div>
+
+      <!-- Vehicle form -->
+      <div class="form-card" *ngIf="showVehicleForm">
+        <div class="form-card-header">
+          <h2 class="card-title">{{ editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle' }}</h2>
+          <p class="card-sub">Enter your vehicle details</p>
+        </div>
+
+        <div class="form-grid row g-3">
+          <div class="field-group full col-12">
+            <label class="field-label">Vehicle Type</label>
+            <div class="vtype-pills">
+              <button class="vtype-pill" *ngFor="let t of ['car','bike','suv','van','truck']"
+                [class.selected]="vehicleForm.vehicle_type === t"
+                (click)="vehicleForm.vehicle_type = t" type="button">
+                {{ vehicleIcon(t) }} {{ t | titlecase }}
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Model</label>
+            <input class="field-input" type="text" [(ngModel)]="vehicleForm.model" placeholder="e.g. Honda City" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Plate Number</label>
+            <input class="field-input" type="text" [(ngModel)]="vehicleForm.plate_number" placeholder="e.g. DL 01 AB 1234" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Color</label>
+            <input class="field-input" type="text" [(ngModel)]="vehicleForm.color" placeholder="e.g. White" />
+          </div>
+
+          <div class="field-group col-12 col-md-6">
+            <label class="field-label">Seat Capacity</label>
+            <input class="field-input" type="number" [(ngModel)]="vehicleForm.seat_capacity" min="1" max="20" />
+          </div>
+        </div>
+
+        <div class="form-footer gap">
+          <button class="btn-ghost btn" (click)="cancelVehicleForm()">Cancel</button>
+          <button class="btn-primary btn" (click)="saveVehicle()" [disabled]="isSaving">
+            <span *ngIf="!isSaving">{{ editingVehicle ? 'Update Vehicle' : 'Add Vehicle' }}</span>
+            <span *ngIf="isSaving" class="saving-txt"><span class="dot-spin"></span> Saving…</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

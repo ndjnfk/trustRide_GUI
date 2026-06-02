@@ -1,0 +1,443 @@
+<!-- publish-ride.component.html -->
+
+<div class="page-wrapper">
+  <!-- Header -->
+  <section class="top-header hero_bg">
+    <div class="container">
+      <div class="brand mb-3">
+        <span class="brand-icon">🚗</span>
+        <span class="header__brand-name"
+          ><span class="header__brand-accent"
+            >Trust <span class="logo_color2">Ride<span class="teg_sre">SRE</span></span></span
+          ></span
+        >
+
+        <span class="brand-tag ms-2">by PoliPoll</span>
+      </div>
+
+      <div class="badge-custom"><i class="ti ti-car"></i> Professional Carpooling</div>
+
+      <h1 class="h2 text_primary1 fw-bold">Publish Your Ride</h1>
+
+      <p class="text-muted mb-4">
+        Share your journey from Gurgaon → Saharanpur. Split costs, meet people, travel smarter.
+      </p>
+
+      <div class="d-flex gap-5">
+        <div>
+          <h4 class="fw-bold mb-0">₹600 avg</h4>
+          <small class="text-muted">SAVED PER TRIP</small>
+        </div>
+
+        <div>
+          <h4 class="fw-bold mb-0">4.9★</h4>
+          <small class="text-muted">HOST RATING</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Success State -->
+
+      @if (formSubmitted) {
+        <div class="col-12 col-md-8 col-lg-6 mx-auto">
+          <div class="card success_card p-4 p-md-5 text-center">
+            <div class="success_icon fs-1 mb-3">🎉</div>
+            <h3 class="h4 fw-bold">Ride Published Successfully!</h3>
+            <p class="fs-12 text-secondary">
+              Your ride from <strong>{{ fromLocation }}</strong> to
+              <strong>{{ toLocation }}</strong> is now live.
+            </p>
+            <div class="success_meta d-flex justify-content-center align-items-center gap-2 mb-4">
+              <span>📅 {{ rideDate | date: 'mediumDate' }}</span>
+              <span>🕐 {{ rideTime }}</span>
+              <span>💺 {{ seats }} seat{{ seats > 1 ? 's' : '' }}</span>
+              <span>💰 ₹{{ pricePerSeat }}/seat</span>
+            </div>
+            <button class="btn-primary1 btn col-md-8 mx-auto" (click)="resetForm()">
+              Publish Another Ride
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Form -->
+      <div *ngIf="!formSubmitted" class="row g-3 g-lg-4">
+        <!-- LEFT: Form Panel -->
+        <div class="form-panel col-12 col-lg-7 px-0 px-md-1">
+          <div class="panel-header">
+            <span class="step-chip">Step 1 of 1</span>
+            <h2>Trip Details</h2>
+          </div>
+
+          <!-- Route Section -->
+          <div class="section_creatrRide">
+            <label class="section-label">Route</label>
+            <div class="route-box">
+              <!-- FROM -->
+              <div class="autocomplete-wrapper">
+                <div class="input-row">
+                  <span class="loc-dot from-dot"></span>
+                  <div class="input-inner">
+                    <label class="field-label">Leaving From</label>
+                    <input
+                      type="text"
+                      class="loc-input"
+                      placeholder="e.g. Gurgaon, Saharanpur..."
+                      [(ngModel)]="fromLocation"
+                      (input)="onFromInput()"
+                      autocomplete="off"
+                    />
+                  </div>
+                </div>
+                <div class="dropdown_creatrRide" *ngIf="showFromDropdown">
+                  <div
+                    class="dropdown-item"
+                    *ngFor="let s of fromSuggestions"
+                    (click)="selectFrom(s)"
+                  >
+                    <span class="d-icon">📍</span>
+                    <span class="d-name">{{ s }}</span>
+                    <span
+                      class="d-tag"
+                      [class.tag-gurgaon]="s.includes('Gurgaon')"
+                      [class.tag-saharanpur]="s.includes('Saharanpur')"
+                    >
+                      {{ s.includes('Gurgaon') ? 'Gurgaon' : 'Saharanpur' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Swap -->
+              <div class="swap-row">
+                <div class="route-line"></div>
+                <button class="swap-btn" (click)="swapLocations()" title="Swap locations">⇅</button>
+                <div class="route-line"></div>
+              </div>
+
+              <!-- TO -->
+              <div class="autocomplete-wrapper">
+                <div class="input-row">
+                  <span class="loc-dot to-dot"></span>
+                  <div class="input-inner">
+                    <label class="field-label">Going To</label>
+                    <input
+                      type="text"
+                      class="loc-input"
+                      placeholder="e.g. Saharanpur, Gurgaon..."
+                      [(ngModel)]="toLocation"
+                      (input)="onToInput()"
+                      autocomplete="off"
+                    />
+                  </div>
+                </div>
+                <div class="dropdown_creatrRide" *ngIf="showToDropdown">
+                  <div class="dropdown-item" *ngFor="let s of toSuggestions" (click)="selectTo(s)">
+                    <span class="d-icon">🏁</span>
+                    <span class="d-name">{{ s }}</span>
+                    <span
+                      class="d-tag"
+                      [class.tag-gurgaon]="s.includes('Gurgaon')"
+                      [class.tag-saharanpur]="s.includes('Saharanpur')"
+                    >
+                      {{ s.includes('Gurgaon') ? 'Gurgaon' : 'Saharanpur' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Route confirm chip -->
+            <div class="route-info-chip" *ngIf="fromLocation && toLocation">
+              <span class="chip-icon">✅</span>
+              <span
+                ><strong>{{ fromLocation }}</strong> → <strong>{{ toLocation }}</strong></span
+              >
+            </div>
+          </div>
+          <div class="route-error" *ngIf="isSameRoute">
+            ❌ No rides available for same pickup and destination
+          </div>
+
+          <!-- Route Selection — fromLocation & toLocation select hone ke baad dikhega -->
+
+          <div class="section py-4 px-md-2" *ngIf="filteredRoutes.length > 0">
+            <label class="section-label d-block mb-3">Select Route</label>
+
+            <div class="row g-3">
+
+              <div class="col-md-6" *ngFor="let route of filteredRoutes">
+
+                <div class="form-check border rounded-3 p-3 shadow-sm">
+
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="routeSelect"
+                    [id]="'route' + route.id"
+                    [checked]="selectedRouteId === route.id"
+                    (change)="selectRoute(route)"
+                  >
+
+                  <label
+                    class="form-check-label w-100 ms-2 cursor-pointer"
+                    [for]="'route' + route.id"
+                  >
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-semibold">
+                        {{ route.label }}
+                      </span>
+
+                      <span class="badge bg-primary">
+                        ₹{{ route.basePrice }}
+                      </span>
+                    </div>
+
+                    <div class="text-muted small mb-2">
+                      <i class="ti ti-map-pin"></i>
+                      {{ route.via }}
+                    </div>
+
+                    <!-- <div
+                      class="text-success fw-semibold small"
+                      *ngIf="selectedRouteId === route.id"
+                    >
+                      <i class="ti ti-circle-check"></i>
+                      Selected
+                    </div> -->
+
+                  </label>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          
+          <!-- <div class="section" *ngIf="filteredRoutes.length > 0">
+            <label class="section-label">Select Route</label>
+            <div class="route-options">
+              <div
+                class="route-option-card"
+                *ngFor="let route of filteredRoutes"
+                [class.selected]="selectedRouteId === route.id"
+                (click)="selectRoute(route)"
+              >
+                <div class="roc-top">
+                  <span class="roc-label">{{ route.label }}</span>
+                  <span class="roc-price">₹{{ route.basePrice }}</span>
+                </div>
+                <div class="roc-via">📍 {{ route.via }}</div>
+                <div class="roc-check" *ngIf="selectedRouteId === route.id">✅ Selected</div>
+              </div>
+            </div>
+          </div> -->
+          <!-- Date & Time -->
+
+          <hr>
+          <div class="section pt-2 pb-4 px-md-2">
+            <label class="section-label">Date & Time</label>
+            <div class="row g-3">
+              <div class="field-group col-12 col-sm-6">
+                <label class="field-label">Departure Date</label>
+                <input
+                  type="date"
+                  class="field-input form-control"
+                  [(ngModel)]="rideDate"
+                  [min]="minDate"
+                />
+              </div>
+              <div class="field-group col-12 col-sm-6">
+                <label class="field-label">Departure Time</label>
+                <input type="time" class="field-input form-control" [(ngModel)]="rideTime" />
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Seats -->
+          <div class="section pt-2 pb-4 px-md-2">
+            <label class="section-label">Available Seats</label>
+            <div class="counter-row">
+              <button class="counter-btn" (click)="decrementSeats()" [disabled]="seats === 1">
+                −
+              </button>
+              <div class="counter-display">
+                <span class="counter-val">{{ seats }}</span>
+                <span class="counter-sub">seat{{ seats > 1 ? 's' : '' }} available</span>
+              </div>
+              <button class="counter-btn" (click)="incrementSeats()" [disabled]="seats === 4">
+                +
+              </button>
+            </div>
+            <div class="seat-icons">
+              <span *ngFor="let i of [1, 2, 3, 4]" class="seat-icon" [class.active]="i <= seats"
+                >🪑</span
+              >
+            </div>
+          </div>
+
+          <hr>
+          <!-- Price -->
+          <div class="section pt-2 pb-4 px-md-2">
+            <label class="section-label">Price per Seat</label>
+            <div class="price-row">
+              <!-- <button class="counter-btn" (click)="decrementPrice()">−</button> -->
+              <div class="price-display">
+                
+                <span class="price-val" *ngIf="selectedRouteId">₹{{ pricePerSeat }}</span>
+<span class="price-placeholder" *ngIf="!selectedRouteId">For Charges..Please select a route</span>
+              </div>
+              <!-- <button class="counter-btn" (click)="incrementPrice()">+</button> -->
+            </div>
+            <p class="price-hint">💡 Recommended: ₹400–₹550 for this route</p>
+          </div>
+
+          <!-- Vehicle -->
+          <!-- <div class="section">
+            <label class="section-label">Vehicle Type</label>
+            <div class="vehicle-grid">
+              <label class="vehicle-option" *ngFor="let v of ['Sedan','SUV','Hatchback','Innova']">
+                <input type="radio" name="vehicle" [value]="v" [(ngModel)]="vehicleType" />
+                <span class="vehicle-card">
+                  <span class="vehicle-icon">{{ v === 'Sedan' ? '🚗' : v === 'SUV' ? '🚙' : v === 'Hatchback' ? '🚘' : '🚐' }}</span>
+                  <span class="vehicle-name">{{ v }}</span>
+                </span>
+              </label>
+            </div>
+          </div> -->
+
+          <hr>
+          <!-- Notes -->
+          <div class="section pt-2 pb-4 px-md-2">
+            <label class="section-label"
+              >Additional Notes <span class="optional">(optional)</span></label
+            >
+            <textarea
+              class="notes-input"
+              rows="3"
+              placeholder="e.g. AC available, ladies preferred, no smoking, luggage allowed..."
+              [(ngModel)]="notes"
+            ></textarea>
+          </div>
+
+          <!-- Submit -->
+          <div class="submit-row">
+            <button
+              class="btn-primary1 btn full-width w-100"
+              [disabled]="!isFormValid"
+              (click)="publishRide()"
+            >
+              <span>🚀 Publish Ride</span>
+            </button>
+            <p class="submit-hint" *ngIf="!isFormValid">Fill all required fields to continue</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: Info Panel -->
+
+        <div class="info-panel col-12 col-lg-5">
+          <!-- Earnings Card -->
+          <div class="card earnings-card rounded-4">
+            <div class="card-header py-3">
+              <span class="card_ride-icon ps-2">💰</span>
+              <span class="ms-2 text_primary1 fs-16 fw-bold">Estimated Earnings</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="px-3 py-4">
+                <div class="fs-1 fw-bolder text_primary1">₹{{ totalEarnings }}</div>
+                <p class="fs-14 pt-2 text_muted mb-0">
+                  {{ seats }} seat{{ seats > 1 ? 's' : '' }} × ₹{{ pricePerSeat }} per seat
+                </p>
+              </div>
+
+              <hr class="m-0" />
+              <div class="p-3">
+                <div class="fs-14 d-flex justify-content-center mb-3">
+                  <span>Passenger contributions</span>
+                  <span class="ms-auto">₹{{ totalEarnings }}</span>
+                </div>
+                <div class="fs-14 d-flex justify-content-center">
+                  <span class="text_muted">Professional Polling Service Fee</span>
+                  <span class="green ms-auto">₹0</span>
+                </div>
+
+                <hr class="" />
+
+                <div
+                  class="earn-row_total fs-14 d-flex justify-content-center fw-bold fs-14 text_primary1"
+                >
+                  <span class="">You receive</span>
+                  <span class="ms-auto">₹{{ totalEarnings }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Popular Routes -->
+          <div class="card earnings-card rounded-4">
+            <div class="card-header py-3">
+              <span class="card_ride-icon">🗺️</span>
+              <span class="ms-2 text_primary1 fs-16 fw-bold">Popular Routes</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="p-3">
+                <div
+                  class="route_item pointer"
+                  (click)="fromLocation = 'Gurgaon'; toLocation = 'Saharanpur'"
+                >
+                  <div class="route-item-main">
+                    <span class="text-dark fw-bold">Gurgaon</span>
+                    <span class="r-arrow">→</span>
+                    <span class="text_primaryLight fw-600">Saharanpur</span>
+                  </div>
+                  <div class="text_muted fs-12">{{ selectedDistance }} km · 3h 30m · ₹450–600</div>
+                </div>
+              </div>
+              <hr class="m-0" />
+              <div class="p-3">
+                <div
+                  class="route_item pointer"
+                  (click)="fromLocation = 'Saharanpur'; toLocation = 'Gurgaon'"
+                >
+                  <div class="route-item-main">
+                    <span class="text-dark fw-bold">Saharanpur</span>
+                    <span class="r-arrow">→</span>
+                    <span class="text_primaryLight fw-600">Gurgaon</span>
+                  </div>
+                  <div class="text_muted fs-12">{{ selectedDistance }} km · 5h 30m · ₹450–600</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tips -->
+          <div class="card earnings-card rounded-4">
+            <div class="card-header py-3">
+              <span class="card_ride-icon">✨</span>
+              <span class="ms-2 text_primary1 fs-16 fw-bold">Rider Tips</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="p-3">
+                <ul class="tips-list p-0">
+                  <li>Set a fair price to fill seats faster</li>
+                  <li>Add clear pickup point in notes</li>
+                  <li>Accept women-only trips for higher trust</li>
+                  <li>Early morning rides get 3× more bookings</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

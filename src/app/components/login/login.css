@@ -1,0 +1,429 @@
+
+/* ── CSS Variables (scoped to login shell) ─────────────────────────────────── */
+.login-shell {
+  --clr-bg: #F0F4FF;
+  --clr-surface: #FFFFFF;
+  --clr-primary: #1C4ED8;
+  --clr-primary-lt: #4F8EF7;
+  --clr-primary-dk: #1239AA;
+  --clr-text: #0F172A;
+  --clr-muted: #64748B;
+  --clr-border: #CBD5E1;
+  --clr-border-foc: #4F8EF7;
+  --clr-error: #EF4444;
+  --clr-error-bg: #FEF2F2;
+  --clr-brand-bg: #1239AA;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-card: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-card-lg: 0 20px 60px -10px rgba(15, 23, 42, 0.15);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ── Box sizing scoped only to this component ──────────────────────────────── */
+.login-shell *,
+.login-shell *::before,
+.login-shell *::after {
+  box-sizing: border-box;
+}
+
+/* ── Shell ─────────────────────────────────────────────────────────────────── */
+.login-shell {
+  display: flex;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background: var(--clr-bg);
+  margin-top: 0px;
+}
+
+/* ── Brand Panel ───────────────────────────────────────────────────────────── */
+.login-shell .brand-panel {
+  position: relative;
+  flex: 0 0 480px;
+  background: var(--clr-brand-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 60px 56px;
+}
+
+@media (max-width: 900px) {
+  .login-shell .brand-panel {
+    display: none;
+  }
+}
+
+.login-shell .brand-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.login-shell .brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 64px;
+}
+
+.login-shell .brand-name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: -0.3px;
+  color: white;
+}
+
+.login-shell .brand-tagline {
+  margin-bottom: 48px;
+}
+
+.login-shell .brand-tagline h1 {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 1.12;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.login-shell .brand-tagline h1 em {
+  font-style: italic;
+  color: var(--clr-primary-lt);
+}
+
+.login-shell .brand-tagline p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 340px;
+}
+
+.login-shell .brand-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.login-shell .brand-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.login-shell .feat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(79, 142, 247, 0.18);
+  flex-shrink: 0;
+}
+
+/* ── Decorative Rings ──────────────────────────────────────────────────────── */
+.login-shell .brand-decoration {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.login-shell .deco-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.login-shell .deco-ring.ring-1 {
+  width: 520px;
+  height: 520px;
+  bottom: -160px;
+  right: -160px;
+}
+
+.login-shell .deco-ring.ring-2 {
+  width: 360px;
+  height: 360px;
+  bottom: -80px;
+  right: -80px;
+  border-color: rgba(79, 142, 247, 0.12);
+}
+
+.login-shell .deco-ring.ring-3 {
+  width: 200px;
+  height: 200px;
+  bottom: 0;
+  right: 0;
+  background: rgba(79, 142, 247, 0.06);
+}
+
+/* ── Form Panel ────────────────────────────────────────────────────────────── */
+.login-shell .form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.login-shell .form-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--clr-surface);
+  border-radius: var(--radius-lg);
+  padding: 48px 44px;
+  box-shadow: var(--shadow-card-lg);
+}
+
+@media (max-width: 500px) {
+  .login-shell .form-card {
+    padding: 36px 24px;
+    border-radius: var(--radius-md);
+  }
+}
+
+/* ── Form Header ───────────────────────────────────────────────────────────── */
+.login-shell .form-header {
+  margin-bottom: 32px;
+}
+
+.login-shell .form-header .form-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clr-primary);
+  margin-bottom: 8px;
+}
+
+.login-shell .form-header h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--clr-text);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+/* ── Error Banner ──────────────────────────────────────────────────────────── */
+.login-shell .error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--clr-error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--clr-error);
+  margin-bottom: 24px;
+  animation: loginFadeDown 0.3s ease;
+}
+
+/* ── Animations ────────────────────────────────────────────────────────────── */
+@keyframes loginFadeDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loginSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Form scoped (NOT bare "form {}") ──────────────────────────────────────── */
+.login-shell .form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Field Groups ──────────────────────────────────────────────────────────── */
+.login-shell .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-shell .field-group label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-text);
+  letter-spacing: 0.01em;
+}
+
+.login-shell .field-group .forgot-link {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--clr-primary);
+  text-decoration: none;
+}
+
+.login-shell .field-group .forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Input Wrapper ─────────────────────────────────────────────────────────── */
+.login-shell .input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-shell .input-wrapper .input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--clr-muted);
+  display: flex;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.login-shell .input-wrapper input {
+  width: 100%;
+  padding: 11px 44px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--clr-text);
+  background: #F8FAFF;
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.login-shell .input-wrapper input::placeholder {
+  color: #A0AABB;
+}
+
+.login-shell .input-wrapper input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #F8FAFF inset;
+  -webkit-text-fill-color: var(--clr-text);
+}
+
+.login-shell .input-wrapper .toggle-password {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--clr-muted);
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.login-shell .input-wrapper .toggle-password:hover {
+  color: var(--clr-primary);
+}
+
+/* ── Focus State ───────────────────────────────────────────────────────────── */
+.login-shell .field-group.focused .input-icon {
+  color: var(--clr-primary-lt);
+}
+
+.login-shell .field-group.focused input {
+  border-color: var(--clr-border-foc);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.15);
+}
+
+/* ── Error State ───────────────────────────────────────────────────────────── */
+.login-shell .field-group.has-error .input-icon {
+  color: var(--clr-error);
+}
+
+.login-shell .field-group.has-error input {
+  border-color: var(--clr-error);
+  background: var(--clr-error-bg);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.login-shell .field-error {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--clr-error);
+  animation: loginFadeDown 0.2s ease;
+}
+
+/* ── Submit Button ─────────────────────────────────────────────────────────── */
+.login-shell .submit-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--clr-primary-lt), var(--clr-primary));
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(28, 78, 216, 0.35);
+  letter-spacing: 0.01em;
+}
+
+.login-shell .submit-btn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(28, 78, 216, 0.42);
+}
+
+.login-shell .submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(28, 78, 216, 0.3);
+}
+
+.login-shell .submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.login-shell .btn-loader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-shell .spinner {
+  animation: loginSpin 0.75s linear infinite;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────────── */
+.login-shell .form-footer {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.login-shell .form-footer p {
+  font-size: 13.5px;
+  color: var(--clr-muted);
+}
+
+.login-shell .form-footer a {
+  color: var(--clr-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-shell .form-footer a:hover {
+  text-decoration: underline;
+}

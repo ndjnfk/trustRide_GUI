@@ -1,0 +1,306 @@
+<section class="myride_sec container-fluid bg-white">
+
+  <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+  <ng-container *ngIf="!isLoading && !error">
+    <h1 class=" h3 text-primary fw-bold">My Published Rides</h1>
+    <p class="fs-14 text-secondary">Your published rides — active, completed and cancelled</p>
+
+
+    <div class="col-md-9 col-lg-8 mx-auto">
+      <div class="stats_row row g-3">
+        <div class="col-12 col-md-4">
+          <div class="card p-4 rounded-4 h-100 d-flex justify-content-center align-items-center flex-column">
+            <span class="stat-num">{{ allRides.length }}</span>
+            <div class="stat-lbl">Total rides</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card  p-4 rounded-4 h-100 d-flex justify-content-center align-items-center flex-column">
+            <span class="stat-num" [ngClass]="activeRides.length > 0 ? 'text-success' : 'text-black'">{{ activeRides.length }}</span>
+            <div class="stat-lbl">Active</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card  p-4 rounded-4 h-100 d-flex justify-content-center align-items-center flex-column">
+            <span class="stat-num">{{ totalSeats }}</span>
+            <div class="stat-lbl">Seats offered</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Active Rides ─── -->
+    <div class="section-label section-label--active">🟢 Active rides</div>
+    <div *ngIf="activeRides.length === 0" class="empty">active ride not found</div>
+
+    <div *ngFor="let ride of activeRides" class="ride-card active">
+      <div class="card-top">
+        <div class="route-row">
+          <span class="city">{{ ride.start_location.name }}</span>
+          <span class="arrow">→</span>
+          <span class="city">{{ ride.end_location.name }}</span>
+        </div>
+        <p class="mb-0 fs-12 text_muted">  {{ ride.route_via }}</p>
+        <div class="card-actions">
+          <select
+            class="status-select status-active"
+            [value]="ride.status"
+            [disabled]="updatingId === ride._id"
+            (change)="updateStatus(ride, $any($event.target).value)"
+          >
+            <option value="active">Active ➤</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <!-- <button
+            class="delete-btn"
+            [disabled]="deletingId === ride._id"
+            (click)="deleteRide(ride._id)"
+          >
+            <span *ngIf="deletingId !== ride._id">🗑️</span>
+            <span *ngIf="deletingId === ride._id">⏳</span>
+          </button> -->
+        </div>
+      </div>
+
+      <div class="row g-2">
+        <div class="meta-item col-6 col-md-3">
+          <span class="meta-label">Date</span>
+          <span class="meta-val">{{ formatDate(ride.departure_time) }}</span>
+        </div>
+        <div class="meta-item col-6 col-md-3">
+          <span class="meta-label">Time</span>
+          <span class="meta-val">{{ formatTime(ride.departure_time) }}</span>
+        </div>
+        <div class="meta-item col-6 col-md-3">
+          <span class="meta-label">Seats</span>
+          <span class="meta-val">{{ ride.available_seats }} available</span>
+        </div>
+        <div class="meta-item col-6 col-md-3">
+          <span class="meta-label">Price</span>
+          <span class="meta-val blue">₹{{ ride.price_per_seat }} / seat</span>
+        </div>
+      </div>
+
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <span class="created">Posted {{ formatDate(ride.created_at) }}</span>
+      </div>
+
+      <!-- ── Passengers Section ── -->
+      <div class="passengers-section">
+        <button class="toggle-passengers-btn" (click)="togglePassengers(ride._id)">
+          {{ showPassengers[ride._id] ? '▲ Hide Passengers' : '▼ View Passengers' }}
+        </button>
+
+        <div *ngIf="showPassengers[ride._id]" class="passengers-list">
+
+          <div *ngIf="loadingPassengers[ride._id]" class="p-loading">
+            Loading passengers...
+          </div>
+
+          <div *ngIf="!loadingPassengers[ride._id] && passengers[ride._id]?.length === 0" class="p-empty">
+            No bookings yet
+          </div>
+
+          <div  *ngFor="let booking of passengers[ride._id]" class=" passenger-card "  >
+            <div class="p-info">
+              <div class="p-name" (click)="goToProfile(booking.user.user_id)">{{ booking.user.name }}</div>
+              <div class="p-meta">
+                <span class="p-gender" [class]="booking.user.gender">
+                  {{ booking.user.gender === 'female' ? '👩' : '👨' }} {{ booking.user.gender }}
+                </span>
+                <span class="p-status" [class]="'status-' + booking.status">
+                  {{ booking.status }}
+                </span>
+                 <span class="p-seats">🪑 {{ booking.seats_booked }} seat{{ booking.seats_booked > 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+
+            <div class="p-right">
+              <select
+                class="booking-status-select"
+                [value]="booking.status"
+                [disabled]="updatingBookingId === booking.booking_id"
+                (change)="updateBookingStatus(booking, ride._id, $any($event.target).value)"
+              >
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+
+             <div class="p-verify">
+  <!-- Input sirf tab show ho jab verify nahi hua -->
+  <ng-container *ngIf="verifyResult[booking.booking_id] === undefined">
+    <input
+      type="number"
+      class="code-input"
+      placeholder="Enter code"
+      [(ngModel)]="verifyCode[booking.booking_id]"
+    />
+    <button
+      class="verify-btn"
+      (click)="verifyCode_fn(booking, ride._id)"
+    >
+      Verify
+    </button>
+  </ng-container>
+
+  <!-- Verified — green -->
+  <span *ngIf="verifyResult[booking.booking_id] === true" class="verified-text">
+    ✅ Verified Code
+  </span>
+
+  <!-- Wrong — red -->
+  <span *ngIf="verifyResult[booking.booking_id] === false" class="wrong-text">
+    ❌ Wrong Code
+    <!-- Retry button -->
+    <button class="retry-btn" (click)="verifyResult[booking.booking_id] = undefined">
+      Retry
+    </button>
+  </span>
+</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- ── Passengers Section End ── -->
+
+    </div>
+    <!-- active *ngFor end -->
+
+    <!-- ─── Completed Rides ─── -->
+    <div class="section-label section-label--completed">✅ Completed rides</div>
+    <div *ngIf="pastRides.length === 0" class="empty">completed ride not found</div>
+
+    <div *ngFor="let ride of pastRides" class="ride-card past">
+      <div class="card-top">
+        <div class="route-row">
+          <span class="city">{{ ride.start_location.name }}</span>
+          <span class="arrow">→</span>
+          <span class="city">{{ ride.end_location.name }}</span>
+        </div>
+        <div class="card-actions">
+          <div class="status-select status-completed">Completed</div>
+        
+        </div>
+      </div>
+      <div class="card-meta row g-2">
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Date</span><span class="meta-val">{{ formatDate(ride.departure_time) }}</span></div>
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Time</span><span class="meta-val">{{ formatTime(ride.departure_time) }}</span></div>
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Seats</span><span class="meta-val">{{ ride.available_seats }} offered</span></div>
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Price</span><span class="meta-val">₹{{ ride.price_per_seat }} / seat</span></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <span class="created">Posted {{ formatDate(ride.created_at) }}</span>
+      </div>
+         <!-- ── Passengers Section ── -->
+      <div class="passengers-section">
+        <button class="toggle-passengers-btn" (click)="togglePassengers(ride._id)">
+          {{ showPassengers[ride._id] ? '▲ Hide Passengers' : '▼ View Passengers' }}
+        </button>
+
+        <div *ngIf="showPassengers[ride._id]" class="passengers-list">
+
+          <div *ngIf="loadingPassengers[ride._id]" class="p-loading">
+            Loading passengers...
+          </div>
+
+          <div *ngIf="!loadingPassengers[ride._id] && passengers[ride._id]?.length === 0" class="p-empty">
+            No bookings yet
+          </div>
+
+          <div *ngFor="let booking of passengers[ride._id]" class="passenger-card">
+            <div class="p-info">
+              <div class="p-name">{{ booking.user.name }}</div>
+              <div class="p-meta">
+                <span class="p-gender" [class]="booking.user.gender">
+                  {{ booking.user.gender === 'female' ? '👩' : '👨' }} {{ booking.user.gender }}
+                </span>
+                <span class="p-status" [class]="'status-' + booking.status">
+                  {{ booking.status }}  
+                </span>
+                
+              </div>
+            </div>
+
+            <div class="p-right">
+              <select
+                class="booking-status-select"
+                [value]="booking.status"
+                [disabled]="updatingBookingId === booking.booking_id"
+                (change)="updateBookingStatus(booking, ride._id, $any($event.target).value)"
+              >
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+
+              <div class="p-verify">
+                <input
+                  type="number"
+                  class="code-input"
+                  placeholder="Enter code"
+                  [(ngModel)]="verifyCode[booking.booking_id]"
+                />
+                <button
+                  class="verify-btn"
+                  (click)="verifyCode_fn(booking, ride._id)"
+                  [class.verified]="verifyResult[booking.booking_id] === true"
+                  [class.wrong]="verifyResult[booking.booking_id] === false"
+                >
+                  <span *ngIf="verifyResult[booking.booking_id] === undefined">Verify</span>
+                  <span *ngIf="verifyResult[booking.booking_id] === true">✅ Match</span>
+                  <span *ngIf="verifyResult[booking.booking_id] === false">❌ Wrong</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- ── Passengers Section End ── -->
+    </div>
+
+    <!-- ─── Cancelled Rides ─── -->
+    <div class="section-label section-label--cancelled">❌ Cancelled rides</div>
+    <div *ngIf="cancelledRides.length === 0" class="empty">cancelled ride not found</div>
+
+    <div *ngFor="let ride of cancelledRides" class="ride-card cancelled">
+      <div class="card-top">
+        <div class="route-row">
+          <span class="city">{{ ride.start_location.name }}</span>
+          <span class="arrow">→</span>
+          <span class="city">{{ ride.end_location.name }}</span>
+        </div>
+        <div class="card-actions">
+          <div class="status-select status-cancelled">Cancelled</div>
+          
+        </div>
+      </div>
+      <div class="card-meta row g-2">
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Date</span><span class="meta-val">{{ formatDate(ride.departure_time) }}</span></div>
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Time</span><span class="meta-val">{{ formatTime(ride.departure_time) }}</span></div>
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Seats</span><span class="meta-val">{{ ride.available_seats }} offered</span></div>
+        <div class="meta-item col-6 col-md-3"><span class="meta-label">Price</span><span class="meta-val">₹{{ ride.price_per_seat }} / seat</span></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <span class="created">Posted {{ formatDate(ride.created_at) }}</span>
+        <span>reason: {{ride.cancellation_reason}}</span>
+      </div>
+    </div>
+
+    </div>
+
+    
+
+  </ng-container>
+
+
+</section>
+
+
+

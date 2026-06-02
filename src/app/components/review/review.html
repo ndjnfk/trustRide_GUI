@@ -1,0 +1,63 @@
+
+<section class="review-section">
+  <div class="review-card">
+<!-- Debug ke liye temporarily -->
+<p class="review-heading">
+  You are reviewing <strong>{{ selectedReviewee?.name }}</strong>.<br>
+  Please share your experience and rate your journey.
+</p>
+    <div class="review-header">
+      <h2>Write a Review</h2>
+      <p>Share your experience with us</p>
+    </div>
+
+    <!-- Rating -->
+    <div class="rating-wrapper">
+      <label>Rating</label>
+
+      <div class="stars">
+        <i
+          class="ti ti-star-filled"
+          *ngFor="let star of [1,2,3,4,5]"
+          [class.active]="star <= rating"
+          (click)="setRating(star)">
+        </i>
+      </div>
+    </div>
+
+    <!-- Review Input -->
+    <div class="form-group">
+      <label>Your Review</label>
+
+      <textarea
+        rows="5"
+        [(ngModel)]="reviewText"
+        placeholder="Write your review here...">
+      </textarea>
+    </div>
+<!-- Sirf driver ko dikhao aur jab multiple passengers hon -->
+<div class="form-group" 
+     *ngIf="reviewerType === 'driver' && reviewees.length > 1"
+     style="display:block; visibility:visible; opacity:1; margin-bottom:16px;">
+  <label style="display:block; color: var(--color-text-primary); margin-bottom:8px;">
+    Select Passenger
+  </label>
+  <select 
+    [(ngModel)]="selectedReviewee" 
+    [compareWith]="compareReviewee"
+    style="display:block; width:100%; padding:8px 12px; border:1px solid #c33535; border-radius:8px; font-size:14px; background:white; color:#333;">
+    <option *ngFor="let r of reviewees" [ngValue]="r">
+      {{ r.name ?? 'Passenger' }}
+    </option>
+  </select>
+</div>
+
+    <!-- Submit -->
+    <button class="submit-btn" (click)="submitReview()">
+      Submit Review
+    </button>
+
+  </div>
+</section>
+
+

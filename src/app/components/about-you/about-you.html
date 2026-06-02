@@ -1,0 +1,215 @@
+<section class="profile-page py-5">
+  <div class="container-fluid py-4">
+    <!-- Main Card -->
+    <div class="profile-wrapper">
+      <!-- Profile Header -->
+      <a (click)="goToProfile(user._id)">
+        <div class="cursor-pointer d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="profile-image-wrap position-relative">
+              <img [src]="avatarUrl || 'images/profile.png'" class="profile-image" alt="" />
+
+              @if (user?.verificationStatus === 'verified') {
+              <div class="verified-badge">
+                <i class="ti ti-check"></i>
+              </div>
+              }
+            </div>
+
+            <div>
+              <h2 class="mb-0 fw-bold fs_m">{{ user?.fullName || 'Guest' }}</h2>
+              <div class="text-muted fw-semibold">
+                {{ professional?.job_title || 'Ambassador' }}
+              </div>
+              <span class="hbadge hbadge-verify mt-1 d-inline-block">
+                {{ verificationBadge(user?.verificationStatus) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="d-none d-md-block">
+            <i class="ti ti-chevron-right fs-3 text-muted"></i>
+          </div>
+        </div>
+      </a>
+
+
+      <!-- Stats -->
+      <div class="stats-box mt-4">
+        <!-- <div class="stat-item">
+          <div class="stat-icon">
+            <i class="ti ti-wallet"></i>
+          </div>
+
+          <div>
+            <h4 class="mb-0 fw-bold">₹78,410</h4>
+            <small>Savings to date</small>
+          </div>
+        </div> -->
+
+        <!-- <div class="divider"></div> -->
+
+        <div class="stat-item">
+          <div class="stat-icon">
+            <i class="ti ti-car"></i>
+          </div>
+
+          <div>
+            @if (user?.totalRides) {
+            <h4 class="mb-0 fw-bold">{{ user.totalRides }}</h4>
+            <small>Total rides</small>
+            }
+            @else {
+            <h4 class="mb-0 fw-bold">0</h4>
+            <small>No rides yet</small>
+            }
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="d-flex gap-3 align-items-center justify-content-center">
+          <div class="stat-icon">
+            <i class="ti ti-shield-check"></i>
+          </div>
+          <h4 class="mb-0 fs-17 fw-bold">Verified Profile</h4>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="mt-4 profile-links">
+        <a routerLink="/edit-profile">Edit profile</a>
+      </div>
+
+      <hr />
+
+      <!-- Reliability -->
+      <!-- <div class="section-box">
+        <h3 class="section-title fs_m">Your carpooling reliability</h3>
+
+        <div class="info-row">
+          <i class="ti ti-calendar-event"></i>
+
+          <span> Sometimes cancels bookings as a passenger </span>
+
+          <i class="ti ti-info-circle text-primary"></i>
+        </div>
+      </div> -->
+
+
+
+      <!-- Verified -->
+      <div class="section-box">
+        <h3 class="section-title fs_m">My Details</h3>
+
+        @if (user?.fullName) {
+        <div class="verified-item">
+          <i class="ti ti-circle-check-filled"></i>
+          <span>{{ user.fullName }}</span>
+        </div>
+        }
+
+        @if (user?.userEmail) {
+        <div class="verified-item">
+          <i class="ti ti-circle-check-filled"></i>
+          <span>{{ user.userEmail }}</span>
+        </div>
+        }
+
+        @if (user?.phoneNumber) {
+        <div class="verified-item">
+          <i class="ti ti-circle-check-filled"></i>
+          <span>+91{{ user.phoneNumber }}</span>
+        </div>
+        }
+
+        @if (user?.userCode) {
+        <div class="verified-item">
+          <i class="ti ti-circle-check-filled"></i>
+          <span>User Code: {{ user.userCode }}</span>
+        </div>
+        }
+      </div>
+
+      <hr />
+
+      <!-- About -->
+      <div class="section-box">
+
+        <h3 class="section-title fs_m">About you</h3>
+
+        <p class="about-text" *ngIf="user?.aboutUser">
+          {{ user.aboutUser }}
+        </p>
+
+        <div class="about-item" *ngFor="let pref of activePreferences">
+          <i class="ti {{ pref.icon }}"></i>
+          <span>{{ pref.label }}</span>
+        </div>
+
+
+      </div>
+
+      <hr />
+
+      <!-- Vehicles -->
+      <div class="section-box">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="section-title fs_m mb-0">Vehicles</h3>
+          <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 rounded-pill"
+            (click)="openAddVehicle()">
+            <i class="ti ti-circle-plus"></i>
+            <span>Add</span>
+          </button>
+        </div>
+
+        @if (vehicles.length > 0) {
+        <div class="row g-3">
+          @for (vehicle of vehicles; track vehicle._id) {
+          <div class="col-12 col-md-6 px-0 px-md-2">
+            <div class="vehicle-card d-flex align-items-center gap-3 p-3 rounded-3 border bg-white">
+              <div class="vehicle-icon flex-shrink-0">
+                <i class="ti ti-car"></i>
+              </div>
+
+              <div class="flex-grow-1 min-w-0">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+                  <h5 class="fw-bold mb-0 fs-15 text-capitalize text-truncate">
+                    {{ vehicle.model }}
+                  </h5>
+                  <span class="badge text-bg-light border text-secondary fw-normal">
+                    <i class="ti ti-users me-1"></i>{{ vehicle.seat_capacity }} seats
+                  </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <span class="vehicle-meta text-secondary text-capitalize">
+                    <i class="ti ti-palette me-1"></i>{{ vehicle.color }}
+                  </span>
+                  <span class="text-secondary">·</span>
+                  <span class="vehicle-meta text-secondary text-capitalize">
+                    {{ vehicle.vehicle_type }}
+                  </span>
+                </div>
+
+                <span class="plate-chip mt-2 d-inline-block text-uppercase">
+                  {{ vehicle.plate_number }}
+                </span>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="vehicle-empty text-center p-4 rounded-3 border border-dashed">
+          <i class="ti ti-car-off fs-1 text-secondary d-block mb-2"></i>
+          <p class="text-secondary mb-3">No vehicles added yet.</p>
+          <button type="button" class="btn btn-primary rounded-pill px-4" (click)="openAddVehicle()">
+            <i class="ti ti-circle-plus me-1"></i> Add your first vehicle
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <app-vehicle-dialog (saved)="onVehicleSaved($event)"></app-vehicle-dialog>
+</section>

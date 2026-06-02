@@ -1,0 +1,56 @@
+<div class="security-container">
+
+  <!-- blobs — container ke andar, form ke bahar -->
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+
+  <!-- card wrapper — h2 + form dono iske andar -->
+  <div class="sq-card">
+
+    <div class="sq-card-header">
+      <div class="sq-icon-ring">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+             viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <h2>Set Security Question</h2>
+      <p>Used to verify your identity during password reset</p>
+    </div>
+
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-3">
+
+      <div class="sq-field">
+        <label class="sq-label">Choose a question</label>
+        <div class="sq-select-wrap">
+          <select formControlName="securityQuesId">
+            <option value="">Select Security Question</option>
+            <option *ngFor="let q of securityQuestions" [value]="q.id">
+              {{ q.question }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sq-field">
+        <label class="sq-label">Your answer</label>
+        <input
+          type="text"
+          placeholder="Enter Answer"
+          formControlName="securityAns"
+        />
+      </div>
+
+      <button type="submit" class="btn w-100" [disabled]="isLoading">
+        {{ isLoading ? 'Saving...' : 'Submit' }}
+      </button>
+
+    </form>
+
+  </div>
+
+</div>

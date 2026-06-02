@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TrustRides</string>
+    <string name="title_activity_main">TrustRides</string>
+    <string name="package_name">com.trustridesre.app</string>
+    <string name="custom_url_scheme">com.trustridesre.app</string>
+</resources>

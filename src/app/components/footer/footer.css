@@ -1,0 +1,430 @@
+/* ============================================================
+   PollWave — Footer Component CSS
+   ============================================================ */
+
+:host {
+  --f-bg: #f0f6fc;
+  --f-surface: #111827;
+  --f-border: rgba(255, 255, 255, 0.07);
+  --f-primary: #3b82f6;
+  --f-primary-hover: #60a5fa;
+  --f-accent: #f59e0b;
+  --f-text: #090d13;
+  --f-muted: #6b7280;
+  --f-muted-hover: #9ca3af;
+  --f-radius-sm: 8px;
+  --f-radius-md: 12px;
+  --f-radius-pill: 9999px;
+  --f-transition: 0.2s ease;
+  display: block;
+  font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* --- Wave Separator --- */
+.footer__wave {
+  line-height: 0;
+  overflow: hidden;
+}
+
+.footer__wave svg {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+/* --- Main Section --- */
+.footer {
+  background: var(--f-bg);
+  color: var(--f-text);
+}
+
+.footer__main {
+  /* padding: 64px 0 48px; */
+}
+
+/* --- Brand Column --- */
+
+.footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-bottom: 16px;
+  transition: opacity var(--f-transition);
+}
+
+.footer__brand:hover {
+  opacity: 0.85;
+}
+
+.footer__logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.footer__logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+.footer__brand-name {
+  font-family: 'Sora', 'Segoe UI', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--f-text);
+}
+
+.footer__brand-accent {
+  color: var(--f-primary);
+}
+
+.footer__tagline {
+  color: var(--f-muted);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin: 0 0 24px 0;
+  max-width: 280px;
+}
+
+/* --- Social Links --- */
+.footer__socials {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.footer__social-link {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--f-radius-sm);
+background: rgba(59, 130, 246, 0.12);
+  border: 1px solid var(--f-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--f-muted);
+  text-decoration: none;
+  transition: background var(--f-transition), color var(--f-transition), border-color var(--f-transition);
+}
+
+.footer__social-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.footer__social-link:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: var(--f-primary);
+}
+
+.footer__link-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__col-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--f-text);
+  margin: 0 0 16px 0;
+}
+
+.footer__link-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer__link {
+  color: var(--f-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: color var(--f-transition);
+  line-height: 1;
+}
+
+.footer__link:hover {
+  color: var(--f-muted-hover);
+}
+
+/* --- Newsletter Column --- */
+.footer__newsletter-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__newsletter-desc {
+  color: var(--f-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  margin: 0 0 16px 0;
+}
+
+.footer__newsletter-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.footer__newsletter-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  background: #dee3eb;
+  border: 1px solid var(--f-border);
+  border-radius: var(--f-radius-sm);
+  color: var(--f-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--f-transition), box-shadow var(--f-transition);
+}
+
+.footer__newsletter-input::placeholder {
+  color: var(--f-muted);
+}
+
+.footer__newsletter-input:focus {
+  border-color: var(--f-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.footer__newsletter-btn {
+  padding: 10px 18px;
+  background: var(--f-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--f-radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--f-transition), transform var(--f-transition);
+}
+
+.footer__newsletter-btn:hover {
+  background: var(--f-primary-hover);
+  transform: translateY(-1px);
+}
+
+.footer__newsletter-btn:active {
+  transform: translateY(0);
+}
+
+/* --- Trust Badges --- */
+.footer__badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.footer__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--f-surface);
+  border: 1px solid var(--f-border);
+  border-radius: var(--f-radius-pill);
+  color: var(--f-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.footer__badge svg {
+  width: 13px;
+  height: 13px;
+  color: var(--f-primary);
+}
+
+/* --- Bottom Bar --- */
+.footer__bottom {
+  border-top: 1px solid var(--f-border);
+  padding: 20px 0;
+}
+
+/* .footer__bottom-inner — layout via Bootstrap utilities */
+
+.footer__copyright {
+  color: var(--f-muted);
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.footer__legal-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.footer__legal-link {
+  color: var(--f-muted);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  transition: color var(--f-transition);
+  white-space: nowrap;
+}
+
+.footer__legal-link:hover {
+  color: var(--f-muted-hover);
+}
+
+/* ============================================================
+   Responsive Breakpoints
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .footer__main {
+    padding: 48px 0 36px;
+  }
+
+  .footer__tagline {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer__newsletter-form {
+    flex-direction: column;
+  }
+
+  .footer__newsletter-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  :host {
+    --f-radius-sm: 6px;
+  }
+}
+.logo_color2{
+   color: #ffffff;
+    background: #3b82f6;
+    padding: 8px 13px 7px 3px;
+    font-weight: 600;
+    border-radius: 0px 30px 5px 0px;
+    font-size: 18px;
+}
+.header__brand-accent {
+  color: var(--f-primary);
+}
+
+/* ============================================================
+   Mobile / Tablet Bottom Navigation
+   ============================================================ */
+
+.footer__mobile-nav {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  :host {
+    min-height: 68px;
+  }
+
+  .footer__mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -2px 12px rgba(15, 23, 42, 0.06);
+  }
+}
+
+.footer__mobile-nav-item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 2px;
+  text-decoration: none;
+  color: #4b5563;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 0;
+  transition: color var(--f-transition);
+}
+
+.footer__mobile-nav-item:hover,
+.footer__mobile-nav-item:focus-visible {
+  color: var(--f-primary);
+  outline: none;
+}
+
+.footer__mobile-nav-item--active {
+  color: var(--f-primary);
+  font-weight: 700;
+}
+
+.footer__mobile-nav-icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.footer__mobile-nav-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.footer__mobile-nav-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #e5edff;
+  color: var(--f-primary);
+  border: 2px solid transparent;
+}
+
+.footer__mobile-nav-item--active .footer__mobile-nav-avatar {
+  border-color: var(--f-primary);
+  background: #dbeafe;
+}
+
+.footer__mobile-nav-avatar svg {
+  width: 22px;
+  height: 22px;
+}
+
+.footer__mobile-nav-label {
+  font-size: 0.72rem;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

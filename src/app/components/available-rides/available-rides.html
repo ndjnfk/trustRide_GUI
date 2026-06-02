@@ -1,0 +1,264 @@
+<!-- rides-list.component.html -->
+<div class="rides-page">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="container">
+      <div class="header-inner d-flex align-items-center justify-content-between flex-wrap gap-3 py-3">
+        <div class="logo-area d-flex align-items-center gap-3">
+          <span class="logo-icon">🚗</span>
+          <div>
+            <h1 class="brand mb-0">RideShare</h1>
+            <p class="tagline mb-0">Find your perfect ride</p>
+          </div>
+        </div>
+        <div class="ride-count d-flex flex-column align-items-end" *ngIf="!loading">
+          <span class="count-num">{{ filteredRides.length }}</span>
+          <span class="count-label">rides found</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filter Bar -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-card card p-3 p-md-4">
+
+        <div class="row g-3">
+
+          <!-- Search -->
+          <div class="col-12">
+            <div class="filter-group search-group">
+              <label class="filter-label form-label">🔍 Search</label>
+              <input
+                type="text"
+                class="filter-input form-control"
+                placeholder="Saharanpur, Gurgaon, rider..."
+                [(ngModel)]="searchQuery"
+                (ngModelChange)="applyFilters()"
+              />
+            </div>
+          </div>
+
+          <!-- Route Filter -->
+          <div class="col-12">
+            <div class="filter-group">
+              <label class="filter-label form-label">🛣️ Route</label>
+              <div class="route-btns d-flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  class="route-btn"
+                  [class.active]="routeFilter === 'all'"
+                  [disabled]="loading"
+                  (click)="routeFilter = 'all'; applyFilters()"
+                >All Routes</button>
+                <button
+                  type="button"
+                  class="route-btn"
+                  [class.active]="routeFilter === 'saharanpur-gurgaon'"
+                  [disabled]="loading"
+                  (click)="routeFilter = 'saharanpur-gurgaon'; applyFilters()"
+                >
+                  Saharanpur → Gurgaon
+                </button>
+                <button
+                  type="button"
+                  class="route-btn"
+                  [class.active]="routeFilter === 'gurgaon-saharanpur'"
+                  [disabled]="loading"
+                  (click)="routeFilter = 'gurgaon-saharanpur'; applyFilters()"
+                >
+                  Gurgaon → Saharanpur
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Date -->
+          <div class="col-12 col-md-8">
+            <div class="filter-group">
+              <label class="filter-label form-label">📅 Date</label>
+              <input
+                type="date"
+                class="filter-input form-control"
+                [(ngModel)]="dateFilter"
+                (ngModelChange)="applyFilters()"
+              />
+            </div>
+          </div>
+
+          <!-- Clear -->
+          <div class="col-12 col-md-4 d-flex align-items-end">
+            <button type="button" class="clear-btn btn w-100" (click)="clearFilters()">✕ Clear Filters</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Error -->
+  <div class="state-container d-flex flex-column align-items-center text-center py-5 px-3" *ngIf="error && !loading">
+    <div class="error-icon">⚠️</div>
+    <p class="state-msg error-text">{{ error }}</p>
+    <button type="button" class="retry-btn btn" (click)="loadRides()">Retry</button>
+  </div>
+
+  <!-- Empty -->
+  <div class="state-container d-flex flex-column align-items-center text-center py-5 px-3" *ngIf="!loading && !error && filteredRides.length === 0">
+    <div class="empty-icon">🚫</div>
+    <p class="state-msg">No rides match your filters.</p>
+    <button type="button" class="retry-btn btn" (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+  <!-- Rides Grid -->
+  <section class="rides-section container" *ngIf="!loading && !error && filteredRides.length > 0">
+    <div class="row g-3 g-md-4">
+      <div class="col-12 col-md-6 col-xl-4" *ngFor="let ride of filteredRides">
+        <div class="ride-card card h-100">
+
+          <!-- Card Top -->
+          <div class="card-top d-flex align-items-start justify-content-between gap-2">
+            <div class="route-display d-flex align-items-center gap-2 flex-grow-1">
+              <span class="city from-city">{{ ride.from }}</span>
+              <div class="route-arrow d-flex align-items-center">
+                <span class="arrow-line"></span>
+                <span class="arrow-head">▶</span>
+              </div>
+              <span class="city to-city">{{ ride.to }}</span>
+            </div>
+            <span class="status-badge" [ngClass]="getStatusClass(ride.status)">
+              {{ ride.status }}
+            </span>
+          </div>
+
+          <div class="route-via-tag text-center" *ngIf="ride.routeVia">
+            <span class="via-label">via</span> {{ ride.routeVia }}
+          </div>
+
+          <!-- Divider -->
+          <div class="card-divider"></div>
+
+          <!-- Card Details -->
+          <div class="card-body-custom">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="detail-item d-flex align-items-center gap-2">
+                  <span class="detail-icon">👤</span>
+                  <div>
+                    <span class="detail-label">Rider</span>
+                    <span class="detail-value">{{ ride.driver_name }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="detail-item d-flex align-items-center gap-2">
+                  <span class="detail-icon">💺</span>
+                  <div>
+                    <span class="detail-label">Seats</span>
+                    <span class="detail-value">{{ ride.available_seats }} available</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="detail-item d-flex align-items-center gap-2">
+                  <span class="detail-icon">📅</span>
+                  <div>
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value">{{ formatDate(ride.departure_time) }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="detail-item d-flex align-items-center gap-2">
+                  <span class="detail-icon">⏰</span>
+                  <div>
+                    <span class="detail-label">Departure</span>
+                    <span class="detail-value">{{ formatTime(ride.departure_time) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seat Stats Dropdown -->
+          <div class="seat-stats-wrapper">
+            <button type="button" class="seat-stats-toggle btn w-100 d-flex justify-content-between align-items-center"
+              (click)="toggleStats(ride.ride_id)"
+              [disabled]="!rideStats[ride.ride_id]">
+              🪑 Seat Breakdown
+              <span class="toggle-arrow" [class.open]="openStats[ride.ride_id]">▼</span>
+            </button>
+
+            <div class="seat-stats" *ngIf="rideStats[ride.ride_id] && openStats[ride.ride_id]">
+              <div class="row g-2">
+
+                <div class="col-6">
+                  <div class="seat-stat-item male-stat d-flex align-items-center gap-2">
+                    <span class="stat-icon">♂️</span>
+                    <div class="stat-info">
+                      <span class="stat-label">Male</span>
+                      <span class="stat-count">{{ rideStats[ride.ride_id].male }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="seat-stat-item female-stat d-flex align-items-center gap-2">
+                    <span class="stat-icon">♀️</span>
+                    <div class="stat-info">
+                      <span class="stat-label">Female</span>
+                      <span class="stat-count">{{ rideStats[ride.ride_id].female }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="seat-stat-item remaining-stat d-flex align-items-center gap-2">
+                    <span class="stat-icon">💺</span>
+                    <div class="stat-info">
+                      <span class="stat-label">Remaining</span>
+                      <span class="stat-count">{{ rideStats[ride.ride_id].remaining_seats }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="seat-stat-item total-stat d-flex align-items-center gap-2">
+                    <span class="stat-icon">👥</span>
+                    <div class="stat-info">
+                      <span class="stat-label">Total</span>
+                      <span class="stat-count">{{ rideStats[ride.ride_id].total }}</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="card-footer-custom d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="price-block d-flex flex-column">
+              <span class="price-label">per seat</span>
+              <span class="price-value">₹{{ ride.price_per_seat }}</span>
+            </div>
+
+            <button
+              type="button"
+              class="book-btn btn"
+              (click)="bookRide(ride)"
+              [disabled]="loadingRides.has(ride.ride_id)"
+            >
+              {{ loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

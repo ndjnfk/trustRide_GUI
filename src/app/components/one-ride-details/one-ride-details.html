@@ -1,0 +1,158 @@
+<div class="rd-page container">
+  <!-- Loading -->
+  <div class="rd-state" *ngIf="loading">
+    <div class="rd-loader"></div>
+    <p>Loading ride details...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="rd-state" *ngIf="error && !loading">
+    <i class="ti ti-alert-circle"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error && rideData">
+    <button class="rd-back btn" (click)="goBack()">
+      <i class="ti ti-arrow-left"></i> Back to rides
+    </button>
+
+    <div class="rd-wrap">
+
+      <!-- Driver Card -->
+      <div class="rd-card">
+        <p class="section-title">Rider</p>
+        <div class="driver-section" (click)="goToProfile(rideData.driver._id)">
+          <div class="driver-avatar">
+            <img *ngIf="rideData.driver.avatarUrl" [src]="imageBaseUrl + rideData.driver.avatarUrl"
+              [alt]="rideData.driver.fullName" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />
+            <span *ngIf="!rideData.driver.avatarUrl">
+              {{ getInitials(rideData.driver.fullName) }}
+            </span>
+          </div>
+          <div>
+            <div class="driver-name">{{ rideData.driver.fullName }}</div>
+            <div class="driver-sub">
+              <i class="ti ti-gender-{{ rideData.driver.gender === 'female' ? 'female' : 'male' }}"></i>
+              {{ rideData.driver.gender | titlecase }}
+              <span class="badge-verified">
+                <i class="ti ti-shield-check"></i> Verified
+              </span>
+            </div>
+            <!-- <div class="driver-email">
+              {{ rideData.driver.userEmail }} &nbsp;·&nbsp; {{ rideData.driver.phoneNumber }}
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Ride Details Card -->
+      <div class="rd-card">
+        <p class="section-title">Ride Details</p>
+        <div class="route-display">
+          <span class="r-city">{{ rideData.start_location.name }}</span>
+          <i class="ti ti-arrow-narrow-right r-arrow"></i>
+          <span class="r-city">{{ rideData.end_location.name }}</span>
+        </div>
+        <div class="r-via" *ngIf="rideData.route_via">via {{ rideData.route_via }}</div>
+        <div class=" row g-3">
+          <div class="col-6 col-md-4">
+            <div class="meta-item">
+              <div class="meta-label"><i class="ti ti-calendar"></i> Date</div>
+              <div class="meta-val">{{ formatDate(rideData.departure_time) }}</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="meta-item">
+              <div class="meta-label"><i class="ti ti-clock"></i> Departure</div>
+              <div class="meta-val">{{ formatTime(rideData.departure_time) }}</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="meta-item">
+              <div class="meta-label"><i class="ti ti-armchair"></i> Seats</div>
+              <div class="meta-val">{{ rideData.available_seats }} available</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="meta-item">
+              <div class="meta-label"><i class="ti ti-currency-rupee"></i> Price</div>
+              <div class="meta-val">₹{{ rideData.price_per_seat }} / seat</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="meta-item">
+              <div class="meta-label"><i class="ti ti-info-circle"></i> Status</div>
+              <div class="meta-val">
+                <span class="status-pill" [ngClass]="getStatusColor(rideData.status)">
+                  {{ rideData.status | titlecase }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="meta-item">
+              <div class="meta-label"><i class="ti ti-users"></i> Bookings</div>
+              <div class="meta-val">{{ rideData.total_bookings }} total</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rd-book-row" *ngIf="rideData.status === 'active' && rideData.available_seats > 0">
+          <div class="rd-book-price">
+            <span class="rd-book-price-label">Per seat</span>
+            <span class="rd-book-price-val">₹{{ rideData.price_per_seat }}</span>
+          </div>
+          <button type="button" class="rd-book-btn btn" (click)="bookRide()" [disabled]="booking">
+            {{ booking ? 'Booking...' : 'Book Seat' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Passengers Card -->
+      <div class="rd-card">
+        <p class="section-title">Passengers</p>
+
+        <div class="empty-bookings" *ngIf="rideData.bookings.length === 0">
+          <i class="ti ti-armchair"></i>
+          No bookings yet
+        </div>
+
+        <div class="passenger-list" *ngIf="rideData.bookings.length > 0">
+          <div class="p-card" (click)="goToProfile(b.passenger._id)" *ngFor="let b of rideData.bookings">
+            <div class="p-avatar">
+              <img *ngIf="b.passenger.avatarUrl" [src]="imageBaseUrl + b.passenger.avatarUrl"
+                [alt]="b.passenger.fullName" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />
+              <span *ngIf="!b.passenger.avatarUrl">
+                {{ getInitials(b.passenger.fullName) }}
+              </span>
+            </div>
+            <div class="p-main">
+              <div class="p-top">
+                <span class="p-name">{{ b.passenger.fullName }}</span>
+                <span class="p-gender">{{ b.passenger.gender | titlecase }}</span>
+                <span class="p-bstatus" [ngClass]="getStatusColor(b.booking_status)">
+                  {{ b.booking_status | titlecase }}
+                </span>
+              </div>
+              <!-- <div class="p-email">
+                {{ b.passenger.userEmail }} &nbsp;·&nbsp; {{ b.passenger.phoneNumber }}
+              </div> -->
+              <!-- Review -->
+              <div class="p-review" *ngIf="b.review">
+                <div class="p-review-stars">
+                  <span *ngFor="let s of [1,2,3,4,5]" [class.star]="s <= b.review.rating"
+                    [style.color]="s <= b.review.rating ? '#F59E0B' : 'var(--color-border-secondary)'">★</span>
+                  <span class="p-rating-num">{{ b.review.rating }} / 5</span>
+                </div>
+                <div class="p-review-text">"{{ b.review.comment }}"</div>
+              </div>
+              <!-- <div class="no-review" *ngIf="!b.review">No review given</div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,122 @@
+<section class="login-shell d-flex">
+  <!-- Left panel: brand / visual -->
+  <aside class="brand-panel d-none d-lg-flex" @fadeSlideIn>
+    <div class="brand-content">
+   
+
+      <div class="brand-tagline">
+        <h1>TrustRideSRE,<br><em>Simplified.</em></h1>
+        <p>Access real-time survey insights, manage respondents, and deliver data that matters.</p>
+      </div>
+
+      <ul class="brand-features">
+        <li>
+          <span class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 4.5" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Live response analytics
+        </li>
+        <li>
+          <span class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 4.5" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Role-based access control
+        </li>
+        <li>
+          <span class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 4.5" stroke="#4F8EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Secure session management
+        </li>
+      </ul>
+    </div>
+
+    <div class="brand-decoration">
+      <div class="deco-ring ring-1"></div>
+      <div class="deco-ring ring-2"></div>
+      <div class="deco-ring ring-3"></div>
+    </div>
+  </aside>
+
+  <!-- Right panel: form -->
+  <main class="form-panel d-flex align-items-center justify-content-center">
+    <div class="form-card" @fadeSlideIn [@shakeError]="shakeState">
+      <header class="form-header">
+        <p class="form-eyebrow">Welcome back</p>
+        <h2>Sign in to your account</h2>
+      </header>
+
+      <!-- Error Banner -->
+      <div class="error-banner" *ngIf="errorMessage" role="alert">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#EF4444" stroke-width="1.5"/><path d="M9 5.5V9.5" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="12" r="0.75" fill="#EF4444"/></svg>
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate autocomplete="on" class="d-flex flex-column gap-3">
+
+        <!-- Email Field -->
+        <div class="field-group" [class.focused]="focusedField === 'email'" [class.has-error]="emailControl?.invalid && emailControl?.touched">
+          <label for="userEmail">Email address</label>
+          <div class="input-wrapper position-relative d-flex align-items-center">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 6.5L9 10.5L16 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <input
+              id="userEmail"
+              type="email"
+              formControlName="userEmail"
+              placeholder="you@gmail.com"
+              autocomplete="email"
+              (focus)="onFocus('email')"
+              (blur)="onBlur()"
+            />
+          </div>
+          <span class="field-error" *ngIf="emailControl?.touched && emailControl?.hasError('required')">Email is required</span>
+          <span class="field-error" *ngIf="emailControl?.touched && emailControl?.hasError('email')">Enter a valid email address</span>
+        </div>
+
+        <!-- Password Field -->
+        <div class="field-group" [class.focused]="focusedField === 'password'" [class.has-error]="passwordControl?.invalid && passwordControl?.touched">
+          <label for="password">
+            Password
+            <a routerLink="/forgot-password" class="forgot-link" tabindex="-1">Forgot password?</a>
+          </label>
+          <div class="input-wrapper position-relative d-flex align-items-center">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="8" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 8V6a3 3 0 1 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="12" r="1.25" fill="currentColor"/></svg>
+            </span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              (focus)="onFocus('password')"
+              (blur)="onBlur()"
+            />
+            <button type="button" class="toggle-password" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <svg *ngIf="!showPassword" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M1 9C2.5 5.5 5.5 3 9 3s6.5 2.5 8 6c-1.5 3.5-4.5 6-8 6S2.5 12.5 1 9Z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+              <svg *ngIf="showPassword" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2L16 16M7.5 7.6A2.5 2.5 0 0 0 10.4 10.5M4.5 4.6C2.9 5.8 1.7 7.3 1 9c1.5 3.5 4.5 6 8 6 1.5 0 2.9-.4 4.1-1.1M6.8 3.2A8.2 8.2 0 0 1 9 3c3.5 0 6.5 2.5 8 6a13.6 13.6 0 0 1-2.3 3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <span class="field-error" *ngIf="passwordControl?.touched && passwordControl?.hasError('required')">Password is required</span>
+          <span class="field-error" *ngIf="passwordControl?.touched && passwordControl?.hasError('minlength')">Password must be at least 6 characters</span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="submit-btn btn w-100" [disabled]="isLoading">
+          <span class="btn-text" *ngIf="!isLoading">Sign in</span>
+          <span class="btn-loader" *ngIf="isLoading">
+            <svg class="spinner" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/><path d="M10 2a8 8 0 0 1 8 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+            Authenticating…
+          </span>
+        </button>
+
+      </form>
+
+      <footer class="form-footer">
+        <p>New to PollAxis? <a routerLink="/register">Create an account</a></p>
+      </footer>
+    </div>
+  </main>
+</section>

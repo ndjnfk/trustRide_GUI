@@ -1,0 +1,185 @@
+
+/* ── Variables ─────────────────────────────────────────────────────────────── */
+.logout-overlay {
+  --clr-primary:    #1C4ED8;
+  --clr-primary-lt: #4F8EF7;
+  --clr-text:       #0F172A;
+  --clr-muted:      #64748B;
+  --clr-border:     #E2E8F0;
+  --clr-error:      #EF4444;
+  --clr-error-bg:   #FEF2F2;
+  --clr-surface:    #FFFFFF;
+  --clr-bg:         #F0F4FF;
+  --font-display:   'DM Serif Display', Georgia, serif;
+  --font-body:      'DM Sans', system-ui, sans-serif;
+  --radius-md:      12px;
+  --radius-lg:      20px;
+}
+
+/* ── Overlay (full screen centered) ───────────────────────────────────────── */
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-family: var(--font-body);
+  animation: overlayIn 0.2s ease;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+.logout-card {
+  background: var(--clr-surface);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 24px 64px -12px rgba(15, 23, 42, 0.22);
+  animation: cardIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Icon ──────────────────────────────────────────────────────────────────── */
+.logout-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #EEF2FF;
+  margin-bottom: 20px;
+}
+
+/* ── Text ──────────────────────────────────────────────────────────────────── */
+.logout-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--clr-text);
+  margin: 0 0 10px;
+  letter-spacing: -0.2px;
+}
+
+.logout-subtitle {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--clr-muted);
+  margin: 0 0 28px;
+}
+
+/* ── Error ─────────────────────────────────────────────────────────────────── */
+.logout-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--clr-error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--clr-error);
+  margin-bottom: 20px;
+  animation: fadeDown 0.25s ease;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Actions ───────────────────────────────────────────────────────────────── */
+.logout-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Cancel button */
+.btn-cancel {
+  flex: 1;
+  padding: 11px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--clr-text);
+  background: transparent;
+  border: 1.5px solid var(--clr-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: var(--clr-bg);
+  border-color: #CBD5E1;
+}
+
+.btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Logout button */
+.btn-logout {
+  flex: 1;
+  padding: 11px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #4F8EF7, #1C4ED8);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(28, 78, 216, 0.32);
+  transition: opacity 0.18s, transform 0.15s, box-shadow 0.18s;
+}
+
+.btn-logout:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(28, 78, 216, 0.4);
+}
+
+.btn-logout:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-logout:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.btn-loader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

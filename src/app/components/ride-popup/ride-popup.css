@@ -1,0 +1,216 @@
+/* rides-popup.component.css */
+
+.rp-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  font-family: inherit;
+}
+
+/* ── Header ── */
+.rp-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border, #e4e7ec);
+  position: sticky;
+  top: 0;
+  background: var(--card-bg, #fff);
+  z-index: 2;
+}
+
+.rp-route {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.rp-route i {
+  color: var(--muted, #8a93a2);
+  font-size: 16px;
+}
+
+.rp-city {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #1a1d23);
+}
+
+.rp-count {
+  font-size: 12px;
+  color: var(--muted, #8a93a2);
+  white-space: nowrap;
+}
+
+.rp-close {
+  background: var(--hover-bg, #f4f5f9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text, #1a1d23);
+  transition: background 0.15s;
+}
+
+.rp-close:hover {
+  background: var(--border, #e4e7ec);
+}
+
+.rp-close i {
+  font-size: 16px;
+}
+
+/* ── List ── */
+.rp-list {
+  overflow-y: auto;
+  padding: 14px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rp-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rp-list::-webkit-scrollbar-thumb {
+  background: var(--border, #e4e7ec);
+  border-radius: 4px;
+}
+
+/* ── Card ── */
+.rp-card {
+  border: 1px solid var(--border, #e4e7ec);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.rp-card:hover {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* ── Driver row ── */
+.rp-driver-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rp-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary, #6c63ff);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rp-driver-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rp-driver-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text, #1a1d23);
+}
+
+.rp-status {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted, #8a93a2);
+  text-transform: capitalize;
+}
+
+.rp-status.active {
+  color: #16a34a;
+}
+
+.rp-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary, #6c63ff);
+  white-space: nowrap;
+}
+
+.rp-per {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted, #8a93a2);
+}
+
+/* ── Details row ── */
+.rp-details {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.rp-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--muted-text, #4b5563);
+}
+
+.rp-detail-item i {
+  font-size: 14px;
+  color: var(--muted, #8a93a2);
+}
+
+/* ── Route Pill ── */
+.rp-route-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--hover-bg, #f4f5f9);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--muted-text, #4b5563);
+}
+
+.rp-route-pill span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rp-route-pill span i {
+  font-size: 13px;
+  color: var(--muted, #8a93a2);
+}
+
+.rp-dash {
+  flex: 1;
+  height: 1px;
+  background: var(--border, #e4e7ec);
+  min-width: 20px;
+}
+
+/* ── Global: rides-dialog panel ── */
+::ng-deep .rides-dialog .mat-mdc-dialog-container {
+  border-radius: 16px !important;
+  padding: 0 !important;
+  overflow: hidden;
+}

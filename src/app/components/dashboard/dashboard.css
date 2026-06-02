@@ -1,0 +1,9 @@
+/* Styles moved to global src/styles.css */
+@media (max-width: 768px) {
+    .hero {
+        overflow: hidden;
+    }
+    .hero-badge {
+    margin-bottom: 6px;
+}
+}

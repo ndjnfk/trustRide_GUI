@@ -1,0 +1,283 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+
+    <div class="container-fluid dashboard-wrapper">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-card">
+        <h3>Welcome back, Admin <span class="wave">👋</span></h3>
+        <p>
+          Manage your users, review verifications, and keep everything running smoothly.
+        </p>
+        <div class="welcome-illustration">
+          <div class="orb orb-1"></div>
+          <div class="orb orb-2"></div>
+          <div class="orb orb-3"></div>
+          <div class="welcome-icon">
+            <i class="ti ti-layout-grid"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="row g-4">
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-blue">
+                <i class="ti ti-users"></i>
+              </div>
+              <div>
+                <div class="stat-title">Total Users</div>
+                <div class="stat-value">{{ allUsers.length }}</div>
+                <div class="stat-desc">All registered professionals</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-green">
+                <i class="ti ti-shield-check"></i>
+              </div>
+              <div>
+                <div class="stat-title">Verified</div>
+                <div class="stat-value">{{ getCountByStatus('verified') }}</div>
+                <div class="stat-desc">Approved users</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-orange">
+                <i class="ti ti-hourglass"></i>
+              </div>
+              <div>
+                <div class="stat-title">Pending</div>
+                <div class="stat-value">{{ getCountByStatus('pending') }}</div>
+                <div class="stat-desc">Awaiting review</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-red">
+                <i class="ti ti-shield-x"></i>
+              </div>
+              <div>
+                <div class="stat-title">Rejected</div>
+                <div class="stat-value">{{ getCountByStatus('rejected') }}</div>
+                <div class="stat-desc">Not approved</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Table Section -->
+      <div class="table-card">
+
+        <!-- Header -->
+        <div class="table-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+          <div class="d-flex align-items-center gap-3">
+            <div class="title-icon">
+              <i class="ti ti-users"></i>
+            </div>
+            <div>
+              <h5 class="table-title">User Management</h5>
+              <small class="text-muted">{{ displayedUsers.length }} Users</small>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <div class="search-box">
+              <i class="ti ti-search"></i>
+              <input type="text" class="form-control" placeholder="Search users..."
+                     (keyup)="applyFilter($event)">
+            </div>
+
+            <button class="btn btn-light border" (click)="loadUsers()" [disabled]="isLoading">
+              <i class="ti ti-refresh" [class.spin]="isLoading"></i>
+              Refresh
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+          <button class="chip" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+            <mat-icon>people_alt</mat-icon>
+            <span>All</span>
+            <span class="chip-count">{{ allUsers.length }}</span>
+          </button>
+          <button class="chip chip-verified" [class.active]="activeFilter === 'verified'" (click)="setFilter('verified')">
+            <mat-icon>verified</mat-icon>
+            <span>Verified</span>
+            <span class="chip-count">{{ getCountByStatus('verified') }}</span>
+          </button>
+          <button class="chip chip-pending" [class.active]="activeFilter === 'pending'" (click)="setFilter('pending')">
+            <mat-icon>hourglass_empty</mat-icon>
+            <span>Pending</span>
+            <span class="chip-count">{{ getCountByStatus('pending') }}</span>
+          </button>
+          <button class="chip chip-rejected" [class.active]="activeFilter === 'rejected'" (click)="setFilter('rejected')">
+            <mat-icon>cancel</mat-icon>
+            <span>Rejected</span>
+            <span class="chip-count">{{ getCountByStatus('rejected') }}</span>
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+
+          <table class="table align-middle">
+
+            <thead>
+              <tr>
+                <th>#Code</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Account</th>
+                <th>Verification</th>
+                <th>Profile</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let user of displayedUsers"
+                  [class.row-updating]="updatingUserId === user._id">
+
+                <td>#{{ user.userCode }}</td>
+
+                <td>
+                  <div class="user-box">
+                    <div class="avatar">
+                      {{ user.fullName?.charAt(0)?.toUpperCase() }}
+                    </div>
+                    <div>
+                      <div class="fw-semibold">{{ user.fullName }}</div>
+                      <small class="text-muted">{{ user.gender | titlecase }}</small>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="gender-badge" [ngClass]="user.gender">
+                    {{ user.gender | titlecase }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="status"
+                        [class.active-status]="user.status === 'active'"
+                        [class.inactive-status]="user.status !== 'active'">
+                    ● {{ user.status | titlecase }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="status"
+                        [class.verified-status]="user.verificationStatus === 'verified'"
+                        [class.pending-status]="user.verificationStatus === 'pending'"
+                        [class.rejected-status]="user.verificationStatus === 'rejected'">
+                    <ng-container [ngSwitch]="user.verificationStatus">
+                      <ng-container *ngSwitchCase="'verified'">✔ Verified</ng-container>
+                      <ng-container *ngSwitchCase="'pending'">⏳ Pending</ng-container>
+                      <ng-container *ngSwitchCase="'rejected'">✘ Rejected</ng-container>
+                      <ng-container *ngSwitchDefault>{{ user.verificationStatus | titlecase }}</ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+
+                <td>
+                  <button class="eye-btn" (click)="openProfile(user)" title="View Profile">
+                    <i class="ti ti-eye"></i>
+                  </button>
+                </td>
+
+                <td>
+                  <div class="d-flex gap-2">
+                    <button class="action-btn verify-btn"
+                            [disabled]="user.verificationStatus === 'verified' || updatingUserId === user._id"
+                            (click)="updateVerificationStatus(user, 'verified')">
+                      Verify
+                    </button>
+
+                    <button class="action-btn reject-btn"
+                            [disabled]="user.verificationStatus === 'rejected' || updatingUserId === user._id"
+                            (click)="updateVerificationStatus(user, 'rejected')">
+                      Reject
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+
+              <tr *ngIf="!isLoading && displayedUsers.length === 0">
+                <td colspan="7">
+                  <div class="no-data">
+                    <div class="no-data-icon-wrap">
+                      <mat-icon>person_search</mat-icon>
+                    </div>
+                    <h3>No users found</h3>
+                    <p>Try changing your search or filter to find what you're looking for.</p>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="pagination-wrapper d-flex justify-content-between align-items-center flex-wrap">
+
+          <div class="d-flex align-items-center gap-2">
+            <span class="small text-muted">Items per page:</span>
+            <select class="form-select form-select-sm" style="width:80px;">
+              <option>10</option>
+              <option>20</option>
+              <option>30</option>
+            </select>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <span class="small text-muted">
+              {{ displayedUsers.length === 0 ? 0 : 1 }} - {{ displayedUsers.length }} of {{ displayedUsers.length }}
+            </span>
+
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-light border" disabled>
+                <i class="ti ti-chevron-left"></i>
+              </button>
+              <button class="btn btn-sm btn-light border" disabled>
+                <i class="ti ti-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+</div>

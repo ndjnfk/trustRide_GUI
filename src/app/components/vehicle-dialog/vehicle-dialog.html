@@ -1,0 +1,114 @@
+<div
+  #modalEl
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="vehicleModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content vehicle-modal">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title fw-bold mb-1" id="vehicleModalTitle">
+            {{ editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle' }}
+          </h5>
+          <p class="text-secondary fs-12 mb-0">Enter your vehicle details</p>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          [disabled]="isSaving"
+          (click)="close()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold">Vehicle Type</label>
+            <div class="d-flex flex-wrap gap-2">
+              @for (t of vehicleTypes; track t) {
+                <button
+                  type="button"
+                  class="btn vtype-pill"
+                  [class.selected]="vehicleForm.vehicle_type === t"
+                  (click)="vehicleForm.vehicle_type = t"
+                >
+                  {{ vehicleIcon(t) }} {{ t | titlecase }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">Model</label>
+            <input
+              class="form-control"
+              type="text"
+              [(ngModel)]="vehicleForm.model"
+              placeholder="e.g. Honda City"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">Plate Number</label>
+            <input
+              class="form-control"
+              type="text"
+              [(ngModel)]="vehicleForm.plate_number"
+              placeholder="e.g. DL 01 AB 1234"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">Color</label>
+            <input
+              class="form-control"
+              type="text"
+              [(ngModel)]="vehicleForm.color"
+              placeholder="e.g. White"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">Seat Capacity</label>
+            <input
+              class="form-control"
+              type="number"
+              [(ngModel)]="vehicleForm.seat_capacity"
+              min="1"
+              max="20"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="isSaving"
+          (click)="close()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isSaving"
+          (click)="save()"
+        >
+          @if (!isSaving) {
+            <span>{{ editingVehicle ? 'Update Vehicle' : 'Add Vehicle' }}</span>
+          } @else {
+            <span class="d-inline-flex align-items-center gap-2">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Saving…
+            </span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

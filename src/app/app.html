@@ -1,0 +1,13 @@
+
+<!-- Admin Route Header -->
+<app-header *ngIf="!isAdminRoute"></app-header>
+
+@if (loader.loading$ | async) {
+  <div class="app-loader-overlay">
+    <div class="app-loader-spinner"></div>
+  </div>
+}
+<router-outlet></router-outlet>
+
+
+<app-footer *ngIf="!isAdminRoute"></app-footer>
