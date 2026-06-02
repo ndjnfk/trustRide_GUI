@@ -248,10 +248,11 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   }
 
   // Selected route ki distance — koi route select na ho to default 308
-  get selectedDistance(): number {
-    const route = this.routeOptions.find(r => r.id === this.selectedRouteId);
-    return route?.distance ?? 220;
+  get selectedRoutes(): any {
+    return this.routeOptions.find(r => r.id === this.selectedRouteId);
+    // return route?.distance ?? 220;
   }
+
   getBaseCity(location: string): string {
 
     const value = location.trim().toLowerCase();
