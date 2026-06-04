@@ -399,7 +399,7 @@
                     <span class="r-arrow">→</span>
                     <span class="text_primaryLight fw-600">Saharanpur</span>
                   </div>
-                  <div class="text_muted fs-12">{{ selectedDistance }} km · 3h 30m · ₹450–600</div>
+                  <div class="text_muted fs-12">{{ selectedRoutes?.distance }} km · {{ selectedRoutes?.time }} · ₹{{ selectedRoutes?.basePrice }}</div>
                 </div>
               </div>
               <hr class="m-0" />
@@ -413,7 +413,7 @@
                     <span class="r-arrow">→</span>
                     <span class="text_primaryLight fw-600">Gurgaon</span>
                   </div>
-                  <div class="text_muted fs-12">{{ selectedDistance }} km · 5h 30m · ₹450–600</div>
+                  <div class="text_muted fs-12">{{ selectedRoutes?.distance }} km · {{ selectedRoutes?.time }} · ₹{{ selectedRoutes?.basePrice }}</div>
                 </div>
               </div>
             </div>
