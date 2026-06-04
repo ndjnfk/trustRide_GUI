@@ -3223,3 +3223,8 @@ app-my-bookings {
 
 .drawer__install svg { width: 16px; height: 16px; }
 .drawer__install:hover { background: rgba(59, 130, 246, 0.18); }
+.cdk-overlay-popover
+{background: transparent;}
+ .cdk-overlay-backdrop-showing {
+    opacity: 1;
+}
