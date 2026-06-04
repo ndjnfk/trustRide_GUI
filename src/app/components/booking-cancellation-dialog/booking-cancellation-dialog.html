@@ -1,0 +1,36 @@
+<div class="dialog-wrapper">
+
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-icon">🚫</div>
+    <div>
+      <h6 class="dialog-title">Cancel Booking</h6>
+      <p class="dialog-subtitle">This action will notify the passenger</p>
+    </div>
+    <button class="close-btn" (click)="dismiss()">✕</button>
+  </div>
+
+  <!-- Reason Textarea -->
+  <div class="section-label">
+    Cancellation reason <span class="required">*</span>
+  </div>
+  <textarea
+    class="notes-input"
+    rows="4"
+    placeholder="Write reason for cancellation…"
+    maxlength="300"
+    [(ngModel)]="additionalNote"
+  ></textarea>
+  <div class="char-count">{{ additionalNote.length }}/300</div>
+
+  <div class="error-msg" *ngIf="showError">
+    ⚠️ Please enter a reason to continue.
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <button class="btn-keep" (click)="dismiss()">Keep Booking</button>
+    <button class="btn-cancel" (click)="confirm()">Confirm Cancellation</button>
+  </div>
+
+</div>

@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Ride } from '../services/ride';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthHelper {
+
+  constructor(private router:Router,private rideService:Ride){}
    private static readonly TOKEN_KEY = 'auth_token'
 
   private static isBrowser(): boolean {
@@ -43,4 +47,7 @@ export class AuthHelper {
   static isLoggedIn(): boolean {
     return !!this.getToken()
   }
+
+
+  
 }

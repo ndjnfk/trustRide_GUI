@@ -12,6 +12,8 @@ interface Review {
   rating: string;
   comment: string;
   date: string;
+  reviewCount: number;
+  allReviews: { rating: string; comment: string; date: string }[]; 
 }
 
 interface Breakdown {
@@ -58,61 +60,76 @@ export class Rating implements OnInit {
     this.loadReviews(tab);
   }
 
-  loadReviews(type: 'received' | 'given') {
-    this.isLoading = true;
-    this.rideService.getReviewDetails(type).subscribe({
-      next: (data: any[]) => {
-        console.log('first review person:', data[0]?.person);
-        const mapped: Review[] = data
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 10)
-          .map(r => ({
-            userId: r.person.id,
-            name: r.person?.name ?? 'User',
-            avatar: r.person?.avatarUrl
-              ? `${environment.apiUrl}${r.person.avatarUrl}`  // ✅ prefix lagao
-              : null,
-            verified: false,
-            rating: this.ratingLabel(r.rating),
-            comment: r.comment,
-            date: this.formatDate(r.date),
-            rawRating: r.rating
-          }));
+ loadReviews(type: 'received' | 'given') {
+  this.isLoading = true;
+  this.rideService.getReviewDetails(type).subscribe({
+    next: (data: any[]) => {
+      // API grouped data deta hai: [{ person, reviewCount, averageRating, reviews: [...] }]
+      const mapped: Review[] = data.map(entry => {
+        const firstReview = entry.reviews?.[0];
+        return {
+          userId:      entry.person.id,
+          name:        entry.person?.name ?? 'User',
+          avatar:      entry.person?.avatarUrl
+                         ? `${environment.apiUrl}${entry.person.avatarUrl}`
+                         : null,
+          verified:    false,
+          rawRating:   firstReview?.rating ?? 0,
+          rating:      this.ratingLabel(firstReview?.rating ?? 0),
+          comment:     firstReview?.comment ?? '',
+          date:        this.formatDate(firstReview?.date ?? ''),
+          reviewCount: entry.reviewCount ?? 1,
+          allReviews:  (entry.reviews ?? []).map((r: any) => ({  // ← add karo
+      rating:  this.ratingLabel(r.rating),
+      comment: r.comment,
+      date:    this.formatDate(r.date),
+    })),
+        };
+      });
 
-        if (type === 'received') {
-          this.receivedReviews = mapped;
-          this.calcSummary(data);
-        } else {
-          this.givenReviews = mapped;
-        }
-
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
+      if (type === 'received') {
+        this.receivedReviews = mapped;
+        this.calcSummary(data);
+      } else {
+        this.givenReviews = mapped;
       }
-    });
-  }
 
-  calcSummary(data: any[]) {
-    this.totalRatings = data.length;
+      this.isLoading = false;
+    },
+    error: () => { this.isLoading = false; }
+  });
+}
 
-    if (data.length === 0) {
-      this.average = '0/5';
-      return;
-    }
+calcSummary(data: any[]) {
+  // grouped data se saare reviews flatten karo
+  const allReviews = data.flatMap(entry => entry.reviews ?? []);
+  this.totalRatings = allReviews.length;
 
-    const sum = data.reduce((acc, r) => acc + r.rating, 0);
-    this.average = (sum / data.length).toFixed(1) + '/5';
-
+  if (allReviews.length === 0) {
+    this.average = '0/5';
     this.breakdown = [
-      { label: 'Outstanding', count: data.filter(r => r.rating === 5).length },
-      { label: 'Good', count: data.filter(r => r.rating === 4).length },
-      { label: 'Okay', count: data.filter(r => r.rating === 3).length },
-      { label: 'Poor', count: data.filter(r => r.rating === 2).length },
-      { label: 'Very disappointing', count: data.filter(r => r.rating === 1).length },
+      { label: 'Outstanding', count: 0 },
+      { label: 'Good', count: 0 },
+      { label: 'Okay', count: 0 },
+      { label: 'Poor', count: 0 },
+      { label: 'Very disappointing', count: 0 },
     ];
+    return;
   }
+
+  const sum = allReviews.reduce((acc: number, r: any) => acc + r.rating, 0);
+  this.average = (sum / allReviews.length).toFixed(1) + '/5';
+
+  this.breakdown = [
+    { label: 'Outstanding',        count: allReviews.filter((r: any) => r.rating === 5).length },
+    { label: 'Good',               count: allReviews.filter((r: any) => r.rating === 4).length },
+    { label: 'Okay',               count: allReviews.filter((r: any) => r.rating === 3).length },
+    { label: 'Poor',               count: allReviews.filter((r: any) => r.rating === 2).length },
+    { label: 'Very disappointing', count: allReviews.filter((r: any) => r.rating === 1).length },
+  ];
+}
+
+
 
   ratingLabel(rating: number): string {
     const map: Record<number, string> = {
@@ -149,4 +166,23 @@ export class Rating implements OnInit {
 
     this.router.navigate(['/my-profile'], { state: { user_id: userId } })
   }
+
+  // Modal state — class mein add karo
+selectedReview: Review | null = null;
+
+openModal(event: Event, review: Review) {
+  event.stopPropagation();
+  this.selectedReview = review;
+  document.body.style.overflow = 'hidden';
+  document.body.style.paddingRight = '0';
+  document.body.style.height = '100vh';  // ← add
+}
+
+closeModal() {
+  this.selectedReview = null;
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
+  document.body.style.height = '';       // ← add
+}
+
 }

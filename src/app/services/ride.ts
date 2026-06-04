@@ -5,6 +5,7 @@ import { AuthService } from './auth';
 import { environment } from '../../../environment';
 import { AuthHelper } from '../helpers/auth-helper';
 import { SKIP_LOADER_HEADER } from '../interceptors/loader-interceptor';
+import { Router } from '@angular/router';
 export interface RideData {
   ride_id: string;
   driver_id: string;
@@ -34,7 +35,7 @@ export class Ride {
   private baseUrl = environment.apiUrl;
   // private baseUrl = 'http://34.207.242.45:3333';
 
-  constructor(private http: HttpClient,private auth:AuthService) {}
+  constructor(private http: HttpClient,private auth:AuthService,private router:Router) {}
 
   createRide(payload: any): Observable<any> {
     const token = AuthHelper.getToken();
@@ -151,6 +152,33 @@ createReview(payload: {
 getReviewDetails(type: 'received' | 'given') {
   return this.http.post<any[]>(`${this.baseUrl}/reviewsDetails`, { type }, {
     headers: { Authorization: `Bearer ${AuthHelper.getToken()}` }
+  });
+}
+
+checkPendingReviews() {
+  const token = AuthHelper.getToken();
+  if (!token) return;
+
+  this.getPendingReviews().subscribe({
+    next: (res) => {
+      console.log('pending reviews:', res);
+      const pending = res.pending_reviews ?? [];
+
+      if (pending.length === 0) {
+        console.log('no pending reviews — dashboard allow');
+        return; // dashboard khulne do
+      }
+
+      const first = pending[0];
+      console.log('pending found — role:', first.role, '| ride_id:', first.ride_id);
+
+      // Dono cases ke liye same route — review page handle karega
+      this.router.navigate(['/review', first.ride_id]);
+    },
+    error: (err) => {
+      console.error('Pending reviews failed:', err);
+      // Error pe dashboard block mat karo
+    }
   });
 }
 }

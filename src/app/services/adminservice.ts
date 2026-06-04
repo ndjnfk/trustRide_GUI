@@ -44,6 +44,8 @@ export interface User {
   phoneNumber: string;
   userCode: number;
   status: string;
+  companyName:string,
+  companyEmail:string,
   verificationStatus: string;
   professionalVerification: ProfessionalVerification | null;
 }
@@ -194,5 +196,12 @@ clearMongoData(): Observable<any> {
   return this.http.delete(`${this.API_URL}/admin/clearMongoData`, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
+}
+
+  deleteUser(user_id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/deleteUser`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    body: { user_id }
+  })
 }
 }

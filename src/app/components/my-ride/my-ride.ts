@@ -10,6 +10,7 @@ import { Snackbar } from '../../services/snackbar';
 import { MatDialog } from '@angular/material/dialog';
 import { RideCancellationDialog } from '../ride-cancellation-dialog/ride-cancellation-dialog';
 import { LoaderServices } from '../../services/loader-services';
+import { BookingCancellationDialog } from '../booking-cancellation-dialog/booking-cancellation-dialog';
 
 interface RideData {
   _id: string;
@@ -43,7 +44,11 @@ export class MyRide implements OnInit {
   deletingId: string | null = null;
   updatingId: string | null = null;
 
+  
+
   private loader = inject(LoaderServices);
+
+  
 
   constructor(private rideService: Ride, private router: Router, private snackBar: Snackbar, private cdr: ChangeDetectorRef, private bookingService: BookingService, private dialog: MatDialog) { }
 
@@ -174,7 +179,7 @@ export class MyRide implements OnInit {
     const dialogRef = this.dialog.open(RideCancellationDialog, {
       data: { ride },
       panelClass: 'booking-dialog-panel',
-      backdropClass: 'booking-backdrop',
+      
     });
 
     dialogRef.afterClosed().subscribe((result: { reason: string } | null) => {
@@ -330,29 +335,76 @@ togglePassengers(rideId: string): void {
 
  
   // Booking status update
-  updateBookingStatus(booking: any, rideId: string, newStatus: string): void {
-    if (booking.status === newStatus) return;
+  // updateBookingStatus(booking: any, rideId: string, newStatus: string): void {
+  //   if (booking.status === newStatus) return;
 
-    this.updatingBookingId = booking.booking_id;
+  //   this.updatingBookingId = booking.booking_id;
 
-    this.bookingService.updateBookingStatus(booking.booking_id, newStatus).subscribe({
-      next: () => {
-        // Local list update karo
-        const list = this.passengers[rideId];
-        const found = list.find((b: any) => b.booking_id === booking.booking_id);
-        if (found) found.status = newStatus;
+  //   this.bookingService.updateBookingStatus(booking.booking_id, newStatus).subscribe({
+  //     next: () => {
+  //       // Local list update karo
+  //       const list = this.passengers[rideId];
+  //       const found = list.find((b: any) => b.booking_id === booking.booking_id);
+  //       if (found) found.status = newStatus;
 
-        this.updatingBookingId = null;
-        this.cdr.detectChanges();
+  //       this.updatingBookingId = null;
+  //       this.cdr.detectChanges();
 
-        this.snackBar.success('Booking status updated successfully');
-      },
-      error: (err: any) => {
-        this.updatingBookingId = null;
-        this.snackBar.error('Failed to update booking status');
-      }
+  //       this.snackBar.success('Booking status updated successfully');
+  //     },
+  //     error: (err: any) => {
+  //       this.updatingBookingId = null;
+  //       this.snackBar.error('Failed to update booking status');
+  //     }
+  //   });
+  // }
+
+
+  // updateBookingStatus method replace karo
+updateBookingStatus(booking: any, rideId: string, newStatus: string): void {
+  if (booking.status === newStatus) return;
+
+  if (newStatus === 'cancelled') {
+    const dialogRef = this.dialog.open(BookingCancellationDialog, {
+      data: { ride: booking, isBooking: true },
+      panelClass: 'booking-dialog-panel',
+      
+     
     });
+
+    dialogRef.afterClosed().subscribe((result: { reason: string } | null) => {
+      if (!result) return;
+      this.callUpdateBookingStatus(booking, rideId, newStatus, result.reason);
+    });
+
+  } else {
+    this.callUpdateBookingStatus(booking, rideId, newStatus, '');
   }
+}
+
+private callUpdateBookingStatus(booking: any, rideId: string, newStatus: string, reason: string): void {
+  this.updatingBookingId = booking.booking_id;
+
+  this.bookingService.updateBookingStatus(booking.booking_id, newStatus, reason).subscribe({
+    next: () => {
+      const list = this.passengers[rideId];
+      const found = list.find((b: any) => b.booking_id === booking.booking_id);
+      if (found) {
+        found.status = newStatus;
+        if (reason) found.cancellation_reason = reason;
+      }
+
+      this.updatingBookingId = null;
+      this.cdr.detectChanges();
+      this.snackBar.success('Booking status updated successfully');
+    },
+    error: (err: any) => {
+      this.updatingBookingId = null;
+      this.snackBar.error('Failed to update booking status');
+    }
+  });
+}
+
 
 goToProfile(userId: string) {
   console.log('Navigating with userId:', userId)  // ✅ check karo

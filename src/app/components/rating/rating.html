@@ -1,43 +1,35 @@
 <div class="rating-page mx-auto py-5">
   <!-- Title -->
-   <div class="d-flex justify-content-center pt-4 pt-lg-5">
-      <h2 class="rating-title text-center  text-underline">Ratings</h2>
-   </div>
+  <div class="d-flex justify-content-center pt-4 pt-lg-5">
+    <h2 class="rating-title text-center text-underline">Ratings</h2>
+  </div>
 
   <!-- Tabs -->
-   @if (showGivenTab) {
-  <ul class="nav rating-tabs">
-    <li class="nav-item flex-fill text-center">
-      <button
-        type="button"
-        class="nav-link w-100"
-        [class.active]="activeTab === 'received'"
-        (click)="setTab('received')"
-      >
-        Received
-      </button>
-    </li>
-    
+  @if (showGivenTab) {
+    <ul class="nav rating-tabs">
       <li class="nav-item flex-fill text-center">
-        <button
-          type="button"
-          class="nav-link w-100"
+        <button type="button" class="nav-link w-100"
+          [class.active]="activeTab === 'received'"
+          (click)="setTab('received')">
+          Received
+        </button>
+      </li>
+      <li class="nav-item flex-fill text-center">
+        <button type="button" class="nav-link w-100"
           [class.active]="activeTab === 'given'"
-          (click)="setTab('given')"
-        >
+          (click)="setTab('given')">
           Given
         </button>
       </li>
-  </ul>
-     }
-  <!-- Summary — sirf received tab pe -->
+    </ul>
+  }
+
+  <!-- Summary -->
   @if (activeTab === 'received') {
     <div class="rating-summary">
       <div class="rating-average">{{ average }}</div>
       <div class="rating-count">{{ totalRatings }} ratings</div>
     </div>
-
-    <!-- Breakdown -->
     <div class="rating-breakdown">
       @for (item of breakdown; track item.label) {
         <div class="d-flex justify-content-between align-items-center breakdown-row">
@@ -46,7 +38,6 @@
         </div>
       }
     </div>
-
     <div class="section-divider"></div>
   }
 
@@ -57,7 +48,7 @@
         <span>Loading...</span>
       </div>
     } @else {
-      @for (review of reviews; track review.name) {
+      @for (review of reviews; track review.userId) {
         <div class="review-item" (click)="goToProfile(review.userId)">
           <div class="d-flex align-items-center review-head">
             <div class="review-avatar">
@@ -67,15 +58,19 @@
                 <i class="ti ti-user"></i>
               }
             </div>
-            <div class="review-name">
+            <div class="review-name" >
               {{ review.name }}
+              @if (review.reviewCount > 1) {
+                <span class="review-count-badge" (click)="openModal($event, review)">
+                  {{ review.reviewCount }}
+                </span>
+              }
               @if (review.verified) {
                 <i class="ti ti-circle-check-filled verified-icon"></i>
               }
             </div>
             <i class="ti ti-chevron-right review-chevron ms-auto"></i>
           </div>
-
           <div class="review-rating">{{ review.rating }}</div>
           <p class="review-comment">{{ review.comment }}</p>
           <div class="review-date">{{ review.date }}</div>
@@ -86,3 +81,43 @@
     }
   </div>
 </div>
+
+<!-- Modal — rating-page ke bahar, ekdum end mein -->
+@if (selectedReview) {
+  <div class="modal fade show d-block" tabindex="-1"
+    style="background:rgba(0,0,0,0.45);"
+    (click)="closeModal()">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered"
+      (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 rounded-4">
+
+        <div class="modal-header border-bottom px-4 py-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="review-avatar" style="width:36px;height:36px;">
+              @if (selectedReview.avatar) {
+                <img [src]="selectedReview.avatar" [alt]="selectedReview.name" />
+              } @else {
+                <i class="ti ti-user"></i>
+              }
+            </div>
+            <span class="fw-semibold fs-6">{{ selectedReview.name }}</span>
+          </div>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+
+        <div class="modal-body px-4 py-3 d-flex flex-column gap-3">
+          @for (r of selectedReview.allReviews; track r.date) {
+            <div class="p-3 rounded-3 bg-body-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="review-rating">{{ r.rating }}</span>
+                <span class="review-date text-muted small">{{ r.date }}</span>
+              </div>
+              <p class="review-comment mb-0">{{ r.comment }}</p>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
+}

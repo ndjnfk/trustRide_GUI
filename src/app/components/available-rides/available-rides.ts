@@ -39,6 +39,7 @@ export class AvailableRides {
       this.rideStats = JSON.parse(saved);
     }
     this.loadRides();
+    this.rideService.checkPendingReviews()
   }
   openStats: any = {}
 

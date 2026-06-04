@@ -11,6 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { Router } from '@angular/router';
 import { Snackbar } from '../../services/snackbar';
+import { AuthHelper } from '../../helpers/auth-helper';
 
 @Component({
   selector: 'app-create-ride',
@@ -21,6 +22,10 @@ import { Snackbar } from '../../services/snackbar';
 })
 export class CreateRide {
   constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef) { }
+
+    ngOnInit(): void {
+      this.rideService.checkPendingReviews()
+    }
   // Form fields
   fromLocation = '';
   toLocation = '';
@@ -289,7 +294,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   }
   publishRide(): void {
     if (!this.isFormValid) return;
-
+console.log( this.rideTime)
     const localDateTimeString = `${this.rideDate}T${this.rideTime}:00`;
     const departureDateUTC = new Date(localDateTimeString).toISOString();
     const selectedRoute = this.routeOptions.find(r => r.id === this.selectedRouteId);
@@ -311,27 +316,17 @@ selectRoute(route: typeof this.routeOptions[0]): void {
         this.cdr.markForCheck();
       },
 
-     error: (err) => {
-  let message = "Failed to create ride. Please try again later"
-  
+    error: (err) => {
+  const message =
+    err?.error?.message ||
+    'Failed to create ride. Please try again later'
+
   if (err?.status === 401) {
-    message = "Please login to continue..."
-    this.snackBar.error(message);
-    return;
-  } else if (err?.status === 403) {
-    const serverMsg = err?.error?.message || ''
-    
-    if (serverMsg.includes('active ride')) {
-      this.snackBar.error('You already have an active ride. Complete or cancel it first.');
-    } else if (serverMsg.includes('review')) {
-      this.snackBar.error('Please review all passengers from your previous ride first.');
-    } else {
-      this.snackBar.info('Your Account is not verified yet. Please wait for verification.');
-    }
-    return;
+    this.snackBar.error('Please login to continue...')
+    return
   }
-  
-  this.snackBar.error(message);
+
+  this.snackBar.error(message)
 }
     });
   }

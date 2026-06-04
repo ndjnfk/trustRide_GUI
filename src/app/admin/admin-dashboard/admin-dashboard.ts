@@ -9,6 +9,8 @@ import { UserProfileDialog } from '../user-profile-dialog/user-profile-dialog';
 import { SideBar } from '../side-bar/side-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { LoaderServices } from '../../services/loader-services';
+import { AuthService } from '../../services/auth';
+import { Snackbar } from '../../services/snackbar';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -24,7 +26,7 @@ export class AdminDashboard {
    
     'status',
     'verificationStatus',
-    
+  
     'profile',
     'actions'
   ];
@@ -46,7 +48,9 @@ export class AdminDashboard {
     private adminService: Adminservice,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService:AuthService,
+    private snackbar:Snackbar
   ) {}
  
   ngOnInit(): void {
@@ -240,6 +244,34 @@ loadUsers(): void {
     panelClass: 'profile-dialog-container'
   });
 }
+sendEmail(userEmail:any){
 
+        this.authService.verifyEmail(userEmail).subscribe({
+        next: () => {
+            this.snackbar.success(`Verification email sent to ${userEmail}`)
+          },
+          error: () => {
+            // registration already succeeded; just inform the user
+            this.snackbar.error('Could not send verification email. Please try again later.')
+          }
+        })
+}
+
+
+deleteUser(userId: string) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    this.adminService.deleteUser(userId).subscribe({
+      next: (res) => {
+        console.log('User deleted:', res);
+        this.snackbar.success('User deleted successfully')
+        this.loadUsers()
+      },
+      error: (err) => {
+        console.error(err);
+        alert(err?.error?.message || 'Delete failed');
+      },
+    });
+  }
 
 }

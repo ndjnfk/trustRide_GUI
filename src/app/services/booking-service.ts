@@ -42,8 +42,8 @@ export class BookingService {
     }
   );
 }
-  updateBookingStatus(booking_id: string, status: string): Observable<any> {
-  return this.http.put(`${this.baseUrl}/bookStatus`, { booking_id, status });
+  updateBookingStatus(booking_id: string, status: string,reason: string = ''): Observable<any> {
+  return this.http.put(`${this.baseUrl}/bookStatus`, { booking_id, status,cancellation_reason: reason  });
 }
 
 submitReview(rideId: string, rating: number, comment: string): Observable<{

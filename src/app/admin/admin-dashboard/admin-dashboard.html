@@ -104,8 +104,7 @@
           <div class="d-flex align-items-center gap-3">
             <div class="search-box">
               <i class="ti ti-search"></i>
-              <input type="text" class="form-control" placeholder="Search users..."
-                     (keyup)="applyFilter($event)">
+              <input type="text" class="form-control" placeholder="Search users..." (keyup)="applyFilter($event)">
             </div>
 
             <button class="btn btn-light border" (click)="loadUsers()" [disabled]="isLoading">
@@ -123,7 +122,8 @@
             <span>All</span>
             <span class="chip-count">{{ allUsers.length }}</span>
           </button>
-          <button class="chip chip-verified" [class.active]="activeFilter === 'verified'" (click)="setFilter('verified')">
+          <button class="chip chip-verified" [class.active]="activeFilter === 'verified'"
+            (click)="setFilter('verified')">
             <mat-icon>verified</mat-icon>
             <span>Verified</span>
             <span class="chip-count">{{ getCountByStatus('verified') }}</span>
@@ -133,7 +133,8 @@
             <span>Pending</span>
             <span class="chip-count">{{ getCountByStatus('pending') }}</span>
           </button>
-          <button class="chip chip-rejected" [class.active]="activeFilter === 'rejected'" (click)="setFilter('rejected')">
+          <button class="chip chip-rejected" [class.active]="activeFilter === 'rejected'"
+            (click)="setFilter('rejected')">
             <mat-icon>cancel</mat-icon>
             <span>Rejected</span>
             <span class="chip-count">{{ getCountByStatus('rejected') }}</span>
@@ -151,16 +152,18 @@
                 <th>Name</th>
                 <th>Gender</th>
                 <th>Account</th>
+                  <th>delete</th>
                 <th>Verification</th>
+                <th>send email</th>
                 <th>Profile</th>
+              
                 <th>Actions</th>
               </tr>
             </thead>
 
             <tbody>
 
-              <tr *ngFor="let user of displayedUsers"
-                  [class.row-updating]="updatingUserId === user._id">
+              <tr *ngFor="let user of displayedUsers" [class.row-updating]="updatingUserId === user._id">
 
                 <td>#{{ user.userCode }}</td>
 
@@ -183,18 +186,32 @@
                 </td>
 
                 <td>
-                  <span class="status"
-                        [class.active-status]="user.status === 'active'"
-                        [class.inactive-status]="user.status !== 'active'">
+                  <span class="status" [class.active-status]="user.status === 'active'"
+                    [class.inactive-status]="user.status !== 'active'">
                     ● {{ user.status | titlecase }}
                   </span>
                 </td>
+            <td class="action-cell">
 
+ 
+  <button
+    class="delete-btn"
+    (click)="deleteUser(user._id)"
+    
+  >
+  🗑️
+    <!-- @if (deletingRideId === ride.ride_id) {
+      <span class="delete-spinner"></span>
+    } @else {
+      🗑️
+    } -->
+  </button>
+</td>
+ 
                 <td>
-                  <span class="status"
-                        [class.verified-status]="user.verificationStatus === 'verified'"
-                        [class.pending-status]="user.verificationStatus === 'pending'"
-                        [class.rejected-status]="user.verificationStatus === 'rejected'">
+                  <span class="status" [class.verified-status]="user.verificationStatus === 'verified'"
+                    [class.pending-status]="user.verificationStatus === 'pending'"
+                    [class.rejected-status]="user.verificationStatus === 'rejected'">
                     <ng-container [ngSwitch]="user.verificationStatus">
                       <ng-container *ngSwitchCase="'verified'">✔ Verified</ng-container>
                       <ng-container *ngSwitchCase="'pending'">⏳ Pending</ng-container>
@@ -203,7 +220,11 @@
                     </ng-container>
                   </span>
                 </td>
-
+                <td>
+                  <button class="eye-btn" (click)="sendEmail(user.userEmail)" title="View Profile">
+                    <i class="ti ti-mail"></i>
+                  </button>
+                </td>
                 <td>
                   <button class="eye-btn" (click)="openProfile(user)" title="View Profile">
                     <i class="ti ti-eye"></i>
@@ -213,14 +234,14 @@
                 <td>
                   <div class="d-flex gap-2">
                     <button class="action-btn verify-btn"
-                            [disabled]="user.verificationStatus === 'verified' || updatingUserId === user._id"
-                            (click)="updateVerificationStatus(user, 'verified')">
+                      [disabled]="user.verificationStatus === 'verified' || updatingUserId === user._id"
+                      (click)="updateVerificationStatus(user, 'verified')">
                       Verify
                     </button>
 
                     <button class="action-btn reject-btn"
-                            [disabled]="user.verificationStatus === 'rejected' || updatingUserId === user._id"
-                            (click)="updateVerificationStatus(user, 'rejected')">
+                      [disabled]="user.verificationStatus === 'rejected' || updatingUserId === user._id"
+                      (click)="updateVerificationStatus(user, 'rejected')">
                       Reject
                     </button>
                   </div>
