@@ -1,8 +1,8 @@
 // ── environment.ts (development) ─────────────────────────────────────────────
 export const environment = {
   production: false,
-  // apiUrl: 'http://localhost:3333',   // AdonisJS dev server
-  apiUrl: 'https://trustridesre.com/api',   // AdonisJS dev server
+  apiUrl: 'http://localhost:3333',   // AdonisJS dev server
+  // apiUrl: 'https://trustridesre.com/api',   // AdonisJS dev server
   // apiUrl: 'http://34.207.242.45:3333/',   // AdonisJS dev server
 }
 
