@@ -93,6 +93,8 @@ getInitials(name: string): string {
     { label: 'Profile', route: '/about-you', icon: 'user' },
     { label: 'Company Members', route: '/company-members', icon: 'users' },
     { label: 'Rating', route: '/rating-show', icon: 'star' },
+    { label: 'Update Auto Generate Rides', route: '/auto-generated', icon: 'compass' },
+   
   ];
  
   @HostListener('window:scroll')

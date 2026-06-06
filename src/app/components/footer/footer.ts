@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { AuthHelper } from '../../helpers/auth-helper';
 
 @Component({
@@ -10,6 +10,8 @@ import { AuthHelper } from '../../helpers/auth-helper';
   styleUrl: './footer.css',
 })
 export class Footer {
+
+  constructor(private router:Router){}
   currentYear = new Date().getFullYear();
 
   get isLoggedIn(): boolean {
@@ -53,7 +55,15 @@ export class Footer {
     { key: 'search',  label: 'Search',     route: '/search-rides' },
     { key: 'publish', label: 'Publish',    route: '/create-ride' },
     { key: 'rides',   label: 'Your rides', route: '/get-ride' },
-    { key: 'inbox',   label: 'Inbox',      route: '/get-bookings' },
+    { key: 'inbox',   label: 'wpg',      route: 'https://chat.whatsapp.com/BFkpwqCkWZnKvv61V2l03c' },
     { key: 'profile', label: 'Profile',    route: '/about-you' },
   ];
+
+  onNavClick(item: any): void {
+  if (item.external) {
+    window.open(item.route, '_blank');
+  } else {
+    this.router.navigate([item.route]);
+  }
+}
 }

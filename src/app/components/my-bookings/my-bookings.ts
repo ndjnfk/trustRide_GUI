@@ -33,10 +33,15 @@ interface Booking {
   gender: string;
   booked_at: string;
   ride: RideInfo | null;
-   review?: {
+  review?: {
     rating: number;
     comment: string;
   } | null;
+
+  // ── cancel-by-passenger fields (backend getUserBookings se aane chahiye) ──
+   status_by_passenger?: string;                 // 👈 ye bhi chahiye
+  cancelled_by?: string;
+  cancellation_reason_by_passenger?: string;
 }
 
 interface ReviewState {
@@ -46,11 +51,18 @@ interface ReviewState {
   submitting: boolean;
   submitted: boolean;
   error: string;
-  submittedRating?: number;   // ← add
+  submittedRating?: number;
   submittedComment?: string;
-  
+}
 
-  
+// ── Cancel modal state shape ──
+interface CancelModalState {
+  open: boolean;
+  booking: Booking | null;
+  selectedReason: string;
+  otherReason: string;
+  submitting: boolean;
+  error: string;
 }
 
 // Key for localStorage — stores Set of booking_ids that were reviewed
@@ -61,7 +73,7 @@ const REVIEWED_KEY = 'reviewed_bookings';
   imports: [CommonModule, FormsModule],
   templateUrl: './my-bookings.html',
   styleUrl: './my-bookings.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyBookings implements OnInit {
   allBookings: Booking[] = [];
@@ -80,6 +92,28 @@ export class MyBookings implements OnInit {
 
   /** Persisted set of booking_ids already reviewed (survives reload) */
   private reviewedBookingIds: Set<string> = new Set();
+
+  /** Cancelled-reason dropdown toggles — keyed by booking_id */
+  openCancelReason: Record<string, boolean> = {};
+
+  // ── Cancel booking: predefined reasons ──
+  cancelReasons: string[] = [
+    'Health issues',
+    'Change in departure time',
+    'Pickup point is far away',
+    'Found another ride',
+    'Booked by mistake',
+  ];
+
+  // ── Cancel booking: modal state ──
+  cancelModal: CancelModalState = {
+    open: false,
+    booking: null,
+    selectedReason: '',
+    otherReason: '',
+    submitting: false,
+    error: '',
+  };
 
   private loader = inject(LoaderServices);
 
@@ -131,95 +165,64 @@ export class MyBookings implements OnInit {
 
   // ── Bookings ───────────────────────────────────────────────────────────────
 
-  // loadBookings(): void {
-  //   this.isLoading = true;
+  loadBookings(): void {
+    this.isLoading = true;
+    this.loader.show();
+    this.cdr.detectChanges();
+    this.error = '';
 
-  //   this.cdr.detectChanges();
-  //   this.error = '';
+    this.http
+      .get<{ success: boolean; total: number; bookings: Booking[] }>(
+        `${this.BASE_URL}/getUserBookings`
+      )
+      .subscribe({
+        next: (res) => {
+          console.log('First booking:', JSON.stringify(res.bookings[0], null, 2));
+          this.allBookings = res.bookings;
 
+          // ← backend se review data restore karo
+          res.bookings.forEach((b: Booking) => {
+            if (b.review) {
+              this.reviewedBookingIds.add(b.booking_id);
+              this.reviewStates[b.booking_id] = {
+                rating: b.review.rating,
+                hovered: 0,
+                comment: b.review.comment,
+                submitting: false,
+                submitted: true,
+                error: '',
+                submittedRating: b.review.rating,
+                submittedComment: b.review.comment,
+              };
+            }
+          });
 
-  //   // DEBUG: Yeh line add karo temporarily
-  //   console.log('loadBookings called, token:', localStorage.getItem('auth_token'));
+          this.isLoading = false;
+          this.loader.hide();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.error = err?.error?.message || 'Failed to load bookings.';
+          this.isLoading = false;
+          this.loader.hide();
+          this.cdr.detectChanges();
+        },
+      });
+  }
 
-  //   this.http
-  //     .get<{ success: boolean; total: number; bookings: Booking[] }>(
-  //       `${this.BASE_URL}/getUserBookings`
-  //     )
-  //     .subscribe({
-  //       next: (res) => {
-  //        console.log('Bookings:', JSON.stringify(res.bookings, null, 2));
-  //         this.allBookings = res.bookings;
-  //         this.isLoading = false;
-  //         console.log('isLoading after:', this.isLoading);
-  //         this.cdr.detectChanges();
-  //       },
-  //       error: (err) => {
-  //         this.error = err?.error?.message || 'Failed to load bookings.';
-  //         this.isLoading = false;
-  //         this.cdr.detectChanges();
-  //       },
-  //     });
+  // get pendingBookings(): Booking[] {
+  //   return this.allBookings.filter((b) => b.status === 'pending');
   // }
 
+  // get confirmedBookings(): Booking[] {
+  //   return this.allBookings.filter((b) => b.status === 'confirmed');
+  // }
 
-  loadBookings(): void {
-  this.isLoading = true;
-  this.loader.show();
-  this.cdr.detectChanges();
-  this.error = '';
-
-  this.http
-    .get<{ success: boolean; total: number; bookings: Booking[] }>(
-      `${this.BASE_URL}/getUserBookings`
-    )
-    .subscribe({
-      next: (res) => {
-          console.log('First booking:', JSON.stringify(res.bookings[0], null, 2));
-        this.allBookings = res.bookings;
-
-        // ← backend se review data restore karo
-        res.bookings.forEach((b: Booking) => {
-          if (b.review) {
-            this.reviewedBookingIds.add(b.booking_id);
-            this.reviewStates[b.booking_id] = {
-              rating: b.review.rating,
-              hovered: 0,
-              comment: b.review.comment,
-              submitting: false,
-              submitted: true,
-              error: '',
-              submittedRating: b.review.rating,
-              submittedComment: b.review.comment,
-            };
-          }
-        });
-
-        this.isLoading = false;
-        this.loader.hide();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.error = err?.error?.message || 'Failed to load bookings.';
-        this.isLoading = false;
-        this.loader.hide();
-        this.cdr.detectChanges();
-      },
-    });
-}
-
-  get pendingBookings(): Booking[] {
-    return this.allBookings.filter((b) => b.status === 'pending');
-  }
-
-  get confirmedBookings(): Booking[] {
-    return this.allBookings.filter((b) => b.status === 'confirmed');
-  }
-
-  get rejectedBookings(): Booking[] {
-    return this.allBookings.filter(
-      (b) => b.status === 'cancelled' || b.status === 'rejected'
-    );
-  }
+  // get rejectedBookings(): Booking[] {
+  //   return this.allBookings.filter(
+  //     (b) => b.status === 'cancelled' || b.status === 'rejected'
+  //   );
+  // }
 
   formatDate(dateStr?: string): string {
     if (!dateStr) return '—';
@@ -227,6 +230,7 @@ export class MyBookings implements OnInit {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
+      timeZone: 'UTC'
     });
   }
 
@@ -236,7 +240,7 @@ export class MyBookings implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
-      timeZone: 'Asia/Kolkata',
+      timeZone: 'UTC'
     });
   }
 
@@ -354,11 +358,142 @@ export class MyBookings implements OnInit {
       },
     });
   }
-  openCancelReason: Record<string, boolean> = {};
 
-toggleCancelReason(bookingId: string): void {
-  this.openCancelReason[bookingId] = !this.openCancelReason[bookingId];
-  this.cdr.markForCheck();
+  // ── Cancelled-reason dropdown (driver/ride cancellation + passenger reason) ─
+
+  toggleCancelReason(bookingId: string): void {
+    this.openCancelReason[bookingId] = !this.openCancelReason[bookingId];
+    this.cdr.markForCheck();
+  }
+
+  // ── Cancel booking by passenger ─────────────────────────────────────────────
+
+  /** Open popup for a booking */
+  openCancelModal(booking: Booking): void {
+    this.cancelModal = {
+      open: true,
+      booking,
+      selectedReason: '',
+      otherReason: '',
+      submitting: false,
+      error: '',
+    };
+    this.cdr.markForCheck(); // OnPush — iske bina modal nahi khulega
+  }
+
+  /** Close popup */
+  closeCancelModal(): void {
+    if (this.cancelModal.submitting) return;
+    this.cancelModal.open = false;
+    this.cancelModal.booking = null;
+    this.cdr.markForCheck();
+  }
+
+  /** Confirm cancel → API call */
+  confirmCancelBooking(): void {
+    const m = this.cancelModal;
+    if (!m.booking) return;
+
+    const finalReason =
+      m.selectedReason === 'Other' ? m.otherReason.trim() : m.selectedReason;
+
+    if (!m.selectedReason) {
+      m.error = 'Please select a reason';
+      this.cdr.markForCheck();
+      return;
+    }
+    if (m.selectedReason === 'Other' && !finalReason) {
+      m.error = 'Please write your reason';
+      this.cdr.markForCheck();
+      return;
+    }
+
+    m.error = '';
+    m.submitting = true;
+    this.cdr.markForCheck();
+
+    const payload = {
+      booking_id: m.booking.booking_id,
+      status_by_passenger: 'cancelled',
+      cancellation_reason_by_passenger: finalReason,
+    };
+
+    const rideId = m.booking.ride?.ride_id; 
+     console.log('captured rideId:', rideId);    // 👈 pehle capture (m.booking null hone se pehle)
+
+    this.bookingService.cancelBookingByPassenger(payload).subscribe({
+      next: (res) => {
+        m.submitting = false;
+        m.open = false;
+        m.booking = null;
+
+        console.log('clearing rideStats for:', rideId);  // 👈 verify in console
+        this.clearRideStatsForRide(rideId);
+       
+
+        this.snackBar.success(res?.message || 'Booking cancelled successfully');
+        this.loadBookings();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        m.submitting = false;
+        m.error = err?.error?.message || 'Something went wrong. Please try again.';
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  private clearRideStatsForRide(rideId?: string): void {
+    console.log('🧹 clear called with rideId:', rideId);
+
+    if (!rideId) { console.log('🧹 rideId missing — exit'); return; }
+
+    const raw = localStorage.getItem('rideStats');     // ⚠️ getItem hona chahiye, removeItem NahI
+    console.log('🧹 rideStats before:', raw);
+
+    if (!raw) { console.log('🧹 rideStats key hi nahi hai — exit'); return; }
+
+    const stats = JSON.parse(raw);
+    console.log('🧹 keys in stats:', Object.keys(stats), '| looking for:', rideId);
+
+    if (stats[rideId]) {
+      delete stats[rideId];
+      localStorage.setItem('rideStats', JSON.stringify(stats));
+      console.log('🧹 DELETED. rideStats after:', localStorage.getItem('rideStats'));
+    } else {
+      console.log('🧹 ye rideId stats me NAHI mila — key mismatch!');
+    }
+  }
+// Not Approved — sirf DRIVER-rejected (passenger-cancel exclude)
+
+
+// ── Pending — passenger-cancelled exclude ──
+get pendingBookings(): Booking[] {
+  return this.allBookings.filter(
+    (b) => b.status === 'pending' && b.status_by_passenger !== 'cancelled'
+  );
 }
 
+// ── Confirmed — passenger-cancelled exclude ──
+get confirmedBookings(): Booking[] {
+  return this.allBookings.filter(
+    (b) => b.status === 'confirmed' && b.status_by_passenger !== 'cancelled'
+  );
+}
+
+// ── Not Approved — sirf driver-rejected, passenger-cancelled exclude ──
+get rejectedBookings(): Booking[] {
+  return this.allBookings.filter(
+    (b) =>
+      (b.status === 'cancelled' || b.status === 'rejected') &&
+      b.status_by_passenger !== 'cancelled'
+  );
+}
+
+// ── Cancelled by passenger — yahi ek jagah dikhegi ──
+get cancelledByMeBookings(): Booking[] {
+  return this.allBookings.filter(
+    (b) => b.status_by_passenger === 'cancelled'
+  );
+}
 }

@@ -60,4 +60,18 @@ submitReview(rideId: string, rating: number, comment: string): Observable<{
   return this.http.post<any>(`${this.baseUrl}/createReview`, payload);
   // return this.http.post<any>('http://34.207.242.45:3333/createReview', payload);
 }
+
+
+// booking-service.ts
+cancelBookingByPassenger(payload: {
+  booking_id: string;
+  status_by_passenger: string;
+  cancellation_reason_by_passenger: string;
+}) {
+  return this.http.post<{ success: boolean; message: string; data: any }>(
+    //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ye generic missing tha
+    `${this.baseUrl}/booking-status-passenger`,
+    payload
+  );
+}
 }

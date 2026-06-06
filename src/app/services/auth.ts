@@ -20,7 +20,7 @@ export interface CurrentUserResponse {
 
   Email: string;
 
-  
+  role:string,
 
   Phone_Number: string;
 

@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BookingService, BookSeatResponse } from '../../services/booking-service';
 import { Snackbar } from '../../services/snackbar';
 import { MatDialog } from '@angular/material/dialog';
-import { BookingDialog ,BookingDialogResult} from '../booking-dialog/booking-dialog';
+import { BookingDialog, BookingDialogResult } from '../booking-dialog/booking-dialog';
 
 @Component({
   selector: 'app-rides-list',
@@ -31,8 +31,8 @@ export class AvailableRides {
   rideStats: any = {}
 
   constructor(private rideService: Ride, private bookingService: BookingService,
-    private snackBar: Snackbar, private cdr: ChangeDetectorRef,  private dialog: MatDialog  ) { }
-     ngOnInit(): void {
+    private snackBar: Snackbar, private cdr: ChangeDetectorRef, private dialog: MatDialog) { }
+  ngOnInit(): void {
 
     const saved = localStorage.getItem('rideStats');
     if (saved) {
@@ -120,14 +120,16 @@ export class AvailableRides {
 
   formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-IN', {
-      day: '2-digit', month: 'short', year: 'numeric'
-    });
+      day: '2-digit', month: 'short', year: 'numeric',
+      timeZone: 'UTC'  // ✅ UTC force
+    })
   }
 
   formatTime(dateStr: string): string {
     return new Date(dateStr).toLocaleTimeString('en-IN', {
-      hour: '2-digit', minute: '2-digit', hour12: true
-    });
+      hour: '2-digit', minute: '2-digit', hour12: true,
+      timeZone: 'UTC'  // ✅ UTC force — 20:00Z → "08:00 PM" dikhega
+    })
   }
 
   getStatusClass(status: string): string {
@@ -184,65 +186,79 @@ export class AvailableRides {
   // }
 
 
- bookRide(ride: any): void {
-  console.log('ride id:', ride.ride_id);
+  bookRide(ride: any): void {
+    console.log('ride id:', ride.ride_id);
 
-  const dialogRef = this.dialog.open(BookingDialog, {
-    data: { ride },
-    panelClass: 'booking-dialog-panel',
-    backdropClass: 'booking-backdrop',
-  });
-
-  dialogRef.afterClosed().subscribe((result: BookingDialogResult | null) => {
-    console.log('dialog result:', result);
-    if (!result || result.total === 0) return;
-
-    console.log('calling bookSeat with:', {
-      rideId: ride.ride_id,
-      males: result.males,
-      females: result.females
+    const dialogRef = this.dialog.open(BookingDialog, {
+      data: { ride },
+      panelClass: 'booking-dialog-panel',
+      backdropClass: 'booking-backdrop',
     });
 
-    this.loadingRides.add(ride.ride_id);
-    this.cdr.detectChanges();
+    dialogRef.afterClosed().subscribe((result: BookingDialogResult | null) => {
+      console.log('dialog result:', result);
+      if (!result || result.total === 0) return;
 
-    this.bookingService.bookSeat(ride.ride_id, result.males, result.females,result.isSameFamily)
-      .subscribe({
-        next: (res: BookSeatResponse) => {
-          this.loadingRides.delete(ride.ride_id);
-
-          this.rideStats = { ...this.rideStats, [ride.ride_id]: res.ride_status };
-          localStorage.setItem('rideStats', JSON.stringify(this.rideStats));
-
-          this.allRides = this.allRides.map(r =>
-            r.ride_id === ride.ride_id
-              ? { ...r, available_seats: res.ride_status.remaining_seats }
-              : r
-          );
-          this.applyFilters();
-          this.cdr.detectChanges();
-
-          this.snackBar.success(`${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`);
-        },
-        error: (err) => {
-          this.loadingRides.delete(ride.ride_id);
-          let message = 'Booking failed';
-          if (err?.status === 409) message = 'You have already booked a seat for this ride.';
-          else if (err?.status === 403) {
-    // ← backend se aane wala exact message use karo
-    if (err?.error?.message?.includes('review')) {
-      message = 'Please review your completed ride before booking again.';
-    } else if (err?.error?.message?.includes('ratio')) {
-      message = 'Booking blocked — 2M + 2F ratio not allowed.';
-    } else {
-      message = err?.error?.message || 'Access denied.';
-    }
-  } 
-          else if (err?.status === 500) message = 'Server error. Please try again later.';
-          this.snackBar.error(message);
-          this.cdr.detectChanges();
-        }
+      console.log('calling bookSeat with:', {
+        rideId: ride.ride_id,
+        males: result.males,
+        females: result.females
       });
-  });
-}
+
+      this.loadingRides.add(ride.ride_id);
+      this.cdr.detectChanges();
+
+      this.bookingService.bookSeat(ride.ride_id, result.males, result.females, result.isSameFamily)
+        .subscribe({
+          next: (res: BookSeatResponse) => {
+            this.loadingRides.delete(ride.ride_id);
+
+
+            this.rideStats = { ...this.rideStats, [ride.ride_id]: res.ride_status };
+            localStorage.setItem('rideStats', JSON.stringify(this.rideStats));
+
+            this.allRides = this.allRides.map(r =>
+              r.ride_id === ride.ride_id
+                ? { ...r, available_seats: res.ride_status.remaining_seats }
+                : r
+            );
+            this.applyFilters();
+            this.cdr.detectChanges();
+
+            this.snackBar.success(`${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`);
+          },
+          // error: (err) => {
+          //   this.loadingRides.delete(ride.ride_id);
+          //   let message = 'Booking failed';
+          //   if (err?.status === 409) message = 'You have already booked a seat for this ride.';
+          //   else if (err?.status === 403) {
+          //     // ← backend se aane wala exact message use karo
+          //     if (err?.error?.message?.includes('review')) {
+          //       message = 'Please review your completed ride before booking again.';
+          //     } else if (err?.error?.message?.includes('ratio')) {
+          //       message = 'Booking blocked — 2M + 2F ratio not allowed.';
+          //     } else {
+          //       message = err?.error?.message || 'Access denied.';
+          //     }
+          //   }
+          //   else if (err?.status === 500) message = 'Server error. Please try again later.';
+          //   this.snackBar.error(message);
+          //   this.cdr.detectChanges();
+          // }
+
+          error: (err) => {
+            this.loadingRides.delete(ride.ride_id);
+
+            const message =
+              err?.error?.message ||
+              (err?.status === 0
+                ? 'Network error. Please check your connection.'
+                : 'Booking failed. Please try again.');
+
+            this.snackBar.error(message);
+            this.cdr.detectChanges();
+          }
+        });
+    });
+  }
 }

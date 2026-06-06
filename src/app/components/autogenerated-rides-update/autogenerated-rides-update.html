@@ -1,0 +1,108 @@
+<section class="auto-rides-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Auto-Generated Rides <span class="emoji">🤖</span></h1>
+    <p>These rides were created automatically based on your preferred travel days. Review and edit the details below.</p>
+  </div>
+
+  <!-- Role not allowed -->
+  @if (notAllowed) {
+    <div class="empty-state">
+      <span class="empty-icon">🚫</span>
+      <p>This page is only available for <strong>riders</strong>.</p>
+    </div>
+  }
+
+  <!-- Loading -->
+  @else if (isLoading) {
+    <div class="loading">
+      <span class="spinner"></span> Loading your rides...
+    </div>
+  }
+
+  <!-- Empty -->
+  @else if (rides.length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">🚗</span>
+      <p>No auto-generated rides yet.</p>
+      <small>Rides are created automatically 1–2 days before your preferred travel days.</small>
+    </div>
+  }
+
+  <!-- Rides list -->
+  @else {
+    <div class="rides-list">
+      @for (r of rides; track r._id) {
+        <div class="ride-card">
+
+          <!-- Card header -->
+          <div class="ride-card-header">
+            <div class="route-info">
+              <span class="route-title">
+                {{ r.start_location.name }}
+                <span class="arrow">→</span>
+                {{ r.end_location.name }}
+              </span>
+              <span class="ride-date">{{ displayDate(r) }}</span>
+            </div>
+            <span class="badge-auto">⚡ Auto-created</span>
+          </div>
+
+          <!-- Editable fields -->
+          <div class="ride-grid">
+
+            <div class="fld">
+              <label>Date</label>
+              <input type="date" [(ngModel)]="r.editDate" />
+            </div>
+
+            <div class="fld">
+              <label>Departure Time</label>
+              <input type="time" [(ngModel)]="r.editTime" />
+            </div>
+
+            <div class="fld fld-wide">
+              <label>Route</label>
+              <select [(ngModel)]="r.editRouteId" (ngModelChange)="onRouteChange(r)">
+                <option value="" disabled>Select route</option>
+                @for (opt of routesFor(r); track opt.id) {
+                  <option [value]="opt.id">
+                    {{ opt.label }} — ₹{{ opt.basePrice }} · {{ opt.distance }} km
+                  </option>
+                }
+              </select>
+
+              @if (selectedRoute(r); as route) {
+                <span class="route-via">🛣️ {{ route.via }}</span>
+              }
+            </div>
+
+            <div class="fld">
+              <label>Price per Seat (₹)</label>
+              <input type="number" [(ngModel)]="r.editPrice" min="1" />
+            </div>
+
+            <div class="fld">
+              <label>Available Seats</label>
+              <input type="number" [(ngModel)]="r.editSeats" min="1" max="8" />
+            </div>
+
+          </div>
+
+          <!-- Footer -->
+          <div class="ride-card-footer">
+            <button class="btn-save" (click)="saveRide(r)" [disabled]="r.saving">
+              @if (r.saving) {
+                <span class="spinner spinner--sm"></span> Saving...
+              } @else {
+                Save Changes
+              }
+            </button>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+</section>

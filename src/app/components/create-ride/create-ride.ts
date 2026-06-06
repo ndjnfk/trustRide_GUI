@@ -57,7 +57,9 @@ export class CreateRide {
     'Gurgaon Huda City Center Secor 29',
     'Gurgaon Sector 32 ,Jharsa Institutional Area',
     'Gurgaon Sector 48,Candor Tech Space',
-    'Gurgaon Sector 21, Krishna Chowk'
+    'Gurgaon Sector 21, Krishna Chowk',
+    'Gurgaon Hero Honda Chowk',
+    'Gurgaon Subhash Chowk'
 
   ];
 
@@ -70,6 +72,8 @@ export class CreateRide {
     'Saharanpur Vishwakarma Chowk',
     'Saharanpur Hasanpur Chungi',
     'Saharanpur J V Jain College',
+    'Saharanpur Sharda Nagar',
+    'Saharanpur Hakikat Nagar'
     
   ];
 readonly routeOptions = [
@@ -297,13 +301,14 @@ selectRoute(route: typeof this.routeOptions[0]): void {
     if (!this.isFormValid) return;
 console.log( this.rideTime)
     const localDateTimeString = `${this.rideDate}T${this.rideTime}:00`;
-    const departureDateUTC = new Date(localDateTimeString).toISOString();
+    // const departureDateUTC = new Date(localDateTimeString).toISOString();
+     const departureIso = `${this.rideDate}T${this.rideTime}:00.000Z`
     const selectedRoute = this.routeOptions.find(r => r.id === this.selectedRouteId);
 
     const payload = {
       start_location: { name: this.fromLocation },
       end_location: { name: this.toLocation },
-      departure_time: departureDateUTC,
+      departure_time: departureIso,
       available_seats: this.seats,
       price_per_seat: this.pricePerSeat,
       route_via: selectedRoute?.via ?? '',

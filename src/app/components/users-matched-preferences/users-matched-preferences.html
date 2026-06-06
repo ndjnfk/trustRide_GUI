@@ -1,0 +1,116 @@
+<!-- ═══════════ MATCHING TRAVELLERS ═══════════ -->
+<div class="container-fluid py-4" *ngIf="!loading">
+
+  <!-- ── Riders Block (login user passenger YA both hai) ── -->
+  <div *ngIf="(userRole === 'passenger' || userRole === 'both') && riders.length > 0" class="mb-5">
+    <div class="members-header mb-4">
+      <div class="header-badge">
+        <i class="bi bi-car-front-fill"></i>
+        <span>Matching Riders</span>
+      </div>
+      <h2 class="header-title">Riders on your route</h2>
+      <p class="header-sub">These riders travel the same days as you</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-sm-6 col-lg-3"
+           *ngFor="let rider of riders; let i = index">
+        <div class="member-card" (click)="goToProfile(rider._id)"
+             [style.animation-delay.ms]="i * 60">
+          <div class="card-accent"></div>
+
+          <div class="avatar-wrap">
+            <div class="avatar-ring">
+              <img *ngIf="rider.avatarUrl"
+                   [src]="imageBaseUrl + rider.avatarUrl"
+                   [alt]="rider.fullName" class="avatar-img"/>
+              <div *ngIf="!rider.avatarUrl" class="avatar-initials">
+                {{ getInitials(rider.fullName) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <h5 class="member-name">{{ rider.fullName }}</h5>
+            <p class="member-email">
+              <i class="bi bi-envelope-fill"></i>
+              <span>{{ rider.userEmail }}</span>
+            </p>
+
+            <!-- ✅ Matched trips (type ke saath) -->
+            <div class="matched-trips mt-2" *ngIf="rider.matchedTrips?.length">
+              <span class="match-badge"
+                    [class.match-badge--return]="trip.type === 'return'"
+                    *ngFor="let trip of rider.matchedTrips">
+                <i class="bi" [ngClass]="trip.type === 'going' ? 'bi-arrow-right-circle-fill' : 'bi-arrow-left-circle-fill'"></i>
+                {{ trip.type === 'going' ? 'Going' : 'Return' }} · {{ trip.day | titlecase }} · {{ trip.route | titlecase }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Passengers Block (login user rider YA both hai) ── -->
+  <div *ngIf="(userRole === 'rider' || userRole === 'both') && passengers.length > 0" class="mb-5">
+    <div class="members-header mb-4">
+      <div class="header-badge">
+        <i class="bi bi-people-fill"></i>
+        <span>Matching Passengers</span>
+      </div>
+      <h2 class="header-title">Passengers on your route</h2>
+      <p class="header-sub">These passengers travel the same days as you</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-sm-6 col-lg-3"
+           *ngFor="let passenger of passengers; let i = index">
+        <div class="member-card" (click)="goToProfile(passenger._id)"
+             [style.animation-delay.ms]="i * 60">
+          <div class="card-accent"></div>
+
+          <div class="avatar-wrap">
+            <div class="avatar-ring">
+              <img *ngIf="passenger.avatarUrl"
+                   [src]="imageBaseUrl + passenger.avatarUrl"
+                   [alt]="passenger.fullName" class="avatar-img"/>
+              <div *ngIf="!passenger.avatarUrl" class="avatar-initials">
+                {{ getInitials(passenger.fullName) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <h5 class="member-name">{{ passenger.fullName }}</h5>
+            <p class="member-email">
+              <i class="bi bi-envelope-fill"></i>
+              <span>{{ passenger.userEmail }}</span>
+            </p>
+
+            <!-- ✅ Matched trips (type ke saath) -->
+            <div class="matched-trips mt-2" *ngIf="passenger.matchedTrips?.length">
+              <span class="match-badge"
+                    [class.match-badge--return]="trip.type === 'return'"
+                    *ngFor="let trip of passenger.matchedTrips">
+                <i class="bi" [ngClass]="trip.type === 'going' ? 'bi-arrow-right-circle-fill' : 'bi-arrow-left-circle-fill'"></i>
+                {{ trip.type === 'going' ? 'Going' : 'Return' }} · {{ trip.day | titlecase }} · {{ trip.route | titlecase }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Empty state — both ka case bhi handle -->
+  <div class="empty-state"
+       *ngIf="(userRole === 'passenger' && riders.length === 0) ||
+              (userRole === 'rider' && passengers.length === 0) ||
+              (userRole === 'both' && riders.length === 0 && passengers.length === 0)">
+    <div class="empty-icon"><i class="bi bi-search"></i></div>
+    <h4>No matching travellers</h4>
+    <p>No one from your company shares your travel days yet</p>
+  </div>
+
+</div>

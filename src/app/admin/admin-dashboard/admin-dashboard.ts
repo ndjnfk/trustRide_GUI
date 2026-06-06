@@ -274,4 +274,61 @@ deleteUser(userId: string) {
     });
   }
 
+
+  checkingEmails = new Set<string>();   // kaunse emails check ho rahe hain
+
+checkBounceEmail(user: any): void {
+  const email = user.userEmail;
+  if (!email || this.checkingEmails.has(email)) return;
+
+  this.checkingEmails.add(email);
+  this.cdr.detectChanges();
+
+  this.adminService.checkBounceEmail(email).subscribe({
+    next: (res) => {
+      // Bounce result ke hisaab se status decide karo
+      const newStatus = res.success ? 'verified' : 'rejected';
+
+      if (res.success) {
+        this.snackbar.success(`✅ ${email} — ${res.message}`);
+      } else {
+        this.snackbar.error(`❌ ${email} — ${res.message}`);
+      }
+
+      // Ab verification status update karo
+      this.updateStatus(user, newStatus, email);
+    },
+    error: (err) => {
+      // API error (timeout, server down) — status mat badlo,
+      // kyunki yeh email invalid hone ka proof nahi hai
+      this.checkingEmails.delete(email);
+      const message = err?.error?.message || 'Bounce check failed';
+      this.snackbar.error(`❌ ${email} — ${message}`);
+      this.cdr.detectChanges();
+    },
+  });
+}
+
+private updateStatus(user: any, status: 'verified' | 'rejected', email: string): void {
+  const payload = {
+    user_id: user._id,        // ← apne UpdateVerificationRequest ke fields ke hisaab se adjust karo
+    verification_status: status,
+  };
+
+  this.adminService.updateVerificationStatus(payload).subscribe({
+    next: (res) => {
+      this.checkingEmails.delete(email);
+      // Local list mein bhi update karo taaki UI turant reflect kare
+      user.verificationStatus = status;
+      this.snackbar.success(`User ${status === 'verified' ? 'verified ✅' : 'rejected ❌'}`);
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.checkingEmails.delete(email);
+      this.snackbar.error(err?.error?.message || 'Status update failed');
+      this.cdr.detectChanges();
+    },
+  });
+}
+
 }

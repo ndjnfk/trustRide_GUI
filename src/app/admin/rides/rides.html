@@ -58,7 +58,7 @@
                   </td>
                   <td class="email-cell">{{ ride.driver?.userEmail }}</td>
                   <td class="phone-cell">{{ ride.driver?.phoneNumber }}</td>
-                  <td class="date-cell">{{ ride.departure_time | date: 'dd MMM yyyy, hh:mm a' }}</td>
+                  <td class="date-cell">{{ ride.departure_time | date: 'dd MMM yyyy, hh:mm a' : 'UTC' }}</td>
                   <td class="seats-cell">{{ ride.available_seats }}</td>
                   <td class="price-cell">₹{{ ride.price_per_seat }}</td>
                   <td class="status-cell">

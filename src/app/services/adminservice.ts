@@ -70,6 +70,17 @@ export interface UpdateVerificationResponse {
   };
 }
 
+export interface BounceCheckResponse {
+  success: boolean;
+  message: string;
+  details: {
+    format: boolean;
+    mx: boolean;
+    smtp: boolean;
+    bounce_checked: boolean;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -203,5 +214,13 @@ clearMongoData(): Observable<any> {
     headers: AdminSessionHelper.getAuthHeaders(),
     body: { user_id }
   })
+}
+
+checkBounceEmail(email: string): Observable<BounceCheckResponse> {
+  return this.http.post<BounceCheckResponse>(
+    `${this.API_URL}/bounceCheck`,
+    { email },
+    { headers: AdminSessionHelper.getAuthHeaders() }
+  );
 }
 }

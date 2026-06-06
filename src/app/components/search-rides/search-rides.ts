@@ -46,7 +46,9 @@ export class SearchRides {
     'Gurgaon Huda City Center Secor 29',
     'Gurgaon Sector 32 ,Jharsa Institutional Area',
     'Gurgaon Sector 48,Candor Tech Space',
-    'Gurgaon Sector 21, Krishna Chowk'
+    'Gurgaon Sector 21, Krishna Chowk',
+    'Gurgaon Hero Honda Chowk',
+    'Gurgaon Subhash Chowk',
   ];
 
   readonly saharanpurAreas: string[] = [
@@ -58,6 +60,8 @@ export class SearchRides {
     'Saharanpur Vishwakarma Chowk',
     'Saharanpur Hasanpur Chungi',
     'Saharanpur J V Jain College',
+      'Saharanpur Sharda Nagar',
+    'Saharanpur Hakikat Nagar',
   ];
 
   get allAreas(): string[] {
@@ -308,8 +312,15 @@ export class SearchRides {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
+      timeZone: 'UTC'
     });
   }
+
+
+
+
+
+ 
 
   openRideDetail(rideId: string) {
     this.router.navigate(['/ride-detail'], { state: { ride_id: rideId } });
