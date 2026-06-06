@@ -20,6 +20,7 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormArray,
 } from '@angular/forms'
 import { AuthService } from '../../services/auth'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
@@ -64,6 +65,8 @@ export class Register implements OnInit {
   showPassword = false
   showConfirm = false
   formSubmitted = false   // used to show all errors on submit click
+  // register.component.ts — days ke paas
+locations = ['Gurgaon', 'Saharanpur']
 
   // ── Form ─────────────────────────────────────────────────────────────────────
   registerForm!: FormGroup
@@ -89,6 +92,11 @@ export class Register implements OnInit {
           ],
         ],
         gender: [''],
+        // ✅ NEW — role: rider | passenger | both
+        role: ['', Validators.required],
+
+        // ✅ NEW — optional array of travel days
+        preferredTravelDays: this.fb.array([]),
 
         // ── userEmail: valid email format ──────────────────────────────────
         userEmail: [
@@ -150,6 +158,29 @@ export class Register implements OnInit {
   // ── Shorthand getter so HTML can use f['fieldName'] ─────────────────────────
   get f() {
     return this.registerForm.controls
+  }
+
+
+  // ── preferredTravelDays FormArray helpers ──────────────────────────
+  days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+  get travelDays(): FormArray {
+    return this.registerForm.get('preferredTravelDays') as FormArray
+  }
+
+  addTravelDay(): void {
+    this.travelDays.push(
+      this.fb.group({
+        goingTo: ['', Validators.required],
+        going: ['', Validators.required],
+        comingTo: ['', Validators.required],
+        leaving: ['', Validators.required],
+      })
+    )
+  }
+
+  removeTravelDay(index: number): void {
+    this.travelDays.removeAt(index)
   }
 
   // ── Password strength score (0–5) ────────────────────────────────────────────
@@ -215,6 +246,8 @@ export class Register implements OnInit {
     const payload = {
       fullName: this.f['fullName'].value.trim(),
       gender: this.f['gender'].value.trim(),
+      role: this.f['role'].value,                                    // ✅ NEW
+      preferredTravelDays: this.travelDays.value,
       userEmail: this.f['userEmail'].value.trim().toLowerCase(),
       companyName: this.f['companyName'].value.trim(),
       companyEmail: this.f['companyEmail'].value.trim().toLowerCase(),
@@ -246,6 +279,7 @@ export class Register implements OnInit {
         // reset form
         // reset form
         this.registerForm.reset()
+        this.travelDays.clear()
 
         // reset form state
         this.formSubmitted = false
@@ -273,15 +307,15 @@ export class Register implements OnInit {
 
         let message = 'Registration failed';
 
-if (err?.status === 422) {
-    // AdonisJS validation error — pehli error ka message show karo
-    message = err?.error?.errors?.[0]?.message || 'Validation failed.';
-} else if (err?.error?.message) {
-    // Backend custom message (400, 500 etc.)
-    message = err.error.message;
-} else {
-    message = 'Something went wrong. Please try again.';
-}
+        if (err?.status === 422) {
+          // AdonisJS validation error — pehli error ka message show karo
+          message = err?.error?.errors?.[0]?.message || 'Validation failed.';
+        } else if (err?.error?.message) {
+          // Backend custom message (400, 500 etc.)
+          message = err.error.message;
+        } else {
+          message = 'Something went wrong. Please try again.';
+        }
 
         this.snackbar.error(message);
       },

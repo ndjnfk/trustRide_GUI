@@ -237,15 +237,15 @@ private callUpdateStatus(ride: RideData, newStatus: string, reason: string): voi
 
   formatTime(dateStr: string): string {
     return new Date(dateStr).toLocaleString('en-IN', {
-      timeZone: 'Asia/Kolkata',
+     
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: true, timeZone: 'UTC'
     });
   }
   formatDate(isoString: string): string {
     return new Date(isoString).toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric'
+      day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
     });
   }
 
@@ -302,37 +302,77 @@ verifyCode_fn(booking: any, rideId: string): void {
 }
 
 // Load karo — togglePassengers mein
+// togglePassengers(rideId: string): void {
+//     this.showPassengers[rideId] = !this.showPassengers[rideId];
+
+//     if (this.showPassengers[rideId] && !this.passengers[rideId]) {
+//         this.loadingPassengers[rideId] = true;
+//         this.cdr.markForCheck();
+
+//         this.rideService.getBookingsByRideId(rideId).subscribe({
+//             next: (res: any) => {
+//                 this.passengers[rideId] = res.data.bookings;
+//                 this.loadingPassengers[rideId] = false;
+
+//                 // ✅ localStorage se verifyResult restore karo
+//                 this.passengers[rideId].forEach((b: any) => {
+//                     const saved = localStorage.getItem(`verify_${b.booking_id}`);
+//                     if (saved !== null) {
+//                         this.verifyResult[b.booking_id] = saved === 'true';
+//                     }
+//                 });
+
+//                 this.cdr.markForCheck();
+//             },
+//             error: () => {
+//                 this.passengers[rideId] = [];
+//                 this.loadingPassengers[rideId] = false;
+//                 this.cdr.markForCheck();
+//             }
+//         });
+//     }
+// }
+
+
 togglePassengers(rideId: string): void {
-    this.showPassengers[rideId] = !this.showPassengers[rideId];
+  this.showPassengers[rideId] = !this.showPassengers[rideId];
 
-    if (this.showPassengers[rideId] && !this.passengers[rideId]) {
-        this.loadingPassengers[rideId] = true;
-        this.cdr.markForCheck();
+  if (this.showPassengers[rideId] && !this.passengers[rideId]) {
+    this.loadingPassengers[rideId] = true;
+    this.cdr.markForCheck();
 
-        this.rideService.getBookingsByRideId(rideId).subscribe({
-            next: (res: any) => {
-                this.passengers[rideId] = res.data.bookings;
-                this.loadingPassengers[rideId] = false;
+    this.rideService.getBookingsByRideId(rideId).subscribe({
+      next: (res: any) => {
+        // 👇 passenger-cancelled bookings list me mat dikhao
+        this.passengers[rideId] = (res.data?.bookings || []).filter(
+          (b: any) => b.status_by_passenger !== 'cancelled'
+        );
 
-                // ✅ localStorage se verifyResult restore karo
-                this.passengers[rideId].forEach((b: any) => {
-                    const saved = localStorage.getItem(`verify_${b.booking_id}`);
-                    if (saved !== null) {
-                        this.verifyResult[b.booking_id] = saved === 'true';
-                    }
-                });
+        this.loadingPassengers[rideId] = false;
 
-                this.cdr.markForCheck();
-            },
-            error: () => {
-                this.passengers[rideId] = [];
-                this.loadingPassengers[rideId] = false;
-                this.cdr.markForCheck();
-            }
+        // localStorage se verifyResult restore karo
+        this.passengers[rideId].forEach((b: any) => {
+          const saved = localStorage.getItem(`verify_${b.booking_id}`);
+          if (saved !== null) {
+            this.verifyResult[b.booking_id] = saved === 'true';
+          }
         });
-    }
+
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.passengers[rideId] = [];
+        this.loadingPassengers[rideId] = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
 }
 
+isCancelledByPassenger(b: any): boolean {
+  console.log("is cancel by passenger:", b)
+  return b?.status_by_passenger === 'cancelled';
+}
  
   // Booking status update
   // updateBookingStatus(booking: any, rideId: string, newStatus: string): void {

@@ -127,9 +127,26 @@
   </div>
 
   <!-- Mobile / Tablet Bottom Navigation -->
+   
   <nav class="footer__mobile-nav d-lg-none" aria-label="Mobile navigation">
-    <ng-container *ngFor="let item of mobileNavItems">
-    <a *ngIf="isLoggedIn || item.key === 'search'"
+  <ng-container *ngFor="let item of mobileNavItems">
+
+    <!-- ── INBOX: External WhatsApp link (href) ── -->
+    <a *ngIf="item.key === 'inbox' && isLoggedIn"
+       [href]="item.route"
+       target="_blank"
+       rel="noopener"
+       class="footer__mobile-nav-item">
+      <span class="footer__mobile-nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+        </svg>
+      </span>
+      <span class="footer__mobile-nav-label">{{ item.label }}</span>
+    </a>
+
+    <!-- ── BAAKI ITEMS: Internal routes (routerLink) ── -->
+    <a *ngIf="item.key !== 'inbox' && (isLoggedIn || item.key === 'search')"
        [routerLink]="item.route"
        routerLinkActive="footer__mobile-nav-item--active"
        class="footer__mobile-nav-item">
@@ -151,10 +168,6 @@
           <circle cx="7.5" cy="17.5" r="1.5"/>
           <circle cx="16.5" cy="17.5" r="1.5"/>
         </svg>
-        <!-- Inbox -->
-        <svg *ngIf="item.key === 'inbox'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-        </svg>
       </span>
       <span class="footer__mobile-nav-avatar" *ngIf="item.key === 'profile'">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -163,6 +176,7 @@
       </span>
       <span class="footer__mobile-nav-label">{{ item.label }}</span>
     </a>
-    </ng-container>
-  </nav>
+
+  </ng-container>
+</nav>
 </footer>

@@ -37,6 +37,11 @@ export class OneRideDetails {
     const state = history.state;
   const rideId = state?.ride_id;
 
+  //   // URL param first (shareable link), fallback to history.state (in-app nav)
+  // const paramId = this.route.snapshot.paramMap.get('rideId');
+  // const stateId = history.state?.ride_id;
+  // const rideId = paramId || stateId;
+
   if (!rideId) {
     this.error = 'Ride not found.';
     this.loading = false;
@@ -62,11 +67,11 @@ export class OneRideDetails {
   }
 
   formatDate(dt: string): string {
-    return new Date(dt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    return new Date(dt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric',timeZone: 'UTC' });
   }
 
   formatTime(dt: string): string {
-    return new Date(dt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    return new Date(dt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit',timeZone: 'UTC'  });
   }
 
   getStatusColor(status: string): string {

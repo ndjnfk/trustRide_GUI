@@ -5,13 +5,8 @@
       <div class="brand-logo">
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
           <rect width="48" height="48" rx="14" fill="white" fill-opacity="0.15" />
-          <path
-            d="M10 30h28M14 30l2-8h16l2 8"
-            stroke="white"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <path d="M10 30h28M14 30l2-8h16l2 8" stroke="white" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" />
           <circle cx="17" cy="33" r="3" stroke="white" stroke-width="2.5" />
           <circle cx="31" cy="33" r="3" stroke="white" stroke-width="2.5" />
           <path d="M20 22l1.5-5h5L28 22" stroke="white" stroke-width="2" stroke-linecap="round" />
@@ -65,47 +60,36 @@
 
       <!-- Success -->
       @if (successMessage) {
-        <div class="alert alert--success" role="status">
-          {{ successMessage }}
-        </div>
+      <div class="alert alert--success" role="status">
+        {{ successMessage }}
+      </div>
       }
 
       <!-- Error -->
       @if (errorMessage) {
-        <div class="alert alert--error" role="alert">
-          {{ errorMessage }}
-        </div>
+      <div class="alert alert--error" role="alert">
+        {{ errorMessage }}
+      </div>
       }
 
       <!-- FORM -->
-      <form
-      *ngIf="registerForm"
-        [formGroup]="registerForm"
-        (ngSubmit)="onSubmit()"
-        novalidate
-        autocomplete="off"
-        class="d-flex flex-column gap-3"
-      >
+      <form *ngIf="registerForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate autocomplete="off"
+        class="d-flex flex-column gap-3">
         <!-- FULL NAME -->
         <div class="field" [class.field--error]="f['fullName'].touched && f['fullName'].invalid">
           <label for="fullName">Full Name</label>
 
           <div class="input-wrap">
-            <input
-              id="fullName"
-              type="text"
-              formControlName="fullName"
-              placeholder="Rahul Sharma"
-              autocomplete="name"
-            />
+            <input id="fullName" type="text" formControlName="fullName" placeholder="Rahul Sharma"
+              autocomplete="name" />
           </div>
 
           @if (f['fullName'].touched && f['fullName'].errors?.['required']) {
-            <span class="field-error"> Full name is required. </span>
+          <span class="field-error"> Full name is required. </span>
           }
 
           @if (f['fullName'].touched && f['fullName'].errors?.['minlength']) {
-            <span class="field-error"> Must be at least 2 characters. </span>
+          <span class="field-error"> Must be at least 2 characters. </span>
           }
         </div>
         <!-- GENDER -->
@@ -124,21 +108,16 @@
           <label for="userEmail">Email Address</label>
 
           <div class="input-wrap">
-            <input
-              id="userEmail"
-              type="email"
-              formControlName="userEmail"
-              placeholder="rahul@example.com"
-              autocomplete="email"
-            />
+            <input id="userEmail" type="email" formControlName="userEmail" placeholder="rahul@example.com"
+              autocomplete="email" />
           </div>
 
           @if (f['userEmail'].touched && f['userEmail'].errors?.['required']) {
-            <span class="field-error"> Email is required. </span>
+          <span class="field-error"> Email is required. </span>
           }
 
           @if (f['userEmail'].touched && f['userEmail'].errors?.['email']) {
-            <span class="field-error"> Please enter a valid email address. </span>
+          <span class="field-error"> Please enter a valid email address. </span>
           }
         </div>
 
@@ -147,21 +126,16 @@
           <label for="companyName">Company Name</label>
 
           <div class="input-wrap">
-            <input
-              id="companyName"
-              type="text"
-              formControlName="companyName"
-              placeholder="Rahul Sharma"
-              autocomplete="name"
-            />
+            <input id="companyName" type="text" formControlName="companyName" placeholder="accenture"
+              autocomplete="name" />
           </div>
 
           @if (f['companyName'].touched && f['companyName'].errors?.['required']) {
-            <span class="field-error"> Company name is required. </span>
+          <span class="field-error"> Company name is required. </span>
           }
 
           @if (f['companyName'].touched && f['companyName'].errors?.['minlength']) {
-            <span class="field-error"> Must be at least 4 characters. </span>
+          <span class="field-error"> Must be at least 4 characters. </span>
           }
         </div>
 
@@ -170,65 +144,124 @@
           <label for="companyEmail">Company Email</label>
 
           <div class="input-wrap">
-            <input
-              id="companyEmail"
-              type="email"
-              formControlName="companyEmail"
-              placeholder="rahul@company.com"
-              autocomplete="email"
-            />
+            <input id="companyEmail" type="email" formControlName="companyEmail" placeholder="rahul@company.com"
+              autocomplete="email" />
           </div>
 
           @if (f['companyEmail'].touched && f['companyEmail'].errors?.['required']) {
-            <span class="field-error">Company Email is required. </span>
+          <span class="field-error">Company Email is required. </span>
           }
 
           @if (f['companyEmail'].touched && f['companyEmail'].errors?.['email']) {
-            <span class="field-error"> Please enter a valid company email address. </span>
+          <span class="field-error"> Please enter a valid company email address. </span>
           }
         </div>
 
         <!-- PHONE -->
-        <div
-          class="field"
-          [class.field--error]="f['phoneNumber'].touched && f['phoneNumber'].invalid"
-        >
+        <div class="field" [class.field--error]="f['phoneNumber'].touched && f['phoneNumber'].invalid">
           <label for="phoneNumber">Mobile Number</label>
 
           <div class="input-wrap">
             <span class="input-prefix">+91</span>
 
-            <input
-              id="phoneNumber"
-              type="tel"
-              formControlName="phoneNumber"
-              placeholder="9876543210"
-              maxlength="10"
-              autocomplete="tel"
-            />
+            <input id="phoneNumber" type="tel" formControlName="phoneNumber" placeholder="9876543210" maxlength="10"
+              autocomplete="tel" />
           </div>
 
           @if (f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']) {
-            <span class="field-error"> Mobile number is required. </span>
+          <span class="field-error"> Mobile number is required. </span>
           }
 
           @if (f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']) {
-            <span class="field-error"> Please enter a valid Indian mobile number. </span>
+          <span class="field-error"> Please enter a valid Indian mobile number. </span>
           }
         </div>
+        <!-- ROLE -->
+        <div class="field" [class.field--error]="f['role'].touched && f['role'].invalid">
+          <label for="role">I want to join as</label>
+          <div class="input-wrap">
+            <select id="role" formControlName="role">
+              <option value="" disabled selected>Select role</option>
+              <option value="rider">Rider (I drive)</option>
+              <option value="passenger">Passenger (I need a ride)</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
 
+          @if (f['role'].touched && f['role'].errors?.['required']) {
+          <span class="field-error">Please select a role.</span>
+          }
+        </div>
+        <!-- PREFERRED TRAVEL DAYS (optional) -->
+        <div class="field">
+          <div class="d-flex justify-content-between align-items-center">
+            <label>Preferred Travel Days <small>(optional)</small></label>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTravelDay()">
+              + Add
+            </button>
+          </div>
+
+          <div formArrayName="preferredTravelDays" class="d-flex flex-column gap-2">
+            @for (day of travelDays.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="travel-day-row">
+
+              <!-- ✅ Going to — dropdown -->
+              <div class="input-wrap">
+                <select formControlName="goingTo">
+                  <option value="" disabled selected>Going to</option>
+                  @for (loc of locations; track loc) {
+                  <option [value]="loc">{{ loc }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="input-wrap">
+                <select formControlName="going">
+                  <option value="" disabled selected>Going day</option>
+                  @for (d of days; track d) {
+                  <option [value]="d">{{ d }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- ✅ Coming to — dropdown -->
+              <div class="input-wrap">
+                <select formControlName="comingTo">
+                  <option value="" disabled selected>Return to</option>
+                  @for (loc of locations; track loc) {
+                  <option [value]="loc">{{ loc }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="input-wrap">
+                <select formControlName="leaving">
+                  <option value="" disabled selected>Return day</option>
+                  @for (d of days; track d) {
+                  <option [value]="d">{{ d }}</option>
+                  }
+                </select>
+              </div>
+
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeTravelDay(i)">
+                ✕
+              </button>
+
+
+            </div>
+            @if (travelDays.at(i).touched && travelDays.at(i).invalid) {
+            <span class="field-error">Please fill all fields of this travel day.</span>
+            }
+            }
+          </div>
+        </div>
         <!-- PASSWORD -->
         <div class="field" [class.field--error]="f['password'].touched && f['password'].invalid">
           <label for="password">Password</label>
 
           <div class="input-wrap">
-            <input
-              id="password"
-              [type]="showPassword ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="Minimum 8 characters"
-              autocomplete="new-password"
-            />
+            <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              placeholder="Minimum 8 characters" autocomplete="new-password" />
 
             <button type="button" class="toggle-vis" (click)="togglePassword()">
               {{ showPassword ? 'Hide' : 'Show' }}
@@ -237,64 +270,56 @@
 
           <!-- Strength Meter -->
           @if (f['password'].value) {
-            <div class="strength-meter">
-              <div class="strength-bar">
-                @for (i of [1, 2, 3, 4, 5]; track i) {
-                  <div class="strength-segment" [class.active]="strengthScore >= i"></div>
-                }
-              </div>
-
-              <span class="strength-label">
-                {{ strengthLabel }}
-              </span>
+          <div class="strength-meter">
+            <div class="strength-bar">
+              @for (i of [1, 2, 3, 4, 5]; track i) {
+              <div class="strength-segment" [class.active]="strengthScore >= i"></div>
+              }
             </div>
 
-            <!-- Password Rules -->
-            <ul class="strength-checks">
-              <li [class.pass]="strengthChecks.minLength">✓ At least 8 characters</li>
+            <span class="strength-label">
+              {{ strengthLabel }}
+            </span>
+          </div>
 
-              <li [class.pass]="strengthChecks.uppercase">✓ One uppercase letter</li>
+          <!-- Password Rules -->
+          <ul class="strength-checks">
+            <li [class.pass]="strengthChecks.minLength">✓ At least 8 characters</li>
 
-              <li [class.pass]="strengthChecks.lowercase">✓ One lowercase letter</li>
+            <li [class.pass]="strengthChecks.uppercase">✓ One uppercase letter</li>
 
-              <li [class.pass]="strengthChecks.digit">✓ One number</li>
+            <li [class.pass]="strengthChecks.lowercase">✓ One lowercase letter</li>
 
-              <li [class.pass]="strengthChecks.special">✓ One special character</li>
-            </ul>
+            <li [class.pass]="strengthChecks.digit">✓ One number</li>
+
+            <li [class.pass]="strengthChecks.special">✓ One special character</li>
+          </ul>
           }
 
           @if (f['password'].touched && f['password'].errors?.['required']) {
-            <span class="field-error"> Password is required. </span>
+          <span class="field-error"> Password is required. </span>
           }
 
           @if (f['password'].touched && f['password'].errors?.['minlength']) {
-            <span class="field-error"> Password must be at least 8 characters. </span>
+          <span class="field-error"> Password must be at least 8 characters. </span>
           }
 
           @if (f['password'].touched && f['password'].errors?.['weakPassword']) {
-            <span class="field-error">
-              Password must contain uppercase, lowercase, number and special character.
-            </span>
+          <span class="field-error">
+            Password must contain uppercase, lowercase, number and special character.
+          </span>
           }
         </div>
 
         <!-- CONFIRM PASSWORD -->
-        <div
-          class="field"
-          [class.field--error]="
+        <div class="field" [class.field--error]="
             f['confirmPassword'].touched && registerForm.hasError('passwordMismatch')
-          "
-        >
+          ">
           <label for="confirmPassword"> Confirm Password </label>
 
           <div class="input-wrap">
-            <input
-              id="confirmPassword"
-              [type]="showConfirm ? 'text' : 'password'"
-              formControlName="confirmPassword"
-              placeholder="Re-enter password"
-              autocomplete="new-password"
-            />
+            <input id="confirmPassword" [type]="showConfirm ? 'text' : 'password'" formControlName="confirmPassword"
+              placeholder="Re-enter password" autocomplete="new-password" />
 
             <button type="button" class="toggle-vis" (click)="toggleConfirm()">
               {{ showConfirm ? 'Hide' : 'Show' }}
@@ -302,21 +327,21 @@
           </div>
 
           @if (f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']) {
-            <span class="field-error"> Please confirm your password. </span>
+          <span class="field-error"> Please confirm your password. </span>
           }
 
           @if (f['confirmPassword'].touched && registerForm.hasError('passwordMismatch')) {
-            <span class="field-error"> Passwords do not match. </span>
+          <span class="field-error"> Passwords do not match. </span>
           }
         </div>
 
         <!-- SUBMIT -->
         <button type="submit" class="btn-submit btn w-100" [disabled]="isLoading">
           @if (isLoading) {
-            <span class="spinner"></span>
-            <span>Creating account...</span>
+          <span class="spinner"></span>
+          <span>Creating account...</span>
           } @else {
-            <span>Create Account</span>
+          <span>Create Account</span>
           }
         </button>
       </form>

@@ -28,11 +28,13 @@ export class Dashboard {
     'Gurgaon Huda City Center Secor 29',
     'Gurgaon Sector 32 ,Jharsa Institutional Area',
     'Gurgaon Sector 48,Candor Tech Space',
-    'Gurgaon Sector 21, Krishna Chowk'
+    'Gurgaon Sector 21, Krishna Chowk',
+    'Gurgaon Hero Honda Chowk',
+    'Gurgaon Subhash Chowk'
   ];
 
   readonly saharanpurAreas: string[] = [
-     'Saharanpur',
+    'Saharanpur',
     'Saharanpur Clock Tower',
     'Saharanpur Dehradun Chowk',
     'Saharanpur Anupam Sweets',
@@ -40,6 +42,9 @@ export class Dashboard {
     'Saharanpur Vishwakarma Chowk',
     'Saharanpur Hasanpur Chungi',
     'Saharanpur J V Jain College',
+    'Saharanpur Sharda Nagar',
+    'Saharanpur Hakikat Nagar'
+    
   ];
 
 
@@ -256,7 +261,7 @@ search(): void {
 
       // ── TEMP DEBUG — console mein dekho ──
 res.rides.forEach((r: any) => {
-  const rideDate = new Date(r.departure_time).toLocaleDateString('en-CA');
+  const rideDate = new Date(r.departure_time).toLocaleDateString('en-CA',{ timeZone: 'UTC' });
   console.log({
     rideFrom: r.from.toLowerCase(),
     rideTo: r.to.toLowerCase(),
@@ -277,7 +282,7 @@ res.rides.forEach((r: any) => {
         const rideTo   = r.to.toLowerCase();
         const cityMatch = rideFrom.includes(fromCity) && rideTo.includes(toCity);
 
-        const rideDate  = new Date(r.departure_time).toLocaleDateString('en-CA');
+        const rideDate  = new Date(r.departure_time).toLocaleDateString('en-CA', { timeZone: 'UTC' });
         const dateMatch = rideDate === targetDate;
 
         // available_seats >= requested passengers

@@ -74,6 +74,7 @@ export class AboutYou implements OnInit{
     this.http.get(`${environment.apiUrl}/profile`, { headers }).subscribe({
       next: (res: any) => {
         if (res?.success) {
+         
           this.user = res.user;
           this.professional = res.professional;
           this.vehicles = res.vehicles ?? [];
