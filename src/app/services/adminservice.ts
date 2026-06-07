@@ -48,6 +48,7 @@ export interface User {
   companyEmail:string,
   verificationStatus: string;
   professionalVerification: ProfessionalVerification | null;
+  created_at?: string;
 }
  
 export interface AllUsersResponse {

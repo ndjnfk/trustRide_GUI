@@ -22,6 +22,13 @@ export class MyProfile implements OnInit {
   isLoading = false;
   error = '';
   userId = '';
+  role = '';
+
+  roleLabels: Record<string, string> = {
+    passenger: 'Passenger',
+    rider: 'Rider',
+    both: 'Passenger & Rider',
+  }
 
    allPreferences = [
     { key: 'quiet',      icon: 'ti-message-circle',  label: "I'm the quiet type" },
@@ -42,6 +49,21 @@ export class MyProfile implements OnInit {
 
   ngOnInit(): void {
     this.getUserDetails();
+    this.getRole();
+  }
+
+  getRole(): void {
+    this.profileService.getRole().subscribe({
+      next: (res) => {
+        if (res.success) this.role = res.currentRole;
+      },
+      error: (err) => console.error('Load role error', err),
+    });
+  }
+
+  roleLabel(role?: string): string {
+    if (!role) return '';
+    return this.roleLabels[role] ?? (role.charAt(0).toUpperCase() + role.slice(1));
   }
 
   verificationBadge(status?: string): string {
@@ -105,6 +127,9 @@ export class MyProfile implements OnInit {
           preferences:        d.preferences ?? [],
           created_at:         d.created_at,
         };
+
+           this.vehicles = d.vehicle ? [d.vehicle] : [];
+
         this.avatarUrl = d.avatar_Url
           ? `${environment.apiUrl}${d.avatar_Url}`
           : null;

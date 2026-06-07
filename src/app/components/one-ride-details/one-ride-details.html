@@ -109,6 +109,43 @@
         </div>
       </div>
 
+      <!-- Vehicle Card -->
+<div class="rd-card" *ngIf="rideData.driver?.vehicle as v">
+  <p class="section-title">Vehicle</p>
+  <div class="row g-3">
+    <div class="col-6 col-md-4">
+      <div class="meta-item">
+        <div class="meta-label"><i class="ti ti-car"></i> Type</div>
+        <div class="meta-val">{{ v.vehicle_type | titlecase }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="meta-item">
+        <div class="meta-label"><i class="ti ti-steering-wheel"></i> Model</div>
+        <div class="meta-val">{{ v.model | titlecase }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="meta-item">
+        <div class="meta-label"><i class="ti ti-id"></i> Plate Number</div>
+        <div class="meta-val">{{ v.plate_number }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="meta-item">
+        <div class="meta-label"><i class="ti ti-palette"></i> Color</div>
+        <div class="meta-val">{{ v.color | titlecase }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="meta-item">
+        <div class="meta-label"><i class="ti ti-armchair"></i> Seat Capacity</div>
+        <div class="meta-val">{{ v.seat_capacity }} seats</div>
+      </div>
+    </div>
+  </div>
+</div>
+
       <!-- Passengers Card -->
       <div class="rd-card">
         <p class="section-title">Passengers</p>

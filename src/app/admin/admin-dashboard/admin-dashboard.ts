@@ -92,7 +92,11 @@ loadUsers(): void {
     this.adminService.getAllUsers().subscribe({
       next: (response) => {
         if (response.success) {
-          this.allUsers = response.data; // ✅ filter hata diya
+          // Latest members on top (sorted by created_at timestamp, newest first)
+          this.allUsers = [...response.data].sort(
+            (a, b) =>
+              new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime()
+          );
           this.applyActiveFilter();
         } else {
           this.showError('Users load karne mein problem aayi.');

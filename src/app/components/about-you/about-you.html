@@ -25,6 +25,11 @@
               <span class="hbadge hbadge-verify mt-1 d-inline-block">
                 {{ verificationBadge(user?.verificationStatus) }}
               </span>
+              @if (role) {
+              <span class="role-badge mt-1 ms-2 d-inline-block">
+                <i class="ti ti-user-cog me-1"></i>{{ roleLabel(role) }}
+              </span>
+              }
             </div>
           </div>
 
@@ -176,19 +181,20 @@
                   <h5 class="fw-bold mb-0 fs-15 text-capitalize text-truncate">
                     {{ vehicle.model }}
                   </h5>
-                  <span class="badge text-bg-light border text-secondary fw-normal">
-                    <i class="ti ti-users me-1"></i>{{ vehicle.seat_capacity }} seats
-                  </span>
+                 
                 </div>
 
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                   <span class="vehicle-meta text-secondary text-capitalize">
                     <i class="ti ti-palette me-1"></i>{{ vehicle.color }}
                   </span>
-                  <span class="text-secondary">·</span>
-                  <span class="vehicle-meta text-secondary text-capitalize">
-                    {{ vehicle.vehicle_type }}
+                   <span class="badge text-bg-light border text-secondary fw-normal">
+                    <i class="ti ti-users me-1"></i>{{ vehicle.seat_capacity }} seats
                   </span>
+                  <!-- <span class="text-secondary">·</span> -->
+                  <!-- <span class="vehicle-meta text-secondary text-capitalize">
+                    {{ vehicle.vehicle_type }}
+                  </span> -->
                 </div>
 
                 <span class="plate-chip mt-2 d-inline-block text-uppercase">

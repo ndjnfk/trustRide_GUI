@@ -48,9 +48,51 @@
         </div>
       </div>
 
+      <!-- Role -->
+      <div class="section-box">
+        <h4 class="section-title">Your Role</h4>
+        <p class="text-muted small mb-3">
+          Choose how you want to use trustRide.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-md-4" *ngFor="let role of roleOptions">
+            <div
+              class="role-box"
+              [class.selected]="selectedRole === role"
+              [class.disabled]="!canSwitchRole"
+              (click)="selectRole(role)"
+            >
+              <i class="ti"
+                 [ngClass]="{
+                   'ti-user': role === 'passenger',
+                   'ti-steering-wheel': role === 'rider',
+                   'ti-arrows-exchange': role === 'both'
+                 }"></i>
+              <span>{{ roleLabel(role) }}</span>
+              <i class="ti ti-circle-check role-check" *ngIf="selectedRole === role"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 mt-3" *ngIf="!canSwitchRole">
+          <i class="ti ti-lock text-muted"></i>
+          <span class="text-muted small">Role switching is currently not available for your account.</span>
+        </div>
+
+        <button
+          class="btn save-btn mt-3"
+          *ngIf="canSwitchRole"
+          [disabled]="selectedRole === currentRole || isRoleUpdating"
+          (click)="updateRole()"
+        >
+          {{ isRoleUpdating ? 'Updating…' : 'Update Role' }}
+        </button>
+      </div>
+
       <!-- Preferences -->
       <div class="section-box">
-        <h4 class="section-title">Preferences</h4>
+        <h4 class="section-title mt-4">Preferences</h4>
         <div class="row g-3">
           <div class="col-md-6" *ngFor="let pref of allPreferences">
             <div class="preference-box">

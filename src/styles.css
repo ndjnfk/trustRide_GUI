@@ -65,6 +65,8 @@
 
 /* ****************** */
 
+
+
 html {
   scroll-behavior: smooth;
 }
@@ -148,7 +150,13 @@ button {
   left: 0;
   right: 0;
   z-index: 1000;
-  height: var(--h-height);
+  /* iOS: reserve the notch / status-bar area so the brand + actions don't
+     render under the clock/signal when running as a standalone PWA
+     (apple-mobile-web-app-status-bar-style = black-translucent). On Android
+     and non-notched devices env() resolves to 0, so nothing changes there. */
+  box-sizing: border-box;
+  height: calc(var(--h-height) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   background: #ffffff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: var(--h-shadow);
@@ -504,7 +512,8 @@ button {
 /* Drawer Header - gradient hero */
 .drawer__header {
   position: relative;
-  padding: 10px 20px 10px;
+  /* iOS: push the gradient hero content below the status bar / notch */
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 20px 10px;
   background: linear-gradient(135deg, #3b82f6 0%, #6366f1 55%, #7c3aed 100%);
   color: #fff;
   overflow: hidden;
@@ -536,7 +545,7 @@ button {
 
 .drawer__close {
   position: absolute;
-  top: 14px;
+  top: calc(14px + env(safe-area-inset-top, 0px));
   right: 14px;
   width: 34px;
   height: 34px;
@@ -776,7 +785,7 @@ button {
 /* --- Overlay --- */
 .header__overlay {
   position: fixed;
-  top: 64px;   /* ← 0 ki jagah 64px */
+  top: calc(64px + env(safe-area-inset-top, 0px));   /* sit below the safe-area-aware header */
   left: 0;
   right: 0;
   bottom: 0;

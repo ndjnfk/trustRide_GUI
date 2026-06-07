@@ -38,10 +38,77 @@ export class EditProfile implements OnInit {
   isLoading = false
   isSaving = false
 
+  // ── Role switching ──
+  currentRole = ''
+  selectedRole = ''
+  roleOptions: string[] = []   // all selectable roles (current + alternatives)
+  canSwitchRole = false
+  isRoleUpdating = false
+
+  // Pretty labels for each role value
+  roleLabels: Record<string, string> = {
+    passenger: 'Passenger',
+    rider: 'Rider',
+    both: 'Passenger & Rider',
+  }
+
   constructor(private profileService: ProfileService,private router: Router,private snackbar:Snackbar) {}
 
   ngOnInit() {
     this.loadProfile()
+    this.loadRole()
+  }
+
+  loadRole() {
+    this.profileService.getRole().subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.currentRole = res.currentRole
+          this.selectedRole = res.currentRole
+          this.canSwitchRole = res.canSwitch
+          // Full list = current role + the alternatives returned by the API
+          this.roleOptions = [res.currentRole, ...(res.options || [])]
+        }
+      },
+      error: (err) => {
+        console.error('Load role error', err)
+      }
+    })
+  }
+
+  selectRole(role: string) {
+    if (!this.canSwitchRole) return
+    this.selectedRole = role
+  }
+
+  roleLabel(role: string): string {
+    return this.roleLabels[role] ?? (role.charAt(0).toUpperCase() + role.slice(1))
+  }
+
+  updateRole() {
+    if (!this.canSwitchRole || this.selectedRole === this.currentRole) return
+
+    this.isRoleUpdating = true
+    this.profileService.updateRole(this.selectedRole).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.currentRole = res.role
+          this.selectedRole = res.role
+          // API returns the new alternatives; rebuild the full list
+          this.roleOptions = [res.role, ...(res.options || [])]
+          this.snackbar.success(res.message || 'Role updated successfully!')
+        } else {
+          this.snackbar.error('Could not update role. Please try again.')
+        }
+        this.isRoleUpdating = false
+      },
+      error: (err) => {
+        console.error('Update role error', err)
+        const msg = err?.error?.message || 'Something went wrong. Please try again.'
+        this.snackbar.error(`Error: ${msg}`)
+        this.isRoleUpdating = false
+      }
+    })
   }
 
   loadProfile() {

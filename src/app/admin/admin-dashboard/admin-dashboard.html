@@ -166,9 +166,9 @@
 
               <tr *ngFor="let user of displayedUsers" [class.row-updating]="updatingUserId === user._id">
 
-                <td>#{{ user.userCode }}</td>
+                <td data-label="#Code">#{{ user.userCode }}</td>
 
-                <td>
+                <td data-label="Name">
                   <div class="user-box">
                     <div class="avatar">
                       {{ user.fullName?.charAt(0)?.toUpperCase() }}
@@ -180,21 +180,21 @@
                   </div>
                 </td>
 
-                <td>
+                <td data-label="Gender">
                   <span class="gender-badge" [ngClass]="user.gender">
                     {{ user.gender | titlecase }}
                   </span>
                 </td>
 
-                <td>
+                <td data-label="Account">
                   <span class="status" [class.active-status]="user.status === 'active'"
                     [class.inactive-status]="user.status !== 'active'">
                     ● {{ user.status | titlecase }}
                   </span>
                 </td>
-            <td class="action-cell">
+            <td class="action-cell" data-label="Delete">
 
- 
+
   <button
     class="delete-btn"
     (click)="deleteUser(user._id)"
@@ -209,7 +209,7 @@
   </button>
 </td>
  
-                <td>
+                <td data-label="Verification">
                   <span class="status" [class.verified-status]="user.verificationStatus === 'verified'"
                     [class.pending-status]="user.verificationStatus === 'pending'"
                     [class.rejected-status]="user.verificationStatus === 'rejected'">
@@ -221,12 +221,12 @@
                     </ng-container>
                   </span>
                 </td>
-                <td>
+                <td data-label="Send Email">
                   <button class="eye-btn" (click)="sendEmail(user.userEmail)" title="View Profile">
                     <i class="ti ti-mail"></i>
                   </button>
                 </td>
-                 <td>
+                 <td data-label="Check Bounce">
                  <button
   class="eye-btn"
   (click)="checkBounceEmail(user)"
@@ -236,13 +236,13 @@
   {{ checkingEmails.has(user.userEmail) ? '⏳' : 'BEC' }}
 </button>
                 </td>
-                <td>
+                <td data-label="Profile">
                   <button class="eye-btn" (click)="openProfile(user)" title="View Profile">
                     <i class="ti ti-eye"></i>
                   </button>
                 </td>
 
-                <td>
+                <td data-label="Actions">
                   <div class="d-flex gap-2">
                     <button class="action-btn verify-btn"
                       [disabled]="user.verificationStatus === 'verified' || updatingUserId === user._id"
@@ -261,7 +261,7 @@
               </tr>
 
               <tr *ngIf="!isLoading && displayedUsers.length === 0">
-                <td colspan="7">
+                <td colspan="10">
                   <div class="no-data">
                     <div class="no-data-icon-wrap">
                       <mat-icon>person_search</mat-icon>

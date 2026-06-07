@@ -72,6 +72,20 @@ export interface UpdateProfileResponse {
   data:    Partial<ProfileData>
 }
 
+export interface RoleResponse {
+  success:     boolean
+  currentRole: string
+  options:     string[]
+  canSwitch:   boolean
+}
+
+export interface UpdateRoleResponse {
+  success: boolean
+  message: string
+  role:    string
+  options: string[]
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
   // private readonly BASE = 'http://localhost:3333';
@@ -183,4 +197,18 @@ export class ProfileService {
   getUserProfileById(userId: string): Observable<any> {
   return this.http.post<any>(`${this.BASE}/getUserProfile`, { user_id: userId })
 }
+
+  // ── GET /profile/role ──────────────────────────────────────────────────────
+  getRole(): Observable<RoleResponse> {
+    return this.http.get<RoleResponse>(`${this.BASE}/profile/role`, {
+      headers: AuthHelper.getAuthHeader()
+    })
+  }
+
+  // ── PUT /profile/role ──────────────────────────────────────────────────────
+  updateRole(role: string): Observable<UpdateRoleResponse> {
+    return this.http.put<UpdateRoleResponse>(`${this.BASE}/profile/role`, { role }, {
+      headers: AuthHelper.getAuthHeader()
+    })
+  }
 }

@@ -18,10 +18,16 @@
  
           <div>
             <h4 class="fw-bold mb-0">{{ user?.fullName || 'Guest' }}</h4>
- 
+
             <div class="text-muted small fw-semibold text-capitalize">
               {{ user?.gender || '—' }}
             </div>
+
+            @if (role) {
+            <span class="role-badge mt-2 d-inline-block">
+              <i class="ti ti-user-cog me-1"></i>{{ roleLabel(role) }}
+            </span>
+            }
           </div>
         </div>
  

@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { environment } from '../../../../environment';
 import { AuthHelper } from '../../helpers/auth-helper';
-import { Vehicle } from '../../servies/profile-service';
+import { ProfileService, Vehicle } from '../../servies/profile-service';
 import { VehicleDialog } from '../vehicle-dialog/vehicle-dialog';
 
 @Component({
@@ -21,6 +21,13 @@ export class AboutYou implements OnInit{
   avatarUrl: string | null = null;
   isLoading = false;
   error = '';
+  role = '';
+
+  roleLabels: Record<string, string> = {
+    passenger: 'Passenger',
+    rider: 'Rider',
+    both: 'Passenger & Rider',
+  }
 
   allPreferences = [
     { key: 'quiet',      icon: 'ti-message-circle',  label: "I'm the quiet type" },
@@ -32,11 +39,26 @@ export class AboutYou implements OnInit{
 
   @ViewChild(VehicleDialog) vehicleDialog!: VehicleDialog;
 
-  constructor(private http: HttpClient,private router:Router){}
+  constructor(private http: HttpClient,private router:Router,private profileService:ProfileService){}
 
 
   ngOnInit(): void {
     this.getUserDetails();
+    this.getRole();
+  }
+
+  getRole(): void {
+    this.profileService.getRole().subscribe({
+      next: (res) => {
+        if (res.success) this.role = res.currentRole;
+      },
+      error: (err) => console.error('Load role error', err),
+    });
+  }
+
+  roleLabel(role?: string): string {
+    if (!role) return '';
+    return this.roleLabels[role] ?? (role.charAt(0).toUpperCase() + role.slice(1));
   }
   
 

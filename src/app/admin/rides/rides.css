@@ -486,7 +486,8 @@
   .admin-main {
     margin-left: 0;
     padding: 16px;
-    padding-top: 70px;
+    /* clear the fixed header, including the iOS notch / status-bar inset */
+    padding-top: calc(70px + env(safe-area-inset-top, 0px));
   }
 
   .popup {
