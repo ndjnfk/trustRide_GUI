@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { environment } from '../../../../environment';
 import { AuthHelper } from '../../helpers/auth-helper';
-import { ProfileService, Vehicle } from '../../servies/profile-service';
+import { Vehicle } from '../../servies/profile-service';
 import { VehicleDialog } from '../vehicle-dialog/vehicle-dialog';
 
 @Component({
@@ -39,21 +39,11 @@ export class AboutYou implements OnInit{
 
   @ViewChild(VehicleDialog) vehicleDialog!: VehicleDialog;
 
-  constructor(private http: HttpClient,private router:Router,private profileService:ProfileService){}
+  constructor(private http: HttpClient,private router:Router){}
 
 
   ngOnInit(): void {
     this.getUserDetails();
-    this.getRole();
-  }
-
-  getRole(): void {
-    this.profileService.getRole().subscribe({
-      next: (res) => {
-        if (res.success) this.role = res.currentRole;
-      },
-      error: (err) => console.error('Load role error', err),
-    });
   }
 
   roleLabel(role?: string): string {
@@ -96,7 +86,8 @@ export class AboutYou implements OnInit{
     this.http.get(`${environment.apiUrl}/profile`, { headers }).subscribe({
       next: (res: any) => {
         if (res?.success) {
-         
+
+          this.role = res.currentRole ?? res.user?.currentRole ?? res.user?.role ?? res.user?.user_Role ?? res.user?.user_role ?? '';
           this.user = res.user;
           this.professional = res.professional;
           this.vehicles = res.vehicles ?? [];

@@ -13,9 +13,14 @@
 
   <!-- Content -->
   <div *ngIf="!loading && !error && rideData">
-    <button class="rd-back btn" (click)="goBack()">
-      <i class="ti ti-arrow-left"></i> Back to rides
-    </button>
+    <div class="rd-topbar">
+      <button class="rd-back btn" (click)="goBack()">
+        <i class="ti ti-arrow-left"></i> Back to rides
+      </button>
+      <button class="rd-share btn" (click)="copyShareLink()" title="Copy shareable link">
+        <i class="ti ti-link"></i> Copy link
+      </button>
+    </div>
 
     <div class="rd-wrap">
 

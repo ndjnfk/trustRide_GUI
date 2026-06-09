@@ -41,7 +41,9 @@ export class CreateRide {
   showFromDropdown = false;
   showToDropdown = false;
   formSubmitted = false;
-  selectedRouteId = ''; 
+  selectedRouteId = '';
+  createdRideId = '';
+  readonly origin = typeof window !== 'undefined' ? window.location.origin : '';
 
   // ─── Ek hi array — sabhi location names ───────────────────────────
   // "From" input mein: Gurgaon ya Saharanpur wale names filter honge
@@ -59,7 +61,8 @@ export class CreateRide {
     'Gurgaon Sector 48,Candor Tech Space',
     'Gurgaon Sector 21, Krishna Chowk',
     'Gurgaon Hero Honda Chowk',
-    'Gurgaon Subhash Chowk'
+    'Gurgaon Subhash Chowk',
+    'Gurgaon Vatika Chowk'
 
   ];
 
@@ -73,7 +76,8 @@ export class CreateRide {
     'Saharanpur Hasanpur Chungi',
     'Saharanpur J V Jain College',
     'Saharanpur Sharda Nagar',
-    'Saharanpur Hakikat Nagar'
+    'Saharanpur Hakikat Nagar',
+    'Saharanpur Madhav Nagar'
     
   ];
 readonly routeOptions = [
@@ -245,12 +249,12 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   //   this.pricePerSeat += 50;
   // }
 
-//   decrementPrice(): void {
-//     if (this.pricePerSeat > 100) this.pricePerSeat -= 50;
-//   }
-//   incrementPrice(): void {
-//   if (this.pricePerSeat < 600) this.pricePerSeat += 10;
-// }
+  decrementPrice(): void {
+    if (this.pricePerSeat > 420) this.pricePerSeat -= 10;
+  }
+  incrementPrice(): void {
+  if (this.pricePerSeat < 560) this.pricePerSeat += 10;
+}
 
   get totalEarnings(): number {
     return this.pricePerSeat * this.seats;
@@ -316,10 +320,23 @@ console.log( this.rideTime)
     };
 
     this.rideService.createRide(payload).subscribe({
-      next: (_res) => {
+      next: (res) => {
         this.snackBar.success('Ride Created Successfully!')
+        // Always show the success card immediately.
         this.formSubmitted = true;
-        this.cdr.markForCheck();
+        const id = this.extractRideId(res);
+        if (id) {
+          this.createdRideId = id;
+        } else {
+          // create response doesn't include the id — resolve it in the
+          // background from the user's rides so the share link can render.
+          this.resolveCreatedRideId(departureIso);
+        }
+        this.cdr.detectChanges();
+        // Form is long — scroll up so the user actually sees the success card.
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       },
 
     error: (err) => {
@@ -338,7 +355,56 @@ console.log( this.rideTime)
   }
 
 
+  // Pull the new ride id out of whatever shape the backend returns.
+  private extractRideId(obj: any): string {
+    return (
+      obj?.ride_id ??
+      obj?.rideId ??
+      obj?.ride?._id ??
+      obj?.ride?.ride_id ??
+      obj?.data?.ride_id ??
+      obj?.data?.rideId ??
+      obj?.id ??
+      obj?._id ??
+      ''
+    );
+  }
+
+  // Fallback when createRide doesn't return the id: find the just-created
+  // ride among the user's rides (match on departure time + route).
+  private resolveCreatedRideId(departureIso: string): void {
+    this.rideService.getUserRides().subscribe({
+      next: (res) => {
+        const rides: any[] = Array.isArray(res) ? res : (res?.rides ?? res?.data ?? []);
+        const match =
+          rides.find((r) =>
+            r?.departure_time === departureIso &&
+            this.getBaseCity(r?.from ?? r?.start_location?.name ?? '') === this.getBaseCity(this.fromLocation) &&
+            this.getBaseCity(r?.to ?? r?.end_location?.name ?? '') === this.getBaseCity(this.toLocation)
+          ) ?? rides[rides.length - 1] ?? null;
+        this.createdRideId = this.extractRideId(match);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        // Card is already shown; just no share link if this lookup fails.
+      },
+    });
+  }
+
+  copyRideLink(): void {
+    if (!this.createdRideId) {
+      this.snackBar.error('Ride link is not available.');
+      return;
+    }
+    const link = `${this.origin}/ride-detail/${this.createdRideId}`;
+    navigator.clipboard.writeText(link).then(
+      () => this.snackBar.success('Ride link copied to clipboard!'),
+      () => this.snackBar.error('Could not copy link. Please try again.')
+    );
+  }
+
   resetForm(): void {
+    this.createdRideId = '';
     this.fromLocation = '';
     this.toLocation = '';
     this.rideDate = '';

@@ -76,6 +76,12 @@ body {
   background: var(--bg_light1);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* iOS standalone webview (Capacitor / black-translucent status bar): the
+     content extends under the status bar / Dynamic Island, which makes the
+     fixed header taller by the safe-area inset and hides the top of each page.
+     Shift in-flow page content down by that inset so nothing sits behind the
+     header. On Android / non-notched devices env() resolves to 0 → unchanged. */
+  padding-top: env(safe-area-inset-top, 0px);
 }
 a {
   text-decoration: none;
@@ -2848,7 +2854,10 @@ app-my-bookings {
 
 /* ── Pills ── */
 .bookings-page .summary-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-.bookings-page .pill { padding: 8px 14px; border-radius: 999px; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; }
+.bookings-page .pill { padding: 8px 14px; border-radius: 999px; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease; }
+.bookings-page .pill:not(.pill-active) { opacity: 0.62; }
+.bookings-page .pill:hover { opacity: 1; transform: translateY(-1px); }
+.bookings-page .pill.pill-active { opacity: 1; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); transform: translateY(-1px); }
 .bookings-page .pill-pending  { background: var(--pending-bg);  border: 1px solid var(--pending-border);  color: var(--pending); }
 .bookings-page .pill-confirmed{ background: var(--confirmed-bg); border: 1px solid var(--confirmed-border); color: var(--confirmed); }
 .bookings-page .pill-rejected { background: var(--rejected-bg);  border: 1px solid var(--rejected-border);  color: var(--rejected); }

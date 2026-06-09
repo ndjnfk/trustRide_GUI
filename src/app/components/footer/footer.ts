@@ -55,7 +55,7 @@ export class Footer {
     { key: 'search',  label: 'Search',     route: '/search-rides' },
     { key: 'publish', label: 'Publish',    route: '/create-ride' },
     { key: 'rides',   label: 'Your rides', route: '/get-ride' },
-    { key: 'inbox',   label: 'wpg',      route: 'https://chat.whatsapp.com/BFkpwqCkWZnKvv61V2l03c' },
+    { key: 'inbox',   label: 'wpg',      route: 'https://chat.whatsapp.com/KrW5aGD3Xu5I3hvJdfeJu0' },
     { key: 'profile', label: 'Profile',    route: '/about-you' },
   ];
 

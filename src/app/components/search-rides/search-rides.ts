@@ -49,6 +49,7 @@ export class SearchRides {
     'Gurgaon Sector 21, Krishna Chowk',
     'Gurgaon Hero Honda Chowk',
     'Gurgaon Subhash Chowk',
+    'Gurgaon Vatika Chowk'
   ];
 
   readonly saharanpurAreas: string[] = [
@@ -60,8 +61,9 @@ export class SearchRides {
     'Saharanpur Vishwakarma Chowk',
     'Saharanpur Hasanpur Chungi',
     'Saharanpur J V Jain College',
-      'Saharanpur Sharda Nagar',
+    'Saharanpur Sharda Nagar',
     'Saharanpur Hakikat Nagar',
+    'Saharanpur Madhav Nagar'
   ];
 
   get allAreas(): string[] {
@@ -252,9 +254,12 @@ export class SearchRides {
   private showSnackBar(message: string, type: 'success' | 'error'): void {
     this.snackBar.open(message, 'Close', {
       duration: 4000,
-      horizontalPosition: 'right',
+      horizontalPosition: 'center',
       verticalPosition: 'top',
-      panelClass: type === 'success' ? ['snack-success'] : ['snack-error'],
+      panelClass:
+        type === 'success'
+          ? ['snack-success', 'snack-center']
+          : ['snack-error', 'snack-center'],
     });
   }
 
@@ -323,7 +328,7 @@ export class SearchRides {
  
 
   openRideDetail(rideId: string) {
-    this.router.navigate(['/ride-detail'], { state: { ride_id: rideId } });
+    this.router.navigate(['/ride-detail', rideId], { state: { ride_id: rideId } });
   }
 
   bookRide(ride: Ride, event?: Event): void {

@@ -93,7 +93,8 @@ getInitials(name: string): string {
     { label: 'Profile', route: '/about-you', icon: 'user' },
     { label: 'Company Members', route: '/company-members', icon: 'users' },
     { label: 'Rating', route: '/rating-show', icon: 'star' },
-    { label: 'Update Auto Generate Rides', route: '/auto-generated', icon: 'compass' },
+    { label: 'Update Rides', route: '/auto-generated', icon: 'compass' },
+    { label: 'User Preferences Matched ', route: '/user-matched', icon: 'compass' },
    
   ];
  

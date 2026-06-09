@@ -45,6 +45,13 @@ export interface ProfileResponse {
   vehicles: Vehicle[];
 }
 
+export interface TravelDay {
+  goingTo:  string
+  going:    string
+  comingTo: string
+  leaving:  string
+}
+
 export interface ProfileData {
   fullName:           string
   gender:             string
@@ -58,6 +65,13 @@ export interface ProfileData {
   city?:              string
   aboutUser?:         string
   preferences?:       string[]
+  preferredTravelDays?: TravelDay[]
+}
+
+export interface UpdateTravelDaysResponse {
+  success: boolean
+  message: string
+  preferredTravelDays: TravelDay[]
 }
 
 export interface Profileresponse {
@@ -197,6 +211,15 @@ export class ProfileService {
   getUserProfileById(userId: string): Observable<any> {
   return this.http.post<any>(`${this.BASE}/getUserProfile`, { user_id: userId })
 }
+
+  // ── PUT /profile/travel-days ───────────────────────────────────────────────
+  updateTravelDays(preferredTravelDays: TravelDay[]): Observable<UpdateTravelDaysResponse> {
+    return this.http.put<UpdateTravelDaysResponse>(
+      `${this.BASE}/profile/travel-days`,
+      { preferredTravelDays },
+      { headers: AuthHelper.getAuthHeader() }
+    )
+  }
 
   // ── GET /profile/role ──────────────────────────────────────────────────────
   getRole(): Observable<RoleResponse> {

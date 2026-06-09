@@ -53,6 +53,6 @@ export class RidePopup {
   }
   openRideDetail(rideId: string) {
   this.dialogRef.close();
-  this.router.navigate(['/ride-detail'], { state: { ride_id: rideId } });
+  this.router.navigate(['/ride-detail', rideId], { state: { ride_id: rideId } });
 }
 }

@@ -83,6 +83,52 @@
           </div>
         </div>
 
+        <!-- ── Role counts ── -->
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-blue">
+                <i class="ti ti-steering-wheel"></i>
+              </div>
+              <div>
+                <div class="stat-title">Total Riders</div>
+                <div class="stat-value">{{ getCountByRole('rider') }}</div>
+                <div class="stat-desc">Drivers offering rides</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-green">
+                <i class="ti ti-user"></i>
+              </div>
+              <div>
+                <div class="stat-title">Total Passengers</div>
+                <div class="stat-value">{{ getCountByRole('passenger') }}</div>
+                <div class="stat-desc">Looking for rides</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-orange">
+                <i class="ti ti-arrows-exchange"></i>
+              </div>
+              <div>
+                <div class="stat-title">Total Both</div>
+                <div class="stat-value">{{ getCountByRole('both') }}</div>
+                <div class="stat-desc">Rider &amp; passenger</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Table Section -->
@@ -151,6 +197,7 @@
                 <th>#Code</th>
                 <th>Name</th>
                 <th>Gender</th>
+                <th>Role</th>
                 <th>Account</th>
                   <th>delete</th>
                 <th>Verification</th>
@@ -183,6 +230,12 @@
                 <td data-label="Gender">
                   <span class="gender-badge" [ngClass]="user.gender">
                     {{ user.gender | titlecase }}
+                  </span>
+                </td>
+
+                <td data-label="Role">
+                  <span class="role-badge" [ngClass]="'role-' + getUserRole(user)">
+                    {{ roleLabel(user) }}
                   </span>
                 </td>
 
@@ -261,7 +314,7 @@
               </tr>
 
               <tr *ngIf="!isLoading && displayedUsers.length === 0">
-                <td colspan="10">
+                <td colspan="11">
                   <div class="no-data">
                     <div class="no-data-icon-wrap">
                       <mat-icon>person_search</mat-icon>

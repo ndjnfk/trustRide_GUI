@@ -36,6 +36,14 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
   return regex.test(value) ? null : { weakPassword: true }
 }
 
+// ── Custom validator: FormArray must have at least one entry ──────────────────
+function minLengthArray(min: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const arr = control as FormArray
+    return arr.length >= min ? null : { minLengthArray: { required: min, actual: arr.length } }
+  }
+}
+
 // ── Custom validator 2: confirm password must match ───────────────────────────
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value
@@ -95,8 +103,8 @@ locations = ['Gurgaon', 'Saharanpur']
         // ✅ NEW — role: rider | passenger | both
         role: ['', Validators.required],
 
-        // ✅ NEW — optional array of travel days
-        preferredTravelDays: this.fb.array([]),
+        // ✅ NEW — mandatory array of travel days (at least one required)
+        preferredTravelDays: this.fb.array([], minLengthArray(1)),
 
         // ── userEmail: valid email format ──────────────────────────────────
         userEmail: [
@@ -230,6 +238,11 @@ locations = ['Gurgaon', 'Saharanpur']
 
   // ── SUBMIT ────────────────────────────────────────────────────────────────────
   onSubmit(): void {
+
+    // ── Re-entry guard: block double-submit (fast double-click / double Enter) ──
+    // Without this, a second submit can fire before [disabled]="isLoading" takes
+    // effect, sending two identical requests that race the backend uniqueness check.
+    if (this.isLoading) return
 
     this.formSubmitted = true
     this.errorMessage = ''

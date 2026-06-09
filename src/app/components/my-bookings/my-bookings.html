@@ -14,10 +14,18 @@
       </div>
     </div>
     <div class="summary-pills" *ngIf="!isLoading && !error">
-      <span class="pill pill-pending">{{ pendingBookings.length }} Pending</span>
-      <span class="pill pill-confirmed">{{ confirmedBookings.length }} Confirmed</span>
-      <span class="pill pill-rejected">{{ rejectedBookings.length }} Not Approved</span>
-      <span class="pill pill-rejected">{{ cancelledByMeBookings.length }} Cancelled</span>
+      <button type="button" class="pill pill-pending"
+              [class.pill-active]="activeTab === 'pending'"
+              (click)="setTab('pending')">{{ pendingBookings.length }} Pending</button>
+      <button type="button" class="pill pill-confirmed"
+              [class.pill-active]="activeTab === 'confirmed'"
+              (click)="setTab('confirmed')">{{ confirmedBookings.length }} Confirmed</button>
+      <button type="button" class="pill pill-rejected"
+              [class.pill-active]="activeTab === 'rejected'"
+              (click)="setTab('rejected')">{{ rejectedBookings.length }} Not Approved</button>
+      <button type="button" class="pill pill-rejected"
+              [class.pill-active]="activeTab === 'cancelled'"
+              (click)="setTab('cancelled')">{{ cancelledByMeBookings.length }} Cancelled</button>
     </div>
   </header>
 
@@ -39,7 +47,7 @@
   <div class="sections-wrap" *ngIf="!isLoading && !error && allBookings.length > 0">
 
     <!-- ── PENDING ───────────────────────────── -->
-    <section class="booking-section" *ngIf="pendingBookings.length > 0">
+    <section class="booking-section" *ngIf="activeTab === 'pending' && pendingBookings.length > 0">
       <div class="section-header pending-header">
         <span class="section-icon">⏳</span>
         <h2 class="section-title">Pending Bookings</h2>
@@ -133,7 +141,7 @@
     </section>
 
     <!-- ── CONFIRMED ──────────────────────────── -->
-    <section class="booking-section" *ngIf="confirmedBookings.length > 0">
+    <section class="booking-section" *ngIf="activeTab === 'confirmed' && confirmedBookings.length > 0">
       <div class="section-header confirmed-header">
         <span class="section-icon">✅</span>
         <h2 class="section-title">Confirmed Bookings</h2>
@@ -259,7 +267,7 @@
     </section>
 
     <!-- ── NOT APPROVED (driver ne reject ki) ───────────── -->
-    <section class="booking-section" *ngIf="rejectedBookings.length > 0">
+    <section class="booking-section" *ngIf="activeTab === 'rejected' && rejectedBookings.length > 0">
       <div class="section-header rejected-header">
         <span class="section-icon">❌</span>
         <h2 class="section-title">Not Approved</h2>
@@ -334,7 +342,7 @@
     </section>
 
     <!-- ── CANCELLED BY PASSENGER (aapne khud cancel ki) ───────────── -->
-    <section class="booking-section" *ngIf="cancelledByMeBookings.length > 0">
+    <section class="booking-section" *ngIf="activeTab === 'cancelled' && cancelledByMeBookings.length > 0">
       <div class="section-header cancelled-header">
         <!-- <span class="section-icon">✖</span> -->
         <!-- <h2 class="section-title">Cancelled Bookings</h2> -->
@@ -408,6 +416,16 @@
         </div>
       </div>
     </section>
+
+    <!-- ── Per-tab empty state ── -->
+    <div class="state-box" *ngIf="
+      (activeTab === 'pending'   && pendingBookings.length === 0) ||
+      (activeTab === 'confirmed' && confirmedBookings.length === 0) ||
+      (activeTab === 'rejected'  && rejectedBookings.length === 0) ||
+      (activeTab === 'cancelled' && cancelledByMeBookings.length === 0)">
+      <div class="state-emoji">📭</div>
+      <p class="state-text">No {{ activeTab === 'rejected' ? 'not approved' : activeTab }} bookings.</p>
+    </div>
 
   </div>
 

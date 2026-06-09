@@ -12,7 +12,7 @@
           <path d="M20 22l1.5-5h5L28 22" stroke="white" stroke-width="2" stroke-linecap="round" />
         </svg>
 
-        <span class="brand-name">Professional Polling</span>
+        <span class="brand-name">TrustRideSRE</span>
       </div>
 
       <h2 class="brand-headline">
@@ -192,14 +192,18 @@
           <span class="field-error">Please select a role.</span>
           }
         </div>
-        <!-- PREFERRED TRAVEL DAYS (optional) -->
+        <!-- PREFERRED TRAVEL DAYS (mandatory) -->
         <div class="field">
           <div class="d-flex justify-content-between align-items-center">
-            <label>Preferred Travel Days <small>(optional)</small></label>
+            <label>Preferred Travel Days</label>
             <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTravelDay()">
               + Add
             </button>
           </div>
+
+          @if ((travelDays.touched || formSubmitted) && travelDays.errors?.['minLengthArray']) {
+          <span class="field-error">Please add at least one preferred travel day.</span>
+          }
 
           <div formArrayName="preferredTravelDays" class="d-flex flex-column gap-2">
             @for (day of travelDays.controls; track $index; let i = $index) {

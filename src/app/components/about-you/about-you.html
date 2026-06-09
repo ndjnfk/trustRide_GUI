@@ -156,6 +156,21 @@
 
       <hr />
 
+      <!-- Preferred Travel Days -->
+      <div class="section-box" *ngIf="user?.preferredTravelDays?.length">
+        <h3 class="section-title fs_m">Preferred travel days</h3>
+
+        <div class="about-item align-items-start" *ngFor="let day of user.preferredTravelDays">
+          <i class="ti ti-route"></i>
+          <div class="text-capitalize">
+            <div><strong>{{ day.going }}:</strong> {{ day.comingTo }} → {{ day.goingTo }}</div>
+            <div><strong>{{ day.leaving }}:</strong> {{ day.goingTo }} → {{ day.comingTo }}</div>
+          </div>
+        </div>
+      </div>
+
+      <hr *ngIf="user?.preferredTravelDays?.length" />
+
       <!-- Vehicles -->
       <div class="section-box">
         <div class="d-flex justify-content-between align-items-center mb-3">

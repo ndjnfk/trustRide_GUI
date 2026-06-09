@@ -80,6 +80,14 @@ export class MyBookings implements OnInit {
   isLoading = false;
   error = '';
 
+  /** Active status filter tab */
+  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' = 'pending';
+
+  setTab(tab: 'pending' | 'confirmed' | 'rejected' | 'cancelled'): void {
+    this.activeTab = tab;
+    this.cdr.markForCheck();
+  }
+
   // private readonly BASE_URL = 'http://localhost:3333';
   private readonly BASE_URL = environment.apiUrl;
   // private readonly BASE_URL = 'http://34.207.242.45:3333';

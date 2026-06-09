@@ -450,5 +450,14 @@ goToProfile(userId: string) {
   console.log('Navigating with userId:', userId)  // ✅ check karo
   this.router.navigate(['/my-profile'], { state: { user_id: userId } })
 }
+
+copyRideLink(rideId: string): void {
+  if (!rideId) return;
+  const link = `${window.location.origin}/ride-detail/${rideId}`;
+  navigator.clipboard.writeText(link).then(
+    () => this.snackBar.success('Ride link copied to clipboard!'),
+    () => this.snackBar.error('Could not copy link. Please try again.')
+  );
+}
 }
 

@@ -12,7 +12,7 @@
       <!-- Profile Image -->
       <div class="text-center profile-section">
         <div class="profile-image-wrapper mx-auto">
-          <img [src]="avatarPreview" class="profile-image" alt="" />
+          <img [src]="avatarPreview || 'images/profile.png'" class="profile-image" alt="" />
           <div class="verified-badge"><i class="ti ti-check"></i></div>
         </div>
         <input type="file" id="avatarInput" accept="image/*" hidden (change)="onAvatarChange($event)" />
@@ -79,15 +79,6 @@
           <i class="ti ti-lock text-muted"></i>
           <span class="text-muted small">Role switching is currently not available for your account.</span>
         </div>
-
-        <button
-          class="btn save-btn mt-3"
-          *ngIf="canSwitchRole"
-          [disabled]="selectedRole === currentRole || isRoleUpdating"
-          (click)="updateRole()"
-        >
-          {{ isRoleUpdating ? 'Updating…' : 'Update Role' }}
-        </button>
       </div>
 
       <!-- Preferences -->
@@ -113,8 +104,76 @@
         </div>
       </div>
 
-      <!-- Save Button -->
-      <button class="btn save-btn mt-4" (click)="saveChanges()">Save Changes</button>
+      <!-- Preferred Travel Days -->
+      <div class="section-box mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="section-title mb-0">Preferred Travel Days</h4>
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTravelDay()">
+            <i class="ti ti-plus me-1"></i>Add
+          </button>
+        </div>
+
+        @if (preferredTravelDays.length === 0) {
+        <p class="text-muted small mb-0">No travel days added yet. Click “Add” to create one.</p>
+        }
+
+        @for (day of preferredTravelDays; track $index; let i = $index) {
+        <div class="travel-day-row border rounded-3 p-3 mb-3">
+          <div class="row g-2">
+            <div class="col-6 col-md-3">
+              <label class="form-label small">Going to</label>
+              <select class="form-select custom-input" [(ngModel)]="day.goingTo" [name]="'goingTo' + i">
+                <option value="" disabled>Going to</option>
+                @for (loc of locations; track loc) {
+                <option [value]="loc">{{ loc }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="form-label small">Going day</label>
+              <select class="form-select custom-input" [(ngModel)]="day.going" [name]="'going' + i">
+                <option value="" disabled>Going day</option>
+                @for (d of days; track d) {
+                <option [value]="d">{{ d }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="form-label small">Return to</label>
+              <select class="form-select custom-input" [(ngModel)]="day.comingTo" [name]="'comingTo' + i">
+                <option value="" disabled>Return to</option>
+                @for (loc of locations; track loc) {
+                <option [value]="loc">{{ loc }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="form-label small">Return day</label>
+              <select class="form-select custom-input" [(ngModel)]="day.leaving" [name]="'leaving' + i">
+                <option value="" disabled>Return day</option>
+                @for (d of days; track d) {
+                <option [value]="d">{{ d }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="text-end mt-2">
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeTravelDay(i)">
+              <i class="ti ti-trash me-1"></i>Remove
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Save Button — saves personal details, preferences & travel days together -->
+      <button class="btn save-btn mt-4" [disabled]="isSaving" (click)="saveChanges()">
+        {{ isSaving ? 'Saving…' : 'Save Changes' }}
+      </button>
 
     </div>
   </div>

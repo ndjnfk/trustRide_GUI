@@ -52,6 +52,9 @@
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
           </select>
+          <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
+            🔗 Copy link
+          </button>
           <!-- <button
             class="delete-btn"
             [disabled]="deletingId === ride._id"
@@ -183,7 +186,9 @@
         </div>
         <div class="card-actions">
           <div class="status-select status-completed">Completed</div>
-        
+          <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
+            🔗 Copy link
+          </button>
         </div>
       </div>
       <div class="card-meta row g-2">
@@ -277,7 +282,9 @@
         </div>
         <div class="card-actions">
           <div class="status-select status-cancelled">Cancelled</div>
-          
+          <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
+            🔗 Copy link
+          </button>
         </div>
       </div>
       <div class="card-meta row g-2">

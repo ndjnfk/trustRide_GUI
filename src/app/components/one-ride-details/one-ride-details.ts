@@ -34,13 +34,10 @@ export class OneRideDetails {
     
   ) {}
   ngOnInit() {
-    const state = history.state;
-  const rideId = state?.ride_id;
-
-  //   // URL param first (shareable link), fallback to history.state (in-app nav)
-  // const paramId = this.route.snapshot.paramMap.get('rideId');
-  // const stateId = history.state?.ride_id;
-  // const rideId = paramId || stateId;
+    // URL param first (shareable link), fallback to history.state (in-app nav)
+    const paramId = this.route.snapshot.paramMap.get('rideId');
+    const stateId = history.state?.ride_id;
+    const rideId = paramId || stateId;
 
   if (!rideId) {
     this.error = 'Ride not found.';
@@ -81,6 +78,15 @@ export class OneRideDetails {
   goBack(): void {
   window.history.back();
 }
+
+  copyShareLink(): void {
+    if (!this.rideId) return;
+    const link = `${window.location.origin}/ride-detail/${this.rideId}`;
+    navigator.clipboard.writeText(link).then(
+      () => this.snack.success('Ride link copied to clipboard!'),
+      () => this.snack.error('Could not copy link. Please try again.')
+    );
+  }
 
   bookRide(): void {
     if (!this.rideData) return;

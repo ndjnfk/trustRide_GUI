@@ -57,6 +57,20 @@
               <span>💺 {{ seats }} seat{{ seats > 1 ? 's' : '' }}</span>
               <span>💰 ₹{{ pricePerSeat }}/seat</span>
             </div>
+            <div *ngIf="createdRideId" class="share_link_box mb-3">
+              <p class="fs-12 text-secondary mb-2">Share this ride with anyone:</p>
+              <div class="d-flex align-items-center gap-2">
+                <input
+                  type="text"
+                  class="share_link_input flex-grow-1"
+                  [value]="(origin) + '/ride-detail/' + createdRideId"
+                  readonly
+                />
+                <button class="btn-copy-link btn" (click)="copyRideLink()" title="Copy shareable link">
+                  🔗 Copy link
+                </button>
+              </div>
+            </div>
             <button class="btn-primary1 btn col-md-8 mx-auto" (click)="resetForm()">
               Publish Another Ride
             </button>
@@ -290,13 +304,13 @@
           <div class="section pt-2 pb-4 px-md-2">
             <label class="section-label">Price per Seat</label>
             <div class="price-row">
-              <!-- <button class="counter-btn" (click)="decrementPrice()">−</button> -->
+              <button class="counter-btn" (click)="decrementPrice()"   *ngIf="selectedRouteId"  [disabled]="pricePerSeat <= 300" >−</button>
               <div class="price-display">
                 
                 <span class="price-val" *ngIf="selectedRouteId">₹{{ pricePerSeat }}</span>
 <span class="price-placeholder" *ngIf="!selectedRouteId">For Charges..Please select a route</span>
               </div>
-              <!-- <button class="counter-btn" (click)="incrementPrice()">+</button> -->
+              <button class="counter-btn" (click)="incrementPrice()"   *ngIf="selectedRouteId"  [disabled]="pricePerSeat >= 560">+</button>
             </div>
             <p class="price-hint">💡 Recommended: ₹400–₹550 for this route</p>
           </div>
@@ -430,7 +444,7 @@
                 <ul class="tips-list p-0">
                   <li>Set a fair price to fill seats faster</li>
                   <li>Add clear pickup point in notes</li>
-                  <li>Accept women-only trips for higher trust</li>
+                  
                   <li>Early morning rides get 3× more bookings</li>
                 </ul>
               </div>

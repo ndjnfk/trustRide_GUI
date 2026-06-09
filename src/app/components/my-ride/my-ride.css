@@ -206,6 +206,26 @@
   gap: 8px;
 }
 
+/* ─── Copy shareable link ─── */
+.copy-link-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: rgba(99, 102, 241, 0.07);
+  color: #4f46e5;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.copy-link-btn:hover {
+  background: rgba(99, 102, 241, 0.14);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
 /* ─── Status Dropdown ─── */
 .status-select {
   font-size: 11px;

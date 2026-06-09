@@ -68,7 +68,19 @@
 
   </div>
 
-  
+  <!-- Travel Days -->
+  <div class="travel-section">
+    <label class="travel-label">Travel Days</label>
+    <div class="travel-chips" *ngIf="getTravelDays().length; else noTravel">
+      <span class="travel-chip" *ngFor="let d of getTravelDays()">
+        <mat-icon>event</mat-icon>
+        {{ travelDayLabel(d) }}
+      </span>
+    </div>
+    <ng-template #noTravel>
+      <span class="travel-empty">No travel days set</span>
+    </ng-template>
+  </div>
 
   <div class="dialog-actions">
     <button mat-flat-button mat-dialog-close>

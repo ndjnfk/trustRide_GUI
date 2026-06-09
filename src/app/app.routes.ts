@@ -124,13 +124,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/components/users-matched-preferences/users-matched-preferences').then((m) => m.UsersMatchedPreferences),
   },
-//   {
-//   path: 'ride-detail/:rideId',
-//   loadComponent: () =>
-//     import('../app/components/one-ride-details/one-ride-details').then((m) => m.OneRideDetails),
-// },
-
- {
+  // Shareable link — ride id in the URL so the page can be opened by anyone
+  {
+    path: 'ride-detail/:rideId',
+    loadComponent: () =>
+      import('../app/components/one-ride-details/one-ride-details').then((m) => m.OneRideDetails),
+  },
+  // Backward compatible — in-app navigation that still passes the id via history.state
+  {
     path: 'ride-detail',
     loadComponent: () =>
       import('../app/components/one-ride-details/one-ride-details').then((m) => m.OneRideDetails),

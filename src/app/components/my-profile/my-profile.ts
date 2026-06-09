@@ -49,16 +49,6 @@ export class MyProfile implements OnInit {
 
   ngOnInit(): void {
     this.getUserDetails();
-    this.getRole();
-  }
-
-  getRole(): void {
-    this.profileService.getRole().subscribe({
-      next: (res) => {
-        if (res.success) this.role = res.currentRole;
-      },
-      error: (err) => console.error('Load role error', err),
-    });
   }
 
   roleLabel(role?: string): string {
@@ -113,6 +103,7 @@ export class MyProfile implements OnInit {
     next: (res: any) => {
       if (res?.success) {
         const d = res.data;
+        this.role = d.current_role ?? d.currentRole ?? d.user_Role ?? d.user_role ?? d.role ?? '';
         this.user = {
           fullName:           d.full_name,
           gender:             d.gender,
@@ -125,6 +116,9 @@ export class MyProfile implements OnInit {
           totalRides:         d.total_rides,
           companyName:        d.company_Name,
           preferences:        d.preferences ?? [],
+          preferredTravelDays: this.normalizeTravelDays(
+            d.preferred_travel_days ?? d.preferredTravelDays ?? d.preferred_Travel_Days ?? d.travelDays
+          ),
           created_at:         d.created_at,
         };
 
@@ -160,8 +154,19 @@ get ratingDisplay(): string {
   return '1/5'
 }
 get activePreferences() {
-  return this.allPreferences.filter(p => 
+  return this.allPreferences.filter(p =>
     (this.user?.preferences ?? []).includes(p.key)
   )
+}
+
+// ✅ Travel days may arrive with camelCase or snake_case inner keys — normalize them
+normalizeTravelDays(days: any): { goingTo: string; going: string; comingTo: string; leaving: string }[] {
+  if (!Array.isArray(days)) return []
+  return days.map(d => ({
+    goingTo:  d?.goingTo  ?? d?.going_to  ?? '',
+    going:    d?.going    ?? '',
+    comingTo: d?.comingTo ?? d?.coming_to ?? '',
+    leaving:  d?.leaving  ?? '',
+  }))
 }
 }

@@ -45,13 +45,15 @@
             </span>
           </div>
  
+          @if (role !== 'passenger') {
           <div class="d-flex align-items-center gap-2 small">
             <i class="ti ti-steering-wheel text-secondary"></i>
- 
+
             <span>
-              {{ ratingDisplay }} — {{ ratingLabel }}
+               5/5 - Good Driving Skills
             </span>
           </div>
+          }
  
           <div class="mt-2">
             <span class="badge text-bg-success fs-14 fw-normal">
@@ -109,14 +111,31 @@
           <i class="ti {{ pref.icon }}"></i>
           <span>{{ pref.label }}</span>
         </div>
- 
-       
- 
-       
- 
-         
+
+
+
+
+
+
         </div>
- 
+
+        @if (user?.preferredTravelDays?.length) {
+        <hr />
+
+        <!-- Preferred Travel Days -->
+        <div>
+          <h5 class="fw-bold mb-3">Preferred travel days</h5>
+
+          <div class="about-item align-items-start" *ngFor="let day of user.preferredTravelDays">
+            <i class="ti ti-route"></i>
+            <div class="text-capitalize">
+              <div><strong>{{ day.going }}:</strong> {{ day.comingTo }} → {{ day.goingTo }}</div>
+              <div><strong>{{ day.leaving }}:</strong> {{ day.goingTo }} → {{ day.comingTo }}</div>
+            </div>
+          </div>
+        </div>
+        }
+
         @if (vehicles.length > 0) {
         <hr />
  

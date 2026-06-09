@@ -1,8 +1,37 @@
 <!-- ═══════════ MATCHING TRAVELLERS ═══════════ -->
-<div class="container-fluid py-4" *ngIf="!loading">
+<div class="container-fluid py-4 match" *ngIf="!loading">
+
+  <!-- ── Filters: Day dropdown + Route dropdown ── -->
+  <div class="filter-bar mb-4">
+    <div class="filter-group">
+      <label class="filter-label">Day</label>
+      <select class="form-select filter-select"
+              (change)="onDayChange($any($event.target).value)">
+        <option value="" [selected]="selectedDay === ''">All days</option>
+        <option *ngFor="let day of days"
+                [value]="day"
+                [selected]="selectedDay === day">
+          {{ day }} ({{ countForDay(day) }})
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Route</label>
+      <select class="form-select filter-select"
+              (change)="selectRoute($any($event.target).value)">
+        <option value="" [selected]="selectedRoute === ''">All routes</option>
+        <option *ngFor="let route of routeOptions"
+                [value]="route.id"
+                [selected]="selectedRoute === route.id">
+          {{ route.label }}
+        </option>
+      </select>
+    </div>
+  </div>
 
   <!-- ── Riders Block (login user passenger YA both hai) ── -->
-  <div *ngIf="(userRole === 'passenger' || userRole === 'both') && riders.length > 0" class="mb-5">
+  <div *ngIf="(userRole === 'passenger' || userRole === 'both') && filteredRiders.length > 0" class="mb-5">
     <div class="members-header mb-4">
       <div class="header-badge">
         <i class="bi bi-car-front-fill"></i>
@@ -13,8 +42,8 @@
     </div>
 
     <div class="row g-4">
-      <div class="col-12 col-sm-6 col-lg-3"
-           *ngFor="let rider of riders; let i = index">
+      <div class="col-12 col-sm-6 col-lg-4"
+           *ngFor="let rider of filteredRiders; let i = index; trackBy: trackByUserId">
         <div class="member-card" (click)="goToProfile(rider._id)"
              [style.animation-delay.ms]="i * 60">
           <div class="card-accent"></div>
@@ -43,7 +72,7 @@
                     [class.match-badge--return]="trip.type === 'return'"
                     *ngFor="let trip of rider.matchedTrips">
                 <i class="bi" [ngClass]="trip.type === 'going' ? 'bi-arrow-right-circle-fill' : 'bi-arrow-left-circle-fill'"></i>
-                {{ trip.type === 'going' ? 'Going' : 'Return' }} · {{ trip.day | titlecase }} · {{ trip.route | titlecase }}
+                  {{ trip.day | titlecase }} · {{ trip.route | titlecase }}
               </span>
             </div>
           </div>
@@ -53,7 +82,7 @@
   </div>
 
   <!-- ── Passengers Block (login user rider YA both hai) ── -->
-  <div *ngIf="(userRole === 'rider' || userRole === 'both') && passengers.length > 0" class="mb-5">
+  <div *ngIf="(userRole === 'rider' || userRole === 'both') && filteredPassengers.length > 0" class="mb-5">
     <div class="members-header mb-4">
       <div class="header-badge">
         <i class="bi bi-people-fill"></i>
@@ -64,8 +93,8 @@
     </div>
 
     <div class="row g-4">
-      <div class="col-12 col-sm-6 col-lg-3"
-           *ngFor="let passenger of passengers; let i = index">
+      <div class="col-12 col-sm-6 col-lg-4"
+           *ngFor="let passenger of filteredPassengers; let i = index; trackBy: trackByUserId">
         <div class="member-card" (click)="goToProfile(passenger._id)"
              [style.animation-delay.ms]="i * 60">
           <div class="card-accent"></div>
@@ -94,7 +123,7 @@
                     [class.match-badge--return]="trip.type === 'return'"
                     *ngFor="let trip of passenger.matchedTrips">
                 <i class="bi" [ngClass]="trip.type === 'going' ? 'bi-arrow-right-circle-fill' : 'bi-arrow-left-circle-fill'"></i>
-                {{ trip.type === 'going' ? 'Going' : 'Return' }} · {{ trip.day | titlecase }} · {{ trip.route | titlecase }}
+                 {{ trip.day | titlecase }} · {{ trip.route | titlecase }}
               </span>
             </div>
           </div>
@@ -103,14 +132,16 @@
     </div>
   </div>
 
-  <!-- ✅ Empty state — both ka case bhi handle -->
+  <!-- ✅ Empty state — both ka case + day filter bhi handle -->
   <div class="empty-state"
-       *ngIf="(userRole === 'passenger' && riders.length === 0) ||
-              (userRole === 'rider' && passengers.length === 0) ||
-              (userRole === 'both' && riders.length === 0 && passengers.length === 0)">
+       *ngIf="(userRole === 'passenger' && filteredRiders.length === 0) ||
+              (userRole === 'rider' && filteredPassengers.length === 0) ||
+              (userRole === 'both' && filteredRiders.length === 0 && filteredPassengers.length === 0)">
     <div class="empty-icon"><i class="bi bi-search"></i></div>
-    <h4>No matching travellers</h4>
-    <p>No one from your company shares your travel days yet</p>
+    <h4>No travellers</h4>
+    <p *ngIf="!selectedDay && !selectedRoute">No one from your company shares your travel days yet</p>
+    <p *ngIf="selectedDay && !selectedRoute">No matching travellers for {{ selectedDay }}</p>
+    <p *ngIf="selectedRoute">No matching travellers for this route</p>
   </div>
 
 </div>

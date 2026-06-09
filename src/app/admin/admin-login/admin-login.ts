@@ -4,7 +4,7 @@ import { Adminservice } from '../../services/adminservice';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthHelper } from '../../helpers/auth-helper';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminSessionHelper } from '../../helpers/admin-session-helper';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material/material-module';
@@ -25,6 +25,7 @@ export class AdminLogin {
     private fb: FormBuilder,
     private adminService: Adminservice,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
     this.loginForm = this.fb.group({
@@ -34,6 +35,12 @@ export class AdminLogin {
   }
  
   ngOnInit(): void {
+    // Session expire hone par interceptor yahan bhejta hai — message dikhao
+    if (this.route.snapshot.queryParamMap.get('sessionExpired') === '1') {
+      this.showSnackBar('Your session expired. Please login again.', 'error');
+      return;
+    }
+
     // Agar pehle se logged in hai toh dashboard pe bhejo
     if (AdminSessionHelper.isAdminLoggedIn()) {
       this.router.navigate(['/admin/dashboard']);

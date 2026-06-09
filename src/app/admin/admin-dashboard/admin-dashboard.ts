@@ -116,6 +116,31 @@ loadUsers(): void {
     return this.allUsers.filter(u => u.verificationStatus === status).length;
   }
 
+  // ── Role helpers ───────────────────────────────────────────────────────────
+  /** Read the user's role from whichever field the API returns */
+  getUserRole(user: any): string {
+    return (
+      user?.current_role ?? user?.currentRole ?? user?.role ??
+      user?.user_Role ?? user?.user_role ?? ''
+    ).toString().toLowerCase();
+  }
+
+  /** Pretty label for the role column */
+  roleLabel(user: any): string {
+    const r = this.getUserRole(user);
+    const map: Record<string, string> = {
+      passenger: 'Passenger',
+      rider: 'Rider',
+      both: 'Both',
+    };
+    return map[r] ?? (r ? r.charAt(0).toUpperCase() + r.slice(1) : '—');
+  }
+
+  /** Count users by role across all users (not affected by filters) */
+  getCountByRole(role: 'rider' | 'passenger' | 'both'): number {
+    return this.allUsers.filter(u => this.getUserRole(u) === role).length;
+  }
+
   setFilter(filter: 'all' | 'verified' | 'pending' | 'rejected'): void {
     this.activeFilter = filter;
     this.applyActiveFilter();
