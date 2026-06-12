@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Ride } from '../../services/ride';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Snackbar } from '../../services/snackbar';
 import { AuthHelper } from '../../helpers/auth-helper';
 
@@ -21,10 +21,31 @@ import { AuthHelper } from '../../helpers/auth-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateRide {
-  constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef) { }
+  constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
       this.rideService.checkPendingReviews()
+
+      // Dashboard popular-route tile se aaya routeId — from/to/via/price preselect karo
+      const routeId = this.route.snapshot.queryParamMap.get('route')
+      if (routeId) this.applyRoutePreset(routeId)
+    }
+
+    // routeId ke hisaab se form prefill: from, to, selected route (via) aur price
+    private applyRoutePreset(routeId: string): void {
+      const opt = this.routeOptions.find(r => r.id === routeId)
+      if (!opt) return
+      this.fromLocation = this.cityDisplayName(opt.from)
+      this.toLocation = this.cityDisplayName(opt.to)
+      this.selectedRouteId = opt.id
+      this.pricePerSeat = opt.basePrice
+      this.cdr.markForCheck()
+    }
+
+    private cityDisplayName(base: string): string {
+      if (base === 'gurgaon') return 'Gurgaon'
+      if (base === 'saharanpur') return 'Saharanpur'
+      return base
     }
   // Form fields
   fromLocation = '';

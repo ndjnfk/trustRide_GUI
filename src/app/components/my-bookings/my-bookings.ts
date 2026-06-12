@@ -8,6 +8,7 @@ import {
   inject,
 } from '@angular/core';
 import { BookingService } from '../../services/booking-service';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../../environment';
@@ -24,6 +25,12 @@ interface RideInfo {
   driver_phone: number;
   ride_status: string;
 
+  // Rider's user id — backend may send under any of these keys
+  driver_id?: string;
+  driver_user_id?: string;
+  driverId?: string;
+  user_id?: string;
+
   ride_cancellation_reason?: string;
 }
 
@@ -32,6 +39,9 @@ interface Booking {
   status: string;
   gender: string;
   booked_at: string;
+  seats_booked?: number;
+  males?: number;
+  females?: number;
   ride: RideInfo | null;
   review?: {
     rating: number;
@@ -81,9 +91,9 @@ export class MyBookings implements OnInit {
   error = '';
 
   /** Active status filter tab */
-  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' = 'pending';
+  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' = 'pending';
 
-  setTab(tab: 'pending' | 'confirmed' | 'rejected' | 'cancelled'): void {
+  setTab(tab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled'): void {
     this.activeTab = tab;
     this.cdr.markForCheck();
   }
@@ -129,8 +139,24 @@ export class MyBookings implements OnInit {
     private http: HttpClient,
     private snackBar: Snackbar,
     private cdr: ChangeDetectorRef,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private router: Router
   ) { }
+
+  /** Open the rider's profile from a booking card */
+  goToRiderProfile(ride: RideInfo | null): void {
+    console.log('[my-bookings] rider click — ride:', ride);
+    if (!ride) return;
+    const riderId =
+      ride.driver_id ?? ride.driver_user_id ?? ride.driverId ?? ride.user_id;
+
+    console.log('[my-bookings] resolved riderId:', riderId);
+    if (!riderId) {
+      console.warn('[my-bookings] No rider id on ride — cannot open profile', ride);
+      return;
+    }
+    this.router.navigate(['/my-profile'], { state: { user_id: riderId } });
+  }
 
   ngOnInit(): void {
     this.loadReviewedFromStorage();
@@ -475,33 +501,45 @@ export class MyBookings implements OnInit {
 // Not Approved — sirf DRIVER-rejected (passenger-cancel exclude)
 
 
-// ── Pending — passenger-cancelled exclude ──
+// ── Pending — passenger-cancelled + rider-cancelled-ride exclude ──
 get pendingBookings(): Booking[] {
   return this.allBookings.filter(
-    (b) => b.status === 'pending' && b.status_by_passenger !== 'cancelled'
+    (b) => b.status === 'pending'
+      && b.status_by_passenger !== 'cancelled'
+      && b.ride?.ride_status !== 'cancelled'
   );
 }
 
-// ── Confirmed — passenger-cancelled exclude ──
+// ── Confirmed — passenger-cancelled + rider-cancelled-ride exclude ──
 get confirmedBookings(): Booking[] {
   return this.allBookings.filter(
-    (b) => b.status === 'confirmed' && b.status_by_passenger !== 'cancelled'
+    (b) => b.status === 'confirmed'
+      && b.status_by_passenger !== 'cancelled'
+      && b.ride?.ride_status !== 'cancelled'
   );
 }
 
-// ── Not Approved — sirf driver-rejected, passenger-cancelled exclude ──
+// ── Not Approved — sirf driver-rejected; passenger-cancelled + rider-cancelled exclude ──
 get rejectedBookings(): Booking[] {
   return this.allBookings.filter(
     (b) =>
       (b.status === 'cancelled' || b.status === 'rejected') &&
-      b.status_by_passenger !== 'cancelled'
+      b.status_by_passenger !== 'cancelled' &&
+      b.ride?.ride_status !== 'cancelled'
   );
 }
 
-// ── Cancelled by passenger — yahi ek jagah dikhegi ──
+// ── Cancelled by you (passenger ne khud cancel ki) ──
 get cancelledByMeBookings(): Booking[] {
   return this.allBookings.filter(
     (b) => b.status_by_passenger === 'cancelled'
+  );
+}
+
+// ── Cancelled ride by rider (rider ne ride cancel ki, passenger ne nahi) ──
+get cancelledByRiderBookings(): Booking[] {
+  return this.allBookings.filter(
+    (b) => b.ride?.ride_status === 'cancelled' && b.status_by_passenger !== 'cancelled'
   );
 }
 }

@@ -17,7 +17,8 @@ export interface RideData {
   price_per_seat: number;
   routeVia?:string;
   status: string;
-  
+  seatStatus?: string;
+
 }
 
 export interface RidesResponse {

@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BookingService, BookSeatResponse } from '../../services/booking-service';
 import { Snackbar } from '../../services/snackbar';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { BookingDialog, BookingDialogResult } from '../booking-dialog/booking-dialog';
 
 @Component({
@@ -31,7 +32,14 @@ export class AvailableRides {
   rideStats: any = {}
 
   constructor(private rideService: Ride, private bookingService: BookingService,
-    private snackBar: Snackbar, private cdr: ChangeDetectorRef, private dialog: MatDialog) { }
+    private snackBar: Snackbar, private cdr: ChangeDetectorRef, private dialog: MatDialog,
+    private router: Router) { }
+
+  /** Open the full detail page for a ride card */
+  goToRideDetails(ride: any): void {
+    if (!ride?.ride_id) return;
+    this.router.navigate(['/ride-detail', ride.ride_id]);
+  }
   ngOnInit(): void {
 
     const saved = localStorage.getItem('rideStats');

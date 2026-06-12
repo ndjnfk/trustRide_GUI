@@ -142,6 +142,12 @@ export class Dashboard {
     this.router.navigate(['create-ride']);
   }
 
+  // Popular-route tile click → create-ride par jaao with route preselected
+  // (from, to, via aur price create-ride mein routeId se set ho jayenge)
+  goToRoute(routeId: string): void {
+    this.router.navigate(['create-ride'], { queryParams: { route: routeId } });
+  }
+
   /* ── Autocomplete ── */
   onFromInput(): void {
     const q = this.fromValue.toLowerCase();
@@ -301,7 +307,7 @@ res.rides.forEach((r: any) => {
         return;
       }
 
-      this.showSnackBar(`${filtered.length} ride(s) found!`, 'success');
+      // this.showSnackBar(`${filtered.length} ride(s) found!`, 'success');
 
       this.router.navigate(['/search-rides'], {
         state: { rides: filtered, from: this.fromValue, to: this.toValue },

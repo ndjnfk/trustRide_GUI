@@ -139,24 +139,6 @@
           }
         </div>
 
-        <!--Company EMAIL -->
-        <div class="field" [class.field--error]="f['companyEmail'].touched && f['companyEmail'].invalid">
-          <label for="companyEmail">Company Email</label>
-
-          <div class="input-wrap">
-            <input id="companyEmail" type="email" formControlName="companyEmail" placeholder="rahul@company.com"
-              autocomplete="email" />
-          </div>
-
-          @if (f['companyEmail'].touched && f['companyEmail'].errors?.['required']) {
-          <span class="field-error">Company Email is required. </span>
-          }
-
-          @if (f['companyEmail'].touched && f['companyEmail'].errors?.['email']) {
-          <span class="field-error"> Please enter a valid company email address. </span>
-          }
-        </div>
-
         <!-- PHONE -->
         <div class="field" [class.field--error]="f['phoneNumber'].touched && f['phoneNumber'].invalid">
           <label for="phoneNumber">Mobile Number</label>

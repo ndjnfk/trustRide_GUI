@@ -110,8 +110,12 @@
     <!-- Ride List -->
     <div *ngIf="rides.length" class="rp-list row g-3">
       <div class="rp-card col-12 col-md-6" *ngFor="let ride of rides"
+           [class.is-full]="ride.seatStatus === 'full' || ride.available_seats <= 0"
            (click)="openRideDetail(ride.ride_id)"
            style="cursor:pointer">
+
+        <!-- Ride Full watermark -->
+        <div class="full-watermark" *ngIf="ride.seatStatus === 'full' || ride.available_seats <= 0">Ride Full</div>
 
         <div class="rp-driver-row">
           <div class="rp-avatar">
@@ -150,9 +154,9 @@
             type="button"
             class="book-btn btn"
             (click)="bookRide(ride, $event)"
-            [disabled]="loadingRides.has(ride.ride_id)"
+            [disabled]="loadingRides.has(ride.ride_id) || ride.seatStatus === 'full' || ride.available_seats <= 0"
           >
-            {{ loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat' }}
+            {{ (ride.seatStatus === 'full' || ride.available_seats <= 0) ? 'Ride Full' : (loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat') }}
           </button>
         </div>
       </div>

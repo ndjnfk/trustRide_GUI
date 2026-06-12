@@ -357,8 +357,8 @@
 
   <!-- Route 1: Gurgaon → Saharanpur (Baghpat) -->
    <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-1">
-    <div class="rt-from d-flex">Gurgaon  <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 440</span></div>
+  <div class="route-tile reveal reveal-delay-1" style="cursor:pointer" (click)="goToRoute('r1')">
+    <div class="rt-from d-flex">Gurgaon  <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 440-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Saharanpur</div>
     <div class="rt-via">via UER2 · Sonipat · Baghpat · Shamli</div>
@@ -367,8 +367,8 @@
 
    <!-- Route 4: Gurgaon → Saharanpur (Dhaula Kuan) -->
     <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-3">
-    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+  <div class="route-tile reveal reveal-delay-3" style="cursor:pointer" (click)="goToRoute('r4')">
+    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Saharanpur</div>
     <div class="rt-via">via Dhaula Kuan · Delhi-Dehradun Expressway · UER2</div>
@@ -378,8 +378,8 @@
 
   <!-- Route 2: Gurgaon → Saharanpur (Panipat) -->
    <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-3">
-    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 460</span></div>
+  <div class="route-tile reveal reveal-delay-3" style="cursor:pointer" (click)="goToRoute('r2')">
+    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 460-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Saharanpur</div>
     <div class="rt-via">via UER2 · Sonipat · Panipat · Shamli</div>
@@ -390,8 +390,8 @@
 
   <!-- Route 3: Gurgaon → Saharanpur (Kundali Expressway) -->
    <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-1">
-    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+  <div class="route-tile reveal reveal-delay-1" style="cursor:pointer" (click)="goToRoute('r3')">
+    <div class="rt-from d-flex">Gurgaon <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Saharanpur</div>
     <div class="rt-via">via UER2 · Kundali · Delhi-Dehradun Expressway</div>
@@ -402,8 +402,8 @@
 
      <!-- Route 1 Reverse: Saharanpur → Gurgaon (Baghpat) -->
    <div class="col-12 col-md-6 col-xl-3">
-      <div class="route-tile reveal reveal-delay-2">
-    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 440</span></div>
+      <div class="route-tile reveal reveal-delay-2" style="cursor:pointer" (click)="goToRoute('r1r')">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 440-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Gurgaon</div>
     <div class="rt-via">via Shamli · Baghpat · Sonipat · UER2</div>
@@ -414,8 +414,8 @@
 
   <!-- Route 4 Reverse: Saharanpur → Gurgaon (Dhaula Kuan) -->
     <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-4">
-    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+  <div class="route-tile reveal reveal-delay-4" style="cursor:pointer" (click)="goToRoute('r4r')">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Gurgaon</div>
     <div class="rt-via">via UER2 · Delhi-Dehradun Expressway · Dhaula Kuan</div>
@@ -424,8 +424,8 @@
 
    <!-- Route 3 Reverse: Saharanpur → Gurgaon (Kundali Expressway) -->
     <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-2">
-    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480</span></div>
+  <div class="route-tile reveal reveal-delay-2" style="cursor:pointer" (click)="goToRoute('r3r')">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 480-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Gurgaon</div>
     <div class="rt-via">via Delhi-Dehradun Expressway · Kundali · UER2</div>
@@ -433,8 +433,8 @@
     </div>
     <!-- Route 2 Reverse: Saharanpur → Gurgaon (Panipat) -->
    <div class="col-12 col-md-6 col-xl-3">
-  <div class="route-tile reveal reveal-delay-4">
-    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 460</span></div>
+  <div class="route-tile reveal reveal-delay-4" style="cursor:pointer" (click)="goToRoute('r2r')">
+    <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 460-560</span></div>
     <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
     <div class="rt-to">Gurgaon</div>
     <div class="rt-via">via Shamli · Panipat · Sonipat · UER2</div>

@@ -1,0 +1,97 @@
+<div class="cancel-page">
+
+  <div class="cancel-header">
+    <a routerLink="/dashboard" class="back-link">← Back</a>
+    <h1 class="cancel-title mt-5">Cancellation History</h1>
+    <p class="cancel-sub">{{ subtitle }}</p>
+  </div>
+
+  <!-- Tabs (sirf 'both' role ke liye) -->
+  @if (showTabs) {
+    <div class="cancel-tabs">
+      <button class="cancel-tab" [class.active]="view === 'rides'" (click)="setView('rides')">
+        Cancelled Rides ({{ cancelledRides.length }})
+      </button>
+      <button class="cancel-tab" [class.active]="view === 'bookings'" (click)="setView('bookings')">
+        Cancelled Bookings ({{ cancelledBookings.length }})
+      </button>
+    </div>
+  }
+
+  <!-- Loading / Error -->
+  @if (isLoading) {
+    <p class="state-msg">Loading…</p>
+  }
+  @if (error) {
+    <p class="state-msg error">{{ error }}</p>
+  }
+
+  <!-- RIDES -->
+  @if (!isLoading && !error && view === 'rides' && showRides) {
+    @if (cancelledRides.length === 0) {
+      <p class="state-msg">No cancelled rides.</p>
+    } @else {
+      <div class="cancel-list">
+        @for (ride of cancelledRides; track ride.ride_id) {
+          <div class="cancel-card">
+            <div class="cancel-route">
+              <span class="loc">{{ ride.from || '—' }}</span>
+              <span class="arrow">→</span>
+              <span class="loc">{{ ride.to || '—' }}</span>
+            </div>
+            <div class="cancel-meta">
+              @if (ride.departure_time) {
+                <span>🕒 {{ ride.departure_time | date: 'dd MMM yyyy, h:mm a' }}</span>
+              }
+              @if (ride.price_per_seat) {
+                <span>₹{{ ride.price_per_seat }}/seat</span>
+              }
+            </div>
+            <div class="cancel-reason">
+              <span class="reason-label">Reason:</span>
+              {{ ride.cancellation_reason || 'No reason provided' }}
+            </div>
+            @if (ride.cancelled_at) {
+              <div class="cancel-when">Cancelled on {{ ride.cancelled_at | date: 'dd MMM yyyy' }}</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- BOOKINGS -->
+  @if (!isLoading && !error && view === 'bookings' && showBookings) {
+    @if (cancelledBookings.length === 0) {
+      <p class="state-msg">No cancelled bookings.</p>
+    } @else {
+      <div class="cancel-list">
+        @for (booking of cancelledBookings; track booking.booking_id) {
+          <div class="cancel-card">
+            <div class="cancel-route">
+              <span class="loc">{{ booking.from || '—' }}</span>
+              <span class="arrow">→</span>
+              <span class="loc">{{ booking.to || '—' }}</span>
+            </div>
+            <div class="cancel-meta">
+              @if (booking.departure_time) {
+                <span>🕒 {{ booking.departure_time | date: 'dd MMM yyyy, h:mm a' }}</span>
+              }
+              @if (booking.driver_name) {
+                <span>🚗 {{ booking.driver_name }}</span>
+              }
+            </div>
+            <div class="cancel-reason">
+              <span class="reason-label">Reason:</span>
+              {{ booking.cancellation_reason || 'No reason provided' }}
+            </div>
+            @if (booking.cancelled_at) {
+              <div class="cancel-when">Cancelled on {{ booking.cancelled_at | date: 'dd MMM yyyy' }}</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+
+</div>

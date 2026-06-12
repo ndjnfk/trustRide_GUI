@@ -56,3 +56,12 @@
   hr {
     opacity: 0.15;
   }
+.cancel-link {
+  color: #e24b4a;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.cancel-link:hover {
+  color: #b91c1c;
+}

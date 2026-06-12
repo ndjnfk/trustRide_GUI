@@ -11,30 +11,30 @@ export class AuthHelper {
    private static readonly TOKEN_KEY = 'auth_token'
 
   private static isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof sessionStorage !== 'undefined'
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined'
   }
 
-    // ✅ Token Save Karo
+    // ✅ Token Save Karo — localStorage taaki browser band karne par bhi 7 din login rahe
   static setToken(token: string): void {
     if (!this.isBrowser()) return
-    sessionStorage.setItem(this.TOKEN_KEY, token)
+    localStorage.setItem(this.TOKEN_KEY, token)
   }
 
   // ✅ Token Get Karo
   static getToken(): string | null {
     if (!this.isBrowser()) return null
-    return sessionStorage.getItem(this.TOKEN_KEY)
+    return localStorage.getItem(this.TOKEN_KEY)
   }
 
   // ✅ Token Remove Karo
   static removeToken(): void {
     if (!this.isBrowser()) return
-    sessionStorage.removeItem(this.TOKEN_KEY)
+    localStorage.removeItem(this.TOKEN_KEY)
   }
  // ✅ Logout — Sab Clear Karo
   static logout(): void {
     if (!this.isBrowser()) return
-    sessionStorage.removeItem(this.TOKEN_KEY)
+    localStorage.removeItem(this.TOKEN_KEY)
 
   }
 

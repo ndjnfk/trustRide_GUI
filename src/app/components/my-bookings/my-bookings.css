@@ -19,7 +19,7 @@
   color: #ef4444;
   font-weight: 600;
   font-size: 14px;
-  border-radius: 10px;
+  border-radius: 30px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -222,6 +222,10 @@
   font-size: 13.5px;
   font-weight: 600;
   text-align: center;
+}
+
+.rider-name-link {
+  cursor: pointer;
 }
 
 .cby-reason {

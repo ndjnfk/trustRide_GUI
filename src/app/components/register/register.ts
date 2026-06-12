@@ -126,16 +126,6 @@ locations = ['Gurgaon', 'Saharanpur']
           ],
         ],
 
-        // ── companyEmail: valid email format ──────────────────────────────────
-        companyEmail: [
-          '',
-          [
-            Validators.required,
-            Validators.email,
-            Validators.maxLength(255),
-          ],
-        ],
-
         // ── phoneNumber: Indian 10-digit, starts with 6-9 ─────────────────
         phoneNumber: [
           '',
@@ -263,7 +253,6 @@ locations = ['Gurgaon', 'Saharanpur']
       preferredTravelDays: this.travelDays.value,
       userEmail: this.f['userEmail'].value.trim().toLowerCase(),
       companyName: this.f['companyName'].value.trim(),
-      companyEmail: this.f['companyEmail'].value.trim().toLowerCase(),
       phoneNumber: this.f['phoneNumber'].value.trim(),
       password: this.f['password'].value,
     }

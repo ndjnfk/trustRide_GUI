@@ -104,6 +104,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/components/my-profile/my-profile').then((m) => m.MyProfile),
   },
+  {
+    path: 'cancellation-details/:userId',
+    loadComponent: () =>
+      import('../app/components/cancellation-details/cancellation-details').then((m) => m.CancellationDetails),
+  },
    {
     path: 'review/:ride_id',
     loadComponent: () =>

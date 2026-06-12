@@ -103,17 +103,23 @@ export class MyProfile implements OnInit {
     next: (res: any) => {
       if (res?.success) {
         const d = res.data;
+        console.log('[my-profile] profile data keys:', Object.keys(d));
+        console.log('[my-profile] phone candidates:', d.phone_Number, d.phone_number, d.phoneNumber, d.Phone_Number, d.mobile_number);
         this.role = d.current_role ?? d.currentRole ?? d.user_Role ?? d.user_role ?? d.role ?? '';
         this.user = {
           fullName:           d.full_name,
           gender:             d.gender,
           userEmail:          d.user_Email,
+          phoneNumber:        d.phone_Number ?? d.phone_number ?? d.phoneNumber ?? d.Phone_Number ?? d.mobile_number,
           verificationStatus: d.verification_Status,
           avatarUrl:          d.avatar_Url,
           avgRating:          d.avg_rating,
           totalReviews:       d.total_reviews,
           aboutUser:          d.about_user,
           totalRides:         d.total_rides,
+          totalCancelledRides:    d.total_cancelled_rides ?? 0,
+          totalCancelledBookings: d.total_cancelled_bookings ?? 0,
+          totalBookings:          d.total_bookings ?? 0,
           companyName:        d.company_Name,
           preferences:        d.preferences ?? [],
           preferredTravelDays: this.normalizeTravelDays(

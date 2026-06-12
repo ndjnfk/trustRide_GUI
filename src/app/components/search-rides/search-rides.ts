@@ -22,6 +22,7 @@ export interface Ride {
   available_seats: number;
   price_per_seat: number;
   status: string;
+  seatStatus?: string;
 }
 
 @Component({
@@ -234,7 +235,7 @@ export class SearchRides {
           return;
         }
 
-        this.showSnackBar(`${filtered.length} ride(s) found!`, 'success');
+        // this.showSnackBar(`${filtered.length} ride(s) found!`, 'success');
 
         this.rides = filtered;
         this.from = this.fromValue;

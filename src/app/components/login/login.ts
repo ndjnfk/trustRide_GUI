@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -49,13 +49,14 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: Snackbar,
     private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
     if (AuthHelper.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigateByUrl(this.getReturnUrl());
     }
 
     this.loginForm = this.fb.group({
@@ -95,9 +96,10 @@ export class LoginComponent implements OnInit {
 
         // ✅ success message
         this.snackBar.success('Login successful');
-     
-          window.location.href = '/dashboard';
-        
+
+        // Return the user to where they came from (e.g. a ride detail page), else dashboard
+        window.location.href = this.getReturnUrl();
+
       },
 
       error: (err: any) => {
@@ -118,6 +120,15 @@ export class LoginComponent implements OnInit {
         this.triggerShake();
       }
     });
+  }
+
+  // Reads the ?returnUrl=... query param; only allow same-app relative paths to avoid open redirects
+  private getReturnUrl(): string {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')) {
+      return returnUrl;
+    }
+    return '/dashboard';
   }
 
   private triggerShake(): void {

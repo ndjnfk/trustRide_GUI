@@ -25,7 +25,10 @@
               (click)="setTab('rejected')">{{ rejectedBookings.length }} Not Approved</button>
       <button type="button" class="pill pill-rejected"
               [class.pill-active]="activeTab === 'cancelled'"
-              (click)="setTab('cancelled')">{{ cancelledByMeBookings.length }} Cancelled</button>
+              (click)="setTab('cancelled')">{{ cancelledByMeBookings.length }} Cancelled by you</button>
+      <button type="button" class="pill pill-rejected"
+              [class.pill-active]="activeTab === 'ride_cancelled'"
+              (click)="setTab('ride_cancelled')">{{ cancelledByRiderBookings.length }} Cancelled ride by rider</button>
     </div>
   </header>
 
@@ -66,7 +69,8 @@
             <div class="card-divider"></div>
             <div class="card-details">
               <div class="detail-item"><span class="detail-icon">👤</span>
-                <div><span class="detail-label">Rider</span><span class="detail-val">{{ b.ride?.driver_name ?? '—'
+                <div><span class="detail-label">Rider</span><span class="detail-val rider-name-link"
+                    (click)="goToRiderProfile(b.ride)" title="View rider profile">{{ b.ride?.driver_name ?? '—'
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">📅</span>
@@ -83,8 +87,12 @@
                     '—' }}</span></div>
               </div>
               
+              <div class="detail-item"><span class="detail-icon">🪑</span>
+                <div><span class="detail-label">Seats Booked</span><span class="detail-val">{{ b.seats_booked || 1
+                    }}</span></div>
+              </div>
               <div class="detail-item"><span class="detail-icon">💰</span>
-                <div><span class="detail-label">Price</span><span class="detail-val">₹{{ b.ride?.price_per_seat ?? '—'
+                <div><span class="detail-label">Total Price</span><span class="detail-val"> ₹{{ (b.ride?.price_per_seat || 0) * (b.seats_booked || 1)
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">🕐</span>
@@ -100,17 +108,10 @@
                   *ngIf="b.cancelled_by !== 'passenger' && b.ride?.ride_status !== 'cancelled'">⏳ Pending
                   Approval</span>
 
-                <!-- Active / Completed -->
-                <span class="badge" *ngIf="b.cancelled_by !== 'passenger' && b.ride?.ride_status !== 'cancelled'"
-                  [ngClass]="{
-        'badge-ride-active': b.ride?.ride_status === 'active',
-        'badge-ride-completed': b.ride?.ride_status === 'completed'
-      }">🚗 {{ b.ride?.ride_status | titlecase }}</span>
-
-                <!-- Cancelled -->
+                <!-- Ride cancelled by rider -->
                 <div class="cancel-wrap" *ngIf="b.ride?.ride_status === 'cancelled'">
                   <span class="badge badge-ride-cancelled" (click)="toggleCancelReason(b.booking_id)">
-                    🚗 Cancelled
+                    🚗 Ride cancelled by rider
                     <span class="cr-arrow" *ngIf="b.ride?.ride_cancellation_reason"
                       [class.open]="openCancelReason[b.booking_id]">▼</span>
                   </span>
@@ -165,7 +166,8 @@
 
             <div class="card-details">
               <div class="detail-item"><span class="detail-icon">👤</span>
-                <div><span class="detail-label">Rider</span><span class="detail-val">{{ b.ride?.driver_name ?? '—'
+                <div><span class="detail-label">Rider</span><span class="detail-val rider-name-link"
+                    (click)="goToRiderProfile(b.ride)" title="View rider profile">{{ b.ride?.driver_name ?? '—'
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">📞</span>
@@ -180,8 +182,12 @@
                 <div><span class="detail-label">Time</span><span class="detail-val">{{
                     formatTime(b.ride?.departure_time) }}</span></div>
               </div>
+              <div class="detail-item"><span class="detail-icon">🪑</span>
+                <div><span class="detail-label">Seats Booked</span><span class="detail-val">{{ b.seats_booked || 1
+                    }}</span></div>
+              </div>
               <div class="detail-item"><span class="detail-icon">💰</span>
-                <div><span class="detail-label">Price</span><span class="detail-val">₹{{ b.ride?.price_per_seat ?? '—'
+                <div><span class="detail-label">Total Price</span><span class="detail-val"> ₹{{ (b.ride?.price_per_seat || 0) * (b.seats_booked || 1)
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">🕐</span>
@@ -194,16 +200,10 @@
               <div class="badge-row">
                 <span class="badge badge-confirmed">Approved</span>
 
-                <!-- Active / Completed -->
-                <span class="badge" *ngIf="b.ride?.ride_status !== 'cancelled'" [ngClass]="{
-          'badge-ride-active': b.ride?.ride_status === 'active',
-          'badge-ride-completed': b.ride?.ride_status === 'completed'
-        }">🚗 {{ b.ride?.ride_status | titlecase }}</span>
-
-                <!-- Cancelled -->
+                <!-- Ride cancelled by rider -->
                 <div class="cancel-wrap" *ngIf="b.ride?.ride_status === 'cancelled'">
                   <span class="badge badge-ride-cancelled" (click)="toggleCancelReason(b.booking_id)">
-                    🚗 Cancelled
+                    🚗 Ride cancelled by rider
                     <span class="cr-arrow" *ngIf="b.ride?.ride_cancellation_reason"
                       [class.open]="openCancelReason[b.booking_id]">▼</span>
                   </span>
@@ -286,7 +286,8 @@
             <div class="card-divider"></div>
             <div class="card-details">
               <div class="detail-item"><span class="detail-icon">👤</span>
-                <div><span class="detail-label">Rider</span><span class="detail-val">{{ b.ride?.driver_name ?? '—'
+                <div><span class="detail-label">Rider</span><span class="detail-val rider-name-link"
+                    (click)="goToRiderProfile(b.ride)" title="View rider profile">{{ b.ride?.driver_name ?? '—'
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">📅</span>
@@ -302,8 +303,12 @@
                 <div><span class="detail-label">Phone Number</span><span class="detail-val">{{ b.ride?.driver_phone ??
                     '—' }}</span></div>
               </div>
+              <div class="detail-item"><span class="detail-icon">🪑</span>
+                <div><span class="detail-label">Seats Booked</span><span class="detail-val">{{ b.seats_booked || 1
+                    }}</span></div>
+              </div>
               <div class="detail-item"><span class="detail-icon">💰</span>
-                <div><span class="detail-label">Price</span><span class="detail-val">₹{{ b.ride?.price_per_seat ?? '—'
+                <div><span class="detail-label">Total Price</span><span class="detail-val">₹{{ (b.ride?.price_per_seat || 0) * (b.seats_booked || 1)
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">🕐</span>
@@ -313,18 +318,12 @@
             </div>
             <div class="card-footer">
               <div class="badge-row">
-                <span class="badge badge-rejected">rejected</span>
+                <span class="badge badge-rejected">Not Approved</span>
 
-                <!-- Active / Completed -->
-                <span class="badge" *ngIf="b.ride?.ride_status !== 'cancelled'" [ngClass]="{
-        'badge-ride-active': b.ride?.ride_status === 'active',
-        'badge-ride-completed': b.ride?.ride_status === 'completed'
-      }">🚗 {{ b.ride?.ride_status | titlecase }}</span>
-
-                <!-- Ride Cancelled -->
+                <!-- Ride cancelled by rider -->
                 <div class="cancel-wrap" *ngIf="b.ride?.ride_status === 'cancelled'">
                   <span class="badge badge-ride-cancelled" (click)="toggleCancelReason(b.booking_id)">
-                    🚗 Cancelled
+                    🚗 Ride cancelled by rider
                     <span class="cr-arrow" *ngIf="b.ride?.ride_cancellation_reason"
                       [class.open]="openCancelReason[b.booking_id]">▼</span>
                   </span>
@@ -361,7 +360,8 @@
             <div class="card-divider"></div>
             <div class="card-details">
               <div class="detail-item"><span class="detail-icon">👤</span>
-                <div><span class="detail-label">Rider</span><span class="detail-val">{{ b.ride?.driver_name ?? '—'
+                <div><span class="detail-label">Rider</span><span class="detail-val rider-name-link"
+                    (click)="goToRiderProfile(b.ride)" title="View rider profile">{{ b.ride?.driver_name ?? '—'
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">📅</span>
@@ -376,8 +376,12 @@
                 <div><span class="detail-label">Phone Number</span><span class="detail-val">{{ b.ride?.driver_phone ??
                     '—' }}</span></div>
               </div>
+              <div class="detail-item"><span class="detail-icon">🪑</span>
+                <div><span class="detail-label">Seats Booked</span><span class="detail-val">{{ b.seats_booked || 1
+                    }}</span></div>
+              </div>
               <div class="detail-item"><span class="detail-icon">💰</span>
-                <div><span class="detail-label">Price</span><span class="detail-val">₹{{ b.ride?.price_per_seat ?? '—'
+                <div><span class="detail-label">Total Price</span><span class="detail-val">₹{{ (b.ride?.price_per_seat || 0) * (b.seats_booked || 1)
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">🕐</span>
@@ -389,8 +393,18 @@
             <div class="card-footer">
               <div class="badge-row">
 
-                <!-- 1️⃣ Pehle: passenger ne cancel kiya -->
-                <span class="badge badge-cancelled-by-me">✖ Cancelled by you</span>
+                <!-- 1️⃣ Pehle: passenger ne cancel kiya (apna reason bhi) -->
+                <div class="cancel-wrap">
+                  <span class="badge badge-cancelled-by-me" (click)="toggleCancelReason('pass_' + b.booking_id)">
+                    ✖ Cancelled by you
+                    <span class="cr-arrow" *ngIf="b.cancellation_reason_by_passenger"
+                      [class.open]="openCancelReason['pass_' + b.booking_id]">▼</span>
+                  </span>
+                  <div class="cancel-reason-text"
+                    *ngIf="openCancelReason['pass_' + b.booking_id] && b.cancellation_reason_by_passenger">
+                    💬 {{ b.cancellation_reason_by_passenger }}
+                  </div>
+                </div>
 
              
 
@@ -399,7 +413,7 @@
                 <!-- Ride bhi cancelled ho toh (alag toggle key: 'ride_' prefix) -->
                 <div class="cancel-wrap" *ngIf="b.ride?.ride_status === 'cancelled'">
                   <span class="badge badge-ride-cancelled" (click)="toggleCancelReason('ride_' + b.booking_id)">
-                    🚗 Ride Cancelled
+                    🚗 Ride cancelled by rider
                     <span class="cr-arrow" *ngIf="b.ride?.ride_cancellation_reason"
                       [class.open]="openCancelReason['ride_' + b.booking_id]">▼</span>
                   </span>
@@ -417,14 +431,87 @@
       </div>
     </section>
 
+    <!-- ── CANCELLED RIDE BY RIDER (rider ne ride cancel ki) ───────────── -->
+    <section class="booking-section" *ngIf="activeTab === 'ride_cancelled' && cancelledByRiderBookings.length > 0">
+      <div class="section-header cancelled-header"></div>
+      <div class="cards-grid row g-3 g-md-4">
+        <div class="col-12 col-md-6 col-xl-4" *ngFor="let b of cancelledByRiderBookings">
+          <div class="booking-card cancelled-by-me-card h-100">
+            <div class="card-route">
+              <span class="route-city">{{ b.ride?.from ?? '—' }}</span>
+              <div class="route-line">
+                <span class="route-dot"></span><span class="route-dash"></span><span class="route-arrow">✈</span>
+              </div>
+              <span class="route-city">{{ b.ride?.to ?? '—' }}</span>
+            </div>
+            <div class="card-divider"></div>
+            <div class="card-details">
+              <div class="detail-item"><span class="detail-icon">👤</span>
+                <div><span class="detail-label">Rider</span><span class="detail-val rider-name-link"
+                    (click)="goToRiderProfile(b.ride)" title="View rider profile">{{ b.ride?.driver_name ?? '—'
+                    }}</span></div>
+              </div>
+              <div class="detail-item"><span class="detail-icon">📅</span>
+                <div><span class="detail-label">Departure</span><span class="detail-val">{{
+                    formatDate(b.ride?.departure_time) }}</span></div>
+              </div>
+              <div class="detail-item"><span class="detail-icon">⏰</span>
+                <div><span class="detail-label">Time</span><span class="detail-val">{{
+                    formatTime(b.ride?.departure_time) }}</span></div>
+              </div>
+              <div class="detail-item"><span class="detail-icon">📞</span>
+                <div><span class="detail-label">Phone Number</span><span class="detail-val">{{ b.ride?.driver_phone ??
+                    '—' }}</span></div>
+              </div>
+              <div class="detail-item"><span class="detail-icon">🪑</span>
+                <div><span class="detail-label">Seats Booked</span><span class="detail-val">{{ b.seats_booked || 1
+                    }}</span></div>
+              </div>
+              <div class="detail-item"><span class="detail-icon">💰</span>
+                <div><span class="detail-label">Total Price</span><span class="detail-val">₹{{ (b.ride?.price_per_seat || 0) * (b.seats_booked || 1)
+                    }}</span></div>
+              </div>
+              <div class="detail-item"><span class="detail-icon">🕐</span>
+                <div><span class="detail-label">Booked At</span><span class="detail-val">{{ formatDate(b.booked_at)
+                    }}</span></div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="badge-row">
+                <!-- Sirf rider-cancel status + reason -->
+                <div class="cancel-wrap">
+                  <span class="badge badge-ride-cancelled" (click)="toggleCancelReason('ride_' + b.booking_id)">
+                    🚗 Ride cancelled by rider
+                    <span class="cr-arrow" *ngIf="b.ride?.ride_cancellation_reason"
+                      [class.open]="openCancelReason['ride_' + b.booking_id]">▼</span>
+                  </span>
+                  <div class="cancel-reason-text"
+                    *ngIf="openCancelReason['ride_' + b.booking_id] && b.ride?.ride_cancellation_reason">
+                    💬 {{ b.ride?.ride_cancellation_reason }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Per-tab empty state ── -->
     <div class="state-box" *ngIf="
       (activeTab === 'pending'   && pendingBookings.length === 0) ||
       (activeTab === 'confirmed' && confirmedBookings.length === 0) ||
       (activeTab === 'rejected'  && rejectedBookings.length === 0) ||
-      (activeTab === 'cancelled' && cancelledByMeBookings.length === 0)">
+      (activeTab === 'cancelled' && cancelledByMeBookings.length === 0) ||
+      (activeTab === 'ride_cancelled' && cancelledByRiderBookings.length === 0)">
       <div class="state-emoji">📭</div>
-      <p class="state-text">No {{ activeTab === 'rejected' ? 'not approved' : activeTab }} bookings.</p>
+      <p class="state-text">
+        No {{ activeTab === 'rejected' ? 'not approved' :
+              activeTab === 'cancelled' ? 'cancelled by you' :
+              activeTab === 'ride_cancelled' ? 'rider-cancelled' : activeTab }} bookings.
+      </p>
     </div>
 
   </div>

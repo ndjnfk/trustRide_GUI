@@ -117,7 +117,11 @@
   <section class="rides-section container" *ngIf="!loading && !error && filteredRides.length > 0">
     <div class="row g-3 g-md-4">
       <div class="col-12 col-md-6 col-xl-4" *ngFor="let ride of filteredRides">
-        <div class="ride-card card h-100">
+        <div class="ride-card card h-100 ride-card-clickable" [class.is-full]="ride.seatStatus === 'full' || ride.available_seats <= 0"
+          (click)="goToRideDetails(ride)">
+
+          <!-- Ride Full watermark -->
+          <div class="full-watermark" *ngIf="ride.seatStatus === 'full' || ride.available_seats <= 0">Ride Full</div>
 
           <!-- Card Top -->
           <div class="card-top d-flex align-items-start justify-content-between gap-2">
@@ -186,7 +190,7 @@
           <!-- Seat Stats Dropdown -->
           <div class="seat-stats-wrapper">
             <button type="button" class="seat-stats-toggle btn w-100 d-flex justify-content-between align-items-center"
-              (click)="toggleStats(ride.ride_id)"
+              (click)="$event.stopPropagation(); toggleStats(ride.ride_id)"
               [disabled]="!rideStats[ride.ride_id]">
               🪑 Seat Breakdown
               <span class="toggle-arrow" [class.open]="openStats[ride.ride_id]">▼</span>
@@ -249,10 +253,10 @@
             <button
               type="button"
               class="book-btn btn"
-              (click)="bookRide(ride)"
-              [disabled]="loadingRides.has(ride.ride_id)"
+              (click)="$event.stopPropagation(); bookRide(ride)"
+              [disabled]="loadingRides.has(ride.ride_id) || ride.seatStatus === 'full' || ride.available_seats <= 0"
             >
-              {{ loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat' }}
+              {{ (ride.seatStatus === 'full' || ride.available_seats <= 0) ? 'Ride Full' : (loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat') }}
             </button>
           </div>
 

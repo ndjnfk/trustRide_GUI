@@ -523,6 +523,7 @@ button {
   background: linear-gradient(135deg, #3b82f6 0%, #6366f1 55%, #7c3aed 100%);
   color: #fff;
   overflow: hidden;
+  padding-bottom: 65px;
 }
 
 .drawer__header::before {

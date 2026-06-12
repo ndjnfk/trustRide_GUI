@@ -85,13 +85,13 @@ export class Profile implements OnInit {
     this.cdr.detectChanges();
     this.error = '';
     console.log('Token:', AuthHelper.getToken());
-    console.log('Session direct:', sessionStorage.getItem('auth_token'));
+    console.log('Storage direct:', localStorage.getItem('auth_token'));
 
     this.profileService.getProfile().subscribe({
       next: (res) => {
         // loadAll() mein ye add karo temporarily
         console.log('Token in storage:', AuthHelper.getToken());
-        console.log('SessionStorage:', sessionStorage.getItem('auth_token'));
+        console.log('LocalStorage:', localStorage.getItem('auth_token'));
         this.profile = res.user;
         // ✅ Fix: relative path ko full URL banao
         // this.avatarPreview = res.user.avatarUrl

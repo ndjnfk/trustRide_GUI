@@ -17,6 +17,10 @@ export interface UserProfile {
   verificationStatus?: string;
   avatarUrl?: string | null;
   created_at?: string;
+  role?: string;
+  totalRides?: number | null;
+  totalCancelledRides?: number;
+  totalCancelledBookings?: number;
 }
 
 export interface ProfessionalDoc {
@@ -211,6 +215,11 @@ export class ProfileService {
   getUserProfileById(userId: string): Observable<any> {
   return this.http.post<any>(`${this.BASE}/getUserProfile`, { user_id: userId })
 }
+
+  // ── POST /getCancellationDetails (public) ──────────────────────────────────
+  getCancellationDetails(userId: string): Observable<any> {
+    return this.http.post<any>(`${this.BASE}/getCancellationDetails`, { user_id: userId })
+  }
 
   // ── PUT /profile/travel-days ───────────────────────────────────────────────
   updateTravelDays(preferredTravelDays: TravelDay[]): Observable<UpdateTravelDaysResponse> {

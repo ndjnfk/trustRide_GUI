@@ -8,6 +8,7 @@ import { Snackbar } from '../../services/snackbar';
 import { BookingDialog, BookingDialogResult } from '../booking-dialog/booking-dialog';
 import { environment } from '../../../../environment';
 import { AuthHelper } from '../../helpers/auth-helper';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-one-ride-details',
@@ -22,6 +23,8 @@ export class OneRideDetails {
   rideId: string = '';
   booking = false;
   imageBaseUrl = environment.apiUrl
+  /** Logged-in user's id — used to detect if this viewer cancelled their booking */
+  currentUserId: string | null = null;
 
   constructor(
     private router: Router,
@@ -30,8 +33,8 @@ export class OneRideDetails {
     private bookingService: BookingService,
     private dialog: MatDialog,
     private snack: Snackbar,
-    private cdr: ChangeDetectorRef
-    
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
   ngOnInit() {
     // URL param first (shareable link), fallback to history.state (in-app nav)
@@ -47,6 +50,17 @@ export class OneRideDetails {
 
   this.rideId = rideId;
 
+  // Identify the logged-in viewer so we can detect their own cancelled booking
+  if (AuthHelper.isLoggedIn()) {
+    this.authService.getCurrentUser().subscribe({
+      next: (res: any) => {
+        this.currentUserId = res?.Id ?? res?.id ?? res?._id ?? null;
+        this.cdr.detectChanges();
+      },
+      error: () => { /* not critical — watermark just won't show */ },
+    });
+  }
+
   this.rideService.getFullDetailsByRide(rideId).subscribe({
     next: (res) => {
       this.rideData = res.ride;
@@ -57,6 +71,36 @@ export class OneRideDetails {
       this.loading = false;
     }
   });
+  }
+
+  /** Bookings excluding ones cancelled by rider or passenger / rejected */
+  get activeBookings(): any[] {
+    const bookings: any[] = this.rideData?.bookings ?? [];
+    return bookings.filter((b) => {
+      const status = (b?.booking_status ?? b?.status ?? '').toString().toLowerCase();
+      const passengerCancelled =
+        (b?.status_by_passenger ?? '').toString().toLowerCase() === 'cancelled';
+      const cancelledByAnyone = !!b?.cancelled_by; // 'passenger' | 'rider'
+      return (
+        status !== 'cancelled' &&
+        status !== 'rejected' &&
+        !passengerCancelled &&
+        !cancelledByAnyone
+      );
+    });
+  }
+
+  /** True if the logged-in viewer has a booking on this ride that they cancelled */
+  get cancelledByMe(): boolean {
+    if (!this.currentUserId) return false;
+    const bookings: any[] = this.rideData?.bookings ?? [];
+    return bookings.some((b) => {
+      const isMine = b?.passenger?._id === this.currentUserId;
+      const passengerCancelled =
+        b?.cancelled_by === 'passenger' ||
+        (b?.status_by_passenger ?? '').toString().toLowerCase() === 'cancelled';
+      return isMine && passengerCancelled;
+    });
   }
 
   getInitials(name: string): string {
@@ -93,7 +137,8 @@ export class OneRideDetails {
 
     if (!AuthHelper.isLoggedIn()) {
       this.snack.error('Please log in to book a ride.');
-      this.router.navigate(['/login']);
+      // Send the user back to this exact ride page after they log in
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
       return;
     }
 
@@ -134,20 +179,9 @@ export class OneRideDetails {
           },
           error: (err) => {
             this.booking = false;
-            let message = 'Booking failed';
-            if (err?.status === 409) {
-              message = 'You have already booked a seat for this ride.';
-            } else if (err?.status === 403) {
-              if (err?.error?.message?.includes('review')) {
-                message = 'Please review your completed ride before booking again.';
-              } else if (err?.error?.message?.includes('ratio')) {
-                message = 'Booking blocked — 2M + 2F ratio not allowed.';
-              } else {
-                message = err?.error?.message || 'Access denied.';
-              }
-            } else if (err?.status === 500) {
-              message = 'Server error. Please try again later.';
-            }
+            // Show whatever the backend sends; fall back to a generic message
+            const message =
+              err?.error?.message || err?.message || 'Booking failed. Please try again.';
             this.snack.error(message);
             this.cdr.detectChanges();
           },

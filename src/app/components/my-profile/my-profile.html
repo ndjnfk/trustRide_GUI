@@ -98,26 +98,30 @@
         <!-- About -->
        
         <div>
-              @if (user?.aboutUser) {
+          @if (user?.aboutUser) {
           <h5 class="fw-bold mb-3">
             About {{ user?.fullName || 'this user' }}
           </h5>
- 
+
           <p class="small text-muted">
             {{user?.aboutUser}}
           </p>
+          }
+        </div>
+
+        <!-- Travel Preferences -->
+        @if (activePreferences.length) {
+        <hr />
+
+        <div>
+          <h5 class="fw-bold mb-3">Travel preferences</h5>
+
+          <div class="about-item" *ngFor="let pref of activePreferences">
+            <i class="ti {{ pref.icon }}"></i>
+            <span>{{ pref.label }}</span>
+          </div>
+        </div>
         }
-           <div class="about-item" *ngFor="let pref of activePreferences">
-          <i class="ti {{ pref.icon }}"></i>
-          <span>{{ pref.label }}</span>
-        </div>
-
-
-
-
-
-
-        </div>
 
         @if (user?.preferredTravelDays?.length) {
         <hr />
@@ -167,10 +171,34 @@
             {{ professional ? 'professional' : 'non-professional' }} member
           </p> -->
  
+          @if (role === 'rider' || role === 'both') {
           <p class="mb-2">
             {{user.totalRides}} published and completed rides
           </p>
- 
+
+          <p class="mb-2">
+            <a class="cancel-link"
+               [routerLink]="['/cancellation-details', userId]"
+               [queryParams]="{ view: 'rides', role: role }">
+              {{ user?.totalCancelledRides || 0 }} cancelled rides
+            </a>
+          </p>
+          }
+
+          @if (role === 'passenger' || role === 'both') {
+          <p class="mb-2">
+            {{ user?.totalBookings || 0 }} total bookings
+          </p>
+
+          <p class="mb-2">
+            <a class="cancel-link"
+               [routerLink]="['/cancellation-details', userId]"
+               [queryParams]="{ view: 'bookings', role: role }">
+              {{ user?.totalCancelledBookings || 0 }} cancelled bookings
+            </a>
+          </p>
+          }
+
           @if (user?.created_at) {
           <p class="mb-0">
             Member since {{ user.created_at | date: 'MMMM yyyy' }}
