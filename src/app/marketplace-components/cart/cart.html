@@ -1,0 +1,110 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <button class="btn btn-link mp-back px-0 mb-3" (click)="continueShopping()">← Continue Shopping</button>
+
+    <h1 class="mp-title mb-4">Your Cart</h1>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (error && !loading) {
+      <div class="alert alert-danger text-center">
+        {{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="fetchCart()">Retry</button>
+      </div>
+    }
+
+    @if (!loading && !error) {
+      <!-- Empty -->
+      @if (items.length === 0) {
+        <div class="text-center text-muted py-5">
+          <div class="mp-empty-icon">🛒</div>
+          <p class="mb-3">Your cart is empty.</p>
+          <button class="btn mp-cart-btn" (click)="continueShopping()">Browse Products</button>
+        </div>
+      } @else {
+        <div class="row g-4">
+
+          <!-- Items -->
+          <div class="col-12 col-lg-8">
+            @for (item of items; track item.productId) {
+              <div class="mp-item card border-0 shadow-sm mb-3">
+                <div class="card-body mp-item-body">
+                  <div class="mp-item-img">
+                    @if (item.image) {
+                      <img [src]="imageBase + item.image" [alt]="item.name" />
+                    } @else {
+                      <span>📦</span>
+                    }
+                  </div>
+
+                  <div class="mp-item-info">
+                    <h3 class="mp-item-name">{{ item.name }}</h3>
+                    <div class="mp-item-price">₹{{ item.price }}</div>
+                    @if (!item.in_stock) {
+                      <div class="text-danger small">Not enough stock</div>
+                    }
+                  </div>
+
+                  <div class="mp-item-controls">
+                    <!-- Qty -->
+                    <div class="mp-qty">
+                      <button (click)="changeQty(item, -1)" [disabled]="item.quantity <= 1 || updatingId === item.productId">−</button>
+                      <span>{{ item.quantity }}</span>
+                      <button (click)="changeQty(item, 1)" [disabled]="item.quantity >= item.stock || updatingId === item.productId">+</button>
+                    </div>
+
+                    <div class="mp-item-total">₹{{ item.line_total }}</div>
+
+                    <button class="mp-remove" (click)="removeItem(item)" [disabled]="removingId === item.productId" title="Remove">
+                      @if (removingId === item.productId) {
+                        <span class="spinner-border spinner-border-sm"></span>
+                      } @else { ✕ }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Summary -->
+          <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm mp-summary">
+              <div class="card-body">
+                <h2 class="h6 mb-3">Order Summary</h2>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Items</span>
+                  <span>{{ items.length }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="text-muted">Subtotal</span>
+                  <span class="fw-bold">₹{{ totalAmount }}</span>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="fw-bold">Total</span>
+                  <span class="mp-total">₹{{ totalAmount }}</span>
+                </div>
+                <button class="btn mp-cart-btn w-100" (click)="checkout()" [disabled]="placingOrder">
+                  @if (placingOrder) {
+                    <span class="spinner-border spinner-border-sm me-1"></span> Placing order…
+                  } @else {
+                    Checkout
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      }
+    }
+
+  </div>
+</div>

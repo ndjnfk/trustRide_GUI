@@ -9,5 +9,8 @@
 }
 <router-outlet></router-outlet>
 
+<!-- Floating cart button — only on the marketplace storefront -->
+<app-cart-fab *ngIf="isMarketplaceRoute"></app-cart-fab>
+
 
 <app-footer *ngIf="!isAdminRoute"></app-footer>

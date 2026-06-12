@@ -224,4 +224,112 @@ checkBounceEmail(email: string): Observable<BounceCheckResponse> {
     { headers: AdminSessionHelper.getAuthHeaders() }
   );
 }
+
+// ── Categories ────────────────────────────────────────────
+getCategories(): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/categories`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// Multipart so an optional category image can be uploaded.
+createCategory(category_name: string, image?: File | null): Observable<any> {
+  const fd = new FormData();
+  fd.append('category_name', category_name);
+  if (image) fd.append('image', image, image.name);
+  return this.http.post(`${this.API_URL}/admin/categories`, fd, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+updateCategory(id: string, category_name: string, image?: File | null): Observable<any> {
+  const fd = new FormData();
+  fd.append('category_name', category_name);
+  if (image) fd.append('image', image, image.name);
+  return this.http.put(`${this.API_URL}/admin/categories/${id}`, fd, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+deleteCategory(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/categories/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Products ──────────────────────────────────────────────
+getProducts(params: Record<string, any> = {}): Observable<any> {
+  // Drop empty values so we don't send blank query params
+  const query: Record<string, string> = {};
+  Object.keys(params).forEach((key) => {
+    const value = params[key];
+    if (value !== '' && value !== null && value !== undefined) {
+      query[key] = String(value);
+    }
+  });
+  return this.http.get(`${this.API_URL}/admin/products`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    params: query
+  });
+}
+
+// payload is FormData (multipart) so images can be uploaded as files.
+// Note: no Content-Type header — the browser sets the multipart boundary.
+createProduct(payload: FormData): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/products`, payload, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+updateProduct(id: string, payload: FormData): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/products/${id}`, payload, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+private authOnlyHeader(): { [header: string]: string } {
+  const token = typeof window !== 'undefined'
+    ? (localStorage.getItem('admin_token') || '')
+    : '';
+  return { Authorization: `Bearer ${token}` };
+}
+
+deleteProduct(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/products/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Orders ────────────────────────────────────────────────
+getOrders(params: Record<string, any> = {}): Observable<any> {
+  const query: Record<string, string> = {};
+  Object.keys(params).forEach((key) => {
+    const value = params[key];
+    if (value !== '' && value !== null && value !== undefined) {
+      query[key] = String(value);
+    }
+  });
+  return this.http.get(`${this.API_URL}/admin/orders`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    params: query
+  });
+}
+
+updateOrderStatus(id: string, status: string): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/orders/${id}/status`, { status }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteOrder(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/orders/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+clearOrders(): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/orders`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
 }

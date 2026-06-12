@@ -1,0 +1,185 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="orders-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div class="d-flex align-items-center gap-2">
+          <h1 class="page-title m-0">Orders</h1>
+          <span class="badge rounded-pill total-badge">{{ total }}</span>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-success btn-sm" (click)="exportExcel()">⬇ Export Excel</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="clearHistory()">🗑 Clear History</button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <form class="row g-2 align-items-end" (ngSubmit)="fetchOrders()">
+            <div class="col-12 col-md-3">
+              <label class="form-label small text-muted mb-1">Status</label>
+              <select class="form-select" name="filterStatus" [(ngModel)]="filterStatus">
+                <option value="">All statuses</option>
+                @for (s of statuses; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-12 col-md-3">
+              <label class="form-label small text-muted mb-1">Search</label>
+              <input type="text" class="form-control" placeholder="Order ID, name or phone" name="search" [(ngModel)]="search" />
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small text-muted mb-1">From</label>
+              <input type="date" class="form-control" name="fromDate" [(ngModel)]="fromDate" />
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small text-muted mb-1">To</label>
+              <input type="date" class="form-control" name="toDate" [(ngModel)]="toDate" />
+            </div>
+            <div class="col-12 col-md-2 d-flex gap-2">
+              <button type="submit" class="btn btn-outline-primary w-100">Apply</button>
+              <button type="button" class="btn btn-outline-secondary" (click)="resetFilters()">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Error -->
+      @if (error) {
+        <div class="alert alert-danger d-flex align-items-center justify-content-between">
+          <span>⚠️ {{ error }}</span>
+          <button class="btn btn-sm btn-outline-danger" (click)="fetchOrders()">Retry</button>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading && !error) {
+        <div class="card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 40px"></th>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th class="text-end">Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th class="text-end" style="width: 70px">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (order of orders; track order._id) {
+                  <tr class="order-row" (click)="toggleExpand(order)">
+                    <td class="text-muted">
+                      <span class="expand-caret" [class.open]="expandedId === order._id">▸</span>
+                    </td>
+                    <td class="fw-medium order-id-cell">#{{ orderId(order) }}</td>
+                    <td class="fw-medium">{{ order.user_name || '—' }}</td>
+                    <td>{{ order.phone || '—' }}</td>
+                    <td class="text-end fw-medium">₹{{ order.total_amount }}</td>
+                    <td>{{ order.payment_method || '—' }}</td>
+                    <td>
+                      <span class="status-pill" [attr.data-status]="order.status">{{ order.status }}</span>
+                    </td>
+                    <td class="small text-muted">{{ order.created_at | date: 'dd MMM yyyy, hh:mm a' }}</td>
+                    <td class="text-end">
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="$event.stopPropagation(); deleteOrder(order)"
+                        [disabled]="deletingId === order._id"
+                        title="Delete order"
+                      >
+                        @if (deletingId === order._id) {
+                          <span class="spinner-border spinner-border-sm"></span>
+                        } @else { 🗑 }
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Expanded detail -->
+                  @if (expandedId === order._id) {
+                    <tr class="detail-row">
+                      <td colspan="9">
+                        <div class="order-detail">
+                          <div class="row g-3">
+
+                            <!-- Items -->
+                            <div class="col-12 col-md-6">
+                              <h3 class="detail-h">Items</h3>
+                              <table class="table table-sm mb-0">
+                                <tbody>
+                                  @for (item of order.items; track item.productId) {
+                                    <tr>
+                                      <td>{{ item.name }}</td>
+                                      <td class="text-muted">x{{ item.quantity }}</td>
+                                      <td class="text-end">₹{{ item.line_total }}</td>
+                                    </tr>
+                                  }
+                                </tbody>
+                              </table>
+                            </div>
+
+                            <!-- Shipping + status -->
+                            <div class="col-12 col-md-6">
+                              <h3 class="detail-h">Shipping Address</h3>
+                              @if (order.shipping_address) {
+                                <p class="detail-text mb-1">
+                                  <strong>{{ order.shipping_address.full_name }}</strong><br />
+                                  {{ order.shipping_address.line1 }}<br />
+                                  @if (order.shipping_address.line2) { {{ order.shipping_address.line2 }}<br /> }
+                                  {{ order.shipping_address.city }}, {{ order.shipping_address.state }} —
+                                  {{ order.shipping_address.pincode }}<br />
+                                  📞 {{ order.phone }}
+                                </p>
+                              } @else {
+                                <p class="detail-text text-muted">No address on record</p>
+                              }
+
+                              <h3 class="detail-h mt-3">Update Shipping Status</h3>
+                              <div class="d-flex align-items-center gap-2">
+                                <select
+                                  class="form-select form-select-sm w-auto"
+                                  [value]="order.status"
+                                  (change)="updateStatus(order, $any($event.target).value)"
+                                  [disabled]="updatingId === order._id"
+                                >
+                                  @for (s of statuses; track s) {
+                                    <option [value]="s">{{ s }}</option>
+                                  }
+                                </select>
+                                @if (updatingId === order._id) {
+                                  <span class="spinner-border spinner-border-sm text-primary"></span>
+                                }
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Empty -->
+        @if (orders.length === 0) {
+          <div class="empty-state text-center text-muted py-5">
+            <div class="empty-icon mb-2">📦</div>
+            <p class="m-0">No orders found.</p>
+          </div>
+        }
+      }
+
+    </div>
+  </main>
+</div>

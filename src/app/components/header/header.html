@@ -32,6 +32,12 @@
                        My Bookings
                     </a>
                 </li>
+                <li>
+                    <a class="header__nav-link" routerLink="/marketplace" routerLinkActive="header__nav-link--active">
+                       Marketplace
+                    </a>
+                </li>
+                
                 <!-- <li>
                     <a class="header__nav-link" routerLink="/passinger-list" routerLinkActive="header__nav-link--active">
                        Passinger List
@@ -69,6 +75,15 @@
                 </svg>
                 <span class="header__btn-label" >Publish Ride</span>
             </a>
+            <a class="header__btn-create header__btn-create--ghost d-none d-lg-inline-flex" routerLink="/marketplace" *ngIf="!isLoggedIn()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 9l1.5-5.5A1 1 0 0 1 5.46 3h13.08a1 1 0 0 1 .96.5L21 9" />
+                    <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
+                    <path d="M3 9h18" />
+                    <path d="M9 13a3 3 0 0 0 6 0" />
+                </svg>
+                <span class="header__btn-label">Marketplace</span>
+            </a>
             <a class="header__btn-create" routerLink="/login" *ngIf="!isLoggedIn()">
 
                 <span class="header__btn-label">sign in</span>
@@ -103,33 +118,51 @@
                         Profile
                     </a>
                      <a class="header__dropdown-item" routerLink="/auto-generated">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                         </svg>
                        Update Rides
                     </a>
 
                      <a class="header__dropdown-item" routerLink="/user-matched">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="4" y1="21" x2="4" y2="14" />
+                            <line x1="4" y1="10" x2="4" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="12" />
+                            <line x1="12" y1="8" x2="12" y2="3" />
+                            <line x1="20" y1="21" x2="20" y2="16" />
+                            <line x1="20" y1="12" x2="20" y2="3" />
+                            <line x1="1" y1="14" x2="7" y2="14" />
+                            <line x1="9" y1="8" x2="15" y2="8" />
+                            <line x1="17" y1="16" x2="23" y2="16" />
                         </svg>
                        User Preferences Matched
                     </a>
                     <a class="header__dropdown-item" routerLink="/company-members">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
                         Company Members
                     </a>
                       <a class="header__dropdown-item" routerLink="/rating-show">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                         </svg>
                         rating
+                    </a>
+
+                     <a class="header__dropdown-item" routerLink="/marketplace/orders">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                        Track Orders
                     </a>
                     <!-- <a class="header__dropdown-item" routerLink="/settings">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -211,6 +244,17 @@
                                 </svg>
                                 <svg *ngSwitchCase="'star'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                                <svg *ngSwitchCase="'shop'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 9l1.5-5.5A1 1 0 0 1 5.46 3h13.08a1 1 0 0 1 .96.5L21 9"/>
+                                    <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/>
+                                    <path d="M3 9h18"/>
+                                    <path d="M9 13a3 3 0 0 0 6 0"/>
+                                </svg>
+                                <svg *ngSwitchCase="'package'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"/>
                                 </svg>
                             </ng-container>
                         </span>

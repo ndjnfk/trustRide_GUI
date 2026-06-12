@@ -73,7 +73,58 @@ export const routes: Routes = [
     path: 'admin/rides',
     loadComponent: () => import('../app/admin/rides/rides').then((m) => m.Rides),
   },
- 
+  {
+    path: 'admin/categories',
+    loadComponent: () =>
+      import('../app/admin/categories/categories').then((m) => m.Categories),
+  },
+  {
+    path: 'admin/products',
+    loadComponent: () =>
+      import('../app/admin/products/products').then((m) => m.Products),
+  },
+  {
+    path: 'admin/orders',
+    loadComponent: () =>
+      import('../app/admin/orders/orders').then((m) => m.Orders),
+  },
+  {
+    path: 'marketplace',
+    loadComponent: () =>
+      import('../app/marketplace-components/categories/categories').then(
+        (m) => m.MarketplaceCategories
+      ),
+  },
+  {
+    path: 'marketplace/category/:categoryId',
+    loadComponent: () =>
+      import('../app/marketplace-components/category-products/category-products').then(
+        (m) => m.CategoryProducts
+      ),
+  },
+  {
+    path: 'marketplace/product/:productId',
+    loadComponent: () =>
+      import('../app/marketplace-components/product-detail/product-detail').then(
+        (m) => m.ProductDetail
+      ),
+  },
+  {
+    path: 'marketplace/cart',
+    loadComponent: () =>
+      import('../app/marketplace-components/cart/cart').then((m) => m.Cart),
+  },
+  {
+    path: 'marketplace/checkout',
+    loadComponent: () =>
+      import('../app/marketplace-components/checkout/checkout').then((m) => m.Checkout),
+  },
+  {
+    path: 'marketplace/orders',
+    loadComponent: () =>
+      import('../app/marketplace-components/my-orders/my-orders').then((m) => m.MyOrders),
+  },
+
   {
     path: 'search-rides',
     loadComponent: () =>

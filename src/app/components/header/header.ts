@@ -87,9 +87,12 @@ getInitials(name: string): string {
 
 }
   navItems = [
+     { label: 'Saharanpur Marketplace', route: '/marketplace', icon: 'shop' },
     { label: 'My Rides', route: '/get-ride', icon: 'car' },
     { label: 'Explore Rides', route: '/available-rides', icon: 'compass' },
     { label: 'My Bookings', route: '/get-bookings', icon: 'ticket' },
+   
+    { label: 'Track Orders', route: '/marketplace/orders', icon: 'package' },
     { label: 'Profile', route: '/about-you', icon: 'user' },
     { label: 'Company Members', route: '/company-members', icon: 'users' },
     { label: 'Rating', route: '/rating-show', icon: 'star' },

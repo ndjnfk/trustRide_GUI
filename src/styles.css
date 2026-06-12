@@ -324,6 +324,19 @@ button {
   transform: translateY(0);
 }
 
+/* Secondary / ghost variant — used for the Marketplace button beside Sign In */
+.header__btn-create--ghost {
+  background: transparent;
+  color: var(--h-primary);
+  border: 1.5px solid var(--h-primary);
+}
+
+.header__btn-create--ghost:hover {
+  background: var(--h-primary);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.30);
+}
+
 .header__btn-create--full {
   width: 100%;
   justify-content: center;

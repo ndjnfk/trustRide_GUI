@@ -1,0 +1,150 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="categories-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex align-items-center gap-2 mb-4">
+        <h1 class="page-title m-0">Categories</h1>
+        <span class="badge rounded-pill total-badge">{{ total }}</span>
+      </div>
+
+      <!-- Create form -->
+      <div class="card create-card mb-4 border-0 shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 text-muted mb-3">Add new category</h2>
+          <form class="row g-2 align-items-stretch" (ngSubmit)="createCategory()">
+            <div class="col-12 col-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Category name"
+                name="newCategoryName"
+                [(ngModel)]="newCategoryName"
+                [disabled]="creating"
+              />
+            </div>
+            <div class="col-12 col-sm-auto">
+              <input
+                type="file"
+                class="form-control"
+                accept="image/*"
+                title="Category image"
+                (change)="onNewImageSelected($event)"
+                [disabled]="creating"
+              />
+            </div>
+            <div class="col-12 col-sm-auto">
+              <button type="submit" class="btn btn-primary w-100" [disabled]="creating">
+                @if (creating) {
+                  <span class="spinner-border spinner-border-sm me-1"></span> Adding…
+                } @else {
+                  + Add Category
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Error -->
+      @if (error) {
+        <div class="alert alert-danger d-flex align-items-center justify-content-between">
+          <span>⚠️ {{ error }}</span>
+          <button class="btn btn-sm btn-outline-danger" (click)="fetchCategories()">Retry</button>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading && !error) {
+        <div class="card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 60px">#</th>
+                  <th style="width: 90px">Image</th>
+                  <th>Category Name</th>
+                  <th class="text-end" style="width: 200px">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (category of categories; track category._id; let i = $index) {
+                  <tr>
+                    <td class="text-muted">{{ i + 1 }}</td>
+                    <td>
+                      @if (category.image_url) {
+                        <img class="cat-thumb" [src]="imageBase + category.image_url" alt="" />
+                      } @else {
+                        <span class="cat-thumb cat-thumb-empty">🏷️</span>
+                      }
+                    </td>
+                    <td>
+                      @if (editingId === category._id) {
+                        <input
+                          type="text"
+                          class="form-control form-control-sm mb-1"
+                          name="editName"
+                          [(ngModel)]="editName"
+                          [disabled]="savingId === category._id"
+                        />
+                        <input
+                          type="file"
+                          class="form-control form-control-sm"
+                          accept="image/*"
+                          title="Replace image (optional)"
+                          (change)="onEditImageSelected($event)"
+                          [disabled]="savingId === category._id"
+                        />
+                      } @else {
+                        <span class="fw-medium">{{ category.category_name }}</span>
+                      }
+                    </td>
+                    <td class="text-end">
+                      @if (editingId === category._id) {
+                        <button
+                          class="btn btn-sm btn-success me-1"
+                          (click)="saveEdit(category)"
+                          [disabled]="savingId === category._id"
+                        >
+                          @if (savingId === category._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else { Save }
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" (click)="cancelEdit()">
+                          Cancel
+                        </button>
+                      } @else {
+                        <button class="btn btn-sm btn-outline-primary me-1" (click)="startEdit(category)">
+                          Edit
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          (click)="deleteCategory(category)"
+                          [disabled]="deletingId === category._id"
+                        >
+                          @if (deletingId === category._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else { Delete }
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Empty -->
+        @if (categories.length === 0) {
+          <div class="empty-state text-center text-muted py-5">
+            <div class="empty-icon mb-2">🏷️</div>
+            <p class="m-0">No categories yet. Add your first one above.</p>
+          </div>
+        }
+      }
+
+    </div>
+  </main>
+</div>

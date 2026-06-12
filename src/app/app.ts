@@ -15,17 +15,19 @@ import { AsyncPipe } from '@angular/common';
 import { filter } from 'rxjs/operators'
 import { HealthComponent } from './components/health/health';
 import { Charts } from './components/charts/charts';
+import { CartFab } from './marketplace-components/cart-fab/cart-fab';
 
 
 @Component({
   selector: 'app-root',
-    imports: [CommonModule,AsyncPipe, RouterOutlet,Header,Footer],
+    imports: [CommonModule,AsyncPipe, RouterOutlet,Header,Footer,CartFab],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('realtime-app');
  isAdminRoute = true
+ isMarketplaceRoute = false
 
   private router = inject(Router);
   protected loader = inject(LoaderServices);
@@ -53,6 +55,7 @@ ngOnInit() {
       .subscribe((event: NavigationEnd) => {
         const url = event.urlAfterRedirects
         this.isAdminRoute = url.startsWith('/admin')
+        this.isMarketplaceRoute = url.startsWith('/marketplace')
       })
   }
 

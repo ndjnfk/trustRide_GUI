@@ -1,0 +1,115 @@
+.mp-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary-l, #e8f0ff) 0%, #ffffff 220px);
+  overflow-x: hidden;
+}
+
+.mp-title {
+  font-weight: 800;
+  color: var(--primary1, #1a3c5e);
+}
+
+.mp-back {
+  color: var(--primary, #0057ff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mp-spinner {
+  color: var(--primary, #0057ff);
+}
+
+/* ── Saved address card ── */
+.mp-addr {
+  border-radius: 12px;
+  cursor: pointer;
+  border: 2px solid transparent !important;
+}
+
+.mp-addr.selected {
+  border-color: var(--primary, #0057ff) !important;
+}
+
+.mp-addr-name {
+  font-weight: 600;
+  color: var(--primary1, #1a3c5e);
+}
+
+.mp-default-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary, #0057ff);
+  background: var(--primary-l, #e8f0ff);
+  padding: 1px 8px;
+  border-radius: 12px;
+  margin-left: 6px;
+}
+
+.mp-addr-text {
+  color: #475569;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.mp-addr-phone {
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ── Payment method ── */
+.mp-pay {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.mp-pay-title {
+  display: block;
+  font-weight: 600;
+  color: var(--primary1, #1a3c5e);
+}
+
+.mp-pay-sub {
+  display: block;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ── Summary ── */
+.mp-summary {
+  border-radius: 14px;
+  position: sticky;
+  top: 90px;
+}
+
+.mp-total {
+  font-weight: 800;
+  color: var(--primary, #0057ff);
+}
+
+/* ── Button ── */
+.mp-cart-btn {
+  background: var(--primary, #0057ff);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 10px;
+}
+
+.mp-cart-btn:hover {
+  background: var(--primary-d, #0042cc);
+  color: #fff;
+}
+
+/* ── Mobile: clear the fixed bottom nav ── */
+@media (max-width: 991.98px) {
+  .mp-page {
+    padding-bottom: 80px;
+  }
+  .mp-summary {
+    position: static;
+  }
+}

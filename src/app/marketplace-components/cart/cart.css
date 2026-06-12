@@ -1,0 +1,166 @@
+.mp-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary-l, #e8f0ff) 0%, #ffffff 220px);
+  overflow-x: hidden;
+}
+
+.mp-title {
+  font-weight: 800;
+  color: var(--primary1, #1a3c5e);
+}
+
+.mp-back {
+  color: var(--primary, #0057ff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mp-spinner {
+  color: var(--primary, #0057ff);
+}
+
+.mp-empty-icon {
+  font-size: 52px;
+}
+
+/* ── Cart item ── */
+.mp-item {
+  border-radius: 14px;
+}
+
+.mp-item-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mp-item-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: var(--primary-l, #e8f0ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.mp-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* grows to fill, but can shrink so the name truncates instead of overflowing */
+.mp-item-info {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.mp-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.mp-item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary1, #1a3c5e);
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-item-price {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.mp-item-total {
+  font-weight: 700;
+  color: var(--primary1, #1a3c5e);
+  min-width: 70px;
+  text-align: right;
+}
+
+/* ── Qty stepper ── */
+.mp-qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mp-qty button {
+  width: 32px;
+  height: 34px;
+  border: none;
+  background: #f1f5f9;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.mp-qty button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mp-qty span {
+  width: 38px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.mp-remove {
+  border: none;
+  background: transparent;
+  color: #dc2626;
+  font-size: 16px;
+  cursor: pointer;
+  width: 30px;
+}
+
+/* ── Summary ── */
+.mp-summary {
+  border-radius: 14px;
+  position: sticky;
+  top: 90px;
+}
+
+.mp-total {
+  font-weight: 800;
+  color: var(--primary, #0057ff);
+}
+
+/* ── Button ── */
+.mp-cart-btn {
+  background: var(--primary, #0057ff);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 10px;
+}
+
+.mp-cart-btn:hover {
+  background: var(--primary-d, #0042cc);
+  color: #fff;
+}
+
+/* On mobile the footer becomes a fixed bottom nav — keep content clear of it,
+   and don't let the summary stick under it. */
+@media (max-width: 991.98px) {
+  .mp-page {
+    padding-bottom: 80px;
+  }
+
+  .mp-summary {
+    position: static;
+  }
+}

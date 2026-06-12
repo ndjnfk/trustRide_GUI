@@ -1,0 +1,78 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.categories-container {
+  max-width: 900px;
+}
+
+/* ── Header ── */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.total-badge {
+  background: #4f46e5;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+/* ── Cards ── */
+.create-card {
+  border-radius: 12px;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.table thead th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+}
+
+/* ── Empty state ── */
+.empty-icon {
+  font-size: 42px;
+}
+
+/* ── Category image thumbnail ── */
+.cat-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-thumb-empty {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-size: 20px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 20px 14px;
+  }
+}

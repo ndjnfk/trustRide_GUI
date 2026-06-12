@@ -1,0 +1,72 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <!-- Back + heading -->
+    <button class="btn btn-link mp-back px-0 mb-3" (click)="goBack()">← All Categories</button>
+
+    <div class="mb-4">
+      <h1 class="mp-title">{{ category?.category_name || 'Products' }}</h1>
+      @if (!loading && !error) {
+        <p class="mp-subtitle m-0">{{ products.length }} product(s)</p>
+      }
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (error && !loading) {
+      <div class="alert alert-danger text-center">{{ error }}</div>
+    }
+
+    <!-- Grid -->
+    @if (!loading && !error) {
+      <div class="row g-4">
+        @for (product of products; track product._id) {
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="mp-product h-100" (click)="openProduct(product)">
+              <div class="mp-product-img">
+                @if (product.images?.length) {
+                  <img [src]="imageBase + product.images[0]" [alt]="product.name" />
+                } @else {
+                  <div class="mp-product-placeholder">📦</div>
+                }
+                @if (product.discount > 0) {
+                  <span class="mp-badge">{{ product.discount }}% OFF</span>
+                }
+              </div>
+              <div class="mp-product-body">
+                <h3 class="mp-product-name" [title]="product.name">{{ product.name }}</h3>
+                @if (product.description) {
+                  <p class="mp-product-desc">{{ product.description }}</p>
+                }
+                <div class="mp-price-row">
+                  <span class="mp-price">₹{{ product.final_price }}</span>
+                  @if (product.discount > 0) {
+                    <span class="mp-price-old">₹{{ product.price }}</span>
+                  }
+                </div>
+                <div class="mp-stock" [class.out]="product.stock <= 0">
+                  {{ product.stock > 0 ? 'In stock' : 'Out of stock' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Empty -->
+      @if (products.length === 0) {
+        <div class="text-center text-muted py-5">
+          <div class="mp-empty-icon">📦</div>
+          <p class="m-0">No products in this category yet.</p>
+        </div>
+      }
+    }
+
+  </div>
+</div>

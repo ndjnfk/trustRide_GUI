@@ -1,0 +1,56 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <!-- Heading -->
+    <div class="text-center mb-5">
+      <h1 class="mp-title">Shop by Category</h1>
+      <p class="mp-subtitle">Pick a category to explore products</p>
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (error && !loading) {
+      <div class="alert alert-danger text-center">
+        {{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="fetchCategories()">Retry</button>
+      </div>
+    }
+
+    <!-- Grid -->
+    @if (!loading && !error) {
+      <div class="row g-4">
+        @for (category of categories; track category._id) {
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="mp-card h-100" (click)="openCategory(category)">
+              <div class="mp-card-img">
+                @if (category.image_url) {
+                  <img [src]="imageBase + category.image_url" [alt]="category.category_name" />
+                } @else {
+                  <div class="mp-card-placeholder">🏷️</div>
+                }
+              </div>
+              <div class="mp-card-body">
+                <span class="mp-card-name">{{ category.category_name }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Empty -->
+      @if (categories.length === 0) {
+        <div class="text-center text-muted py-5">
+          <div class="mp-empty-icon">🛍️</div>
+          <p class="m-0">No categories available yet.</p>
+        </div>
+      }
+    }
+
+  </div>
+</div>

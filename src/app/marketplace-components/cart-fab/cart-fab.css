@@ -1,0 +1,61 @@
+.cart-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary, #0057ff);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 87, 255, 0.35);
+  cursor: pointer;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.cart-fab:hover {
+  transform: translateY(-3px);
+  background: var(--primary-d, #0042cc);
+}
+
+.cart-fab-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.cart-fab-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: #fff;
+  color: var(--primary, #0057ff);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--primary, #0057ff);
+}
+
+/* On mobile/tablet the footer turns into a fixed bottom nav (~68px tall),
+   so lift the button above it and keep clear of the safe-area inset. */
+@media (max-width: 991.98px) {
+  .cart-fab {
+    right: 16px;
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    width: 54px;
+    height: 54px;
+  }
+
+  .cart-fab-icon {
+    font-size: 22px;
+  }
+}

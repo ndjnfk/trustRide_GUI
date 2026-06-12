@@ -1,0 +1,170 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <button class="btn btn-link mp-back px-0" (click)="goBack()">← Back</button>
+      <button class="btn btn-link mp-back px-0" (click)="goToCart()">🛒 View Cart</button>
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (error && !loading) {
+      <div class="alert alert-danger text-center">{{ error }}</div>
+    }
+
+    <!-- Detail -->
+    @if (!loading && !error && product) {
+      <div class="card border-0 shadow-sm mp-detail">
+        <div class="row g-0">
+
+          <!-- Gallery -->
+          <div class="col-12 col-md-5 p-3">
+            <div class="mp-main-img">
+              @if (activeImage) {
+                <img [src]="imageBase + activeImage" [alt]="product.name" />
+              } @else {
+                <div class="mp-img-placeholder">📦</div>
+              }
+            </div>
+            @if (product.images?.length > 1) {
+              <div class="mp-thumbs">
+                @for (img of product.images; track img) {
+                  <img
+                    [src]="imageBase + img"
+                    [class.active]="img === activeImage"
+                    (click)="setImage(img)"
+                    alt="thumbnail"
+                  />
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Info -->
+          <div class="col-12 col-md-7 p-4">
+            <span class="mp-cat">{{ product.category_name }}</span>
+            <h1 class="mp-name">{{ product.name }}</h1>
+
+            <div class="mp-price-row">
+              <span class="mp-price">₹{{ product.final_price }}</span>
+              @if (product.discount > 0) {
+                <span class="mp-price-old">₹{{ product.price }}</span>
+                <span class="mp-badge">{{ product.discount }}% OFF</span>
+              }
+            </div>
+
+            <div class="mp-stock mb-3" [class.out]="product.stock <= 0">
+              {{ product.stock > 0 ? product.stock + ' in stock' : 'Out of stock' }}
+            </div>
+
+            @if (product.description) {
+              <p class="mp-desc">{{ product.description }}</p>
+            }
+
+            <!-- Quantity + add to cart -->
+            @if (product.stock > 0) {
+              <div class="d-flex align-items-center gap-3 mt-4">
+                <div class="mp-qty">
+                  <button type="button" (click)="decQty()" [disabled]="quantity <= 1">−</button>
+                  <span>{{ quantity }}</span>
+                  <button type="button" (click)="incQty()" [disabled]="quantity >= product.stock">+</button>
+                </div>
+                <button class="btn mp-cart-btn" (click)="addToCart()" [disabled]="adding">
+                  @if (adding) {
+                    <span class="spinner-border spinner-border-sm me-1"></span> Adding…
+                  } @else {
+                    🛒 Add to Cart
+                  }
+                </button>
+              </div>
+            } @else {
+              <button class="btn btn-secondary mt-4" disabled>Out of Stock</button>
+            }
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Reviews ── -->
+      <div class="card border-0 shadow-sm mp-detail mt-4">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <h2 class="h5 m-0 mp-reviews-title">Customer Reviews</h2>
+            @if (reviewCount > 0) {
+              <div class="mp-avg">
+                <span class="mp-avg-stars">
+                  @for (s of stars(avgRating); track $index) { <span class="star filled">★</span> }
+                  @for (s of emptyStars(avgRating); track $index) { <span class="star">★</span> }
+                </span>
+                <span class="mp-avg-num">{{ avgRating }} / 5</span>
+                <span class="mp-avg-count">({{ reviewCount }})</span>
+              </div>
+            }
+          </div>
+
+          <!-- Write a review (only if the user bought it) -->
+          @if (canReview) {
+            <div class="mp-write-review mb-4">
+              <h3 class="h6 mb-2">{{ hasReviewed ? 'Update your review' : 'Write a review' }}</h3>
+              <div class="mp-rating-input mb-2">
+                @for (i of [1,2,3,4,5]; track i) {
+                  <span
+                    class="star-pick"
+                    [class.filled]="i <= myRating"
+                    (click)="setMyRating(i)"
+                  >★</span>
+                }
+              </div>
+              <textarea
+                class="form-control mb-2"
+                rows="3"
+                placeholder="Share your experience with this product…"
+                [(ngModel)]="myComment"
+              ></textarea>
+              <button class="btn mp-cart-btn" (click)="submitReview()" [disabled]="submittingReview">
+                @if (submittingReview) {
+                  <span class="spinner-border spinner-border-sm me-1"></span> Submitting…
+                } @else {
+                  {{ hasReviewed ? 'Update Review' : 'Submit Review' }}
+                }
+              </button>
+            </div>
+          } @else if (marketplace.isLoggedIn()) {
+            <p class="text-muted small mb-4">You can review this product after purchasing it.</p>
+          }
+
+          <!-- All reviews -->
+          @if (reviews.length === 0) {
+            <p class="text-muted m-0">No reviews yet. Be the first to review this product.</p>
+          } @else {
+            @for (review of reviews; track review._id) {
+              <div class="mp-review">
+                <div class="mp-review-head">
+                  <span class="mp-review-avatar">{{ (review.user_name || 'U').charAt(0) | uppercase }}</span>
+                  <div>
+                    <div class="mp-review-name">{{ review.user_name || 'Anonymous' }}</div>
+                    <div class="mp-review-stars">
+                      @for (s of stars(review.rating); track $index) { <span class="star filled">★</span> }
+                      @for (s of emptyStars(review.rating); track $index) { <span class="star">★</span> }
+                    </div>
+                  </div>
+                  <span class="mp-review-date">{{ review.created_at | date: 'dd MMM yyyy' }}</span>
+                </div>
+                @if (review.comment) {
+                  <p class="mp-review-comment">{{ review.comment }}</p>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

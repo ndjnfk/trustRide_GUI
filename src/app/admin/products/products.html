@@ -1,0 +1,230 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="products-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div class="d-flex align-items-center gap-2">
+          <h1 class="page-title m-0">Products</h1>
+          <span class="badge rounded-pill total-badge">{{ total }}</span>
+        </div>
+        <button class="btn btn-primary" (click)="openCreate()">+ Add Product</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <form class="row g-2 align-items-end" (ngSubmit)="fetchProducts()">
+            <div class="col-12 col-md">
+              <label class="form-label small text-muted mb-1">Search</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search by name"
+                name="searchTerm"
+                [(ngModel)]="searchTerm"
+              />
+            </div>
+            <div class="col-12 col-md">
+              <label class="form-label small text-muted mb-1">Category</label>
+              <select class="form-select" name="filterCategoryId" [(ngModel)]="filterCategoryId">
+                <option value="">All categories</option>
+                @for (cat of categories; track cat._id) {
+                  <option [value]="cat._id">{{ cat.category_name }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-12 col-md-auto d-flex gap-2">
+              <button type="submit" class="btn btn-outline-primary">Apply</button>
+              <button type="button" class="btn btn-outline-secondary" (click)="resetFilters()">
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Error -->
+      @if (error) {
+        <div class="alert alert-danger d-flex align-items-center justify-content-between">
+          <span>⚠️ {{ error }}</span>
+          <button class="btn btn-sm btn-outline-danger" (click)="fetchProducts()">Retry</button>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading && !error) {
+        <div class="card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 50px">#</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th class="text-end">Price</th>
+                  <th class="text-end">Discount</th>
+                  <th class="text-end">Final</th>
+                  <th class="text-end">Stock</th>
+                  <th>Status</th>
+                  <th class="text-end" style="width: 160px">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of products; track product._id; let i = $index) {
+                  <tr>
+                    <td class="text-muted">{{ i + 1 }}</td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        @if (product.images?.length) {
+                          <img class="row-thumb" [src]="imageBase + product.images[0]" alt="" />
+                        }
+                        <div>
+                          <span class="fw-medium">{{ product.name }}</span>
+                          @if (product.description) {
+                            <div class="small text-muted text-truncate" style="max-width: 200px">
+                              {{ product.description }}
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </td>
+                    <td>{{ product.category_name || '—' }}</td>
+                    <td class="text-end">₹{{ product.price }}</td>
+                    <td class="text-end">{{ product.discount || 0 }}%</td>
+                    <td class="text-end fw-medium">₹{{ product.final_price }}</td>
+                    <td class="text-end">
+                      <span class="badge" [class.bg-success]="product.stock > 0" [class.bg-danger]="product.stock <= 0">
+                        {{ product.stock }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge" [class.bg-success]="product.status === 'active'" [class.bg-secondary]="product.status !== 'active'">
+                        {{ product.status }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <button class="btn btn-sm btn-outline-primary me-1" (click)="openEdit(product)">
+                        Edit
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="deleteProduct(product)"
+                        [disabled]="deletingId === product._id"
+                      >
+                        @if (deletingId === product._id) {
+                          <span class="spinner-border spinner-border-sm"></span>
+                        } @else { Delete }
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Empty -->
+        @if (products.length === 0) {
+          <div class="empty-state text-center text-muted py-5">
+            <div class="empty-icon mb-2">📦</div>
+            <p class="m-0">No products found.</p>
+          </div>
+        }
+      }
+
+    </div>
+  </main>
+</div>
+
+<!-- Create / Edit Form Modal -->
+@if (showForm) {
+  <div class="form-overlay" (click)="closeForm()">
+    <div class="form-panel card shadow" (click)="$event.stopPropagation()">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h2 class="h6 m-0">{{ editingId ? 'Edit Product' : 'Add Product' }}</h2>
+        <button class="btn-close" (click)="closeForm()"></button>
+      </div>
+      <div class="card-body">
+        <form class="row g-3" (ngSubmit)="saveProduct()">
+          <div class="col-12">
+            <label class="form-label">Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="name" [(ngModel)]="form.name" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="2" name="description" [(ngModel)]="form.description"></textarea>
+          </div>
+
+          <div class="col-6 col-md-4">
+            <label class="form-label">Price <span class="text-danger">*</span></label>
+            <input type="number" min="0" class="form-control" name="price" [(ngModel)]="form.price" />
+          </div>
+
+          <div class="col-6 col-md-4">
+            <label class="form-label">Discount %</label>
+            <input type="number" min="0" max="100" class="form-control" name="discount" [(ngModel)]="form.discount" />
+          </div>
+
+          <div class="col-6 col-md-4">
+            <label class="form-label">Stock <span class="text-danger">*</span></label>
+            <input type="number" min="0" class="form-control" name="stock" [(ngModel)]="form.stock" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Category <span class="text-danger">*</span></label>
+            <select class="form-select" name="categoryId" [(ngModel)]="form.categoryId">
+              <option value="">Select a category</option>
+              @for (cat of categories; track cat._id) {
+                <option [value]="cat._id">{{ cat.category_name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Photos <span class="text-muted small">(you can select multiple)</span></label>
+            <input
+              type="file"
+              class="form-control"
+              accept="image/*"
+              multiple
+              (change)="onFilesSelected($event)"
+            />
+
+            @if (existingImages.length || newImages.length) {
+              <div class="image-thumbs mt-2">
+                <!-- already-saved images (edit mode) -->
+                @for (img of existingImages; track img; let i = $index) {
+                  <div class="thumb">
+                    <img [src]="imageBase + img" alt="product image" />
+                    <button type="button" class="thumb-remove" (click)="removeExistingImage(i)">✕</button>
+                  </div>
+                }
+                <!-- newly picked files -->
+                @for (file of newImages; track file.name; let i = $index) {
+                  <div class="thumb">
+                    <span class="thumb-file" [title]="file.name">{{ file.name }}</span>
+                    <button type="button" class="thumb-remove" (click)="removeNewImage(i)">✕</button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+            <button type="button" class="btn btn-outline-secondary" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="saving">
+              @if (saving) {
+                <span class="spinner-border spinner-border-sm me-1"></span> Saving…
+              } @else {
+                {{ editingId ? 'Update' : 'Create' }}
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

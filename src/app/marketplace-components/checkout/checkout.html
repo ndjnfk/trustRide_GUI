@@ -1,0 +1,165 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <button class="btn btn-link mp-back px-0 mb-3" (click)="goBack()">← Back to Cart</button>
+    <h1 class="mp-title mb-4">Delivery Address</h1>
+
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    @if (error && !loading) {
+      <div class="alert alert-danger">{{ error }}</div>
+    }
+
+    @if (!loading) {
+      <div class="row g-4">
+
+        <!-- Address selection -->
+        <div class="col-12 col-lg-8">
+
+          <!-- Saved addresses -->
+          @if (addresses.length) {
+            <div class="mb-3">
+              @for (addr of addresses; track addr._id) {
+                <div
+                  class="mp-addr card border-0 shadow-sm mb-2"
+                  [class.selected]="mode === 'saved' && selectedAddressId === addr._id"
+                  (click)="selectSaved(addr._id)"
+                >
+                  <div class="card-body d-flex align-items-start gap-2">
+                    <input
+                      type="radio"
+                      class="form-check-input mt-1"
+                      name="addr"
+                      [checked]="mode === 'saved' && selectedAddressId === addr._id"
+                      (change)="selectSaved(addr._id)"
+                    />
+                    <div>
+                      <div class="mp-addr-name">
+                        {{ addr.full_name }}
+                        @if (addr.is_default) { <span class="mp-default-tag">Default</span> }
+                      </div>
+                      <div class="mp-addr-text">
+                        {{ addr.line1 }}@if (addr.line2) {, {{ addr.line2 }}}<br />
+                        {{ addr.city }}, {{ addr.state }} — {{ addr.pincode }}
+                      </div>
+                      @if (phone) { <div class="mp-addr-phone">📞 {{ phone }}</div> }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Toggle / new address -->
+          @if (addresses.length && mode === 'saved') {
+            <button class="btn btn-outline-primary btn-sm" (click)="useNew()">+ Add a new address</button>
+          }
+
+          @if (mode === 'new') {
+            <div class="card border-0 shadow-sm mb-3">
+              <div class="card-body">
+                <h2 class="h6 mb-3">New Address</h2>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="full_name" [(ngModel)]="form.full_name" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Address Line 1 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="line1" [(ngModel)]="form.line1" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Address Line 2</label>
+                    <input type="text" class="form-control" name="line2" [(ngModel)]="form.line2" />
+                  </div>
+                  <div class="col-12 col-md-5">
+                    <label class="form-label">City <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="city" [(ngModel)]="form.city" />
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <label class="form-label">State <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="state" [(ngModel)]="form.state" />
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label">Pincode <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="pincode" [(ngModel)]="form.pincode" />
+                  </div>
+                  <div class="col-12">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="setDefault" name="setDefault" [(ngModel)]="setDefault" />
+                      <label class="form-check-label" for="setDefault">Save as my default address</label>
+                    </div>
+                  </div>
+                </div>
+                @if (addresses.length) {
+                  <button class="btn btn-link px-0 mt-2" (click)="mode = 'saved'">← Use a saved address</button>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Payment method -->
+          <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Payment Method</h2>
+              <label class="mp-pay">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  name="payment"
+                  value="COD"
+                  [(ngModel)]="paymentMethod"
+                />
+                <span>
+                  <span class="mp-pay-title">Cash on Delivery</span>
+                  <span class="mp-pay-sub">Pay with cash when your order arrives</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-12 col-lg-4">
+          <div class="card border-0 shadow-sm mp-summary">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Order Summary</h2>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Items</span>
+                <span>{{ totalItems }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">Subtotal</span>
+                <span class="fw-bold">₹{{ totalAmount }}</span>
+              </div>
+              @if (phone) {
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="text-muted">Phone</span>
+                  <span>{{ phone }}</span>
+                </div>
+              }
+              <hr />
+              <div class="d-flex justify-content-between mb-3">
+                <span class="fw-bold">Total</span>
+                <span class="mp-total">₹{{ totalAmount }}</span>
+              </div>
+              <button class="btn mp-cart-btn w-100" (click)="placeOrder()" [disabled]="placing">
+                @if (placing) {
+                  <span class="spinner-border spinner-border-sm me-1"></span> Placing order…
+                } @else {
+                  Place Order
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

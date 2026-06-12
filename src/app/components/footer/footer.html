@@ -146,7 +146,7 @@
     </a>
 
     <!-- ── BAAKI ITEMS: Internal routes (routerLink) ── -->
-    <a *ngIf="item.key !== 'inbox' && (isLoggedIn || item.key === 'search')"
+    <a *ngIf="item.key !== 'inbox' && (isLoggedIn || item.key === 'search' || item.key === 'marketplace')"
        [routerLink]="item.route"
        routerLinkActive="footer__mobile-nav-item--active"
        class="footer__mobile-nav-item">
@@ -155,6 +155,13 @@
         <svg *ngIf="item.key === 'search'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <!-- Marketplace -->
+        <svg *ngIf="item.key === 'marketplace'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l1.5-5.5A1 1 0 0 1 5.46 3h13.08a1 1 0 0 1 .96.5L21 9"/>
+          <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/>
+          <path d="M3 9h18"/>
+          <path d="M9 13a3 3 0 0 0 6 0"/>
         </svg>
         <!-- Publish -->
         <svg *ngIf="item.key === 'publish'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

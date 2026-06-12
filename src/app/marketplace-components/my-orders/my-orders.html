@@ -1,0 +1,105 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <button class="btn btn-link mp-back px-0 mb-3" (click)="goShopping()">← Continue Shopping</button>
+    <h1 class="mp-title mb-4">My Orders</h1>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (error && !loading) {
+      <div class="alert alert-danger text-center">
+        {{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="fetchOrders()">Retry</button>
+      </div>
+    }
+
+    @if (!loading && !error) {
+      <!-- Empty -->
+      @if (orders.length === 0) {
+        <div class="text-center text-muted py-5">
+          <div class="mp-empty-icon">📦</div>
+          <p class="mb-3">You haven't placed any orders yet.</p>
+          <button class="btn mp-shop-btn" (click)="goShopping()">Browse Products</button>
+        </div>
+      } @else {
+        @for (order of orders; track order._id) {
+          <div class="card border-0 shadow-sm mb-4 order-card" [class.delivered]="isDelivered(order.status)">
+            <div class="card-body">
+
+              <!-- Top: id, date, total -->
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <div>
+                  <div class="order-id">
+                    Order #{{ order.order_id || (order._id.slice(-6) | uppercase) }}
+                    @if (isDelivered(order.status)) {
+                      <span class="delivered-tag">✓ Delivered</span>
+                    }
+                  </div>
+                  <div class="order-date">{{ order.created_at | date: 'dd MMM yyyy, hh:mm a' }}</div>
+                </div>
+                <div class="text-end">
+                  <div class="order-total">₹{{ order.total_amount }}</div>
+                  <div class="order-pay">{{ order.payment_method }}</div>
+                </div>
+              </div>
+
+              <!-- Tracker -->
+              @if (isCancelled(order.status)) {
+                <div class="cancelled-banner">✕ This order was cancelled</div>
+              } @else {
+                <div class="tracker">
+                  @for (step of steps; track step; let i = $index) {
+                    <div
+                      class="track-step"
+                      [class.done]="i <= currentStep(order.status)"
+                      [class.active]="i === currentStep(order.status)"
+                    >
+                      <div class="track-dot">
+                        @if (i <= currentStep(order.status)) { ✓ } @else { {{ i + 1 }} }
+                      </div>
+                      <div class="track-label">{{ step }}</div>
+                    </div>
+                    @if (i < steps.length - 1) {
+                      <div class="track-line" [class.done]="i < currentStep(order.status)"></div>
+                    }
+                  }
+                </div>
+              }
+
+              <!-- Items -->
+              <div class="order-items mt-3">
+                @for (item of order.items; track item.productId) {
+                  <div class="order-item">
+                    <span class="oi-name">{{ item.name }}</span>
+                    <span class="oi-qty">x{{ item.quantity }}</span>
+                    <span class="oi-total">₹{{ item.line_total }}</span>
+                  </div>
+                }
+              </div>
+
+              <!-- Delivery address -->
+              @if (order.shipping_address) {
+                <div class="order-address mt-3">
+                  <span class="oa-label">Delivering to:</span>
+                  {{ order.shipping_address.full_name }}, {{ order.shipping_address.line1 }},
+                  @if (order.shipping_address.line2) { {{ order.shipping_address.line2 }}, }
+                  {{ order.shipping_address.city }}, {{ order.shipping_address.state }} —
+                  {{ order.shipping_address.pincode }}
+                  @if (order.phone) { · 📞 {{ order.phone }} }
+                </div>
+              }
+
+            </div>
+          </div>
+        }
+      }
+    }
+
+  </div>
+</div>

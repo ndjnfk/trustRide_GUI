@@ -1,0 +1,65 @@
+.mp-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary-l, #e8f0ff) 0%, #ffffff 220px);
+}
+
+.mp-title {
+  font-weight: 800;
+  color: var(--primary1, #1a3c5e);
+}
+
+.mp-subtitle {
+  color: #64748b;
+}
+
+.mp-spinner {
+  color: var(--primary, #0057ff);
+}
+
+/* ── Category card ── */
+.mp-card {
+  background: #fff;
+  border: 1px solid #e8f0ff;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.mp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 87, 255, 0.15);
+  border-color: var(--primary, #0057ff);
+}
+
+.mp-card-img {
+  aspect-ratio: 1 / 1;
+  background: var(--primary-l, #e8f0ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mp-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mp-card-placeholder {
+  font-size: 48px;
+}
+
+.mp-card-body {
+  padding: 14px;
+  text-align: center;
+}
+
+.mp-card-name {
+  font-weight: 600;
+  color: var(--primary1, #1a3c5e);
+}
+
+.mp-empty-icon {
+  font-size: 48px;
+}

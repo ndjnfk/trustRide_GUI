@@ -1,0 +1,135 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.orders-container {
+  max-width: 1150px;
+}
+
+/* ── Header ── */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.total-badge {
+  background: #4f46e5;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.table thead th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+}
+
+/* ── Rows ── */
+.order-row {
+  cursor: pointer;
+}
+
+.order-id-cell {
+  font-family: 'Consolas', 'Courier New', monospace;
+  color: #4f46e5;
+  letter-spacing: 0.5px;
+}
+
+.expand-caret {
+  display: inline-block;
+  transition: transform 0.15s ease;
+  color: #94a3b8;
+}
+
+.expand-caret.open {
+  transform: rotate(90deg);
+}
+
+.detail-row > td {
+  background: #f8fafc;
+}
+
+.order-detail {
+  padding: 6px 8px 10px;
+}
+
+.detail-h {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.detail-text {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* ── Status pills ── */
+.status-pill {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: capitalize;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.status-pill[data-status='placed'] {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-pill[data-status='processing'] {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-pill[data-status='shipped'] {
+  background: #cffafe;
+  color: #0e7490;
+}
+
+.status-pill[data-status='delivered'] {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill[data-status='cancelled'] {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.empty-icon {
+  font-size: 42px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 20px 14px;
+  }
+}

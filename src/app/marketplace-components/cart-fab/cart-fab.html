@@ -1,0 +1,4 @@
+<button class="cart-fab" (click)="openCart()" title="View cart" aria-label="View cart">
+  <span class="cart-fab-icon">🛒</span>
+  <span class="cart-fab-badge">{{ (count$ | async) || 0 }}</span>
+</button>
