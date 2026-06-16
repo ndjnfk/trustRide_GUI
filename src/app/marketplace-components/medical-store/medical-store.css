@@ -1,0 +1,197 @@
+.med-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary-l, #e8f0ff) 0%, #ffffff 220px);
+}
+
+.med-back {
+  color: var(--primary, #0057ff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Hero */
+.med-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0057ff, #7c3aed);
+  color: #fff;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 14px 32px rgba(124, 58, 237, 0.3);
+}
+
+.med-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.med-hero-icon {
+  font-size: 48px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+  animation: med-bob 2.8s ease-in-out infinite;
+}
+
+@keyframes med-bob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-6px) rotate(6deg); }
+}
+
+/* Decorative medicine graphics */
+.med-hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.med-hero-art .art {
+  position: absolute;
+  opacity: 0.9;
+  animation: art-float 6s ease-in-out infinite;
+}
+
+.art-capsule { width: 72px; }
+.art-pill { width: 44px; }
+.art-cross { width: 40px; }
+.art-pulse { width: 150px; }
+
+.art-1 { top: 14px; right: 22%; --r: 28deg; animation-delay: 0s; }
+.art-2 { top: 50%; right: 8%; --r: 0deg; animation-delay: 0.8s; }
+.art-3 { bottom: 14px; right: 24%; --r: -12deg; animation-delay: 1.6s; }
+.art-4 { bottom: 10px; right: 2%; --r: 0deg; opacity: 0.6; animation-delay: 1.2s; }
+.art-5 { top: 30%; right: 30%; --r: -40deg; width: 56px; animation-delay: 2.2s; }
+
+@keyframes art-float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-9px) rotate(var(--r, 0deg)); }
+}
+
+.med-hero-title {
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.med-hero-sub {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.95rem;
+}
+
+/* Steps */
+.med-steps {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.med-step {
+  flex: 1 1 160px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--primary-l, #e8f0ff);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: var(--primary1, #1a3c5e);
+  font-size: 0.9rem;
+}
+
+.med-step-num {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary, #0057ff);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+/* Card */
+.med-card {
+  border-radius: 18px;
+}
+
+.med-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary1, #1a3c5e);
+  margin-bottom: 12px;
+}
+
+/* Upload box */
+.med-upload {
+  display: block;
+  border: 2px dashed var(--primary, #0057ff);
+  border-radius: 14px;
+  background: #f5f8ff;
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.med-upload:hover {
+  background: var(--primary-l, #e8f0ff);
+  border-color: var(--primary-d, #0042cc);
+}
+
+.med-upload-icon { font-size: 34px; }
+.med-upload-text { font-weight: 600; color: var(--primary, #0057ff); margin-top: 6px; }
+.med-upload-hint { font-size: 0.82rem; color: #64748b; margin-top: 2px; }
+
+/* Selected file */
+.med-file {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--primary-l, #e8f0ff);
+  border-radius: 14px;
+  padding: 12px;
+  background: #f5f8ff;
+}
+
+.med-file-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.med-file-thumb--doc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  border: 1px solid var(--primary-l, #e8f0ff);
+}
+
+.med-file-name {
+  font-weight: 600;
+  color: var(--primary1, #1a3c5e);
+  word-break: break-all;
+}
+
+.med-submit {
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+/* Success */
+.med-success {
+  background: #fff;
+  border-radius: 18px;
+  padding: 40px 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.med-success-icon { font-size: 56px; }
+.med-success-title { font-weight: 800; color: var(--primary, #0057ff); margin-top: 8px; }

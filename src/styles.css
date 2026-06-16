@@ -43,8 +43,8 @@
     --h-bg: #ffffff;
   --h-surface: #f8fafc;
   --h-border: rgba(0, 0, 0, 0.08);
-  --h-primary: #3b82f6;
-  --h-primary-hover: #2563eb;
+  --h-primary:#0057ff;
+  --h-primary-hover: #0042cc;
   --h-accent: #f59e0b;
   --h-text: #0f172a;
   --h-muted: #64748b;
@@ -468,6 +468,16 @@ button {
   color: var(--h-danger);
 }
 
+/* WhatsApp technical-issues link */
+.header__dropdown-item--whatsapp svg {
+  color: #25d366;
+}
+
+.header__dropdown-item--whatsapp:hover {
+  background: rgba(37, 211, 102, 0.1);
+  color: #1ebe57;
+}
+
 /* --- Hamburger --- */
 .header__hamburger {
   display: none;
@@ -802,6 +812,34 @@ button {
   height: 15px;
 }
 
+/* WhatsApp community group links */
+.drawer__whatsapp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: #128c4b;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  transition: background 0.2s ease;
+}
+
+.drawer__whatsapp:hover {
+  background: rgba(37, 211, 102, 0.16);
+  color: #0f7a41;
+}
+
+.drawer__whatsapp svg {
+  width: 17px;
+  height: 17px;
+  color: #25d366;
+  flex-shrink: 0;
+}
+
 /* --- Overlay --- */
 .header__overlay {
   position: fixed;
@@ -959,7 +997,8 @@ button {
 
 .logo_color2 {
   color: #ffffff;
-  background: #3b82f6;
+  /* background: #3b82f6; */
+  background: #0057ff;
   padding: 2px 14px 3px 3px;
   font-weight: 600;
   border-radius: 0px 30px 5px 0px;

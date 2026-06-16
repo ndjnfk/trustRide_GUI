@@ -89,10 +89,22 @@ export const routes: Routes = [
       import('../app/admin/orders/orders').then((m) => m.Orders),
   },
   {
+    path: 'admin/prescriptions',
+    loadComponent: () =>
+      import('../app/admin/prescriptions/prescriptions').then((m) => m.Prescriptions),
+  },
+  {
     path: 'marketplace',
     loadComponent: () =>
       import('../app/marketplace-components/categories/categories').then(
         (m) => m.MarketplaceCategories
+      ),
+  },
+  {
+    path: 'marketplace/medical-store',
+    loadComponent: () =>
+      import('../app/marketplace-components/medical-store/medical-store').then(
+        (m) => m.MedicalStore
       ),
   },
   {

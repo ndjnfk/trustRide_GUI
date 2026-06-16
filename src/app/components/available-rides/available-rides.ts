@@ -115,6 +115,15 @@ export class AvailableRides {
       );
     }
 
+    // Hide rides whose departure time has already passed
+    const now = Date.now();
+    rides = rides.filter(r => new Date(r.departure_time).getTime() >= now);
+
+    // Sort by departure time ascending: today first, then tomorrow, then next day…
+    rides.sort((a, b) =>
+      new Date(a.departure_time).getTime() - new Date(b.departure_time).getTime()
+    );
+
     this.filteredRides = rides;
   }
 
@@ -128,7 +137,7 @@ export class AvailableRides {
 
   formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-IN', {
-      day: '2-digit', month: 'short', year: 'numeric',
+      weekday: 'long', day: '2-digit', month: 'short', year: 'numeric',
       timeZone: 'UTC'  // ✅ UTC force
     })
   }

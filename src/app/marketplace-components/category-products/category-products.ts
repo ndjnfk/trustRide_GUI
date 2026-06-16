@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MarketplaceService } from '../../services/marketplace-service';
 
 @Component({
   selector: 'app-category-products',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './category-products.html',
   styleUrl: './category-products.css',
 })
@@ -14,6 +15,16 @@ export class CategoryProducts {
   category: any = null;
   loading = false;
   error = '';
+  searchQuery = '';
+
+  get filteredProducts(): any[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return this.products;
+    return this.products.filter(p =>
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.description || '').toLowerCase().includes(q)
+    );
+  }
 
   imageBase: string;
 

@@ -12,6 +12,15 @@ export class MarketplaceService {
   // Prefix for stored image paths like "/uploads/categories/x.jpg"
   readonly imageBase = environment.apiUrl;
 
+  // Delivery is currently limited to a single serviceable area. City, state
+  // and pincode are fixed for every marketplace address (checkout + medical
+  // store) and cannot be edited by the user.
+  readonly fixedLocation = {
+    city: 'Saharanpur',
+    state: 'Uttar Pradesh',
+    pincode: '247001',
+  };
+
   // Live cart count for the floating cart badge (0 when empty/logged out)
   private cartCountSubject = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCountSubject.asObservable();
@@ -110,6 +119,21 @@ export class MarketplaceService {
   // The user's own orders (for tracking)
   getMyOrders(): Observable<any> {
     return this.http.get(`${this.API_URL}/marketplace/orders`, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
+  // ── Medical Store (prescription upload) ──────────────────
+  // Multipart so the prescription file is uploaded with the form fields.
+  // No Content-Type header — the browser sets the multipart boundary.
+  submitPrescription(payload: FormData): Observable<any> {
+    return this.http.post(`${this.API_URL}/marketplace/prescriptions`, payload, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
+  getMyPrescriptions(): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/prescriptions`, {
       headers: AuthHelper.getAuthHeader(),
     });
   }

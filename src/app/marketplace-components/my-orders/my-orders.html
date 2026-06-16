@@ -21,13 +21,91 @@
 
     @if (!loading && !error) {
       <!-- Empty -->
-      @if (orders.length === 0) {
+      @if (orders.length === 0 && prescriptionOrders.length === 0) {
         <div class="text-center text-muted py-5">
           <div class="mp-empty-icon">📦</div>
           <p class="mb-3">You haven't placed any orders yet.</p>
           <button class="btn mp-shop-btn" (click)="goShopping()">Browse Products</button>
         </div>
       } @else {
+
+        <!-- ── Medical Store prescription orders ── -->
+        @if (prescriptionOrders.length > 0) {
+          <h2 class="mp-section-title">💊 Medical Store</h2>
+          @for (rx of prescriptionOrders; track rx._id) {
+            <div class="card border-0 shadow-sm mb-4 order-card" [class.delivered]="isDelivered(rx.status)">
+              <div class="card-body">
+
+                <!-- Top: id, date -->
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                  <div>
+                    <div class="order-id">
+                      Prescription #{{ rx.order_id || (rx._id.slice(-6) | uppercase) }}
+                      @if (isDelivered(rx.status)) {
+                        <span class="delivered-tag">✓ Delivered</span>
+                      }
+                    </div>
+                    <div class="order-date">{{ rx.created_at | date: 'dd MMM yyyy, hh:mm a' }}</div>
+                  </div>
+                  @if (rx.prescription_url) {
+                    <a class="btn btn-sm btn-outline-primary" [href]="imageBase + rx.prescription_url" target="_blank" rel="noopener">
+                      @if (isImage(rx.prescription_url)) { 🖼 View prescription } @else { 📄 View prescription }
+                    </a>
+                  }
+                </div>
+
+                <!-- Tracker -->
+                @if (isCancelled(rx.status)) {
+                  <div class="cancelled-banner">✕ This order was cancelled</div>
+                } @else {
+                  <div class="tracker">
+                    @for (step of rxSteps; track step; let i = $index) {
+                      <div
+                        class="track-step"
+                        [class.done]="i <= currentRxStep(rx.status)"
+                        [class.active]="i === currentRxStep(rx.status)"
+                      >
+                        <div class="track-dot">
+                          @if (i <= currentRxStep(rx.status)) { ✓ } @else { {{ i + 1 }} }
+                        </div>
+                        <div class="track-label">{{ rxLabels[step] }}</div>
+                      </div>
+                      @if (i < rxSteps.length - 1) {
+                        <div class="track-line" [class.done]="i < currentRxStep(rx.status)"></div>
+                      }
+                    }
+                  </div>
+                }
+
+                <!-- Notes -->
+                @if (rx.notes) {
+                  <div class="order-items mt-3">
+                    <div class="order-item"><span class="oi-name">📝 {{ rx.notes }}</span></div>
+                  </div>
+                }
+
+                <!-- Delivery address -->
+                @if (rx.shipping_address) {
+                  <div class="order-address mt-3">
+                    <span class="oa-label">Delivering to:</span>
+                    {{ rx.full_name }}, {{ rx.shipping_address.line1 }},
+                    @if (rx.shipping_address.line2) { {{ rx.shipping_address.line2 }}, }
+                    {{ rx.shipping_address.city }}, {{ rx.shipping_address.state }} —
+                    {{ rx.shipping_address.pincode }}
+                    @if (rx.phone) { · 📞 {{ rx.phone }} }
+                  </div>
+                }
+
+              </div>
+            </div>
+          }
+        }
+
+        <!-- ── Product orders ── -->
+        @if (orders.length > 0) {
+          @if (prescriptionOrders.length > 0) {
+            <h2 class="mp-section-title">🛍️ Products</h2>
+          }
         @for (order of orders; track order._id) {
           <div class="card border-0 shadow-sm mb-4 order-card" [class.delivered]="isDelivered(order.status)">
             <div class="card-body">
@@ -97,6 +175,7 @@
 
             </div>
           </div>
+        }
         }
       }
     }

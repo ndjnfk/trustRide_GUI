@@ -332,4 +332,31 @@ clearOrders(): Observable<any> {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }
+
+// ── Prescriptions (Medical Store) ─────────────────────────
+getPrescriptions(params: Record<string, any> = {}): Observable<any> {
+  const query: Record<string, string> = {};
+  Object.keys(params).forEach((key) => {
+    const value = params[key];
+    if (value !== '' && value !== null && value !== undefined) {
+      query[key] = String(value);
+    }
+  });
+  return this.http.get(`${this.API_URL}/admin/prescriptions`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    params: query
+  });
+}
+
+updatePrescriptionStatus(id: string, status: string): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/prescriptions/${id}/status`, { status }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deletePrescription(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/prescriptions/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
 }

@@ -7,9 +7,25 @@
     <div class="mb-4">
       <h1 class="mp-title">{{ category?.category_name || 'Products' }}</h1>
       @if (!loading && !error) {
-        <p class="mp-subtitle m-0">{{ products.length }} product(s)</p>
+        <p class="mp-subtitle m-0">{{ filteredProducts.length }} product(s)</p>
       }
     </div>
+
+    <!-- Search -->
+    @if (!loading && !error) {
+      <div class="mp-search mb-4">
+        <span class="mp-search-icon">🔍</span>
+        <input
+          type="text"
+          class="form-control mp-search-input"
+          placeholder="Search products..."
+          [(ngModel)]="searchQuery"
+        />
+        @if (searchQuery) {
+          <button type="button" class="mp-search-clear" (click)="searchQuery = ''" aria-label="Clear">✕</button>
+        }
+      </div>
+    }
 
     <!-- Loading -->
     @if (loading) {
@@ -26,7 +42,7 @@
     <!-- Grid -->
     @if (!loading && !error) {
       <div class="row g-4">
-        @for (product of products; track product._id) {
+        @for (product of filteredProducts; track product._id) {
           <div class="col-6 col-md-4 col-lg-3">
             <div class="mp-product h-100" (click)="openProduct(product)">
               <div class="mp-product-img">
@@ -60,10 +76,14 @@
       </div>
 
       <!-- Empty -->
-      @if (products.length === 0) {
+      @if (filteredProducts.length === 0) {
         <div class="text-center text-muted py-5">
           <div class="mp-empty-icon">📦</div>
-          <p class="m-0">No products in this category yet.</p>
+          @if (searchQuery) {
+            <p class="m-0">No products match "{{ searchQuery }}".</p>
+          } @else {
+            <p class="m-0">No products in this category yet.</p>
+          }
         </div>
       }
     }

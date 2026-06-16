@@ -63,3 +63,155 @@
 .mp-empty-icon {
   font-size: 48px;
 }
+
+/* ── Permanent Medical Store banner ── */
+.med-banner {
+  position: relative;
+  border-radius: 22px;
+  padding: 28px 32px;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0057ff, #7c3aed);
+  box-shadow: 0 14px 34px rgba(124, 58, 237, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.med-banner:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(124, 58, 237, 0.42);
+}
+
+.med-banner-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.28), transparent 42%),
+    radial-gradient(circle at 12% 90%, rgba(255, 255, 255, 0.18), transparent 38%);
+  pointer-events: none;
+}
+
+.med-banner-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.med-banner-icon {
+  font-size: 56px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  animation: med-bob 2.8s ease-in-out infinite;
+}
+
+@keyframes med-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.med-banner-text {
+  flex: 1 1 260px;
+  color: #fff;
+}
+
+.med-banner-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.med-banner-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: #fff;
+}
+
+.med-banner-sub {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 560px;
+}
+
+.med-banner-btn {
+  border: none;
+  background: #fff;
+  color: var(--primary, #0057ff);
+  font-weight: 700;
+  padding: 12px 22px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.med-banner-btn:hover {
+  transform: scale(1.04);
+  background: var(--primary-l, #e8f0ff);
+}
+
+@media (max-width: 575px) {
+  .med-banner { padding: 22px; }
+  .med-banner-title { font-size: 1.25rem; }
+  .med-banner-btn { width: 100%; }
+}
+
+/* ── Search box ── */
+.mp-search {
+  position: relative;
+  max-width: 480px;
+}
+
+.mp-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.mp-search-input {
+  height: 48px;
+  padding-left: 44px;
+  padding-right: 40px;
+  border-radius: 999px;
+  border: 1px solid #e8f0ff;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 87, 255, 0.06);
+}
+
+.mp-search-input:focus {
+  border-color: var(--primary, #0057ff);
+  box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.12);
+}
+
+.mp-search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: #eef2f7;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mp-search-clear:hover {
+  background: #e2e8f0;
+  color: #334155;
+}

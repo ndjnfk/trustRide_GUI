@@ -1,0 +1,148 @@
+<div class="med-page">
+  <div class="container py-5 mt-5" style="max-width: 760px;">
+
+    <button type="button" class="btn btn-link med-back px-0 mb-2" (click)="goBack()">← Back to Marketplace</button>
+
+    <!-- Hero -->
+    <div class="med-hero mb-4">
+      <!-- Decorative medicine graphics -->
+      <div class="med-hero-art" aria-hidden="true">
+        <!-- Capsule -->
+        <svg class="art art-capsule art-1" viewBox="0 0 64 28" fill="none">
+          <rect x="1" y="1" width="62" height="26" rx="13" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-opacity="0.5" stroke-width="1.5"/>
+          <path d="M32 1.75V26.25" stroke="#fff" stroke-opacity="0.5" stroke-width="1.5"/>
+          <rect x="2" y="2" width="29" height="24" rx="12" fill="#fff" fill-opacity="0.25"/>
+        </svg>
+        <!-- Tablet -->
+        <svg class="art art-pill art-2" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" fill="#fff" fill-opacity="0.16" stroke="#fff" stroke-opacity="0.5" stroke-width="1.5"/>
+          <path d="M8 20H32" stroke="#fff" stroke-opacity="0.55" stroke-width="1.5"/>
+        </svg>
+        <!-- Medical cross -->
+        <svg class="art art-cross art-3" viewBox="0 0 40 40" fill="none">
+          <path d="M16 4h8v12h12v8H24v12h-8V24H4v-8h12V4z" fill="#fff" fill-opacity="0.2" stroke="#fff" stroke-opacity="0.45" stroke-width="1.5"/>
+        </svg>
+        <!-- Heartbeat line -->
+        <svg class="art art-pulse art-4" viewBox="0 0 120 32" fill="none">
+          <path d="M2 16h22l8-12 10 24 8-16 6 8h54" stroke="#fff" stroke-opacity="0.45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <!-- Small capsule -->
+        <svg class="art art-capsule art-5" viewBox="0 0 64 28" fill="none">
+          <rect x="1" y="1" width="62" height="26" rx="13" fill="#fff" fill-opacity="0.14" stroke="#fff" stroke-opacity="0.4" stroke-width="1.5"/>
+          <path d="M32 1.75V26.25" stroke="#fff" stroke-opacity="0.4" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="med-hero-content">
+        <div class="med-hero-icon">💊</div>
+        <div>
+          <h1 class="med-hero-title">Medical Store</h1>
+          <p class="med-hero-sub m-0">Upload your doctor's prescription and we'll deliver your medicines to your doorstep.</p>
+        </div>
+      </div>
+    </div>
+
+    @if (submitted) {
+      <!-- Success -->
+      <div class="med-success text-center">
+        <div class="med-success-icon">✅</div>
+        <h2 class="med-success-title">Prescription submitted!</h2>
+        <p class="text-muted">Our pharmacy team will review your prescription and contact you shortly to confirm and deliver your medicines.</p>
+        <div class="d-flex gap-2 justify-content-center mt-3">
+          <button class="btn btn-primary" (click)="goToOrders()">Track my orders</button>
+          <button class="btn btn-outline-secondary" (click)="goBack()">Back to Marketplace</button>
+        </div>
+      </div>
+    } @else {
+      <!-- How it works -->
+      <div class="med-steps mb-4">
+        <div class="med-step"><span class="med-step-num">1</span> Upload prescription</div>
+        <div class="med-step"><span class="med-step-num">2</span> We review &amp; confirm</div>
+        <div class="med-step"><span class="med-step-num">3</span> Delivered to you</div>
+      </div>
+
+      <div class="card med-card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+          @if (error) {
+            <div class="alert alert-danger py-2">{{ error }}</div>
+          }
+
+          <!-- Prescription upload -->
+          <label class="form-label fw-semibold">Prescription <span class="text-danger">*</span></label>
+          @if (!file) {
+            <label class="med-upload">
+              <input type="file" accept="image/*,.pdf" hidden (change)="onFileSelected($event)" />
+              <div class="med-upload-icon">📎</div>
+              <div class="med-upload-text">Click to upload your prescription</div>
+              <div class="med-upload-hint">JPG, PNG, WEBP or PDF — up to 10 MB</div>
+            </label>
+          } @else {
+            <div class="med-file">
+              @if (filePreview) {
+                <img [src]="filePreview" alt="Prescription preview" class="med-file-thumb" />
+              } @else {
+                <div class="med-file-thumb med-file-thumb--doc">📄</div>
+              }
+              <div class="med-file-info">
+                <div class="med-file-name">{{ file.name }}</div>
+                <button type="button" class="btn btn-sm btn-outline-danger mt-1" (click)="clearFile()">Remove</button>
+              </div>
+            </div>
+          }
+
+          <hr class="my-4" />
+
+          <h3 class="med-section-title">Delivery details</h3>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="full_name" [(ngModel)]="form.full_name" placeholder="Your name" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone number <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control" name="phone" [(ngModel)]="form.phone" placeholder="10-digit mobile number" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Address line 1 <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="line1" [(ngModel)]="form.line1" placeholder="House / flat, street" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Address line 2</label>
+              <input type="text" class="form-control" name="line2" [(ngModel)]="form.line2" placeholder="Landmark, area (optional)" />
+            </div>
+            <div class="col-md-5">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control bg-light" name="city" [(ngModel)]="form.city" readonly tabindex="-1" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">State</label>
+              <input type="text" class="form-control bg-light" name="state" [(ngModel)]="form.state" readonly tabindex="-1" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Pincode</label>
+              <input type="text" class="form-control bg-light" name="pincode" [(ngModel)]="form.pincode" readonly tabindex="-1" />
+            </div>
+            <div class="col-12">
+              <small class="text-muted">📍 We currently deliver only in {{ fixedLocation.city }}, {{ fixedLocation.state }} — {{ fixedLocation.pincode }}.</small>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Notes for pharmacist</label>
+              <textarea class="form-control" rows="2" name="notes" [(ngModel)]="form.notes" placeholder="Any specific instructions (optional)"></textarea>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 mt-4 med-submit" (click)="submit()" [disabled]="submitting">
+            @if (submitting) {
+              <span class="spinner-border spinner-border-sm me-2"></span> Submitting...
+            } @else {
+              Submit Prescription
+            }
+          </button>
+
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

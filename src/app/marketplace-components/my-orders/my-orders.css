@@ -15,6 +15,15 @@
   font-weight: 600;
 }
 
+.mp-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary1, #1a3c5e);
+  margin: 8px 0 16px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--primary-l, #e8f0ff);
+}
+
 .mp-spinner {
   color: var(--primary, #0057ff);
 }

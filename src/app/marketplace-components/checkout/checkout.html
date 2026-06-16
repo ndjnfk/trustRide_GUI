@@ -77,16 +77,19 @@
                     <input type="text" class="form-control" name="line2" [(ngModel)]="form.line2" />
                   </div>
                   <div class="col-12 col-md-5">
-                    <label class="form-label">City <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="city" [(ngModel)]="form.city" />
+                    <label class="form-label">City</label>
+                    <input type="text" class="form-control bg-light" name="city" [(ngModel)]="form.city" readonly tabindex="-1" />
                   </div>
                   <div class="col-6 col-md-4">
-                    <label class="form-label">State <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="state" [(ngModel)]="form.state" />
+                    <label class="form-label">State</label>
+                    <input type="text" class="form-control bg-light" name="state" [(ngModel)]="form.state" readonly tabindex="-1" />
                   </div>
                   <div class="col-6 col-md-3">
-                    <label class="form-label">Pincode <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="pincode" [(ngModel)]="form.pincode" />
+                    <label class="form-label">Pincode</label>
+                    <input type="text" class="form-control bg-light" name="pincode" [(ngModel)]="form.pincode" readonly tabindex="-1" />
+                  </div>
+                  <div class="col-12">
+                    <small class="text-muted">📍 We currently deliver only in {{ fixedLocation.city }}, {{ fixedLocation.state }} — {{ fixedLocation.pincode }}.</small>
                   </div>
                   <div class="col-12">
                     <div class="form-check">

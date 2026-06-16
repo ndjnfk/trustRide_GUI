@@ -14,6 +14,9 @@ interface AddressForm {
   pincode: string;
 }
 
+// City/state/pincode are fixed to the serviceable area and not user-editable.
+const FIXED_LOCATION = { city: 'Saharanpur', state: 'Uttar Pradesh', pincode: '247001' };
+
 @Component({
   selector: 'app-checkout',
   imports: [CommonModule, FormsModule],
@@ -56,8 +59,18 @@ export class Checkout {
     this.load();
   }
 
+  // City/state/pincode are fixed to the serviceable area and not user-editable.
+  fixedLocation = FIXED_LOCATION;
+
   emptyForm(): AddressForm {
-    return { full_name: '', line1: '', line2: '', city: '', state: '', pincode: '' };
+    return {
+      full_name: '',
+      line1: '',
+      line2: '',
+      city: FIXED_LOCATION.city,
+      state: FIXED_LOCATION.state,
+      pincode: FIXED_LOCATION.pincode,
+    };
   }
 
   load() {
@@ -140,9 +153,10 @@ export class Checkout {
           full_name: this.form.full_name.trim(),
           line1: this.form.line1.trim(),
           line2: this.form.line2.trim(),
-          city: this.form.city.trim(),
-          state: this.form.state.trim(),
-          pincode: this.form.pincode.trim(),
+          // City/state/pincode are fixed to the serviceable area.
+          city: FIXED_LOCATION.city,
+          state: FIXED_LOCATION.state,
+          pincode: FIXED_LOCATION.pincode,
         },
         setDefault: this.setDefault,
       };

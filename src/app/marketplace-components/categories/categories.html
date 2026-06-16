@@ -2,9 +2,23 @@
   <div class="container py-5 mt-5">
 
     <!-- Heading -->
-    <div class="text-center mb-5">
+    <div class="text-center mb-4">
       <h1 class="mp-title">Shop by Category</h1>
       <p class="mp-subtitle">Pick a category to explore products</p>
+    </div>
+
+    <!-- Search -->
+    <div class="mp-search mx-auto mb-5">
+      <span class="mp-search-icon">🔍</span>
+      <input
+        type="text"
+        class="form-control mp-search-input"
+        placeholder="Search categories..."
+        [(ngModel)]="searchQuery"
+      />
+      @if (searchQuery) {
+        <button type="button" class="mp-search-clear" (click)="searchQuery = ''" aria-label="Clear">✕</button>
+      }
     </div>
 
     <!-- Loading -->
@@ -24,8 +38,27 @@
 
     <!-- Grid -->
     @if (!loading && !error) {
+
+      <!-- Permanent Medical Store banner -->
+      @if (showMedicalStore) {
+        <div class="med-banner mb-4" (click)="openMedicalStore()">
+          <div class="med-banner-glow"></div>
+          <div class="med-banner-content">
+            <div class="med-banner-icon">💊</div>
+            <div class="med-banner-text">
+              <span class="med-banner-badge">Medical Store</span>
+              <h2 class="med-banner-title">Upload prescription, get medicines delivered</h2>
+              <p class="med-banner-sub">No browsing needed — just upload your doctor's prescription and we'll handle the rest.</p>
+            </div>
+            <button type="button" class="med-banner-btn" (click)="$event.stopPropagation(); openMedicalStore()">
+              Upload Prescription →
+            </button>
+          </div>
+        </div>
+      }
+
       <div class="row g-4">
-        @for (category of categories; track category._id) {
+        @for (category of filteredCategories; track category._id) {
           <div class="col-6 col-md-4 col-lg-3">
             <div class="mp-card h-100" (click)="openCategory(category)">
               <div class="mp-card-img">
@@ -44,10 +77,14 @@
       </div>
 
       <!-- Empty -->
-      @if (categories.length === 0) {
+      @if (filteredCategories.length === 0 && !showMedicalStore) {
         <div class="text-center text-muted py-5">
           <div class="mp-empty-icon">🛍️</div>
-          <p class="m-0">No categories available yet.</p>
+          @if (searchQuery) {
+            <p class="m-0">No categories match "{{ searchQuery }}".</p>
+          } @else {
+            <p class="m-0">No categories available yet.</p>
+          }
         </div>
       }
     }

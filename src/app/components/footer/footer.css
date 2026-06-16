@@ -6,7 +6,7 @@
   --f-bg: #f0f6fc;
   --f-surface: #111827;
   --f-border: rgba(255, 255, 255, 0.07);
-  --f-primary: #3b82f6;
+  --f-primary: #0057ff;
   --f-primary-hover: #60a5fa;
   --f-accent: #f59e0b;
   --f-text: #090d13;
@@ -285,6 +285,72 @@ background: rgba(59, 130, 246, 0.12);
   color: var(--f-muted-hover);
 }
 
+/* --- Footer bottom layout (3-column) --- */
+.footer__bottom {
+  padding: 44px 0 0;
+  padding-top: 0px;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__about {
+  color: var(--f-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 12px 0 20px;
+  max-width: 300px;
+}
+
+/* Section heading inside each column */
+.footer__col .footer__col-title {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--f-text);
+  margin: 0 0 14px;
+}
+
+.footer__copyright-row {
+  margin-top: 32px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+/* --- WhatsApp community group chips --- */
+.footer__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--f-radius-pill);
+  background: rgba(37, 211, 102, 0.1);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  color: #128c4b;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--f-transition), border-color var(--f-transition), color var(--f-transition);
+}
+
+.footer__whatsapp svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: #25d366;
+}
+
+.footer__whatsapp:hover {
+  background: rgba(37, 211, 102, 0.18);
+  border-color: rgba(37, 211, 102, 0.55);
+  color: #0f7a41;
+}
+
 /* ============================================================
    Responsive Breakpoints
    ============================================================ */
@@ -316,7 +382,8 @@ background: rgba(59, 130, 246, 0.12);
 }
 .logo_color2{
    color: #ffffff;
-    background: #3b82f6;
+    /* background: #3b82f6; */
+    background: #0057ff;
     padding: 8px 13px 7px 3px;
     font-weight: 600;
     border-radius: 0px 30px 5px 0px;
