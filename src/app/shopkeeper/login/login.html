@@ -1,0 +1,38 @@
+<div class="shop-page">
+  <div class="shop-card shop-card--sm">
+
+    <div class="shop-head">
+      <div class="shop-head-icon">🏪</div>
+      <h1 class="shop-title">Shopkeeper login</h1>
+      <p class="shop-sub">Sign in to manage your shop, products and sales.</p>
+    </div>
+
+    @if (justRegistered) {
+      <div class="alert alert-success py-2">Shop registered! Please log in to continue.</div>
+    }
+    @if (error) {
+      <div class="alert alert-danger py-2">{{ error }}</div>
+    }
+
+    <form (ngSubmit)="submit()" novalidate>
+      <label class="form-label">Email id</label>
+      <input type="email" class="form-control mb-3" name="email" [(ngModel)]="email" placeholder="shop@example.com" />
+
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" name="password" [(ngModel)]="password" placeholder="Your password" />
+
+      <button type="submit" class="btn shop-submit w-100 mt-4" [disabled]="submitting">
+        @if (submitting) {
+          <span class="spinner-border spinner-border-sm me-2"></span> Signing in…
+        } @else {
+          Log In
+        }
+      </button>
+
+      <p class="shop-foot">
+        New here? <a (click)="goToRegister()">Register your shop</a>
+      </p>
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="ur-layout">
+  <app-side-bar></app-side-bar>
+
+  <main class="ur-main">
+    <button type="button" class="ur-back" (click)="goBack()">← Back to users</button>
+
+    <!-- Loading -->
+    <div class="ur-state" *ngIf="loading">Loading reviews...</div>
+
+    <!-- Error -->
+    <div class="ur-state ur-error" *ngIf="error && !loading">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && !error">
+      <!-- User header -->
+      <div class="ur-header" *ngIf="user">
+        <div class="ur-avatar">
+          <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" [alt]="user.fullName" />
+          <span *ngIf="!user.avatarUrl">{{ initials(user.fullName) }}</span>
+        </div>
+        <div class="ur-head-info">
+          <h1 class="ur-name">{{ user.fullName }}</h1>
+          <p class="ur-sub">
+            <span *ngIf="user.userCode">#{{ user.userCode }}</span>
+            <span *ngIf="user.userEmail"> · {{ user.userEmail }}</span>
+          </p>
+        </div>
+        <div class="ur-rating-summary">
+          <div class="ur-avg">{{ avgRating || '—' }}</div>
+          <div class="ur-avg-stars">
+            <span *ngFor="let s of stars" [class.filled]="s <= avgRating">★</span>
+          </div>
+          <div class="ur-count">{{ count }} review{{ count === 1 ? '' : 's' }} received</div>
+        </div>
+      </div>
+
+      <!-- Empty -->
+      <div class="ur-empty" *ngIf="count === 0">
+        <div class="ur-empty-icon">⭐</div>
+        <p>This user hasn’t received any ratings yet.</p>
+      </div>
+
+      <!-- Reviews list -->
+      <div class="ur-list" *ngIf="count > 0">
+        <div class="ur-card" *ngFor="let r of reviews">
+          <div class="ur-card-top">
+            <div class="ur-giver">
+              <div class="ur-giver-avatar">
+                <img *ngIf="r.giverAvatarUrl" [src]="r.giverAvatarUrl" [alt]="r.giverName" />
+                <span *ngIf="!r.giverAvatarUrl">{{ initials(r.giverName) }}</span>
+              </div>
+              <div>
+                <div class="ur-giver-name">{{ r.giverName }}</div>
+                <div class="ur-giver-role" *ngIf="r.reviewerRole">
+                  Reviewed as {{ r.reviewerRole | titlecase }}
+                </div>
+              </div>
+            </div>
+            <div class="ur-card-stars">
+              <span *ngFor="let s of stars" [class.filled]="s <= r.rating">★</span>
+              <span class="ur-rating-num">{{ r.rating }}/5</span>
+            </div>
+          </div>
+
+          <p class="ur-comment" *ngIf="r.comment">“{{ r.comment }}”</p>
+          <p class="ur-comment ur-no-comment" *ngIf="!r.comment">No written feedback.</p>
+
+          <div class="ur-date" *ngIf="r.createdAt">{{ formatDate(r.createdAt) }}</div>
+        </div>
+      </div>
+    </ng-container>
+  </main>
+</div>

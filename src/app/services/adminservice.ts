@@ -169,6 +169,13 @@ private readonly API_URL = environment.apiUrl;
     });
   }
  
+  // All ratings/reviews RECEIVED by a particular user (with giver name)
+  getUserReviews(userId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/admin/userReviews/${userId}`, {
+      headers: AdminSessionHelper.getAuthHeaders()
+    });
+  }
+
   updateVerificationStatus(payload: UpdateVerificationRequest): Observable<UpdateVerificationResponse> {
     return this.http.put<UpdateVerificationResponse>(
       `${this.API_URL}/admin/update-verification-status`,

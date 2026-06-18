@@ -1,0 +1,72 @@
+<div class="ed-wrap">
+  <div class="ed-header">
+  
+    <h2 class="ed-title">✏️Update Ride</h2>
+    <p class="ed-sub">{{ data.ride.start_location.name }} → {{ data.ride.end_location.name }}</p>
+  </div>
+
+  <div class="ed-body">
+
+    <!-- Locked notice when bookings exist -->
+    <div class="ed-note" *ngIf="fieldsLocked">
+      ⚠️ This ride has active bookings. You can only adjust the number of seats — date, time and price are locked.
+    </div>
+
+    <!-- Date -->
+    <div class="ed-field">
+      <label class="ed-label">Date</label>
+      <input
+        type="date"
+        class="ed-input form-control"
+        [min]="today"
+        [(ngModel)]="rideDate"
+        [disabled]="fieldsLocked"
+      />
+    </div>
+
+    <!-- Time -->
+    <div class="ed-field">
+      <label class="ed-label">Departure Time</label>
+      <input
+        type="time"
+        class="ed-input form-control"
+        [(ngModel)]="rideTime"
+        [disabled]="fieldsLocked"
+      />
+    </div>
+
+    <!-- Seats (always editable) -->
+    <div class="ed-field">
+      <label class="ed-label">
+        Available Seats
+        <span class="ed-hint" *ngIf="bookedSeats > 0">
+          ({{ bookedSeats }} booked · up to {{ maxSeats }} more)
+        </span>
+      </label>
+      <div class="ed-stepper">
+        <button type="button" class="ed-step-btn" (click)="decrementSeats()" [disabled]="seats <= minSeats">−</button>
+        <span class="ed-step-val">{{ seats }}</span>
+        <button type="button" class="ed-step-btn" (click)="incrementSeats()" [disabled]="seats >= maxSeats">+</button>
+      </div>
+      <!-- <p class="ed-seat-note" *ngIf="bookedSeats > 0">
+        {{ bookedSeats }} seat{{ bookedSeats > 1 ? 's' : '' }} already booked. Total can’t exceed {{ maxTotalSeats }}, so you can offer {{ seats }} more (booked + offered = {{ seats + bookedSeats }}/{{ maxTotalSeats }}).
+      </p> -->
+    </div>
+
+    <!-- Price -->
+    <div class="ed-field">
+      <label class="ed-label">Price per Seat</label>
+      <div class="ed-stepper">
+        <button type="button" class="ed-step-btn" (click)="decrementPrice()" [disabled]="fieldsLocked || price <= minPrice">−</button>
+        <span class="ed-step-val">₹{{ price }}</span>
+        <button type="button" class="ed-step-btn" (click)="incrementPrice()" [disabled]="fieldsLocked || price >= maxPrice">+</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ed-footer">
+    <button type="button" class="ed-btn-cancel" (click)="close()">Cancel</button>
+    <button type="button" class="ed-btn-save" [disabled]="!canSave" (click)="save()">Save Changes</button>
+  </div>
+</div>

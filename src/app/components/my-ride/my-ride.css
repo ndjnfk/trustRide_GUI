@@ -226,6 +226,30 @@
   border-color: rgba(99, 102, 241, 0.4);
 }
 
+.edit-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.08);
+  color: #059669;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.edit-btn:hover:not([disabled]) {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.edit-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ─── Status Dropdown ─── */
 .status-select {
   font-size: 11px;
@@ -449,10 +473,24 @@
 }
 
 .p-gender {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: 20px;
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.p-seats {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
 }
 
 .p-gender.female {
@@ -569,12 +607,13 @@
 .passenger-card{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 12px;
 }
 .passenger-card .p-info {
     display: flex;
-    gap: 10px;
-    align-items: center;
+    flex-direction: column;
+    gap: 6px;
     width: 100%;
 }
 .p-name {
@@ -582,18 +621,30 @@
 }
 .p-meta{
   width: 100%;
-}
-.p-status{
-  margin-left: auto;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .p-right{
     display: flex;
-    flex-direction: row;
-    align-items: normal;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
-    flex-shrink: 0;
     width: 100%;
+}
+.booking-status-select{
+    width: 100%;
+}
+.p-verify{
+    width: 100%;
+    gap: 8px;
+}
+.code-input{
+    flex: 1 1 auto;
+    /* width: auto; */
+}
+.verify-btn{
+    flex-shrink: 0;
+    padding: 8px 16px;
 }
 }
 .verified-text {

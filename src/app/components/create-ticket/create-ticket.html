@@ -1,0 +1,73 @@
+<div class="ticket-page">
+  <div class="ticket-card">
+
+    <button type="button" class="ticket-back" (click)="goBack()">
+      <i class="ti ti-arrow-left"></i> Back
+    </button>
+
+    <!-- Success state -->
+    <div class="ticket-success" *ngIf="submitted">
+      <div class="ticket-success-icon">✅</div>
+      <h2>Ticket Submitted</h2>
+      <p>Thanks! Our team has received your ticket and will get back to you over email soon.</p>
+      <div class="ticket-success-actions">
+        <button type="button" class="t-btn-secondary" (click)="raiseAnother()">Raise another</button>
+        <button type="button" class="t-btn-primary" (click)="goBack()">Done</button>
+      </div>
+    </div>
+
+    <!-- Form state -->
+    <ng-container *ngIf="!submitted">
+      <div class="ticket-head">
+        <div class="ticket-icon">🎫</div>
+        <div>
+          <h1 class="ticket-title">Raise a Support Ticket</h1>
+          <p class="ticket-sub">Tell us about your issue and we’ll get back to you over email.</p>
+        </div>
+      </div>
+
+      <form class="ticket-form" (ngSubmit)="submit()">
+        <div class="t-row">
+          <div class="t-field">
+            <label class="t-label">Your Name</label>
+            <input type="text" class="t-input" [(ngModel)]="name" name="name" placeholder="John Doe" />
+          </div>
+          <div class="t-field">
+            <label class="t-label">Email</label>
+            <input type="email" class="t-input" [(ngModel)]="email" name="email" placeholder="you@example.com" />
+          </div>
+        </div>
+
+        <div class="t-row">
+          <div class="t-field">
+            <label class="t-label">Phone <span class="t-optional">(optional)</span></label>
+            <input type="tel" class="t-input" [(ngModel)]="phone" name="phone" placeholder="9876543210" />
+          </div>
+          <div class="t-field">
+            <label class="t-label">Category</label>
+            <select class="t-input t-select" [(ngModel)]="category" name="category">
+              <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="t-field">
+          <label class="t-label">Subject</label>
+          <input type="text" class="t-input" [(ngModel)]="subject" name="subject"
+            placeholder="Short summary of your issue" />
+        </div>
+
+        <div class="t-field">
+          <label class="t-label">Describe your issue</label>
+          <textarea class="t-input t-textarea" [(ngModel)]="message" name="message" rows="6"
+            placeholder="Please give us as much detail as possible..."></textarea>
+        </div>
+
+        <button type="submit" class="t-btn-primary t-submit" [disabled]="!canSubmit">
+          {{ submitting ? 'Submitting...' : 'Submit Ticket' }}
+        </button>
+      </form>
+    </ng-container>
+
+  </div>
+</div>

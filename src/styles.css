@@ -812,6 +812,36 @@ button {
   height: 15px;
 }
 
+/* Admin: clickable user name → reviews page */
+.user-name-link { cursor: pointer; color: #4f46e5; }
+.user-name-link:hover { text-decoration: underline; }
+
+/* Raise a Ticket link (mobile drawer) */
+.drawer__ticket {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: #4f46e5;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  transition: background 0.2s ease;
+}
+
+.drawer__ticket:hover {
+  background: rgba(99, 102, 241, 0.16);
+  color: #4338ca;
+}
+
+.drawer__ticket svg {
+  width: 17px;
+  height: 17px;
+}
+
 /* WhatsApp community group links */
 .drawer__whatsapp {
   display: flex;

@@ -47,6 +47,11 @@ export const routes: Routes = [
     loadComponent: () => import('../app/components/my-ride/my-ride').then((m) => m.MyRide),
   },
   {
+    path: 'create-ticket',
+    loadComponent: () =>
+      import('../app/components/create-ticket/create-ticket').then((m) => m.CreateTicket),
+  },
+  {
     path: 'available-rides',
     loadComponent: () =>
       import('../app/components/available-rides/available-rides').then((m) => m.AvailableRides),
@@ -74,6 +79,11 @@ export const routes: Routes = [
     loadComponent: () => import('../app/admin/rides/rides').then((m) => m.Rides),
   },
   {
+    path: 'admin/user-reviews/:userId',
+    loadComponent: () =>
+      import('../app/admin/user-reviews/user-reviews').then((m) => m.UserReviews),
+  },
+  {
     path: 'admin/categories',
     loadComponent: () =>
       import('../app/admin/categories/categories').then((m) => m.Categories),
@@ -92,6 +102,21 @@ export const routes: Routes = [
     path: 'admin/prescriptions',
     loadComponent: () =>
       import('../app/admin/prescriptions/prescriptions').then((m) => m.Prescriptions),
+  },
+  {
+    path: 'shop/register',
+    loadComponent: () =>
+      import('../app/shopkeeper/register/register').then((m) => m.ShopRegister),
+  },
+  {
+    path: 'shop/login',
+    loadComponent: () =>
+      import('../app/shopkeeper/login/login').then((m) => m.ShopLogin),
+  },
+  {
+    path: 'shop/dashboard',
+    loadComponent: () =>
+      import('../app/shopkeeper/dashboard/dashboard').then((m) => m.ShopDashboard),
   },
   {
     path: 'marketplace',

@@ -1,0 +1,99 @@
+<div class="shop-page">
+  <div class="shop-card">
+
+    <div class="shop-head">
+      <div class="shop-head-icon">🏪</div>
+      <h1 class="shop-title">Register your shop</h1>
+      <p class="shop-sub">Create a shopkeeper account to list products and start selling.</p>
+    </div>
+
+    @if (error) {
+      <div class="alert alert-danger py-2">{{ error }}</div>
+    }
+
+    <form (ngSubmit)="submit()" #f="ngForm" novalidate>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Shop owner name <span class="req">*</span></label>
+          <input type="text" class="form-control" name="owner_name" [(ngModel)]="form.owner_name" placeholder="e.g. Rahul Sharma" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Shop name <span class="req">*</span></label>
+          <input type="text" class="form-control" name="shop_name" [(ngModel)]="form.shop_name" placeholder="e.g. Sharma Medicals" />
+        </div>
+      </div>
+
+      <!-- Shop type -->
+      <label class="form-label mt-3">Shop type <span class="req">*</span></label>
+      <div class="shop-types">
+        @for (t of shopTypes; track t.value) {
+          <button type="button"
+                  class="shop-type"
+                  [class.selected]="form.shop_type === t.value"
+                  (click)="selectType($any(t.value))">
+            <span class="shop-type-icon">{{ t.icon }}</span>
+            <span class="shop-type-label">{{ t.label }}</span>
+            <span class="shop-type-desc">{{ t.desc }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Shop address -->
+      <label class="form-label mt-3">Shop address <span class="req">*</span></label>
+      <textarea class="form-control" name="address" rows="2" [(ngModel)]="form.address"
+        placeholder="Shop no., street, area, city, pincode"></textarea>
+
+      <!-- Shop visiting card / board image -->
+      <label class="form-label mt-3">Shop visiting card / board image <span class="req">*</span></label>
+      <div class="shop-image-upload">
+        @if (imagePreview) {
+          <div class="shop-image-preview">
+            <img [src]="imagePreview" alt="Shop image preview" />
+            <button type="button" class="shop-image-remove" (click)="removeImage()" title="Remove image">✕</button>
+          </div>
+        } @else {
+          <label class="shop-image-drop">
+            <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp" hidden (change)="onImageSelected($event)" />
+            <span class="shop-image-icon">📷</span>
+            <span class="shop-image-text">Tap to upload your visiting card or shop board photo</span>
+            <span class="shop-image-hint">JPG, PNG or WEBP · up to 5MB</span>
+          </label>
+        }
+      </div>
+
+      <div class="row g-3 mt-1">
+        <div class="col-md-6">
+          <label class="form-label">WhatsApp number <span class="req">*</span></label>
+          <input type="tel" class="form-control" name="phoneNumber" [(ngModel)]="form.phoneNumber" placeholder="10-digit mobile number" maxlength="10" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email id <span class="req">*</span></label>
+          <input type="email" class="form-control" name="email" [(ngModel)]="form.email" placeholder="shop@example.com" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Password <span class="req">*</span></label>
+          <input type="password" class="form-control" name="password" [(ngModel)]="form.password" placeholder="Min 8 characters" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Confirm password <span class="req">*</span></label>
+          <input type="password" class="form-control" name="confirmPassword" [(ngModel)]="form.confirmPassword" placeholder="Re-enter password" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn shop-submit w-100 mt-4" [disabled]="submitting">
+        @if (submitting) {
+          <span class="spinner-border spinner-border-sm me-2"></span> Creating account…
+        } @else {
+          Register Shop
+        }
+      </button>
+
+      <p class="shop-foot">
+        Already have a shop account?
+        <a (click)="goToLogin()">Log in</a>
+      </p>
+    </form>
+
+  </div>
+</div>

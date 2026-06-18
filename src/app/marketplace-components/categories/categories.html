@@ -39,25 +39,23 @@
     <!-- Grid -->
     @if (!loading && !error) {
 
-      <!-- Permanent Medical Store banner -->
-      @if (showMedicalStore) {
-        <div class="med-banner mb-4" (click)="openMedicalStore()">
-          <div class="med-banner-glow"></div>
-          <div class="med-banner-content">
-            <div class="med-banner-icon">💊</div>
-            <div class="med-banner-text">
-              <span class="med-banner-badge">Medical Store</span>
-              <h2 class="med-banner-title">Upload prescription, get medicines delivered</h2>
-              <p class="med-banner-sub">No browsing needed — just upload your doctor's prescription and we'll handle the rest.</p>
-            </div>
-            <button type="button" class="med-banner-btn" (click)="$event.stopPropagation(); openMedicalStore()">
-              Upload Prescription →
-            </button>
-          </div>
-        </div>
-      }
-
       <div class="row g-4">
+
+        <!-- Permanent Medical Store card (hardcoded, same size as others) -->
+        @if (showMedicalStore) {
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="mp-card mp-card--medical h-100" (click)="openMedicalStore()">
+              <span class="mp-card-tag">Upload Rx</span>
+              <div class="mp-card-img mp-card-img--medical">
+                <div class="mp-card-placeholder">💊</div>
+              </div>
+              <div class="mp-card-body">
+                <span class="mp-card-name">Medical Store</span>
+              </div>
+            </div>
+          </div>
+        }
+
         @for (category of filteredCategories; track category._id) {
           <div class="col-6 col-md-4 col-lg-3">
             <div class="mp-card h-100" (click)="openCategory(category)">

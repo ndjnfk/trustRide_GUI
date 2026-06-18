@@ -1,0 +1,90 @@
+.shop-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 16px 40px;
+  background: linear-gradient(180deg, var(--primary-l, #e8f0ff) 0%, #ffffff 320px);
+}
+
+.shop-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 16px 40px rgba(0, 87, 255, 0.12);
+  border: 1px solid #eef2ff;
+}
+
+.shop-head {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.shop-head-icon {
+  font-size: 44px;
+  line-height: 1;
+}
+
+.shop-title {
+  font-weight: 800;
+  color: var(--primary1, #1a3c5e);
+  margin: 8px 0 4px;
+  font-size: 1.5rem;
+}
+
+.shop-sub {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--primary1, #1a3c5e);
+  margin-bottom: 4px;
+}
+
+.form-control {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 10px 14px;
+}
+
+.form-control:focus {
+  border-color: var(--primary, #0057ff);
+  box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.12);
+}
+
+.shop-submit {
+  background: var(--primary, #0057ff);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.shop-submit:hover {
+  background: var(--primary-d, #0042cc);
+  color: #fff;
+}
+
+.shop-foot {
+  text-align: center;
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.shop-foot a {
+  color: var(--primary, #0057ff);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.shop-foot a:hover {
+  text-decoration: underline;
+}

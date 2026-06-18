@@ -21,7 +21,7 @@
   justify-content: space-between;
   gap: 12px;
   max-width: 760px;
-  margin: 0 auto 22px;
+  margin: 65px auto 22px;
 }
 
 .rd-back,
@@ -86,7 +86,7 @@
   left: 50%;
   transform: translate(-50%, -50%) rotate(-18deg);
   font-family: 'Sora', sans-serif;
-  font-size: 44px;
+  font-size: 30px;
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -206,11 +206,6 @@
   color: #16a34a;
 }
 
-.driver-email {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
 /* Route Display */
 .route-display {
   display: flex;
@@ -236,14 +231,6 @@
   color: #94a3b8;
   font-style: italic;
   margin-bottom: 18px;
-}
-
-/* Meta Grid */
-.meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-top: 16px;
 }
 
 .meta-item {
@@ -366,15 +353,6 @@
   color: #0f172a;
 }
 
-.p-gender {
-  font-size: 11px;
-  color: #475569;
-  background: rgba(0,0,0,0.05);
-  padding: 2px 9px;
-  border-radius: 20px;
-  font-weight: 500;
-}
-
 .p-bstatus {
   font-size: 11px;
   padding: 2px 9px;
@@ -382,11 +360,15 @@
   font-weight: 600;
 }
 
-.p-email {
+.p-seats-text {
+  margin-top: 4px;
   font-size: 12px;
-  color: #94a3b8;
-  margin-bottom: 2px;
+  color: #475569;
 }
+
+/* Vehicle — inline strip (no boxes); reuses .mh-stat / .mh-sep */
+.veh-strip { flex-wrap: wrap; row-gap: 10px; }
+.veh-strip .mh-stat span { font-size: 13px; }
 
 /* Review */
 .p-review {
@@ -419,13 +401,6 @@
 .p-review-text {
   font-size: 12px;
   color: #475569;
-  font-style: italic;
-}
-
-.no-review {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #94a3b8;
   font-style: italic;
 }
 
@@ -506,10 +481,6 @@
     padding: 16px;
   }
 
-  .meta-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .driver-avatar {
     width: 46px;
     height: 46px;
@@ -521,7 +492,192 @@
   }
   .rd-card .full-watermark.cancelled-watermark {
   font-size: 18px;
- 
+
 }
 
+}
+
+/* ───────────────────────────────────────────────
+   Mobile-only Hero Card
+   Desktop keeps the existing two cards (Rider + Ride Details);
+   on mobile those are hidden and this combined card is shown.
+─────────────────────────────────────────────── */
+.rd-hero-mobile {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .rd-hero-mobile {
+    display: block;
+  }
+
+  .rd-desktop-only {
+    display: none;
+  }
+}
+
+/* Hero header */
+.mh-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mh-head .section-title {
+  margin-bottom: 0;
+}
+
+.mh-dot {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+.mh-dot.status-active,
+.mh-dot.status-confirmed { background: #22c55e; }
+.mh-dot.status-completed { background: #6366f1; }
+.mh-dot.status-cancelled { background: #ef4444; }
+
+/* Body: route + driver */
+.mh-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.mh-route {
+  flex: 1;
+  min-width: 0;
+}
+
+.mh-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.mh-city {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  word-break: break-word;
+}
+
+.mh-arrow {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: #4f46e5;
+  margin-top: 2px;
+}
+
+.mh-via {
+  margin-top: 10px;
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Driver block */
+.mh-driver {
+  flex-shrink: 0;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.mh-driver .driver-avatar {
+  width: 68px;
+  height: 68px;
+  font-size: 19px;
+}
+
+.mh-driver-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+/* Divider */
+.mh-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.07);
+  margin: 18px 0;
+}
+
+/* Stats strip */
+.mh-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.mh-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mh-stat i {
+  font-size: 17px;
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.mh-stat span {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.mh-sep {
+  width: 1px;
+  align-self: stretch;
+  min-height: 20px;
+  background: rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+/* Footer: price + book */
+.mh-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.mh-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.mh-price-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #4f46e5;
+  letter-spacing: -0.5px;
+}
+
+.mh-price-unit {
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
 }

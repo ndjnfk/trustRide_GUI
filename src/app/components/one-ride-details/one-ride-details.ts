@@ -108,7 +108,11 @@ export class OneRideDetails {
   }
 
   formatDate(dt: string): string {
-    return new Date(dt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric',timeZone: 'UTC' });
+    const d = new Date(dt);
+    const day = d.toLocaleDateString('en-IN', { day: 'numeric', timeZone: 'UTC' });
+    const month = d.toLocaleDateString('en-IN', { month: 'short', timeZone: 'UTC' });
+    const weekday = d.toLocaleDateString('en-IN', { weekday: 'long', timeZone: 'UTC' });
+    return `${day} ${month} ${weekday}`;
   }
 
   formatTime(dt: string): string {

@@ -274,7 +274,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
     if (this.pricePerSeat > 420) this.pricePerSeat -= 10;
   }
   incrementPrice(): void {
-  if (this.pricePerSeat < 500) this.pricePerSeat += 10;
+  if (this.pricePerSeat < 550) this.pricePerSeat += 10;
 }
 
   get totalEarnings(): number {

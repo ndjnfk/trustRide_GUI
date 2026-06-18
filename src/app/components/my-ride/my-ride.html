@@ -55,6 +55,15 @@
           <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
             🔗 Copy link
           </button>
+          <button
+            class="edit-btn"
+            [disabled]="editLoadingId === ride._id || updatingId === ride._id"
+            (click)="openEditRide(ride)"
+            title="Edit ride"
+          >
+            <span *ngIf="editLoadingId !== ride._id">✏️ Edit</span>
+            <span *ngIf="editLoadingId === ride._id">⏳ ...</span>
+          </button>
           <!-- <button
             class="delete-btn"
             [disabled]="deletingId === ride._id"

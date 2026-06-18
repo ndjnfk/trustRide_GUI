@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoaderServices } from '../../services/loader-services';
 import { AuthService } from '../../services/auth';
 import { Snackbar } from '../../services/snackbar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -50,8 +51,15 @@ export class AdminDashboard {
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
     private authService:AuthService,
-    private snackbar:Snackbar
+    private snackbar:Snackbar,
+    private router: Router
   ) {}
+
+  // Open the ratings/reviews page for a user
+  viewUserReviews(user: User): void {
+    if (!user?._id) return;
+    this.router.navigate(['/admin/user-reviews', user._id]);
+  }
  
   ngOnInit(): void {
     this.loadUsers();

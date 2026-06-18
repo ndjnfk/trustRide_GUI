@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RideCancellationDialog } from '../ride-cancellation-dialog/ride-cancellation-dialog';
 import { LoaderServices } from '../../services/loader-services';
 import { BookingCancellationDialog } from '../booking-cancellation-dialog/booking-cancellation-dialog';
+import { EditRideDialog } from '../edit-ride-dialog/edit-ride-dialog';
 
 interface RideData {
   _id: string;
@@ -43,6 +44,7 @@ export class MyRide implements OnInit {
   error = '';
   deletingId: string | null = null;
   updatingId: string | null = null;
+  editLoadingId: string | null = null;
 
   
 
@@ -244,9 +246,11 @@ private callUpdateStatus(ride: RideData, newStatus: string, reason: string): voi
     });
   }
   formatDate(isoString: string): string {
-    return new Date(isoString).toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
-    });
+    const d = new Date(isoString);
+    const day = d.toLocaleDateString('en-IN', { day: 'numeric', timeZone: 'UTC' });
+    const month = d.toLocaleDateString('en-IN', { month: 'short', timeZone: 'UTC' });
+    const weekday = d.toLocaleDateString('en-IN', { weekday: 'long', timeZone: 'UTC' });
+    return `${day} ${month} ${weekday}`;
   }
 
 
@@ -445,6 +449,70 @@ private callUpdateBookingStatus(booking: any, rideId: string, newStatus: string,
   });
 }
 
+
+// ─── Edit Ride ──────────────────────────────────────────
+// Pehle bookings check karo: agar active booking hai to sirf seats edit ho
+// sakti hain, warna date/time/seats/price sab editable.
+openEditRide(ride: RideData): void {
+  if (this.editLoadingId) return;
+  this.editLoadingId = ride._id;
+
+  this.rideService.getBookingsByRideId(ride._id).subscribe({
+    next: (res: any) => {
+      const bookings = (res.data?.bookings || []).filter(
+        (b: any) => b.status_by_passenger !== 'cancelled' && b.status !== 'cancelled'
+      );
+      const bookedSeats = bookings.reduce(
+        (sum: number, b: any) => sum + (b.seats_booked || 0), 0
+      );
+      this.editLoadingId = null;
+      this.cdr.detectChanges();
+      this.openEditDialog(ride, bookings.length > 0, bookedSeats);
+    },
+    error: (err) => {
+      this.editLoadingId = null;
+      this.cdr.detectChanges();
+      if (err?.status === 401) {
+        this.snackBar.error('Please log in to continue');
+        this.router.navigate(['/login']);
+        return;
+      }
+      this.snackBar.error('Could not check bookings. Please try again');
+    }
+  });
+}
+
+private openEditDialog(ride: RideData, hasBookings: boolean, bookedSeats: number): void {
+  const dialogRef = this.dialog.open(EditRideDialog, {
+    data: { ride, hasBookings, bookedSeats },
+    panelClass: 'booking-dialog-panel',
+  });
+
+  dialogRef.afterClosed().subscribe((result: any) => {
+    if (!result) return; // user closed without saving
+    this.saveRideEdit(ride, result);
+  });
+}
+
+private saveRideEdit(ride: RideData, changes: any): void {
+  this.updatingId = ride._id;
+  this.rideService.updateRide({ id: ride._id, ...changes }).subscribe({
+    next: () => {
+      this.updatingId = null;
+      this.snackBar.success('Ride updated successfully');
+      this.loadRides();
+    },
+    error: (err) => {
+      this.updatingId = null;
+      if (err?.status === 401) {
+        this.snackBar.error('Please log in to continue');
+        this.router.navigate(['/login']);
+        return;
+      }
+      this.snackBar.error(err?.error?.message || 'Failed to update the ride');
+    }
+  });
+}
 
 goToProfile(userId: string) {
   console.log('Navigating with userId:', userId)  // ✅ check karo

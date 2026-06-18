@@ -125,20 +125,28 @@
 
           <!-- Card Top -->
           <div class="card-top d-flex align-items-start justify-content-between gap-2">
-            <div class="route-display d-flex align-items-center gap-2 flex-grow-1">
-              <span class="city from-city">{{ ride.from }}</span>
-              <div class="route-arrow d-flex align-items-center">
-                <span class="arrow-line"></span>
-                <span class="arrow-head">▶</span>
+            <div class="route-display flex-grow-1">
+              <div class="route-leg">
+                <span class="leg-marker from-marker"></span>
+                <div class="leg-text">
+                  <span class="leg-label">From</span>
+                  <span class="city from-city">{{ ride.from }}</span>
+                </div>
               </div>
-              <span class="city to-city">{{ ride.to }}</span>
+              <div class="route-leg">
+                <span class="leg-marker to-marker"></span>
+                <div class="leg-text">
+                  <span class="leg-label">To</span>
+                  <span class="city to-city">{{ ride.to }}</span>
+                </div>
+              </div>
             </div>
             <span class="status-badge" [ngClass]="getStatusClass(ride.status)">
               {{ ride.status }}
             </span>
           </div>
 
-          <div class="route-via-tag text-center" *ngIf="ride.routeVia">
+          <div class="route-via-tag" *ngIf="ride.routeVia">
             <span class="via-label">via</span> {{ ride.routeVia }}
           </div>
 

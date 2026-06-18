@@ -338,6 +338,28 @@ background: rgba(59, 130, 246, 0.12);
   transition: background var(--f-transition), border-color var(--f-transition), color var(--f-transition);
 }
 
+.footer__ticket-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 14px;
+  padding: 7px 14px;
+  border-radius: var(--f-radius-pill);
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #4f46e5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--f-transition), border-color var(--f-transition);
+  width: 136px;
+}
+
+.footer__ticket-link:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
 .footer__whatsapp svg {
   width: 15px;
   height: 15px;

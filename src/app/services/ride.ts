@@ -100,6 +100,20 @@ updateRideStatus(rideId: string, status: string,reason: string = ''): Observable
     ...(reason ? { cancellation_reason: reason } : {})
   }, { headers });
 }
+  // Edit a ride's fields (date/time/seats/price). When the ride already has
+  // active bookings the caller restricts the payload to available_seats only.
+  updateRide(payload: { id: string; [key: string]: any }): Observable<any> {
+    const token = AuthHelper.getToken();
+    if (!token) return throwError(() => ({ status: 401 }));
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.put(`${this.baseUrl}/updateRide`, payload, { headers });
+  }
+
   private getHeaders(skipLoader = false): HttpHeaders {
     const token = AuthHelper.getToken();
     const headers: Record<string, string> = {

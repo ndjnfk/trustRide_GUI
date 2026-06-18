@@ -221,7 +221,8 @@
                       {{ user.fullName?.charAt(0)?.toUpperCase() }}
                     </div>
                     <div>
-                      <div class="fw-semibold">{{ user.fullName }}</div>
+                      <div class="fw-semibold user-name-link" (click)="viewUserReviews(user)"
+                        title="View ratings & reviews">{{ user.fullName }}</div>
                       <small class="text-muted">{{ user.gender | titlecase }}</small>
                     </div>
                   </div>
