@@ -1,0 +1,244 @@
+<div class="prod-page">
+  <div class="prod-wrap">
+
+    <button type="button" class="prod-back" (click)="goBack()">← Back to dashboard</button>
+
+    <div class="prod-head">
+      <div>
+        <h1 class="prod-title">Product Catalog</h1>
+        <p class="prod-sub">Add and manage the items you sell.</p>
+      </div>
+      <button type="button" class="btn prod-add-btn" (click)="openAdd()">＋ Add Product</button>
+    </div>
+
+    @if (error && !showForm) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    <!-- Form -->
+    @if (showForm) {
+      <div class="prod-form-card">
+        <h2 class="prod-form-title">{{ editingId ? 'Edit Product' : 'Add Product' }}</h2>
+        @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label">Product name</label>
+            <input type="text" class="form-control" [(ngModel)]="form.name" name="name" placeholder="e.g. Paracetamol 500mg" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Category</span>
+              <a class="prod-cat-link" routerLink="/shop/categories">Manage</a>
+            </label>
+            @if (categories.length) {
+              <select class="form-select" [(ngModel)]="form.category" name="category">
+                <option value="">Select category…</option>
+                @for (c of categories; track c._id) {
+                  <option [value]="c.name">{{ c.name }}</option>
+                }
+              </select>
+            } @else {
+              <div class="prod-cat-empty">
+                No categories yet —
+                <a routerLink="/shop/categories">create one</a> first.
+              </div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Price (₹)</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="form.price" name="price" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Discount (%)</label>
+            <input type="number" min="0" max="100" class="form-control" [(ngModel)]="form.discount" name="discount" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Stock</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="form.stock" name="stock"
+              [disabled]="anyVariants" [class.is-disabled]="anyVariants" />
+            @if (anyVariants) { <small class="prod-image-note">Total from variants: {{ variantStock }}</small> }
+          </div>
+
+          <!-- Quantity / weight variants toggle -->
+          <div class="col-12">
+            <div class="prod-variant-toggle">
+              <div>
+                <div class="prod-vt-label">Quantity / weight variants</div>
+                <div class="prod-vt-desc">Same item in different sizes — e.g. 12g, 50g — each with its own price &amp; stock.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" [checked]="hasVariants" (change)="toggleVariants()" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Quantity / weight editor -->
+          @if (hasVariants) {
+            <div class="col-12">
+              <div class="prod-variants">
+                <div class="prod-variant-row prod-variant-head">
+                  <span>Variant (e.g. 12g, 50g)</span><span>Price (₹)</span><span>Stock</span><span></span>
+                </div>
+                @for (v of variants; track $index) {
+                  <div class="prod-variant-row">
+                    <input type="text" class="form-control" [(ngModel)]="v.label" [name]="'vlabel' + $index" placeholder="e.g. 12g" />
+                    <input type="number" min="0" class="form-control" [(ngModel)]="v.price" [name]="'vprice' + $index" placeholder="₹" />
+                    <input type="number" min="0" class="form-control" [(ngModel)]="v.stock" [name]="'vstock' + $index" placeholder="Qty" />
+                    <button type="button" class="prod-variant-del" (click)="removeVariant($index)">✕</button>
+                  </div>
+                }
+                <button type="button" class="prod-variant-add" (click)="addVariant()">＋ Add variant</button>
+                @if (form.discount > 0) {
+                  <small class="prod-image-note d-block mt-2">Enter the original price — the {{ form.discount }}% discount is applied to each variant automatically.</small>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Size / colour variants toggle -->
+          <div class="col-12">
+            <div class="prod-variant-toggle">
+              <div>
+                <div class="prod-vt-label">Size / colour variants</div>
+                <div class="prod-vt-desc">Different colours and sizes — e.g. Red / M — each with its own price &amp; stock.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" [checked]="hasSizeColor" (change)="toggleSizeColor()" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Size / colour editor -->
+          @if (hasSizeColor) {
+            <div class="col-12">
+              <div class="prod-variants">
+                <div class="prod-variant-row prod-cs-row prod-variant-head">
+                  <span>Colour</span><span>Size</span><span>Price (₹)</span><span>Stock</span><span></span>
+                </div>
+                @for (v of colorVariants; track $index) {
+                  <div class="prod-variant-row prod-cs-row">
+                    <input type="text" class="form-control" [(ngModel)]="v.color" [name]="'vcolor' + $index" placeholder="e.g. Red" />
+                    <input type="text" class="form-control" [(ngModel)]="v.size" [name]="'vsize' + $index" placeholder="e.g. M" />
+                    <input type="number" min="0" class="form-control" [(ngModel)]="v.price" [name]="'vcsprice' + $index" placeholder="₹" />
+                    <input type="number" min="0" class="form-control" [(ngModel)]="v.stock" [name]="'vcsstock' + $index" placeholder="Qty" />
+                    <button type="button" class="prod-variant-del" (click)="removeColorVariant($index)">✕</button>
+                  </div>
+                }
+                <button type="button" class="prod-variant-add" (click)="addColorVariant()">＋ Add variant</button>
+                @if (form.discount > 0) {
+                  <small class="prod-image-note d-block mt-2">Enter the original price — the {{ form.discount }}% discount is applied to each variant automatically.</small>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="col-12">
+            <div class="prod-finalprice">
+              Final price after discount:
+              <strong>₹{{ finalPrice }}</strong>
+              @if (form.discount > 0 && form.price > 0) {
+                <span class="prod-finalprice-was">₹{{ form.price }}</span>
+                <span class="prod-finalprice-off">{{ form.discount }}% off</span>
+              }
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Images</label>
+            <div class="prod-images-row">
+              <label class="prod-image-pick">
+                <input type="file" multiple accept="image/*" hidden (change)="onImagesSelected($event)" />
+                ＋ Add images
+              </label>
+
+              <!-- existing images (edit mode) -->
+              @for (img of existingImages; track img) {
+                <div class="prod-image-thumb-wrap">
+                  <img class="prod-image-thumb" [src]="imageBaseUrl + img" alt="image" />
+                  <button type="button" class="prod-image-x" (click)="removeExistingImage($index)">✕</button>
+                </div>
+              }
+              <!-- newly picked images -->
+              @for (src of imagePreviews; track $index) {
+                <div class="prod-image-thumb-wrap">
+                  <img class="prod-image-thumb" [src]="src" alt="new image" />
+                  <button type="button" class="prod-image-x" (click)="removeNewImage($index)">✕</button>
+                </div>
+              }
+            </div>
+            <small class="prod-image-note">You can select several images at once. New images are added to the existing ones — tap ✕ to remove any.</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="form.description" name="description"></textarea>
+          </div>
+        </div>
+
+        <div class="prod-form-actions">
+          <button type="button" class="btn prod-cancel" (click)="cancelForm()">Cancel</button>
+          <button type="button" class="btn prod-save" [disabled]="saving" (click)="save()">
+            {{ saving ? 'Saving…' : (editingId ? 'Update' : 'Add Product') }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- List -->
+    @if (loading) {
+      <div class="prod-state">Loading…</div>
+    } @else if (products.length === 0 && !showForm) {
+      <div class="prod-empty">
+        <div class="prod-empty-icon">📦</div>
+        <p>No products yet. Add your first product to get started.</p>
+        <button type="button" class="btn prod-add-btn" (click)="openAdd()">＋ Add Product</button>
+      </div>
+    } @else {
+      <div class="prod-grid">
+        @for (p of products; track p._id) {
+          <div class="prod-card">
+            <div class="prod-card-img">
+              @if (p.images?.length || p.image_url) {
+                <img [src]="imageBaseUrl + (p.images?.[0] || p.image_url)" [alt]="p.name" />
+              } @else {
+                <span class="prod-noimg">📦</span>
+              }
+              @if (p.discount > 0) {
+                <span class="prod-badge off">{{ p.discount }}% OFF</span>
+              }
+              @if (p.images?.length > 1) {
+                <span class="prod-imgcount">🖼 {{ p.images.length }}</span>
+              }
+              @if (p.stock <= 0) {
+                <span class="prod-badge out">Out of stock</span>
+              } @else if (p.stock <= LOW_STOCK) {
+                <span class="prod-badge low">Low: {{ p.stock }}</span>
+              }
+            </div>
+            <div class="prod-card-body">
+              <div class="prod-card-cat">{{ p.category }}</div>
+              <div class="prod-card-name">{{ p.name }}</div>
+              <div class="prod-card-meta">
+                <span class="prod-card-price">
+                  ₹{{ p.discount > 0 ? p.final_price : p.price }}
+                  @if (p.discount > 0) {
+                    <span class="prod-card-was">₹{{ p.price }}</span>
+                  }
+                </span>
+                <span class="prod-card-stock">Stock: {{ p.stock }}</span>
+              </div>
+            </div>
+            <div class="prod-card-actions">
+              <button type="button" class="prod-edit" (click)="openEdit(p)">Edit</button>
+              <button type="button" class="prod-del" [disabled]="deletingId === p._id" (click)="remove(p)">
+                {{ deletingId === p._id ? '…' : 'Delete' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

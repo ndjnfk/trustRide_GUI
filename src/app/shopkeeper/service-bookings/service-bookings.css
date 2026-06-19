@@ -1,0 +1,51 @@
+.sb-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f0ff 0%, #f7f9ff 240px);
+  padding: 80px 16px 48px;
+}
+.sb-wrap { max-width: 760px; margin: 0 auto; }
+
+.sb-back { background: none; border: none; color: #0057ff; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px; }
+.sb-back:hover { text-decoration: underline; }
+
+.sb-head { margin-bottom: 18px; }
+.sb-title { font-weight: 800; color: #1a3c5e; margin: 0; font-size: 1.5rem; }
+.sb-sub { color: #64748b; margin: 4px 0 0; font-size: 0.9rem; }
+
+.sb-state, .sb-empty { text-align: center; padding: 46px 16px; color: #94a3b8; }
+.sb-empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+.sb-list { display: flex; flex-direction: column; gap: 14px; }
+
+.sb-card {
+  background: #fff; border: 1px solid #eef2ff; border-radius: 14px;
+  padding: 16px 18px; box-shadow: 0 6px 18px rgba(0, 87, 255, 0.05);
+}
+.sb-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.sb-service { font-size: 1.05rem; font-weight: 700; color: #0f172a; }
+.sb-meta { font-size: 0.8rem; color: #64748b; margin-top: 3px; }
+
+.sb-pill { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
+.sb-requested { background: #fff3cd; color: #946200; }
+.sb-accepted  { background: #dcfce7; color: #15803d; }
+.sb-rejected  { background: #fee2e2; color: #b91c1c; }
+.sb-completed { background: #e7edff; color: #4f46e5; }
+
+.sb-customer {
+  margin: 12px 0; padding: 12px 14px;
+  background: #f8fafc; border: 1px solid #eef2ff; border-radius: 10px;
+}
+.sb-cust-name { font-weight: 700; color: #0f172a; font-size: 0.92rem; }
+.sb-gender { font-weight: 500; color: #64748b; }
+.sb-cust-line { font-size: 0.85rem; color: #475569; margin-top: 4px; }
+.sb-cust-line a { color: #0057ff; text-decoration: none; }
+
+.sb-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.sb-status-btn {
+  border: 1.5px solid #e2e8f0; background: #fff; color: #475569;
+  border-radius: 8px; padding: 7px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.sb-status-btn:hover:not([disabled]) { border-color: #0057ff; color: #0057ff; }
+.sb-status-btn.active { background: #0057ff; border-color: #0057ff; color: #fff; }
+.sb-status-btn[disabled] { opacity: 0.6; cursor: default; }

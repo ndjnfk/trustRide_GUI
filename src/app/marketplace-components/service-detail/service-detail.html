@@ -1,0 +1,61 @@
+<div class="svd-page">
+
+  @if (loading) {
+    <div class="svd-state">Loading…</div>
+  } @else if (error) {
+    <div class="svd-state svd-error">{{ error }}</div>
+  } @else if (service) {
+
+    <!-- Image / hero -->
+    <div class="svd-hero">
+      @if (service.image_url) {
+        <img [src]="imageBase + service.image_url" [alt]="service.name" />
+      } @else {
+        <span class="svd-noimg">🛠️</span>
+      }
+      <button type="button" class="svd-back" (click)="goBack()">←</button>
+    </div>
+
+    <div class="svd-wrap">
+      <div class="svd-card">
+        <h1 class="svd-name">{{ service.name }}</h1>
+
+        <div class="svd-meta">
+          <span class="svd-price">₹{{ service.price }}</span>
+          @if (service.duration_minutes) {
+            <span class="svd-dur">⏱ {{ service.duration_minutes }} min</span>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="svd-section">
+          <h2 class="svd-section-title">Description</h2>
+          <p class="svd-desc" *ngIf="service.description">{{ service.description }}</p>
+          <p class="svd-desc svd-desc--none" *ngIf="!service.description">No description provided.</p>
+        </div>
+
+        <!-- Shop / contact -->
+        <div class="svd-section" *ngIf="shop">
+          <h2 class="svd-section-title">Shop</h2>
+          <div class="svd-shop">🏬 {{ shop.name }}</div>
+          <div class="svd-shop-line" *ngIf="shop.address">📍 {{ shop.address }}</div>
+          <a class="svd-phone" *ngIf="shop.phone" [href]="'tel:' + shop.phone">📞 {{ shop.phone }}</a>
+        </div>
+
+        <!-- Book row (in-card, not a fixed strip) -->
+        <div class="svd-bar">
+          <div class="svd-bar-price">
+            <span class="svd-bar-amt">₹{{ service.price }}</span>
+            <span class="svd-bar-unit">/ service</span>
+          </div>
+          <button type="button" class="svd-book" [class.svd-book--done]="booked"
+            [disabled]="booking || booked" (click)="bookNow()">
+            {{ booked ? '✓ Requested' : (booking ? 'Sending…' : 'Book Now') }}
+          </button>
+        </div>
+
+        @if (bookError) { <div class="svd-book-err">{{ bookError }}</div> }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,73 @@
+<div class="so-page">
+  <div class="so-wrap">
+
+    <button type="button" class="so-back" (click)="goBack()">← Back to dashboard</button>
+    <div class="so-head">
+      <h1 class="so-title">Product Orders</h1>
+      <p class="so-sub">Orders for your products. Update the status as you process and ship them.</p>
+    </div>
+
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    @if (loading) {
+      <div class="so-state">Loading…</div>
+    } @else if (orders.length === 0) {
+      <div class="so-empty">
+        <div class="so-empty-icon">📦</div>
+        <p>No orders yet.</p>
+      </div>
+    } @else {
+      <div class="so-list">
+        @for (o of orders; track o._id) {
+          <div class="so-card">
+            <div class="so-card-top">
+              <div>
+                <div class="so-orderid">Order #{{ o.order_id }}</div>
+                <div class="so-meta">{{ formatDate(o.created_at) }} · {{ o.payment_method }}</div>
+              </div>
+              <span [class]="statusClass(o.status)">{{ o.status | titlecase }}</span>
+            </div>
+
+            <!-- Items (only this shop's) -->
+            <div class="so-items">
+              @for (it of o.items; track $index) {
+                <div class="so-item">
+                  <span class="so-item-name">
+                    {{ it.name }}
+                    @if (it.variant?.label) { <small class="so-variant">({{ it.variant.label }})</small> }
+                  </span>
+                  <span class="so-item-qty">x{{ it.quantity }}</span>
+                  <span class="so-item-total">₹{{ it.line_total }}</span>
+                </div>
+              }
+              <div class="so-subtotal">
+                <span>Total ({{ o.items.length }} item{{ o.items.length > 1 ? 's' : '' }})</span>
+                <strong>₹{{ o.shop_total }}</strong>
+              </div>
+            </div>
+
+            <!-- Customer details -->
+            <div class="so-customer">
+              <div class="so-cust-name">👤 {{ o.customer?.name }}</div>
+              <div class="so-cust-line" *ngIf="o.customer?.phone">📞 <a [href]="'tel:' + o.customer.phone">{{ o.customer.phone }}</a></div>
+              <div class="so-cust-line" *ngIf="o.customer?.address">
+                📍 {{ o.customer.address.full_name }}<span *ngIf="o.customer.address.full_name">, </span>{{ fullAddress(o.customer.address) }}
+              </div>
+            </div>
+
+            <!-- Status actions -->
+            <div class="so-actions">
+              @for (s of statuses; track s) {
+                <button type="button" class="so-status-btn" [class.active]="o.status === s"
+                  [disabled]="updatingId === o._id || o.status === s" (click)="setStatus(o, s)">
+                  {{ s | titlecase }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

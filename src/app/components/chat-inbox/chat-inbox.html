@@ -1,0 +1,64 @@
+<div class="ci-page">
+  <div class="ci-wrap">
+
+    <header class="ci-head">
+      <button type="button" class="ci-back" (click)="goBack()">←</button>
+      <h1 class="ci-title">Messages</h1>
+    </header>
+
+    @if (loading) {
+      <div class="ci-state">Loading…</div>
+    } @else if (error) {
+      <div class="ci-state ci-error">{{ error }}</div>
+    } @else if (threads.length === 0) {
+      <div class="ci-empty">
+        <div class="ci-empty-icon">💬</div>
+        <p>No conversations yet.</p>
+      </div>
+    } @else {
+      <!-- Active conversations -->
+      @if (activeThreads.length) {
+        <div class="ci-list">
+          @for (t of activeThreads; track t._id) {
+            <ng-container [ngTemplateOutlet]="itemTpl" [ngTemplateOutletContext]="{ $implicit: t }"></ng-container>
+          }
+        </div>
+      }
+
+      <!-- Archived (completed rides) -->
+      @if (archivedThreads.length) {
+        <div class="ci-section">🔒 Archived</div>
+        <div class="ci-list ci-list--archived">
+          @for (t of archivedThreads; track t._id) {
+            <ng-container [ngTemplateOutlet]="itemTpl" [ngTemplateOutletContext]="{ $implicit: t }"></ng-container>
+          }
+        </div>
+      }
+    }
+
+  </div>
+</div>
+
+<!-- shared conversation row -->
+<ng-template #itemTpl let-t>
+  <div class="ci-item" [class.ci-item--locked]="!t.enabled"
+    [class.ci-item--archived]="t.archived" (click)="open(t)"
+    [attr.title]="t.archived ? 'Ride completed — chat locked' : (!t.enabled ? 'Chat locked — the ride is full' : null)">
+    <div class="ci-avatar">
+      <img *ngIf="t.other?.avatarUrl" [src]="imageBase + t.other.avatarUrl" [alt]="t.other?.name" />
+      <span *ngIf="!t.other?.avatarUrl">{{ initials(t.other?.name) }}</span>
+    </div>
+    <div class="ci-main">
+      <div class="ci-top">
+        <span class="ci-name">{{ t.other?.name }}</span>
+        <span class="ci-role">{{ t.role === 'rider' ? 'Passenger' : 'Rider' }}</span>
+      </div>
+      <div class="ci-route" *ngIf="t.ride">{{ t.ride.from }} → {{ t.ride.to }}</div>
+      <div class="ci-last">{{ t.last_message || (t.archived ? 'Ride completed' : 'Tap to chat') }}</div>
+    </div>
+    <div class="ci-right">
+      @if (!t.enabled) { <span class="ci-locked">🔒</span> }
+      @if (t.unread > 0) { <span class="ci-badge">{{ t.unread }}</span> }
+    </div>
+  </div>
+</ng-template>

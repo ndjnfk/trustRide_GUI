@@ -9,6 +9,16 @@
   color: var(--primary1, #1a3c5e);
 }
 
+.mp-track-services {
+  background: #0057ff;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 18px;
+}
+.mp-track-services:hover { background: #0046cc; color: #fff; }
+
 .mp-back {
   color: var(--primary, #0057ff);
   text-decoration: none;
@@ -177,6 +187,10 @@
 .oi-name {
   flex: 1;
   color: #334155;
+}
+.oi-variant {
+  color: #0057ff;
+  font-weight: 600;
 }
 
 .oi-qty {

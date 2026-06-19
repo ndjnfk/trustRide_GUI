@@ -1,0 +1,106 @@
+<div class="set-page">
+  <div class="set-wrap">
+
+    <button type="button" class="set-back" (click)="goBack()">← Back to dashboard</button>
+
+    <div class="set-head">
+      <h1 class="set-title">Shop Settings</h1>
+      <p class="set-sub">Profile, KYC, timings &amp; availability.</p>
+    </div>
+
+    @if (loading) {
+      <div class="set-state">Loading…</div>
+    } @else {
+
+      @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+      @if (success) { <div class="alert alert-success py-2">{{ success }}</div> }
+
+      <!-- Availability -->
+      <div class="set-card">
+        <h2 class="set-card-title">Availability</h2>
+
+        <div class="set-toggle-row">
+          <div>
+            <div class="set-toggle-label">Pause shop</div>
+            <div class="set-toggle-desc">Temporarily hide your shop from customers.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="form.is_paused" name="is_paused" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="set-toggle-row">
+          <div>
+            <div class="set-toggle-label">Cash on Delivery (COD)</div>
+            <div class="set-toggle-desc">Allow customers to pay on delivery.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="form.cod_enabled" name="cod_enabled" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="row g-3 mt-1">
+          <div class="col-6">
+            <label class="form-label">Opens at</label>
+            <input type="time" class="form-control" [(ngModel)]="form.open_time" name="open_time" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Closes at</label>
+            <input type="time" class="form-control" [(ngModel)]="form.close_time" name="close_time" />
+          </div>
+        </div>
+
+        <label class="form-label mt-3">Weekly off days</label>
+        <div class="set-days">
+          @for (d of weekDays; track d.key) {
+            <button type="button" class="set-day" [class.selected]="weeklyOffs.has(d.key)"
+              (click)="toggleOff(d.key)">{{ d.label }}</button>
+          }
+        </div>
+      </div>
+
+      <!-- Profile & KYC -->
+      <div class="set-card">
+        <h2 class="set-card-title">Shop Profile &amp; KYC</h2>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Shop name</label>
+            <input type="text" class="form-control" [(ngModel)]="form.shop_name" name="shop_name" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Owner name</label>
+            <input type="text" class="form-control" [(ngModel)]="form.owner_name" name="owner_name" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">WhatsApp / phone</label>
+            <input type="tel" class="form-control" [(ngModel)]="form.phoneNumber" name="phoneNumber" maxlength="10" />
+          </div>
+          <div class="col-12">
+            <label class="form-label">Shop address</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="form.address" name="address"></textarea>
+          </div>
+        </div>
+
+        <label class="form-label mt-3">Shop banner / board image</label>
+        <div class="set-image">
+          <div class="set-image-current" *ngIf="imagePreview || existingImageUrl">
+            <img [src]="imagePreview || (imageBaseUrl + existingImageUrl)" alt="Shop image" />
+          </div>
+          <label class="set-image-pick">
+            <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp" hidden (change)="onImageSelected($event)" />
+            {{ (imagePreview || existingImageUrl) ? 'Change image' : 'Upload image' }}
+          </label>
+        </div>
+      </div>
+
+      <button type="button" class="btn set-save" [disabled]="saving" (click)="save()">
+        @if (saving) { <span class="spinner-border spinner-border-sm me-2"></span> Saving… }
+        @else { Save changes }
+      </button>
+    }
+
+  </div>
+</div>

@@ -102,4 +102,8 @@ export class MyOrders {
   goShopping() {
     this.router.navigate(['/marketplace']);
   }
+
+  goTrackServices() {
+    this.router.navigate(['/track-services']);
+  }
 }

@@ -1,0 +1,110 @@
+<div class="pd-page">
+
+  @if (loading) {
+    <div class="pd-state">Loading…</div>
+  } @else if (error) {
+    <div class="pd-state pd-error">{{ error }}</div>
+  } @else if (product) {
+
+    <!-- Image -->
+    <div class="pd-hero">
+      @if (product.images?.length) {
+        <img [src]="imageBase + product.images[activeImage]" [alt]="product.name" />
+      } @else {
+        <span class="pd-noimg">📦</span>
+      }
+      <button type="button" class="pd-back" (click)="goBack()">←</button>
+      @if (product.discount > 0) { <span class="pd-off">{{ product.discount }}% OFF</span> }
+    </div>
+
+    @if (product.images?.length > 1) {
+      <div class="pd-thumbs">
+        @for (img of product.images; track img; let i = $index) {
+          <button type="button" class="pd-thumb" [class.active]="i === activeImage" (click)="setImage(i)">
+            <img [src]="imageBase + img" alt="" />
+          </button>
+        }
+      </div>
+    }
+
+    <div class="pd-wrap">
+      <div class="pd-card">
+        <div class="pd-cat" *ngIf="product.category">{{ product.category }}</div>
+        <h1 class="pd-name">{{ product.name }}</h1>
+
+        <div class="pd-price-row">
+          <span class="pd-price">₹{{ unitPrice }}</span>
+          @if (product.discount > 0 && !hasVariants) {
+            <span class="pd-was">₹{{ product.price }}</span>
+          }
+          <span class="pd-stock" [class.pd-oos]="availableStock <= 0">
+            {{ availableStock > 0 ? availableStock + ' in stock' : 'Out of stock' }}
+          </span>
+        </div>
+
+        <!-- Variants (only if available) -->
+        @if (hasVariants) {
+          @if (colors.length) {
+            <div class="pd-opt">
+              <div class="pd-opt-label">Color</div>
+              <div class="pd-chips">
+                @for (c of colors; track c) {
+                  <button type="button" class="pd-chip" [class.active]="selectedColor === c" (click)="selectColor(c)">{{ c }}</button>
+                }
+              </div>
+            </div>
+          }
+          @if (sizes.length) {
+            <div class="pd-opt">
+              <div class="pd-opt-label">Size</div>
+              <div class="pd-chips">
+                @for (s of sizes; track s) {
+                  <button type="button" class="pd-chip" [class.active]="selectedSize === s" (click)="selectSize(s)">{{ s }}</button>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        <!-- Quantity -->
+        <div class="pd-opt">
+          <div class="pd-opt-label">Quantity</div>
+          <div class="pd-qty">
+            <button type="button" (click)="decQty()" [disabled]="qty <= 1">−</button>
+            <span>{{ qty }}</span>
+            <button type="button" (click)="incQty()" [disabled]="qty >= availableStock">+</button>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="pd-section">
+          <h2 class="pd-section-title">Description</h2>
+          <p class="pd-desc" *ngIf="product.description">{{ product.description }}</p>
+          <p class="pd-desc pd-desc--none" *ngIf="!product.description">No description provided.</p>
+        </div>
+
+        <!-- Shop / contact -->
+        <div class="pd-section" *ngIf="shop">
+          <h2 class="pd-section-title">Shop</h2>
+          <div class="pd-shop">🏬 {{ shop.name }}</div>
+          <div class="pd-shop-line" *ngIf="shop.address">📍 {{ shop.address }}</div>
+          <a class="pd-phone" *ngIf="shop.phone" [href]="'tel:' + shop.phone">📞 {{ shop.phone }}</a>
+        </div>
+
+        <!-- Order row -->
+        <div class="pd-buy">
+          <div class="pd-buy-total">
+            <span class="pd-buy-amt">₹{{ total }}</span>
+            <span class="pd-buy-unit">total</span>
+          </div>
+          <button type="button" class="pd-book" [class.pd-book--done]="ordered"
+            [disabled]="ordering || ordered || !canOrder" (click)="order()">
+            {{ ordered ? '✓ Ordered' : (ordering ? 'Sending…' : (canOrder ? 'Book Now' : 'Unavailable')) }}
+          </button>
+        </div>
+
+        @if (orderError) { <div class="pd-err">{{ orderError }}</div> }
+      </div>
+    </div>
+  }
+</div>

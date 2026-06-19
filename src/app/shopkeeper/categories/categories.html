@@ -1,0 +1,56 @@
+<div class="cat-page">
+  <div class="cat-wrap">
+
+    <button type="button" class="cat-back" (click)="goBack()">← Back to dashboard</button>
+
+    <div class="cat-head">
+      <h1 class="cat-title">Product Categories</h1>
+      <p class="cat-sub">Organize your products. Categories appear in the product form.</p>
+    </div>
+
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    <!-- Add -->
+    <div class="cat-add">
+      <input type="text" class="form-control" [(ngModel)]="newName" name="newName"
+        placeholder="New category name" (keyup.enter)="add()" />
+      <button type="button" class="btn cat-add-btn" [disabled]="adding || !newName.trim()" (click)="add()">
+        {{ adding ? 'Adding…' : '＋ Add' }}
+      </button>
+    </div>
+
+    <!-- List -->
+    @if (loading) {
+      <div class="cat-state">Loading…</div>
+    } @else if (categories.length === 0) {
+      <div class="cat-empty">
+        <div class="cat-empty-icon">🏷️</div>
+        <p>No categories yet. Add your first one above.</p>
+      </div>
+    } @else {
+      <div class="cat-list">
+        @for (c of categories; track c._id) {
+          <div class="cat-item">
+            @if (editingId === c._id) {
+              <input type="text" class="form-control cat-edit-input" [(ngModel)]="editName"
+                name="editName" (keyup.enter)="saveEdit(c)" />
+              <div class="cat-item-actions">
+                <button type="button" class="cat-save" [disabled]="savingEdit" (click)="saveEdit(c)">Save</button>
+                <button type="button" class="cat-cancel" (click)="cancelEdit()">Cancel</button>
+              </div>
+            } @else {
+              <span class="cat-name">🏷️ {{ c.name }}</span>
+              <div class="cat-item-actions">
+                <button type="button" class="cat-edit" (click)="startEdit(c)">Edit</button>
+                <button type="button" class="cat-del" [disabled]="deletingId === c._id" (click)="remove(c)">
+                  {{ deletingId === c._id ? '…' : 'Delete' }}
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

@@ -63,8 +63,8 @@ export class Cart {
     const newQty = item.quantity + delta;
     if (newQty < 1 || newQty > item.stock) return;
 
-    this.updatingId = item.productId;
-    this.marketplace.updateCartItem(item.productId, newQty).subscribe({
+    this.updatingId = item._id;
+    this.marketplace.updateCartItem(item._id, newQty).subscribe({
       next: () => {
         this.updatingId = null;
         this.fetchCart();
@@ -78,8 +78,8 @@ export class Cart {
   }
 
   removeItem(item: any) {
-    this.removingId = item.productId;
-    this.marketplace.removeCartItem(item.productId).subscribe({
+    this.removingId = item._id;
+    this.marketplace.removeCartItem(item._id).subscribe({
       next: () => {
         this.removingId = null;
         this.snackbar.success('Item removed');

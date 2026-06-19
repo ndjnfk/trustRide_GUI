@@ -1,0 +1,54 @@
+.cat-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f0ff 0%, #f7f9ff 240px);
+  padding: 80px 16px 48px;
+}
+
+.cat-wrap { max-width: 640px; margin: 0 auto; }
+
+.cat-back {
+  background: none; border: none; color: #0057ff;
+  font-size: 14px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px;
+}
+.cat-back:hover { text-decoration: underline; }
+
+.cat-head { margin-bottom: 18px; }
+.cat-title { font-weight: 800; color: #1a3c5e; margin: 0; font-size: 1.6rem; }
+.cat-sub { color: #64748b; margin: 4px 0 0; font-size: 0.92rem; }
+
+.cat-add {
+  display: flex; gap: 10px; margin-bottom: 18px;
+}
+.cat-add .form-control { flex: 1; }
+.cat-add-btn {
+  background: #0057ff; color: #fff; font-weight: 700;
+  border: none; border-radius: 10px; padding: 10px 18px; white-space: nowrap;
+}
+.cat-add-btn:hover:not([disabled]) { background: #0046cc; }
+.cat-add-btn[disabled] { opacity: 0.55; }
+
+.cat-state, .cat-empty { text-align: center; padding: 44px 16px; color: #94a3b8; }
+.cat-empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+.cat-list { display: flex; flex-direction: column; gap: 10px; }
+
+.cat-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: #fff; border: 1px solid #eef2ff; border-radius: 12px;
+  padding: 12px 16px; box-shadow: 0 4px 14px rgba(0, 87, 255, 0.04);
+}
+.cat-name { font-weight: 600; color: #0f172a; }
+.cat-edit-input { flex: 1; }
+
+.cat-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.cat-item-actions button {
+  border: none; background: none; cursor: pointer;
+  font-size: 0.85rem; font-weight: 600; padding: 6px 12px; border-radius: 8px;
+}
+.cat-edit, .cat-save { color: #0057ff; }
+.cat-edit:hover, .cat-save:hover { background: #f0f4ff; }
+.cat-cancel { color: #64748b; }
+.cat-cancel:hover { background: #f1f5f9; }
+.cat-del { color: #dc2626; }
+.cat-del:hover:not([disabled]) { background: #fef2f2; }
+.cat-del[disabled] { opacity: 0.5; cursor: not-allowed; }

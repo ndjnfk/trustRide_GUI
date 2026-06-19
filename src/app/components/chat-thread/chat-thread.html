@@ -1,0 +1,56 @@
+<div class="ct-page">
+
+  <!-- Header -->
+  <!-- <header class="ct-header">
+    <button type="button" class="ct-back" (click)="goBack()">←</button>
+    <div class="ct-avatar">
+      <img *ngIf="other?.avatarUrl" [src]="imageBase + other.avatarUrl" [alt]="other?.name" />
+      <span *ngIf="!other?.avatarUrl">{{ initials(other?.name) }}</span>
+    </div>
+    <div class="ct-head-info">
+      <div class="ct-party">
+        <span class="ct-party-role">Rider</span>
+        <span class="ct-party-name">{{ rider?.name || '—' }}</span>
+      </div>
+      <div class="ct-party">
+        <span class="ct-party-role">Passenger</span>
+        <span class="ct-party-name">{{ passenger?.name || '—' }}</span>
+      </div>
+      <div class="ct-route" *ngIf="ride">{{ ride.from }} → {{ ride.to }}</div>
+    </div>
+    <span class="ct-myrole" *ngIf="myRole">You: {{ myRole === 'rider' ? 'Rider' : 'Passenger' }}</span>
+  </header> -->
+
+  @if (loading) {
+    <div class="ct-state">Loading…</div>
+  } @else {
+    <!-- Messages -->
+    <div class="ct-messages" #scrollBox>
+      @if (messages.length === 0) {
+        <div class="ct-empty">Say hello 👋 — start the conversation.</div>
+      }
+      @for (m of messages; track m._id) {
+        <div class="ct-msg" [class.mine]="m.mine">
+          <span class="ct-msg-avatar" *ngIf="!m.mine">{{ senderInitials(m) }}</span>
+          <div class="ct-bubble">{{ m.text }}</div>
+          <span class="ct-msg-avatar ct-msg-avatar--mine" *ngIf="m.mine">{{ senderInitials(m) }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Composer -->
+    @if (enabled) {
+      <div class="ct-composer">
+        <input type="text" class="ct-input" [(ngModel)]="draft" name="draft"
+          placeholder="Type a message…" (keyup.enter)="send()" />
+        <button type="button" class="ct-send" [disabled]="!draft.trim()" (click)="send()">➤</button>
+      </div>
+    } @else {
+      <div class="ct-closed">
+        🔒 This chat is locked — the ride has ended or is full.
+      </div>
+    }
+
+    @if (error) { <div class="ct-error">{{ error }}</div> }
+  }
+</div>

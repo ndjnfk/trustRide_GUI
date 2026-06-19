@@ -1,0 +1,94 @@
+<div class="sd-page">
+
+  @if (loading) {
+    <div class="sd-state">Loading…</div>
+  } @else if (error) {
+    <div class="sd-state sd-error">{{ error }}</div>
+  } @else if (shop) {
+
+    <!-- Hero / header -->
+    <div class="sd-hero">
+      <div class="sd-hero-bg">
+        @if (shop.shop_image_url) {
+          <img [src]="imageBase + shop.shop_image_url" [alt]="shop.shop_name" />
+        }
+      </div>
+      <button type="button" class="sd-back" (click)="goBack()">←</button>
+    </div>
+
+    <div class="sd-wrap">
+      <div class="sd-card sd-info">
+        <div class="sd-info-top">
+          <h1 class="sd-name">{{ shop.shop_name }}</h1>
+          @if (shop.rating) {
+            <span class="sd-rating">★ {{ shop.rating }} <small>({{ shop.rating_count }})</small></span>
+          } @else {
+            <span class="sd-rating sd-rating-new">New</span>
+          }
+        </div>
+
+        <p class="sd-desc" *ngIf="shop.description">{{ shop.description }}</p>
+        <p class="sd-addr" *ngIf="shop.address">📍 {{ shop.address }}</p>
+
+        <div class="sd-meta">
+          <span *ngIf="shop.open_time && shop.close_time">🕒 {{ shop.open_time }} – {{ shop.close_time }}</span>
+          <span *ngIf="shop.cod_enabled">💵 COD available</span>
+          <span *ngIf="shop.is_paused" class="sd-closed">Currently closed</span>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="sd-section-head">
+        <h2 class="sd-section-title">{{ isService ? 'Services' : 'Products' }}</h2>
+        <span class="sd-count">{{ items.length }}</span>
+      </div>
+
+      @if (items.length === 0) {
+        <div class="sd-empty">Nothing listed here yet.</div>
+      } @else {
+        <div class="sd-grid">
+          @for (it of visibleItems; track it._id) {
+            <div class="sd-item sd-item--clickable" (click)="openItem(it)">
+              <div class="sd-item-img">
+                @if (imageOf(it)) {
+                  <img [src]="imageBase + imageOf(it)" [alt]="it.name" />
+                } @else {
+                  <span class="sd-item-noimg">{{ isService ? '🛠️' : '📦' }}</span>
+                }
+                @if (!isService && it.discount > 0) {
+                  <span class="sd-off">{{ it.discount }}% OFF</span>
+                }
+              </div>
+              <div class="sd-item-body">
+                <div class="sd-item-name">{{ it.name }}</div>
+                <div class="sd-item-meta">
+                  <span class="sd-item-price">
+                    ₹{{ priceOf(it) }}
+                    @if (!isService && it.discount > 0) {
+                      <span class="sd-item-was">₹{{ it.price }}</span>
+                    }
+                  </span>
+                  @if (isService) {
+                    <span class="sd-item-sub">⏱ {{ it.duration_minutes }} min</span>
+                  } @else if (it.stock <= 0) {
+                    <span class="sd-item-sub sd-oos">Out of stock</span>
+                  }
+                </div>
+
+                <div class="sd-view">View details →</div>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (bookError) { <div class="sd-book-err">{{ bookError }}</div> }
+
+        @if (hasMore) {
+          <div class="sd-more-wrap">
+            <button type="button" class="sd-more" (click)="seeMore()">See more</button>
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

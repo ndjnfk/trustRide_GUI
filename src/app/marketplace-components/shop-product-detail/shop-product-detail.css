@@ -1,0 +1,85 @@
+.pd-page { min-height: 100vh; background: #f7f9ff; padding-bottom: 90px; }
+
+.pd-state { text-align: center; padding: 90px 16px; color: #94a3b8; }
+.pd-error { color: #dc2626; }
+
+/* Hero */
+.pd-hero {
+  position: relative; height: 240px; background: #eef2ff;
+  display: flex; align-items: center; justify-content: center;
+}
+.pd-hero img { width: 100%; height: 100%; object-fit: cover; }
+.pd-noimg { font-size: 60px; opacity: 0.5; }
+.pd-back {
+  position: absolute; top: 76px; left: 14px;
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: rgba(255, 255, 255, 0.92); color: #0f172a;
+  font-size: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.pd-off {
+  position: absolute; top: 76px; right: 14px;
+  background: #dcfce7; color: #15803d; font-size: 0.78rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 999px;
+}
+
+.pd-thumbs { display: flex; gap: 8px; padding: 10px 16px 0; max-width: 720px; margin: 0 auto; overflow-x: auto; }
+.pd-thumb { flex-shrink: 0; width: 54px; height: 54px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; background: #fff; cursor: pointer; padding: 0; }
+.pd-thumb.active { border-color: #0057ff; }
+.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.pd-wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+.pd-card {
+  background: #fff; border: 1px solid #eef2ff; border-radius: 16px;
+  margin-top: 14px; padding: 20px 22px; box-shadow: 0 8px 24px rgba(0, 87, 255, 0.06);
+}
+
+.pd-cat { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; font-weight: 700; }
+.pd-name { font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 2px 0 0; }
+
+.pd-price-row { display: flex; align-items: baseline; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.pd-price { font-size: 1.35rem; font-weight: 800; color: #0057ff; }
+.pd-was { text-decoration: line-through; color: #94a3b8; font-size: 0.9rem; }
+.pd-stock { font-size: 0.82rem; color: #16a34a; font-weight: 600; }
+.pd-oos { color: #dc2626; }
+
+/* Options */
+.pd-opt { margin-top: 18px; }
+.pd-opt-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 8px; }
+.pd-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pd-chip {
+  border: 1.5px solid #e2e8f0; background: #fff; color: #334155;
+  border-radius: 8px; padding: 7px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.pd-chip:hover { border-color: #0057ff; }
+.pd-chip.active { background: #0057ff; border-color: #0057ff; color: #fff; }
+
+.pd-qty { display: inline-flex; align-items: center; gap: 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 4px 10px; }
+.pd-qty button { width: 30px; height: 30px; border: none; background: none; color: #0057ff; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+.pd-qty button[disabled] { opacity: 0.35; cursor: not-allowed; }
+.pd-qty span { min-width: 22px; text-align: center; font-weight: 700; }
+
+.pd-section { margin-top: 22px; }
+.pd-section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #94a3b8; margin: 0 0 8px; }
+.pd-desc { font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0; }
+.pd-desc--none { color: #94a3b8; font-style: italic; }
+.pd-shop { font-weight: 700; color: #0f172a; }
+.pd-shop-line { font-size: 0.88rem; color: #64748b; margin-top: 5px; }
+.pd-phone { display: inline-block; margin-top: 8px; font-size: 0.95rem; font-weight: 700; color: #0057ff; text-decoration: none; }
+
+/* Order row */
+.pd-buy {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  margin-top: 24px; padding-top: 18px; border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
+.pd-buy-total { display: flex; align-items: baseline; gap: 5px; }
+.pd-buy-amt { font-size: 1.25rem; font-weight: 800; color: #0057ff; }
+.pd-buy-unit { font-size: 0.8rem; color: #94a3b8; }
+.pd-book {
+  border: none; border-radius: 12px; background: #0057ff; color: #fff;
+  font-size: 0.95rem; font-weight: 800; padding: 12px 30px; cursor: pointer;
+}
+.pd-book:hover:not([disabled]) { background: #0046cc; }
+.pd-book[disabled] { opacity: 0.65; cursor: default; }
+.pd-book--done { background: #16a34a; }
+
+.pd-err { text-align: center; color: #dc2626; font-size: 0.85rem; padding: 8px; }

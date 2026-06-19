@@ -2,7 +2,10 @@
   <div class="container py-5 mt-5">
 
     <button class="btn btn-link mp-back px-0 mb-3" (click)="goShopping()">← Continue Shopping</button>
-    <h1 class="mp-title mb-4">My Orders</h1>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+      <h1 class="mp-title mb-0">My Orders</h1>
+      <button type="button" class="btn mp-track-services" (click)="goTrackServices()">🛠️ Track Services</button>
+    </div>
 
     <!-- Loading -->
     @if (loading) {
@@ -154,7 +157,10 @@
               <div class="order-items mt-3">
                 @for (item of order.items; track item.productId) {
                   <div class="order-item">
-                    <span class="oi-name">{{ item.name }}</span>
+                    <span class="oi-name">
+                      {{ item.name }}
+                      @if (item.variant?.label) { <small class="oi-variant">({{ item.variant.label }})</small> }
+                    </span>
                     <span class="oi-qty">x{{ item.quantity }}</span>
                     <span class="oi-total">₹{{ item.line_total }}</span>
                   </div>

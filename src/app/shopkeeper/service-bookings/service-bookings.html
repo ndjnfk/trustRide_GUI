@@ -1,0 +1,59 @@
+<div class="sb-page">
+  <div class="sb-wrap">
+
+    <button type="button" class="sb-back" (click)="goBack()">← Back to dashboard</button>
+    <div class="sb-head">
+      <h1 class="sb-title">Service Booking Requests</h1>
+      <p class="sb-sub">Customer requests for your services. Accept, reject or mark completed.</p>
+    </div>
+
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    @if (loading) {
+      <div class="sb-state">Loading…</div>
+    } @else if (bookings.length === 0) {
+      <div class="sb-empty">
+        <div class="sb-empty-icon">🗒️</div>
+        <p>No booking requests yet.</p>
+      </div>
+    } @else {
+      <div class="sb-list">
+        @for (b of bookings; track b._id) {
+          <div class="sb-card">
+            <div class="sb-card-top">
+              <div>
+                <div class="sb-service">{{ b.service_name }}</div>
+                <div class="sb-meta">
+                  ₹{{ b.price }}
+                  @if (b.duration_minutes) { · ⏱ {{ b.duration_minutes }} min }
+                  · {{ formatDate(b.created_at) }}
+                </div>
+              </div>
+              <span [class]="statusClass(b.status)">{{ b.status | titlecase }}</span>
+            </div>
+
+            <!-- Customer details -->
+            <div class="sb-customer">
+              <div class="sb-cust-name">👤 {{ b.customer?.name }}
+                <span class="sb-gender" *ngIf="b.customer?.gender">· {{ b.customer.gender | titlecase }}</span>
+              </div>
+              <div class="sb-cust-line" *ngIf="b.customer?.phone">📞 <a [href]="'tel:' + b.customer.phone">{{ b.customer.phone }}</a></div>
+              <div class="sb-cust-line" *ngIf="b.customer?.email">✉️ {{ b.customer.email }}</div>
+            </div>
+
+            <!-- Status actions -->
+            <div class="sb-actions">
+              @for (s of statuses; track s) {
+                <button type="button" class="sb-status-btn" [class.active]="b.status === s"
+                  [disabled]="updatingId === b._id || b.status === s" (click)="setStatus(b, s)">
+                  {{ s | titlecase }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

@@ -62,3 +62,44 @@
   padding: 3px 10px;
   border-radius: 999px;
 }
+
+.dash-open {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary, #0057ff);
+}
+
+/* Section headers */
+.dash-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.dash-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary1, #1a3c5e);
+  margin: 0;
+}
+
+.dash-section-note {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* Ready (clickable) cards */
+.dash-card--ready { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.dash-card--ready:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 87, 255, 0.12);
+}
+
+/* Type-specific cards get a subtle accent */
+.dash-card--type {
+  border-color: #dbe6ff;
+  background: linear-gradient(180deg, #f7faff 0%, #ffffff 60%);
+}

@@ -56,7 +56,7 @@ export class Footer {
     { key: 'marketplace', label: 'Marketplace', route: '/marketplace' },
     { key: 'publish',     label: 'Publish',     route: '/create-ride' },
     { key: 'rides',       label: 'Your rides',  route: '/get-ride' },
-    { key: 'inbox',       label: 'wpg',         route: 'https://chat.whatsapp.com/KrW5aGD3Xu5I3hvJdfeJu0' },
+    { key: 'chat',        label: 'Chat',        route: '/chat' },
     { key: 'profile',     label: 'Profile',     route: '/about-you' },
   ];
 

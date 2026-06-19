@@ -43,6 +43,51 @@ export class MarketplaceService {
     });
   }
 
+  // Public — shops of a given type (product | service | prescription | opd)
+  getShopsByType(type: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/shop-types/${type}/shops`);
+  }
+
+  // Public — one shop's details + products / services
+  getShop(shopId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/shops/${shopId}`);
+  }
+
+  // Public — single service detail + shop contact
+  getServiceDetail(serviceId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/services/${serviceId}`);
+  }
+
+  // Public — single (shop) product detail + shop contact
+  getShopProductDetail(productId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/shop-products/${productId}`);
+  }
+
+  // Auth — order a product (with optional color/size/qty)
+  orderShopProduct(productId: string, payload: { color?: string | null; size?: string | null; qty: number }): Observable<any> {
+    return this.http.post(
+      `${this.API_URL}/marketplace/shop-products/${productId}/order`,
+      payload,
+      { headers: AuthHelper.getAuthHeader() }
+    );
+  }
+
+  // Auth — request to book a service
+  bookService(serviceId: string): Observable<any> {
+    return this.http.post(
+      `${this.API_URL}/marketplace/services/${serviceId}/book`,
+      {},
+      { headers: AuthHelper.getAuthHeader() }
+    );
+  }
+
+  // Auth — my service bookings (Track Services)
+  getMyServiceBookings(): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/my-service-bookings`, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
   // Public — all categories with image
   getCategories(): Observable<any> {
     return this.http.get(`${this.API_URL}/marketplace/categories`);
@@ -59,11 +104,15 @@ export class MarketplaceService {
   }
 
   // Requires a logged-in user (sends the user auth token)
-  addToCart(productId: string, quantity = 1): Observable<any> {
+  addToCart(
+    productId: string,
+    quantity = 1,
+    variant?: { label: string; price: number }
+  ): Observable<any> {
     return this.http
       .post(
         `${this.API_URL}/marketplace/cart`,
-        { productId, quantity },
+        { productId, quantity, variant },
         { headers: AuthHelper.getAuthHeader() }
       )
       .pipe(tap((res: any) => this.setCartCount(res?.cart_count ?? 0)));

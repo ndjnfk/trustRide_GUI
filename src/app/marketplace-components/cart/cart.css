@@ -77,9 +77,30 @@
   text-overflow: ellipsis;
 }
 
+.mp-item-variant {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0057ff;
+  background: #f0f6ff;
+  border-radius: 6px;
+  padding: 1px 8px;
+  margin-bottom: 4px;
+}
+
 .mp-item-price {
   font-size: 13px;
   color: #64748b;
+}
+.mp-item-mrp {
+  text-decoration: line-through;
+  color: #94a3b8;
+  margin-left: 6px;
+}
+.mp-item-off {
+  color: #16a34a;
+  font-weight: 700;
+  margin-left: 6px;
 }
 
 .mp-item-total {

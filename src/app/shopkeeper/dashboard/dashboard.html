@@ -17,31 +17,51 @@
       <div class="alert alert-warning">⏳ Your shop is pending admin approval. You can set things up meanwhile.</div>
     }
 
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="dash-card">
-          <div class="dash-card-icon">📦</div>
-          <h3 class="dash-card-title">Products</h3>
-          <p class="dash-card-text">Add and manage the items you sell.</p>
-          <span class="dash-soon">Coming next</span>
-        </div>
+    <!-- ── Type-specific tools ── -->
+    @if (typeBlock) {
+      <div class="dash-section-head">
+        <h2 class="dash-section-title">{{ typeBlock.label }}</h2>
+        <span class="dash-section-note">Tailored to your shop type</span>
       </div>
-      <div class="col-md-4">
-        <div class="dash-card">
-          <div class="dash-card-icon">🧾</div>
-          <h3 class="dash-card-title">Orders &amp; Sales</h3>
-          <p class="dash-card-text">Track orders and your sales.</p>
-          <span class="dash-soon">Coming next</span>
-        </div>
+      <div class="row g-3 g-md-4 mb-2">
+        @for (f of typeBlock.features; track f.title) {
+          <div class="col-12 col-sm-6 col-lg-4">
+            <div class="dash-card dash-card--type" [class.dash-card--ready]="!f.soon"
+                 (click)="open(f)">
+              <div class="dash-card-icon">{{ f.icon }}</div>
+              <h3 class="dash-card-title">{{ f.title }}</h3>
+              <p class="dash-card-text">{{ f.desc }}</p>
+              @if (f.soon) {
+                <span class="dash-soon">Coming soon</span>
+              } @else {
+                <span class="dash-open">Open →</span>
+              }
+            </div>
+          </div>
+        }
       </div>
-      <div class="col-md-4">
-        <div class="dash-card">
-          <div class="dash-card-icon">⚙️</div>
-          <h3 class="dash-card-title">Shop Settings</h3>
-          <p class="dash-card-text">Update your shop details.</p>
-          <span class="dash-soon">Coming next</span>
+    }
+
+    <!-- ── Shared tools ── -->
+    <div class="dash-section-head mt-4">
+      <h2 class="dash-section-title">For every shop</h2>
+      <span class="dash-section-note">Available to all shop types</span>
+    </div>
+    <div class="row g-3 g-md-4">
+      @for (f of sharedFeatures; track f.title) {
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="dash-card" [class.dash-card--ready]="!f.soon" (click)="open(f)">
+            <div class="dash-card-icon">{{ f.icon }}</div>
+            <h3 class="dash-card-title">{{ f.title }}</h3>
+            <p class="dash-card-text">{{ f.desc }}</p>
+            @if (f.soon) {
+              <span class="dash-soon">Coming soon</span>
+            } @else {
+              <span class="dash-open">Open →</span>
+            }
+          </div>
         </div>
-      </div>
+      }
     </div>
 
   </div>

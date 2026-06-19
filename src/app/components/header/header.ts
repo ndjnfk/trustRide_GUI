@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -9,6 +9,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { PwaInstallService } from '../../services/pwa-install';
+import { ChatService } from '../../services/chat-service';
 
 @Component({
   selector: 'app-header',
@@ -21,11 +22,16 @@ export class Header {
   isMobileMenuOpen = false;
   isUserDropdownOpen = false;
   activePollsCount = 3;
+  unreadChats = 0;
+  private onChatUpdate = () => this.zone.run(() => { this.unreadChats++; });
+
   constructor(
     public authService: AuthService,
     public userService: User,
     private rideService: Ride,
     public pwa: PwaInstallService,
+    private chat: ChatService,
+    private zone: NgZone,
   ) {}
 
   /** Show the install button only to logged-in users who can still install. */
@@ -45,6 +51,13 @@ export class Header {
   userData: any;
   hasActiveRides:any;
   ngOnInit(): void {
+
+    // Chat: live unread badge
+    if (AuthHelper.getToken()) {
+      this.chat.connect();
+      this.chat.onThreadUpdate(this.onChatUpdate);
+      this.refreshUnread();
+    }
 
     if(AuthHelper.getToken()){
       this.userService.getCurrentUser().subscribe({
@@ -86,6 +99,17 @@ getInitials(name: string): string {
     .toUpperCase();
 
 }
+
+  refreshUnread(): void {
+    this.chat.getUnreadCount().subscribe({
+      next: (res: any) => { this.unreadChats = res?.count ?? 0; },
+      error: () => { /* badge just stays as-is */ },
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.chat.offThreadUpdate(this.onChatUpdate);
+  }
   navItems = [
      { label: 'Saharanpur Marketplace', route: '/marketplace', icon: 'shop' },
     { label: 'My Rides', route: '/get-ride', icon: 'car' },

@@ -1,0 +1,68 @@
+.ci-page { min-height: 100vh; background: #f7f9ff; padding: 70px 0 40px; }
+.ci-wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+.ci-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.ci-back {
+  background: #fff; border: 1px solid #e2e8f0; color: #0f172a;
+  width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer;
+}
+.ci-title { font-weight: 800; color: #1a3c5e; font-size: 1.3rem; margin: 0;  }
+
+.ci-state, .ci-empty { text-align: center; padding: 50px 16px; color: #94a3b8; }
+.ci-error { color: #dc2626; }
+.ci-empty-icon { font-size: 42px; margin-bottom: 8px; }
+
+.ci-list { display: flex; flex-direction: column; gap: 8px; }
+.ci-item {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 1px solid #eef2ff; border-radius: 14px;
+  padding: 12px 14px; cursor: pointer; transition: box-shadow 0.15s;
+}
+.ci-item:hover { box-shadow: 0 6px 18px rgba(0, 87, 255, 0.08); }
+
+/* Archived section header */
+.ci-section {
+  margin: 22px 0 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+}
+
+/* Archived chats — dimmed but still openable (read-only) */
+.ci-item--archived {
+  background: #f8fafc;
+}
+.ci-item--archived .ci-name,
+.ci-item--archived .ci-last { color: #64748b; }
+
+/* Locked chat — not clickable */
+.ci-item--locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f1f5f9;
+}
+.ci-item--locked:hover { box-shadow: none; }
+
+.ci-avatar {
+  width: 46px; height: 46px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  background: rgba(99, 102, 241, 0.12); color: #4f46e5;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+.ci-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.ci-main { flex: 1; min-width: 0; }
+.ci-top { display: flex; align-items: center; gap: 8px; }
+.ci-name { font-weight: 700; color: #0f172a; }
+.ci-role { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #4f46e5; background: #eef2ff; padding: 1px 7px; border-radius: 999px; }
+.ci-route { font-size: 0.76rem; color: #94a3b8; margin-top: 1px; }
+.ci-last { font-size: 0.85rem; color: #64748b; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ci-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+.ci-locked { font-size: 0.9rem; }
+.ci-badge {
+  background: #ef4444; color: #fff; font-size: 0.72rem; font-weight: 700;
+  min-width: 20px; height: 20px; border-radius: 999px; padding: 0 6px;
+  display: flex; align-items: center; justify-content: center;
+}

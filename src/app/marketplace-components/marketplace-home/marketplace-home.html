@@ -1,0 +1,18 @@
+<div class="mp-home">
+  <div class="mp-home-wrap">
+    <header class="mp-home-head">
+      <h1 class="mp-home-title">TrustRide Marketplace</h1>
+      <p class="mp-home-sub">What are you looking for today?</p>
+    </header>
+
+    <div class="mp-type-grid">
+      @for (t of shopTypes; track t.type) {
+        <button type="button" class="mp-type-card" (click)="open(t.type)">
+          <span class="mp-type-icon">{{ t.icon }}</span>
+          <span class="mp-type-label">{{ t.label }}</span>
+          <span class="mp-type-desc">{{ t.desc }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</div>

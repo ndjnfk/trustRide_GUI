@@ -33,7 +33,7 @@
 
           <!-- Items -->
           <div class="col-12 col-lg-8">
-            @for (item of items; track item.productId) {
+            @for (item of items; track item._id) {
               <div class="mp-item card border-0 shadow-sm mb-3">
                 <div class="card-body mp-item-body">
                   <div class="mp-item-img">
@@ -46,7 +46,16 @@
 
                   <div class="mp-item-info">
                     <h3 class="mp-item-name">{{ item.name }}</h3>
-                    <div class="mp-item-price">₹{{ item.price }}</div>
+                    @if (item.variant?.label) {
+                      <div class="mp-item-variant">{{ item.variant.label }}</div>
+                    }
+                    <div class="mp-item-price">
+                      ₹{{ item.price }}
+                      @if (item.discount > 0 && item.mrp > item.price) {
+                        <span class="mp-item-mrp">₹{{ item.mrp }}</span>
+                        <span class="mp-item-off">{{ item.discount }}% OFF</span>
+                      }
+                    </div>
                     @if (!item.in_stock) {
                       <div class="text-danger small">Not enough stock</div>
                     }
@@ -55,15 +64,15 @@
                   <div class="mp-item-controls">
                     <!-- Qty -->
                     <div class="mp-qty">
-                      <button (click)="changeQty(item, -1)" [disabled]="item.quantity <= 1 || updatingId === item.productId">−</button>
+                      <button (click)="changeQty(item, -1)" [disabled]="item.quantity <= 1 || updatingId === item._id">−</button>
                       <span>{{ item.quantity }}</span>
-                      <button (click)="changeQty(item, 1)" [disabled]="item.quantity >= item.stock || updatingId === item.productId">+</button>
+                      <button (click)="changeQty(item, 1)" [disabled]="item.quantity >= item.stock || updatingId === item._id">+</button>
                     </div>
 
                     <div class="mp-item-total">₹{{ item.line_total }}</div>
 
-                    <button class="mp-remove" (click)="removeItem(item)" [disabled]="removingId === item.productId" title="Remove">
-                      @if (removingId === item.productId) {
+                    <button class="mp-remove" (click)="removeItem(item)" [disabled]="removingId === item._id" title="Remove">
+                      @if (removingId === item._id) {
                         <span class="spinner-border spinner-border-sm"></span>
                       } @else { ✕ }
                     </button>

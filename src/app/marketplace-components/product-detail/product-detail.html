@@ -52,15 +52,45 @@
             <h1 class="mp-name">{{ product.name }}</h1>
 
             <div class="mp-price-row">
-              <span class="mp-price">₹{{ product.final_price }}</span>
-              @if (product.discount > 0) {
+              <span class="mp-price">₹{{ displayPrice }}</span>
+              @if (!hasVariants && product.discount > 0) {
                 <span class="mp-price-old">₹{{ product.price }}</span>
+                <span class="mp-badge">{{ product.discount }}% OFF</span>
+              }
+              @if (hasVariants && displayOldPrice) {
+                <span class="mp-price-old">₹{{ displayOldPrice }}</span>
                 <span class="mp-badge">{{ product.discount }}% OFF</span>
               }
             </div>
 
-            <div class="mp-stock mb-3" [class.out]="product.stock <= 0">
-              {{ product.stock > 0 ? product.stock + ' in stock' : 'Out of stock' }}
+            <!-- Variant options (e.g. 12g, 50g) -->
+            @if (hasVariants) {
+              <div class="mp-variants">
+                <span class="mp-variants-label">Options</span>
+                <div class="mp-variant-chips">
+                  @for (v of product.variants; track $index) {
+                    <button
+                      type="button"
+                      class="mp-variant-chip"
+                      [class.active]="v === selectedVariant"
+                      [disabled]="(v.stock ?? 0) <= 0"
+                      (click)="selectVariant(v)"
+                    >
+                      <span class="mp-variant-name">{{ v.label }}</span>
+                      <span class="mp-variant-price">
+                        ₹{{ variantFinal(v) }}
+                        @if (product.discount > 0 && variantFinal(v) < v.price) {
+                          <span class="mp-variant-old">₹{{ v.price }}</span>
+                        }
+                      </span>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="mp-stock mb-3" [class.out]="availStock <= 0">
+              {{ availStock > 0 ? availStock + ' in stock' : 'Out of stock' }}
             </div>
 
             @if (product.description) {
@@ -68,12 +98,12 @@
             }
 
             <!-- Quantity + add to cart -->
-            @if (product.stock > 0) {
+            @if (availStock > 0) {
               <div class="d-flex align-items-center gap-3 mt-4">
                 <div class="mp-qty">
                   <button type="button" (click)="decQty()" [disabled]="quantity <= 1">−</button>
                   <span>{{ quantity }}</span>
-                  <button type="button" (click)="incQty()" [disabled]="quantity >= product.stock">+</button>
+                  <button type="button" (click)="incQty()" [disabled]="quantity >= availStock">+</button>
                 </div>
                 <button class="btn mp-cart-btn" (click)="addToCart()" [disabled]="adding">
                   @if (adding) {

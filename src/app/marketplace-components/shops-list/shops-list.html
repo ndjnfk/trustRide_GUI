@@ -1,0 +1,46 @@
+<div class="sl-page">
+  <div class="sl-wrap">
+
+    <button type="button" class="sl-back" (click)="goBack()">← All categories</button>
+    <h1 class="sl-title">{{ typeLabel }}</h1>
+
+    @if (loading) {
+      <div class="sl-state">Loading shops…</div>
+    } @else if (error) {
+      <div class="sl-state sl-error">{{ error }}</div>
+    } @else if (shops.length === 0) {
+      <div class="sl-empty">
+        <div class="sl-empty-icon">🏬</div>
+        <p>No shops here yet. Please check back soon.</p>
+      </div>
+    } @else {
+      <div class="sl-grid">
+        @for (s of shops; track s._id) {
+          <div class="sl-card" (click)="openShop(s)">
+            <div class="sl-card-img">
+              @if (s.shop_image_url) {
+                <img [src]="imageBase + s.shop_image_url" [alt]="s.shop_name" />
+              } @else {
+                <span class="sl-card-initials">{{ initials(s.shop_name) }}</span>
+              }
+              @if (s.is_paused) { <span class="sl-paused">Closed</span> }
+            </div>
+            <div class="sl-card-body">
+              <div class="sl-card-top">
+                <h3 class="sl-card-name">{{ s.shop_name }}</h3>
+                @if (s.rating) {
+                  <span class="sl-rating">★ {{ s.rating }}</span>
+                } @else {
+                  <span class="sl-rating sl-rating-new">New</span>
+                }
+              </div>
+              <p class="sl-card-addr" *ngIf="s.address">📍 {{ s.address }}</p>
+              <p class="sl-card-time" *ngIf="s.open_time && s.close_time">🕒 {{ s.open_time }} – {{ s.close_time }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

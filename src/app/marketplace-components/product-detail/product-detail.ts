@@ -21,6 +21,9 @@ export class ProductDetail {
   quantity = 1;
   adding = false;
 
+  // variants (e.g. "12g", "50g") — shown only when the product has them
+  selectedVariant: any = null;
+
   imageBase: string;
 
   // ── Reviews ──
@@ -60,6 +63,8 @@ export class ProductDetail {
       next: (res: any) => {
         this.product = res.product || null;
         this.activeImage = this.product?.images?.[0] ?? null;
+        // preselect first variant when the product has them
+        if (this.hasVariants) this.selectedVariant = this.product.variants[0];
         this.loading = false;
         this.cdr.detectChanges();
         this.resumePendingCart();
@@ -77,8 +82,43 @@ export class ProductDetail {
     this.activeImage = img;
   }
 
+  // ── variants ──
+  get hasVariants(): boolean {
+    return !!this.product?.has_variants && (this.product?.variants?.length ?? 0) > 0;
+  }
+  /** discounted price of a variant — computed live from the product discount so
+   *  it works even for products saved before variant discounts existed */
+  variantFinal(v: any): number {
+    const price = Number(v?.price) || 0;
+    const d = Math.min(Math.max(Number(this.product?.discount) || 0, 0), 100);
+    return Math.round((price - (price * d) / 100) * 100) / 100;
+  }
+
+  get displayPrice(): number {
+    if (this.hasVariants && this.selectedVariant) {
+      return this.variantFinal(this.selectedVariant);
+    }
+    return this.product?.final_price ?? this.product?.price ?? 0;
+  }
+  // original (pre-discount) price of the selected variant, when discounted
+  get displayOldPrice(): number | null {
+    if (this.hasVariants && this.selectedVariant && (this.product?.discount ?? 0) > 0) {
+      const orig = Number(this.selectedVariant.price) || 0;
+      if (orig > this.displayPrice) return orig;
+    }
+    return null;
+  }
+  get availStock(): number {
+    if (this.hasVariants && this.selectedVariant) return this.selectedVariant.stock ?? 0;
+    return this.product?.stock ?? 0;
+  }
+  selectVariant(v: any) {
+    this.selectedVariant = v;
+    if (this.quantity > this.availStock) this.quantity = Math.max(1, this.availStock);
+  }
+
   incQty() {
-    if (this.product && this.quantity < this.product.stock) this.quantity++;
+    if (this.quantity < this.availStock) this.quantity++;
   }
 
   decQty() {
@@ -86,7 +126,11 @@ export class ProductDetail {
   }
 
   addToCart() {
-    if (!this.product || this.product.stock <= 0) return;
+    if (!this.product || this.availStock <= 0) return;
+    if (this.hasVariants && !this.selectedVariant) {
+      this.snackbar.error('Please select an option');
+      return;
+    }
 
     if (!this.marketplace.isLoggedIn()) {
       // Remember what the user wanted, then send them to login and back here
@@ -98,8 +142,12 @@ export class ProductDetail {
       return;
     }
 
+    const variant = this.hasVariants && this.selectedVariant
+      ? { label: this.selectedVariant.label, price: this.displayPrice }
+      : undefined;
+
     this.adding = true;
-    this.marketplace.addToCart(this.product._id, this.quantity).subscribe({
+    this.marketplace.addToCart(this.product._id, this.quantity, variant).subscribe({
       next: (res: any) => {
         this.adding = false;
         this.snackbar.success(res.message || 'Added to cart');

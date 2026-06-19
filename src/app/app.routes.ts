@@ -52,6 +52,16 @@ export const routes: Routes = [
       import('../app/components/create-ticket/create-ticket').then((m) => m.CreateTicket),
   },
   {
+    path: 'chat',
+    loadComponent: () =>
+      import('../app/components/chat-inbox/chat-inbox').then((m) => m.ChatInbox),
+  },
+  {
+    path: 'chat/:threadId',
+    loadComponent: () =>
+      import('../app/components/chat-thread/chat-thread').then((m) => m.ChatThread),
+  },
+  {
     path: 'available-rides',
     loadComponent: () =>
       import('../app/components/available-rides/available-rides').then((m) => m.AvailableRides),
@@ -119,7 +129,69 @@ export const routes: Routes = [
       import('../app/shopkeeper/dashboard/dashboard').then((m) => m.ShopDashboard),
   },
   {
+    path: 'shop/settings',
+    loadComponent: () =>
+      import('../app/shopkeeper/settings/settings').then((m) => m.ShopSettings),
+  },
+  {
+    path: 'shop/products',
+    loadComponent: () =>
+      import('../app/shopkeeper/products/products').then((m) => m.ShopProducts),
+  },
+  {
+    path: 'shop/categories',
+    loadComponent: () =>
+      import('../app/shopkeeper/categories/categories').then((m) => m.ShopCategories),
+  },
+  {
+    path: 'shop/services',
+    loadComponent: () =>
+      import('../app/shopkeeper/services/services').then((m) => m.ShopServices),
+  },
+  {
+    path: 'shop/service-bookings',
+    loadComponent: () =>
+      import('../app/shopkeeper/service-bookings/service-bookings').then((m) => m.ShopServiceBookings),
+  },
+  {
+    path: 'shop/orders',
+    loadComponent: () =>
+      import('../app/shopkeeper/orders/orders').then((m) => m.ShopOrders),
+  },
+  {
+    path: 'track-services',
+    loadComponent: () =>
+      import('../app/marketplace-components/track-services/track-services').then((m) => m.TrackServices),
+  },
+  {
     path: 'marketplace',
+    loadComponent: () =>
+      import('../app/marketplace-components/marketplace-home/marketplace-home').then(
+        (m) => m.MarketplaceHome
+      ),
+  },
+  {
+    path: 'marketplace/shops/:type',
+    loadComponent: () =>
+      import('../app/marketplace-components/shops-list/shops-list').then((m) => m.ShopsList),
+  },
+  {
+    path: 'marketplace/shop/:shopId',
+    loadComponent: () =>
+      import('../app/marketplace-components/shop-detail/shop-detail').then((m) => m.ShopDetail),
+  },
+  {
+    path: 'marketplace/service/:serviceId',
+    loadComponent: () =>
+      import('../app/marketplace-components/service-detail/service-detail').then((m) => m.ServiceDetail),
+  },
+  {
+    path: 'marketplace/product-item/:productId',
+    loadComponent: () =>
+      import('../app/marketplace-components/shop-product-detail/shop-product-detail').then((m) => m.ShopProductDetail),
+  },
+  {
+    path: 'marketplace/categories',
     loadComponent: () =>
       import('../app/marketplace-components/categories/categories').then(
         (m) => m.MarketplaceCategories

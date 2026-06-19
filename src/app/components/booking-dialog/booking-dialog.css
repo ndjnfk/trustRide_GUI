@@ -9,16 +9,30 @@
   box-shadow: 0 25px 60px rgba(59, 130, 246, 0.22),
               0 8px 24px rgba(15, 23, 42, 0.08);
   position: relative;
-  /* Constrain to viewport and scroll the whole popup as one unit */
+  /* Constrain to viewport and scroll the whole popup as one unit.
+     dvh keeps the top visible above the iOS Safari address bar. */
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* On mobile the dialog is full-screen — fill the height and scroll inside */
+@media (max-width: 575.98px) {
+  .bd-wrap {
+    min-width: 0;
+    max-height: 100vh;
+    max-height: 100dvh;
+    height: 100%;
+    border-radius: 0;
+  }
 }
 
 /* ── Header — blue → indigo → purple (matches side menu) ── */
 .bd-header {
   background: linear-gradient(135deg, #3b82f6 0%, #6366f1 55%, #7c3aed 100%);
-  padding: 22px 24px 18px;
+  /* add the iOS safe-area / status-bar inset so header content isn't hidden */
+  padding: calc(22px + env(safe-area-inset-top, 0px)) 24px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;

@@ -9,6 +9,7 @@ import { BookingDialog, BookingDialogResult } from '../booking-dialog/booking-di
 import { environment } from '../../../../environment';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { AuthService } from '../../services/auth';
+import { ChatService } from '../../services/chat-service';
 
 @Component({
   selector: 'app-one-ride-details',
@@ -34,8 +35,39 @@ export class OneRideDetails {
     private dialog: MatDialog,
     private snack: Snackbar,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private chat: ChatService
   ) {}
+
+  startingChat = false;
+
+  /** show the chat button to logged-in viewers who aren't the rider */
+  get canChat(): boolean {
+    if (!AuthHelper.isLoggedIn() || !this.rideData?.driver?._id) return false;
+    return this.currentUserId !== this.rideData.driver._id;
+  }
+
+  /** passenger → rider: open (or create) the chat thread for this ride */
+  chatWithRider(): void {
+    if (!AuthHelper.isLoggedIn()) {
+      this.snack.error('Please log in to chat.');
+      this.router.navigate(['/login']);
+      return;
+    }
+    if (this.startingChat) return;
+    this.startingChat = true;
+    this.chat.startThread(this.rideId).subscribe({
+      next: (res: any) => {
+        this.startingChat = false;
+        const id = res?.thread?._id;
+        if (id) this.router.navigate(['/chat', id]);
+      },
+      error: (err) => {
+        this.startingChat = false;
+        this.snack.error(err?.error?.message || 'Could not start chat.');
+      },
+    });
+  }
   ngOnInit() {
     // URL param first (shareable link), fallback to history.state (in-app nav)
     const paramId = this.route.snapshot.paramMap.get('rideId');

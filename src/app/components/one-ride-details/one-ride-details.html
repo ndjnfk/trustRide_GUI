@@ -20,6 +20,10 @@
       <button class="rd-share btn" (click)="copyShareLink()" title="Copy shareable link">
         <i class="ti ti-link"></i> Copy link
       </button>
+      <button class="rd-chat btn" *ngIf="canChat" (click)="chatWithRider()" [disabled]="startingChat"
+        title="Chat with the rider">
+        <i class="ti ti-message-circle"></i> {{ startingChat ? 'Opening…' : 'Chat with rider' }}
+      </button>
     </div>
 
     <div class="rd-wrap">
@@ -43,6 +47,19 @@
             </div>
             <span class="mh-city">{{ rideData.end_location.name }}</span>
             <div class="mh-via" *ngIf="rideData.route_via">via {{ rideData.route_via }}</div>
+
+            <!-- Share / Chat (mobile — in-card, left column) -->
+            <div class="mh-actions">
+              <button type="button" class="mh-action" (click)="copyShareLink()">
+                <i class="ti ti-share"></i> Share
+              </button>
+              <ng-container *ngIf="canChat">
+                <span class="mh-action-sep"></span>
+                <button type="button" class="mh-action" (click)="chatWithRider()" [disabled]="startingChat">
+                  <i class="ti ti-message-circle"></i> {{ startingChat ? 'Opening…' : 'Chat' }}
+                </button>
+              </ng-container>
+            </div>
           </div>
 
           <div class="mh-driver" (click)="goToProfile(rideData.driver._id)">
@@ -198,7 +215,7 @@
         </div>
 
         <div class="passenger-list" *ngIf="activeBookings.length > 0">
-          <div class="p-card" (click)="goToProfile(b.passenger._id)" *ngFor="let b of activeBookings">
+          <div class="p-card" *ngFor="let b of activeBookings">
             <div class="p-avatar">
               <img *ngIf="b.passenger.avatarUrl" [src]="imageBaseUrl + b.passenger.avatarUrl"
                 [alt]="b.passenger.fullName" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />

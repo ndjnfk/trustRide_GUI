@@ -1,0 +1,99 @@
+<div class="svc-page">
+  <div class="svc-wrap">
+
+    <button type="button" class="svc-back" (click)="goBack()">← Back to dashboard</button>
+
+    <div class="svc-head">
+      <div>
+        <h1 class="svc-title">Service Catalog</h1>
+        <p class="svc-sub">Add and manage the services you offer.</p>
+      </div>
+      <button type="button" class="btn svc-add-btn" (click)="openAdd()">＋ Add Service</button>
+    </div>
+
+    @if (error && !showForm) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    <!-- Form -->
+    @if (showForm) {
+      <div class="svc-form-card">
+        <h2 class="svc-form-title">{{ editingId ? 'Edit Service' : 'Add Service' }}</h2>
+        @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Service name</label>
+            <input type="text" class="form-control" [(ngModel)]="form.name" name="name" placeholder="e.g. Haircut & Styling" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Price (₹)</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="form.price" name="price" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Duration (minutes)</label>
+            <input type="number" min="1" class="form-control" [(ngModel)]="form.duration_minutes" name="duration" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Image</label>
+            <label class="svc-image-pick">
+              <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp" hidden (change)="onImageSelected($event)" />
+              {{ (imagePreview || existingImageUrl) ? 'Change' : 'Upload' }}
+            </label>
+            @if (imagePreview || existingImageUrl) {
+              <img class="svc-image-thumb" [src]="imagePreview || (imageBaseUrl + existingImageUrl)" alt="preview" />
+            }
+          </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="form.description" name="description"></textarea>
+          </div>
+        </div>
+
+        <div class="svc-form-actions">
+          <button type="button" class="btn svc-cancel" (click)="cancelForm()">Cancel</button>
+          <button type="button" class="btn svc-save" [disabled]="saving" (click)="save()">
+            {{ saving ? 'Saving…' : (editingId ? 'Update' : 'Add Service') }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- List -->
+    @if (loading) {
+      <div class="svc-state">Loading…</div>
+    } @else if (services.length === 0 && !showForm) {
+      <div class="svc-empty">
+        <div class="svc-empty-icon">🛠️</div>
+        <p>No services yet. Add your first service to get started.</p>
+        <button type="button" class="btn svc-add-btn" (click)="openAdd()">＋ Add Service</button>
+      </div>
+    } @else {
+      <div class="svc-grid">
+        @for (s of services; track s._id) {
+          <div class="svc-card">
+            <div class="svc-card-img">
+              @if (s.image_url) {
+                <img [src]="imageBaseUrl + s.image_url" [alt]="s.name" />
+              } @else {
+                <span class="svc-noimg">🛠️</span>
+              }
+            </div>
+            <div class="svc-card-body">
+              <div class="svc-card-name">{{ s.name }}</div>
+              <div class="svc-card-meta">
+                <span class="svc-card-price">₹{{ s.price }}</span>
+                <span class="svc-card-dur">⏱ {{ s.duration_minutes }} min</span>
+              </div>
+            </div>
+            <div class="svc-card-actions">
+              <button type="button" class="svc-edit" (click)="openEdit(s)">Edit</button>
+              <button type="button" class="svc-del" [disabled]="deletingId === s._id" (click)="remove(s)">
+                {{ deletingId === s._id ? '…' : 'Delete' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

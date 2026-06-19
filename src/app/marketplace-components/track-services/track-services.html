@@ -1,0 +1,54 @@
+<div class="ts-page">
+  <div class="ts-wrap">
+
+    <header class="ts-head">
+      <button type="button" class="ts-back" (click)="goBack()">←</button>
+      <h1 class="ts-title">Track Services</h1>
+    </header>
+
+    @if (loading) {
+      <div class="ts-state">Loading…</div>
+    } @else if (error) {
+      <div class="ts-state ts-error">{{ error }}</div>
+    } @else if (bookings.length === 0) {
+      <div class="ts-empty">
+        <div class="ts-empty-icon">🛠️</div>
+        <p>You haven’t booked any services yet.</p>
+      </div>
+    } @else {
+      <div class="ts-list">
+        @for (b of bookings; track b._id) {
+          <div class="ts-card">
+            <div class="ts-card-top">
+              <div>
+                <div class="ts-service">{{ b.service_name }}</div>
+                <div class="ts-shop">🏬 {{ b.shop?.name }}</div>
+              </div>
+              <div class="ts-price">₹{{ b.price }}</div>
+            </div>
+
+            @if (b.status === 'rejected') {
+              <div class="ts-rejected">❌ Rejected by the shop</div>
+            } @else {
+              <!-- progress -->
+              <div class="ts-steps">
+                @for (s of steps; track s; let i = $index) {
+                  <div class="ts-step" [class.done]="stepIndex(b.status) >= i">
+                    <span class="ts-dot"></span>
+                    <span class="ts-step-label">{{ s | titlecase }}</span>
+                  </div>
+                }
+              </div>
+            }
+
+            <div class="ts-foot">
+              <span class="ts-date">Requested {{ formatDate(b.created_at) }}</span>
+              <a *ngIf="b.shop?.phone" class="ts-call" [href]="'tel:' + b.shop.phone">📞 Call shop</a>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

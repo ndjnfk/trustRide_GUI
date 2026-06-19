@@ -117,7 +117,10 @@
                                 <tbody>
                                   @for (item of order.items; track item.productId) {
                                     <tr>
-                                      <td>{{ item.name }}</td>
+                                      <td>
+                                        {{ item.name }}
+                                        @if (item.variant?.label) { <small class="text-muted">({{ item.variant.label }})</small> }
+                                      </td>
                                       <td class="text-muted">x{{ item.quantity }}</td>
                                       <td class="text-end">₹{{ item.line_total }}</td>
                                     </tr>

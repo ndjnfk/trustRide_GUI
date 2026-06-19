@@ -1,0 +1,64 @@
+.so-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f0ff 0%, #f7f9ff 240px);
+  padding: 80px 16px 48px;
+}
+.so-wrap { max-width: 760px; margin: 0 auto; }
+
+.so-back { background: none; border: none; color: #0057ff; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px; }
+.so-back:hover { text-decoration: underline; }
+
+.so-head { margin-bottom: 18px; }
+.so-title { font-weight: 800; color: #1a3c5e; margin: 0; font-size: 1.5rem; }
+.so-sub { color: #64748b; margin: 4px 0 0; font-size: 0.9rem; }
+
+.so-state, .so-empty { text-align: center; padding: 46px 16px; color: #94a3b8; }
+.so-empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+.so-list { display: flex; flex-direction: column; gap: 14px; }
+
+.so-card {
+  background: #fff; border: 1px solid #eef2ff; border-radius: 14px;
+  padding: 16px 18px; box-shadow: 0 6px 18px rgba(0, 87, 255, 0.05);
+}
+.so-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.so-orderid { font-size: 1.02rem; font-weight: 700; color: #0f172a; }
+.so-meta { font-size: 0.8rem; color: #64748b; margin-top: 3px; }
+
+.so-pill { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
+.so-placed     { background: #fff3cd; color: #946200; }
+.so-processing { background: #e7edff; color: #4f46e5; }
+.so-shipped    { background: #e0f2fe; color: #0369a1; }
+.so-delivered  { background: #dcfce7; color: #15803d; }
+.so-cancelled  { background: #fee2e2; color: #b91c1c; }
+
+.so-items { margin: 12px 0; }
+.so-item { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 4px 0; }
+.so-item-name { flex: 1; color: #334155; }
+.so-variant { color: #0057ff; font-weight: 600; }
+.so-item-qty { color: #94a3b8; }
+.so-item-total { font-weight: 600; color: #0f172a; min-width: 64px; text-align: right; }
+.so-subtotal {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0;
+  font-size: 0.9rem; color: #475569;
+}
+.so-subtotal strong { color: #0057ff; font-size: 1.02rem; }
+
+.so-customer {
+  margin: 12px 0; padding: 12px 14px;
+  background: #f8fafc; border: 1px solid #eef2ff; border-radius: 10px;
+}
+.so-cust-name { font-weight: 700; color: #0f172a; font-size: 0.92rem; }
+.so-cust-line { font-size: 0.85rem; color: #475569; margin-top: 4px; }
+.so-cust-line a { color: #0057ff; text-decoration: none; }
+
+.so-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.so-status-btn {
+  border: 1.5px solid #e2e8f0; background: #fff; color: #475569;
+  border-radius: 8px; padding: 7px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.so-status-btn:hover:not([disabled]) { border-color: #0057ff; color: #0057ff; }
+.so-status-btn.active { background: #0057ff; border-color: #0057ff; color: #fff; }
+.so-status-btn[disabled] { opacity: 0.6; cursor: default; }
