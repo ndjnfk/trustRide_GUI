@@ -1,0 +1,92 @@
+<div class="dd-page">
+  <div class="container py-5 mt-4">
+
+    <button type="button" class="btn btn-link dd-back px-0" (click)="goBack()">← Back</button>
+
+    @if (loading) {
+      <div class="text-center py-5"><div class="spinner-border dd-spin"></div></div>
+    } @else if (error && !doctor) {
+      <div class="alert alert-danger text-center">{{ error }}</div>
+    } @else if (doctor) {
+
+      <div class="card border-0 shadow-sm dd-card">
+        <div class="dd-head">
+          <div class="dd-avatar">
+            @if (doctor.photo_url) {
+              <img [src]="imageBase + doctor.photo_url" [alt]="doctor.name" />
+            } @else {
+              <span>{{ initials(doctor.name) }}</span>
+            }
+          </div>
+          <div class="dd-head-info">
+            <h1 class="dd-name">{{ doctor.name }}</h1>
+            <div class="dd-spec">{{ doctor.specialization }}</div>
+            @if (doctor.qualification) { <div class="dd-qual">{{ doctor.qualification }}</div> }
+          </div>
+        </div>
+
+        <div class="dd-stats">
+          @if (doctor.experience_years) {
+            <div class="dd-stat"><span class="dd-stat-val">{{ doctor.experience_years }}</span><span class="dd-stat-lbl">Years exp.</span></div>
+          }
+          @if (doctor.consultation_fee) {
+            <div class="dd-stat"><span class="dd-stat-val">₹{{ doctor.consultation_fee }}</span><span class="dd-stat-lbl">Consultation</span></div>
+          }
+        </div>
+
+        <div class="dd-rows">
+          @if (doctor.registration_no) {
+            <div class="dd-row"><span class="dd-row-ic">🆔</span> Reg. no. {{ doctor.registration_no }}</div>
+          }
+          @if (doctor.available_time) {
+            <div class="dd-row"><span class="dd-row-ic">🕒</span> {{ doctor.available_time }}</div>
+          }
+          @if (shop) {
+            <div class="dd-row"><span class="dd-row-ic">🏥</span> {{ shop.name }}<span *ngIf="shop.address">, {{ shop.address }}</span></div>
+          }
+        </div>
+
+        <!-- Booked confirmation -->
+        @if (submitted) {
+          <div class="dd-done">
+            ✅ Your appointment request was sent. The hospital will confirm the time.
+            <button type="button" class="dd-track" (click)="goToAppointments()">Track appointment →</button>
+          </div>
+        } @else if (!showForm) {
+          <button type="button" class="dd-book-btn" (click)="openForm()">📅 Request Appointment</button>
+        }
+
+        <!-- Appointment form -->
+        @if (showForm && !submitted) {
+          <div class="dd-form">
+            <h2 class="dd-form-title">Request an appointment</h2>
+            @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+            <label class="dd-label">Patient name</label>
+            <input type="text" class="form-control mb-2" [(ngModel)]="form.patient_name" placeholder="Patient's full name" />
+
+            <label class="dd-label">Phone number</label>
+            <input type="text" class="form-control mb-2" [(ngModel)]="form.patient_phone" placeholder="Contact number" />
+
+            <label class="dd-label">Email <small class="text-muted">(confirmed time is sent here)</small></label>
+            <input type="email" class="form-control mb-2" [(ngModel)]="form.patient_email" placeholder="you@example.com" />
+
+            <label class="dd-label">Preferred date (optional)</label>
+            <input type="text" class="form-control mb-2" [(ngModel)]="form.preferred_date" placeholder="e.g. 25 Jun, morning" />
+
+            <label class="dd-label">Reason / symptoms (optional)</label>
+            <textarea class="form-control mb-3" rows="3" [(ngModel)]="form.reason" placeholder="Briefly describe the reason for the visit"></textarea>
+
+            <div class="dd-form-actions">
+              <button type="button" class="dd-cancel" (click)="showForm = false">Cancel</button>
+              <button type="button" class="dd-book-btn dd-submit" [disabled]="submitting" (click)="submit()">
+                {{ submitting ? 'Sending…' : 'Send request' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

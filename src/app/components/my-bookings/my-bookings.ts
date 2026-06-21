@@ -91,9 +91,9 @@ export class MyBookings implements OnInit {
   error = '';
 
   /** Active status filter tab */
-  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' = 'pending';
+  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' | 'history' = 'pending';
 
-  setTab(tab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled'): void {
+  setTab(tab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' | 'history'): void {
     this.activeTab = tab;
     this.cdr.markForCheck();
   }
@@ -501,45 +501,95 @@ export class MyBookings implements OnInit {
 // Not Approved — sirf DRIVER-rejected (passenger-cancel exclude)
 
 
-// ── Pending — passenger-cancelled + rider-cancelled-ride exclude ──
+// ── Pending — passenger-cancelled + rider-cancelled + completed exclude ──
 get pendingBookings(): Booking[] {
   return this.allBookings.filter(
     (b) => b.status === 'pending'
       && b.status_by_passenger !== 'cancelled'
       && b.ride?.ride_status !== 'cancelled'
+      && b.ride?.ride_status !== 'completed'
   );
 }
 
-// ── Confirmed — passenger-cancelled + rider-cancelled-ride exclude ──
+// ── Confirmed — passenger-cancelled + rider-cancelled + completed exclude ──
+// Completed rides move out to the History tab.
 get confirmedBookings(): Booking[] {
   return this.allBookings.filter(
     (b) => b.status === 'confirmed'
       && b.status_by_passenger !== 'cancelled'
       && b.ride?.ride_status !== 'cancelled'
+      && b.ride?.ride_status !== 'completed'
   );
 }
 
-// ── Not Approved — sirf driver-rejected; passenger-cancelled + rider-cancelled exclude ──
+/** Only the last N days (by ride date), measured from today. Older rides are hidden. */
+private readonly HISTORY_DAYS = 4;
+private withinHistoryWindow(dateStr?: string): boolean {
+  if (!dateStr) return false;
+  const t = new Date(dateStr).getTime();
+  if (isNaN(t)) return false;
+  // Cutoff = UTC midnight of (today − N days). UTC to match the cards, which
+  // render dates with timeZone: 'UTC'. So a ride shown as "16 Jun" is judged
+  // as 16 Jun here too — no off-by-a-day surprises across timezones.
+  const now = new Date();
+  const todayUtcMidnight = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const cutoff = todayUtcMidnight - this.HISTORY_DAYS * 24 * 60 * 60 * 1000;
+  return t >= cutoff;
+}
+
+// ── History — finished rides (completed OR rider-cancelled) from the last 4 days only ──
+// window is measured from the ride date (departure_time) — i.e. when the ride actually happened
+get historyBookings(): Booking[] {
+  return this.allBookings.filter(
+    (b) => (b.ride?.ride_status === 'completed' || b.ride?.ride_status === 'cancelled')
+      && this.withinHistoryWindow(b.ride?.departure_time)
+  );
+}
+
+/** Short label describing what this booking was, given the ride is finished. */
+historyLabel(b: Booking): string {
+  if (b.ride?.ride_status === 'cancelled') return 'Ride cancelled by rider';
+  // ride completed — describe the booking's own state
+  if (b.status_by_passenger === 'cancelled') return 'You cancelled · ride completed';
+  if (b.status === 'confirmed') return 'Confirmed · ride completed';
+  if (b.status === 'pending') return 'Was pending · ride completed';
+  if (b.status === 'rejected' || b.status === 'cancelled') return 'Not approved · ride completed';
+  return 'Ride completed';
+}
+
+/** CSS tag class for the history label. */
+historyLabelClass(b: Booking): string {
+  if (b.ride?.ride_status === 'cancelled') return 'hist-tag hist-cancelled';
+  if (b.status_by_passenger === 'cancelled') return 'hist-tag hist-cancelled';
+  if (b.status === 'confirmed') return 'hist-tag hist-confirmed';
+  if (b.status === 'pending') return 'hist-tag hist-pending';
+  return 'hist-tag hist-rejected';
+}
+
+// ── Not Approved — driver-rejected; passenger-cancelled + rider-cancelled + completed exclude ──
 get rejectedBookings(): Booking[] {
   return this.allBookings.filter(
     (b) =>
       (b.status === 'cancelled' || b.status === 'rejected') &&
       b.status_by_passenger !== 'cancelled' &&
-      b.ride?.ride_status !== 'cancelled'
+      b.ride?.ride_status !== 'cancelled' &&
+      b.ride?.ride_status !== 'completed'
   );
 }
 
-// ── Cancelled by you (passenger ne khud cancel ki) ──
+// ── Cancelled by you (passenger ne khud cancel ki) — completed exclude (history me jayegi) ──
 get cancelledByMeBookings(): Booking[] {
   return this.allBookings.filter(
     (b) => b.status_by_passenger === 'cancelled'
+      && b.ride?.ride_status !== 'completed'
   );
 }
 
-// ── Cancelled ride by rider (rider ne ride cancel ki, passenger ne nahi) ──
+// ── Cancelled ride by rider (rider ne ride cancel ki, passenger ne nahi) — last 4 days only ──
 get cancelledByRiderBookings(): Booking[] {
   return this.allBookings.filter(
     (b) => b.ride?.ride_status === 'cancelled' && b.status_by_passenger !== 'cancelled'
+      && this.withinHistoryWindow(b.ride?.departure_time)
   );
 }
 }

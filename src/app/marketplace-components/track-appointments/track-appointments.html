@@ -1,0 +1,52 @@
+<div class="ta-page">
+  <div class="ta-wrap">
+
+    <button type="button" class="ta-back" (click)="goBack()">← Back</button>
+    <div class="ta-head">
+      <h1 class="ta-title">My Appointments</h1>
+      <p class="ta-sub">Track your doctor appointment requests and confirmed times.</p>
+    </div>
+
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    @if (loading) {
+      <div class="ta-state">Loading…</div>
+    } @else if (appointments.length === 0) {
+      <div class="ta-empty">
+        <div class="ta-empty-icon">📅</div>
+        <p>No appointments yet.</p>
+      </div>
+    } @else {
+      <div class="ta-list">
+        @for (a of appointments; track a._id) {
+          <div class="ta-card">
+            <div class="ta-card-top">
+              <div>
+                <div class="ta-doc">Dr. {{ a.doctor_name }}</div>
+                <div class="ta-spec">{{ a.specialization }} · {{ a.shop?.name }}</div>
+              </div>
+              <span [class]="statusClass(a.status)">{{ a.status | titlecase }}</span>
+            </div>
+
+            <!-- Confirmed time -->
+            @if (a.status === 'accepted' && a.appointment_time) {
+              <div class="ta-time">🕒 Appointment time: <strong>{{ a.appointment_time }}</strong></div>
+            } @else if (a.status === 'requested') {
+              <div class="ta-pending-note">Waiting for the hospital to confirm your time…</div>
+            } @else if (a.status === 'rejected') {
+              <div class="ta-rejected-note">This request was declined. Please try another time or doctor.</div>
+            }
+
+            <div class="ta-meta">
+              @if (a.consultation_fee) { <span>💵 ₹{{ a.consultation_fee }}</span> }
+              @if (a.shop?.phone) { <span>📞 <a [href]="'tel:' + a.shop.phone">{{ a.shop.phone }}</a></span> }
+              <span>Requested {{ formatDate(a.created_at) }}</span>
+            </div>
+            @if (a.reason) { <div class="ta-reason">📝 {{ a.reason }}</div> }
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

@@ -3054,6 +3054,34 @@ app-my-bookings {
 .bookings-page .pill-pending  { background: var(--pending-bg);  border: 1px solid var(--pending-border);  color: var(--pending); }
 .bookings-page .pill-confirmed{ background: var(--confirmed-bg); border: 1px solid var(--confirmed-border); color: var(--confirmed); }
 .bookings-page .pill-rejected { background: var(--rejected-bg);  border: 1px solid var(--rejected-border);  color: var(--rejected); }
+.bookings-page .pill-history  { background: #eef2ff; border: 1px solid #c7d2fe; color: #4f46e5; }
+
+/* ── Ride history: compact vertical list ── */
+.bookings-page .history-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.bookings-page .history-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: #fafbfc; border: 1px solid #eef1f5; border-radius: 12px;
+  padding: 12px 16px;
+}
+.bookings-page .hist-main { min-width: 0; }
+.bookings-page .hist-route { font-weight: 600; color: #475569; font-size: 0.92rem; }
+.bookings-page .hist-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: 0.78rem; color: #94a3b8; }
+.bookings-page .hist-rider { cursor: pointer; }
+.bookings-page .hist-rider:hover { color: #64748b; text-decoration: underline; }
+.bookings-page .hist-tag {
+  flex-shrink: 0; font-size: 0.72rem; font-weight: 600; padding: 4px 10px;
+  border-radius: 999px; text-align: center; white-space: nowrap;
+}
+/* muted, desaturated tag tones */
+.bookings-page .hist-confirmed { background: #eef4ef; color: #5b8a6a; }
+.bookings-page .hist-pending   { background: #f5f1e8; color: #9a8a5f; }
+.bookings-page .hist-rejected  { background: #f5edec; color: #a87d78; }
+.bookings-page .hist-cancelled { background: #eef0f5; color: #7782a0; }
+
+@media (max-width: 575px) {
+  .bookings-page .history-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .bookings-page .hist-tag { align-self: flex-start; }
+}
 
 /* ── States ── */
 .bookings-page .state-box { min-height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; }

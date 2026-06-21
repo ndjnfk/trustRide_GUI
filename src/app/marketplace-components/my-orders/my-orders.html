@@ -2,9 +2,22 @@
   <div class="container py-5 mt-5">
 
     <button class="btn btn-link mp-back px-0 mb-3" (click)="goShopping()">← Continue Shopping</button>
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
-      <h1 class="mp-title mb-0">My Orders</h1>
-      <button type="button" class="btn mp-track-services" (click)="goTrackServices()">🛠️ Track Services</button>
+    <h1 class="mp-title mb-3">My Orders</h1>
+
+    <!-- 4-way request type toggle -->
+    <div class="mp-tabs mb-4">
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'products'" (click)="setTab('products')">
+        🛍️ Products 
+      </button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'services'" (click)="setTab('services')">
+        🛠️ Services 
+      </button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'pharmacy'" (click)="setTab('pharmacy')">
+        💊 Pharmacy 
+      </button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'appointments'" (click)="setTab('appointments')">
+        📅 Appointments 
+      </button>
     </div>
 
     <!-- Loading -->
@@ -23,18 +36,12 @@
     }
 
     @if (!loading && !error) {
-      <!-- Empty -->
-      @if (orders.length === 0 && prescriptionOrders.length === 0) {
-        <div class="text-center text-muted py-5">
-          <div class="mp-empty-icon">📦</div>
-          <p class="mb-3">You haven't placed any orders yet.</p>
-          <button class="btn mp-shop-btn" (click)="goShopping()">Browse Products</button>
-        </div>
-      } @else {
 
-        <!-- ── Medical Store prescription orders ── -->
-        @if (prescriptionOrders.length > 0) {
-          <h2 class="mp-section-title">💊 Medical Store</h2>
+      <!-- ── Pharmacy (prescriptions) ── -->
+      @if (activeTab === 'pharmacy') {
+        @if (prescriptionOrders.length === 0) {
+          <div class="text-center text-muted py-5"><div class="mp-empty-icon">💊</div><p>No prescription orders yet.</p></div>
+        } @else {
           @for (rx of prescriptionOrders; track rx._id) {
             <div class="card border-0 shadow-sm mb-4 order-card" [class.delivered]="isDelivered(rx.status)">
               <div class="card-body">
@@ -99,17 +106,29 @@
                   </div>
                 }
 
+                <!-- Review (after delivery) -->
+                @if (rx.status === 'delivered') {
+                  <div class="mp-review-wrap">
+                    <ng-container *ngTemplateOutlet="reviewBlock; context: { type: 'prescription', id: rx._id }"></ng-container>
+                  </div>
+                }
+
               </div>
             </div>
           }
         }
+      }
 
-        <!-- ── Product orders ── -->
-        @if (orders.length > 0) {
-          @if (prescriptionOrders.length > 0) {
-            <h2 class="mp-section-title">🛍️ Products</h2>
-          }
-        @for (order of orders; track order._id) {
+      <!-- ── Products ── -->
+      @if (activeTab === 'products') {
+        @if (orders.length === 0) {
+          <div class="text-center text-muted py-5">
+            <div class="mp-empty-icon">🛍️</div>
+            <p class="mb-3">No product orders yet.</p>
+            <button class="btn mp-shop-btn" (click)="goShopping()">Browse Products</button>
+          </div>
+        } @else {
+          @for (order of orders; track order._id) {
           <div class="card border-0 shadow-sm mb-4 order-card" [class.delivered]="isDelivered(order.status)">
             <div class="card-body">
 
@@ -179,12 +198,118 @@
                 </div>
               }
 
+              <!-- Review (after delivery) -->
+              @if (order.status === 'delivered') {
+                <div class="mp-review-wrap">
+                  <ng-container *ngTemplateOutlet="reviewBlock; context: { type: 'product', id: order._id }"></ng-container>
+                </div>
+              }
+
             </div>
           </div>
+          }
         }
+      }
+
+      <!-- ── Services ── -->
+      @if (activeTab === 'services') {
+        @if (serviceBookings.length === 0) {
+          <div class="text-center text-muted py-5"><div class="mp-empty-icon">🛠️</div><p>No service bookings yet.</p></div>
+        } @else {
+          @for (s of serviceBookings; track s._id) {
+            <div class="card border-0 shadow-sm mb-3 order-card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <div>
+                    <div class="order-id">{{ s.service_name }}</div>
+                    <div class="order-date">{{ s.shop?.name }} · {{ s.created_at | date: 'dd MMM yyyy' }}</div>
+                  </div>
+                  <span [class]="statusPill(s.status)">{{ s.status | titlecase }}</span>
+                </div>
+                <div class="order-address mt-2">
+                  @if (s.price) { 💵 ₹{{ s.price }} }
+                  @if (s.duration_minutes) { · ⏱ {{ s.duration_minutes }} min }
+                  @if (s.shop?.phone) { · 📞 {{ s.shop.phone }} }
+                </div>
+                @if (s.status === 'completed') {
+                  <div class="mp-review-wrap">
+                    <ng-container *ngTemplateOutlet="reviewBlock; context: { type: 'service', id: s._id }"></ng-container>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+      }
+
+      <!-- ── Appointments ── -->
+      @if (activeTab === 'appointments') {
+        @if (appointments.length === 0) {
+          <div class="text-center text-muted py-5"><div class="mp-empty-icon">📅</div><p>No appointments yet.</p></div>
+        } @else {
+          @for (a of appointments; track a._id) {
+            <div class="card border-0 shadow-sm mb-3 order-card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <div>
+                    <div class="order-id">Dr. {{ a.doctor_name }}</div>
+                    <div class="order-date">{{ a.specialization }} · {{ a.shop?.name }}</div>
+                  </div>
+                  <span [class]="statusPill(a.status)">{{ a.status | titlecase }}</span>
+                </div>
+                @if (a.status === 'accepted' && a.appointment_time) {
+                  <div class="appt-time mt-2">🕒 Appointment time: <strong>{{ a.appointment_time }}</strong></div>
+                } @else if (a.status === 'requested') {
+                  <div class="order-address mt-2">Waiting for the hospital to confirm your time…</div>
+                } @else if (a.status === 'rejected') {
+                  <div class="cancelled-banner mt-2">✕ Request declined</div>
+                }
+                <div class="order-address mt-2">
+                  @if (a.consultation_fee) { 💵 ₹{{ a.consultation_fee }} }
+                  @if (a.shop?.phone) { · 📞 {{ a.shop.phone }} }
+                </div>
+                @if (a.reason) { <div class="order-items mt-2"><div class="order-item"><span class="oi-name">📝 {{ a.reason }}</span></div></div> }
+                @if (a.status === 'completed') {
+                  <div class="mp-review-wrap">
+                    <span class="mp-review-for">Rate Dr. {{ a.doctor_name }}</span>
+                    <ng-container *ngTemplateOutlet="reviewBlock; context: { type: 'appointment', id: a._id }"></ng-container>
+                  </div>
+                }
+              </div>
+            </div>
+          }
         }
       }
     }
+
+    <!-- ── Reusable review block (used by all 4 tabs on completed items) ── -->
+    <ng-template #reviewBlock let-type="type" let-id="id">
+      @if (getReview(id)) {
+        <div class="mp-review-done">
+          <span class="mp-stars">
+            @for (f of starArray(getReview(id).rating); track $index) { <span [class.on]="f">★</span> }
+          </span>
+          <span class="mp-review-txt">Your rating</span>
+        </div>
+      } @else if (reviewDraft[id]) {
+        <div class="mp-review-form">
+          <div class="mp-stars-pick">
+            @for (s of [1,2,3,4,5]; track s) {
+              <span [class.on]="s <= reviewDraft[id].rating" (click)="setReviewStar(id, s)">★</span>
+            }
+          </div>
+          <textarea class="form-control mp-review-text" rows="2" [(ngModel)]="reviewDraft[id].comment"
+            placeholder="Share your experience (optional)"></textarea>
+          <button type="button" class="mp-review-submit"
+            [disabled]="reviewDraft[id].submitting || reviewDraft[id].rating < 1"
+            (click)="submitReview(type, id)">
+            {{ reviewDraft[id].submitting ? 'Submitting…' : 'Submit review' }}
+          </button>
+        </div>
+      } @else {
+        <button type="button" class="mp-rate-btn" (click)="openReview(id)">★ Rate</button>
+      }
+    </ng-template>
 
   </div>
 </div>

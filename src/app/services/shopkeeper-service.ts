@@ -98,6 +98,41 @@ export class ShopkeeperService {
     return this.http.put(`${this.API_URL}/shop/orders/${id}/status`, { status }, { headers: this.authHeaders() });
   }
 
+  // ── Prescription orders (pharmacy) ──
+  getPrescriptions(): Observable<any> {
+    return this.http.get(`${this.API_URL}/shop/prescriptions`, { headers: this.authHeaders() });
+  }
+  updatePrescriptionStatus(id: string, status: string): Observable<any> {
+    return this.http.put(`${this.API_URL}/shop/prescriptions/${id}/status`, { status }, { headers: this.authHeaders() });
+  }
+
+  // ── Doctor profiles (OPD / hospital) ──
+  getDoctors(): Observable<any> {
+    return this.http.get(`${this.API_URL}/shop/doctors`, { headers: this.authHeaders() });
+  }
+  createDoctor(payload: FormData): Observable<any> {
+    return this.http.post(`${this.API_URL}/shop/doctors`, payload, { headers: this.authHeaders() });
+  }
+  updateDoctor(id: string, payload: FormData): Observable<any> {
+    return this.http.put(`${this.API_URL}/shop/doctors/${id}`, payload, { headers: this.authHeaders() });
+  }
+  deleteDoctor(id: string): Observable<any> {
+    return this.http.delete(`${this.API_URL}/shop/doctors/${id}`, { headers: this.authHeaders() });
+  }
+
+  // ── Appointments (OPD / hospital) ──
+  getAppointments(): Observable<any> {
+    return this.http.get(`${this.API_URL}/shop/appointments`, { headers: this.authHeaders() });
+  }
+  updateAppointment(id: string, payload: { status: string; appointment_time?: string }): Observable<any> {
+    return this.http.put(`${this.API_URL}/shop/appointments/${id}`, payload, { headers: this.authHeaders() });
+  }
+
+  // ── Customer reviews ──
+  getReviews(): Observable<any> {
+    return this.http.get(`${this.API_URL}/shop/reviews`, { headers: this.authHeaders() });
+  }
+
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.API_URL}/shop/login`, { email, password }).pipe(
       tap((res: any) => {

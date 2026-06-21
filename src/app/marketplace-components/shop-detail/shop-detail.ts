@@ -20,6 +20,7 @@ export class ShopDetail {
   shop: any = null;
   products: any[] = [];
   services: any[] = [];
+  doctors: any[] = [];
   visibleCount = this.PAGE;
 
   constructor(
@@ -43,6 +44,7 @@ export class ShopDetail {
         this.shop = res?.shop ?? null;
         this.products = res?.products ?? [];
         this.services = res?.services ?? [];
+        this.doctors = res?.doctors ?? [];
         this.loading = false;
       },
       error: (err) => {
@@ -55,6 +57,38 @@ export class ShopDetail {
   /** services for service shops, otherwise products */
   get isService(): boolean {
     return this.shop?.shop_type === 'service';
+  }
+
+  /** pharmacy shops take a prescription upload instead of a product list */
+  get isPharmacy(): boolean {
+    return this.shop?.shop_type === 'prescription';
+  }
+
+  /** OPD/hospital shops list their doctors */
+  get isHospital(): boolean {
+    return this.shop?.shop_type === 'opd';
+  }
+
+  get visibleDoctors(): any[] {
+    return this.doctors.slice(0, this.visibleCount);
+  }
+  get hasMoreDoctors(): boolean {
+    return this.doctors.length > this.visibleCount;
+  }
+
+  openDoctor(d: any): void {
+    this.router.navigate(['/marketplace/doctor', d._id]);
+  }
+
+  /** go to the prescription upload form, tagged with this shop */
+  uploadPrescription(): void {
+    if (!AuthHelper.isLoggedIn()) {
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: `/marketplace/medical-store?shopId=${this.shop?._id}` },
+      });
+      return;
+    }
+    this.router.navigate(['/marketplace/medical-store'], { queryParams: { shopId: this.shop?._id } });
   }
 
   get items(): any[] {

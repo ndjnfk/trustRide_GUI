@@ -88,6 +88,38 @@ export class MarketplaceService {
     });
   }
 
+  // ── OPD / Hospital — doctors + appointments ──
+  // Public — single doctor profile + hospital contact
+  getDoctor(doctorId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/doctors/${doctorId}`);
+  }
+  // Auth — request an appointment with a doctor
+  bookAppointment(doctorId: string, payload: any): Observable<any> {
+    return this.http.post(
+      `${this.API_URL}/marketplace/doctors/${doctorId}/appointment`,
+      payload,
+      { headers: AuthHelper.getAuthHeader() }
+    );
+  }
+  // Auth — my appointments (Track)
+  getMyAppointments(): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/my-appointments`, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
+  // ── Shop reviews (rate a shop/doctor after a completed transaction) ──
+  submitShopReview(payload: { source_type: string; source_id: string; rating: number; comment?: string }): Observable<any> {
+    return this.http.post(`${this.API_URL}/marketplace/shop-reviews`, payload, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+  getMyShopReviews(): Observable<any> {
+    return this.http.get(`${this.API_URL}/marketplace/my-shop-reviews`, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
   // Public — all categories with image
   getCategories(): Observable<any> {
     return this.http.get(`${this.API_URL}/marketplace/categories`);

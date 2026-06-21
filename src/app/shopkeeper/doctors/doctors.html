@@ -1,0 +1,134 @@
+<div class="doc-page">
+  <div class="doc-wrap">
+
+    <button type="button" class="doc-back" (click)="goBack()">← Back to dashboard</button>
+
+    <div class="doc-head">
+      <div>
+        <h1 class="doc-title">Doctor Profiles</h1>
+        <p class="doc-sub">Add and manage the doctors at your clinic / hospital.</p>
+      </div>
+      <button type="button" class="btn doc-add-btn" (click)="openAdd()">＋ Add Doctor</button>
+    </div>
+
+    @if (error && !showForm) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    <!-- Form -->
+    @if (showForm) {
+      <div class="doc-form-card">
+        <h2 class="doc-form-title">{{ editingId ? 'Edit Doctor' : 'Add Doctor' }}</h2>
+        @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Doctor name</label>
+            <input type="text" class="form-control" [(ngModel)]="form.name" name="name" placeholder="e.g. Dr. Asha Sharma" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Specialization</label>
+            <input type="text" class="form-control" [(ngModel)]="form.specialization" name="specialization" placeholder="e.g. Cardiologist" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Qualification</label>
+            <input type="text" class="form-control" [(ngModel)]="form.qualification" name="qualification" placeholder="e.g. MBBS, MD" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Registration no.</label>
+            <input type="text" class="form-control" [(ngModel)]="form.registration_no" name="registration_no" placeholder="Medical council reg. no." />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Experience (years)</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="form.experience_years" name="experience_years" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Consultation fee (₹)</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="form.consultation_fee" name="consultation_fee" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" [(ngModel)]="form.phone" name="phone" placeholder="Contact number" />
+          </div>
+          <div class="col-12">
+            <label class="form-label">Doctor's email <small class="text-muted">(appointment requests go here)</small></label>
+            <input type="email" class="form-control" [(ngModel)]="form.email" name="email" placeholder="doctor@example.com" />
+          </div>
+          <div class="col-12">
+            <label class="form-label">Availability</label>
+            <input type="text" class="form-control" [(ngModel)]="form.available_time" name="available_time" placeholder="e.g. Mon–Fri, 10:00 AM – 2:00 PM" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Photo</label>
+            <div class="doc-images-row">
+              <label class="doc-image-pick">
+                <input type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
+                ＋ {{ existingImageUrl || imagePreview ? 'Change photo' : 'Add photo' }}
+              </label>
+              @if (imagePreview) {
+                <img class="doc-image-thumb" [src]="imagePreview" alt="preview" />
+              } @else if (existingImageUrl) {
+                <img class="doc-image-thumb" [src]="imageBaseUrl + existingImageUrl" alt="photo" />
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-form-actions">
+          <button type="button" class="btn doc-cancel" (click)="cancelForm()">Cancel</button>
+          <button type="button" class="btn doc-save" [disabled]="saving" (click)="save()">
+            {{ saving ? 'Saving…' : (editingId ? 'Update' : 'Add Doctor') }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- List -->
+    @if (loading) {
+      <div class="doc-state">Loading…</div>
+    } @else if (doctors.length === 0 && !showForm) {
+      <div class="doc-empty">
+        <div class="doc-empty-icon">👨‍⚕️</div>
+        <p>No doctors yet. Add your first doctor profile.</p>
+        <button type="button" class="btn doc-add-btn" (click)="openAdd()">＋ Add Doctor</button>
+      </div>
+    } @else {
+      <div class="doc-grid">
+        @for (d of doctors; track d._id) {
+          <div class="doc-card">
+            <div class="doc-card-top">
+              <div class="doc-avatar">
+                @if (d.photo_url) {
+                  <img [src]="imageBaseUrl + d.photo_url" [alt]="d.name" />
+                } @else {
+                  <span>{{ initials(d.name) }}</span>
+                }
+              </div>
+              <div class="doc-card-info">
+                <div class="doc-card-name">{{ d.name }}</div>
+                <div class="doc-card-spec">{{ d.specialization }}</div>
+                @if (d.qualification) { <div class="doc-card-qual">{{ d.qualification }}</div> }
+              </div>
+            </div>
+
+            <div class="doc-card-meta">
+              @if (d.experience_years) { <span>🩺 {{ d.experience_years }} yr exp</span> }
+              @if (d.consultation_fee) { <span>💵 ₹{{ d.consultation_fee }}</span> }
+              @if (d.registration_no) { <span>🆔 {{ d.registration_no }}</span> }
+            </div>
+            @if (d.available_time) { <div class="doc-card-avail">🕒 {{ d.available_time }}</div> }
+            @if (d.phone) { <div class="doc-card-avail">📞 {{ d.phone }}</div> }
+            @if (d.email) { <div class="doc-card-avail">✉️ {{ d.email }}</div> }
+
+            <div class="doc-card-actions">
+              <button type="button" class="doc-edit" (click)="openEdit(d)">Edit</button>
+              <button type="button" class="doc-del" [disabled]="deletingId === d._id" (click)="remove(d)">
+                {{ deletingId === d._id ? '…' : 'Delete' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<div class="ap-page">
+  <div class="ap-wrap">
+
+    <button type="button" class="ap-back" (click)="goBack()">← Back to dashboard</button>
+    <div class="ap-head">
+      <h1 class="ap-title">Appointment Requests</h1>
+      <p class="ap-sub">Accept a request and set the time, or decline it. Filter by doctor below.</p>
+    </div>
+
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    <!-- Doctor filter toggle -->
+    @if (doctors.length) {
+      <div class="ap-filter">
+        <button type="button" class="ap-chip" [class.active]="doctorFilter === ''" (click)="doctorFilter = ''">All</button>
+        @for (d of doctors; track d.id) {
+          <button type="button" class="ap-chip" [class.active]="doctorFilter === d.id" (click)="doctorFilter = d.id">{{ d.name }}</button>
+        }
+      </div>
+    }
+
+    @if (loading) {
+      <div class="ap-state">Loading…</div>
+    } @else if (filtered.length === 0) {
+      <div class="ap-empty">
+        <div class="ap-empty-icon">📅</div>
+        <p>No appointment requests{{ doctorFilter ? ' for this doctor' : '' }}.</p>
+      </div>
+    } @else {
+      <div class="ap-list">
+        @for (a of filtered; track a._id) {
+          <div class="ap-card">
+            <div class="ap-card-top">
+              <div>
+                <div class="ap-doc">Dr. {{ a.doctor_name }}</div>
+                <div class="ap-spec">{{ a.specialization }}</div>
+              </div>
+              <span [class]="statusClass(a.status)">{{ a.status | titlecase }}</span>
+            </div>
+
+            <!-- Patient -->
+            <div class="ap-patient">
+              <div class="ap-pat-name">👤 {{ a.patient?.name }}</div>
+              <div class="ap-pat-line" *ngIf="a.patient?.phone">📞 <a [href]="'tel:' + a.patient.phone">{{ a.patient.phone }}</a></div>
+              <div class="ap-pat-line" *ngIf="a.preferred_date">📆 Preferred: {{ a.preferred_date }}</div>
+              <div class="ap-pat-line ap-muted">Requested {{ formatDate(a.created_at) }}</div>
+            </div>
+            @if (a.reason) { <div class="ap-reason">📝 {{ a.reason }}</div> }
+
+            <!-- Appointment time + actions -->
+            <div class="ap-time-row">
+              <input type="text" class="form-control ap-time-input" [(ngModel)]="timeInput[a._id]"
+                placeholder="Appointment time e.g. 25 Jun, 11:30 AM" />
+            </div>
+            <div class="ap-actions">
+              <button type="button" class="ap-btn ap-accept" [disabled]="updatingId === a._id || a.status === 'accepted'"
+                (click)="setStatus(a, 'accepted')">✓ Accept &amp; set time</button>
+              <button type="button" class="ap-btn ap-complete" [disabled]="updatingId === a._id || a.status === 'completed'"
+                (click)="setStatus(a, 'completed')">Mark completed</button>
+              <button type="button" class="ap-btn ap-reject" [disabled]="updatingId === a._id || a.status === 'rejected'"
+                (click)="setStatus(a, 'rejected')">✕ Decline</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

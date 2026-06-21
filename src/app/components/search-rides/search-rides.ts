@@ -206,7 +206,9 @@ export class SearchRides {
       next: (res: any) => {
         this.loader.hide();
         if (!res.success || !res.rides?.length) {
+          this.rides = []; // clear stale results from a previous search
           this.showSnackBar('No rides found for this route.', 'error');
+          this.cdr.detectChanges();
           return;
         }
 
@@ -228,10 +230,12 @@ export class SearchRides {
         });
 
         if (!filtered.length) {
+          this.rides = []; // clear stale results from a previous search
           this.showSnackBar(
             `No rides found with ${this.passengers} seat(s) available.`,
             'error'
           );
+          this.cdr.detectChanges();
           return;
         }
 
@@ -306,7 +310,19 @@ export class SearchRides {
 
   /* ── Results ── */
   close(): void {
-    this.router.navigate(['/dashboard']);
+    // Stay on this page — just clear the search results and reset the search form.
+    this.rides = [];
+    this.from = '';
+    this.to = '';
+    this.fromValue = '';
+    this.toValue = '';
+    this.passengers = 1;
+    this.selectedDateValue = this.dateOptions[0]?.value ?? '';
+    this.showFromDropdown = false;
+    this.showToDropdown = false;
+    this.fromFiltered = [];
+    this.toFiltered = [];
+    this.cdr.detectChanges();
   }
 
   formatTime(iso: string): string {

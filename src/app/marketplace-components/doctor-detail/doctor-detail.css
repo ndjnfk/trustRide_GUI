@@ -1,0 +1,51 @@
+.dd-page { min-height: 100vh; background: #f7f9ff; }
+.dd-back { color: #0057ff; font-weight: 600; text-decoration: none; }
+.dd-spin { color: #0057ff; }
+
+.dd-card { border-radius: 16px; padding: 22px; max-width: 640px; margin: 0 auto; }
+
+.dd-head { display: flex; gap: 16px; align-items: center; }
+.dd-avatar {
+  width: 84px; height: 84px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  background: #e7edff; color: #4f46e5; font-weight: 800; font-size: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.dd-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dd-name { font-size: 1.4rem; font-weight: 800; color: #1a3c5e; margin: 0; }
+.dd-spec { color: #0057ff; font-weight: 600; }
+.dd-qual { color: #64748b; font-size: 0.88rem; margin-top: 2px; }
+
+.dd-stats { display: flex; gap: 12px; margin: 18px 0; }
+.dd-stat {
+  flex: 1; background: #f0f6ff; border: 1px solid #dbe6ff; border-radius: 12px;
+  padding: 12px; text-align: center;
+}
+.dd-stat-val { display: block; font-weight: 800; color: #0057ff; font-size: 1.15rem; }
+.dd-stat-lbl { font-size: 0.76rem; color: #64748b; }
+
+.dd-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.dd-row { color: #475569; font-size: 0.9rem; }
+.dd-row-ic { margin-right: 6px; }
+
+.dd-book-btn {
+  width: 100%; background: #0057ff; color: #fff; border: none; border-radius: 12px;
+  font-weight: 700; padding: 13px; cursor: pointer; font-size: 1rem;
+}
+.dd-book-btn:hover { background: #0046cc; }
+.dd-book-btn[disabled] { opacity: 0.6; }
+
+.dd-done {
+  background: #ecfdf5; border: 1px solid #bbf7d0; color: #15803d; border-radius: 12px;
+  padding: 16px; text-align: center; font-weight: 600;
+}
+.dd-track {
+  display: block; margin: 10px auto 0; background: none; border: none;
+  color: #0057ff; font-weight: 700; cursor: pointer;
+}
+
+.dd-form { margin-top: 18px; border-top: 1px solid #eef2ff; padding-top: 16px; }
+.dd-form-title { font-size: 1.05rem; font-weight: 700; color: #1a3c5e; margin-bottom: 12px; }
+.dd-label { font-size: 0.82rem; font-weight: 600; color: #475569; margin-bottom: 2px; display: block; }
+.dd-form-actions { display: flex; gap: 10px; }
+.dd-cancel { flex: 0 0 auto; background: #fff; border: 1.5px solid #e2e8f0; color: #475569; border-radius: 12px; padding: 13px 22px; font-weight: 600; cursor: pointer; }
+.dd-submit { flex: 1; }

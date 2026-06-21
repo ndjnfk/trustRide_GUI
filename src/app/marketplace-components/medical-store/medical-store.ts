@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MarketplaceService } from '../../services/marketplace-service';
 
 // City/state/pincode are fixed to the serviceable area and not user-editable.
@@ -34,17 +34,23 @@ export class MedicalStore {
   submitted = false;
   error = '';
 
+  /** when uploaded from a specific pharmacy shop page */
+  shopId: string | null = null;
+
   constructor(
     private marketplace: MarketplaceService,
+    private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.shopId = this.route.snapshot.queryParamMap.get('shopId');
     if (!this.marketplace.isLoggedIn()) {
-      this.router.navigate(['/login'], {
-        queryParams: { returnUrl: '/marketplace/medical-store' },
-      });
+      const returnUrl = this.shopId
+        ? `/marketplace/medical-store?shopId=${this.shopId}`
+        : '/marketplace/medical-store';
+      this.router.navigate(['/login'], { queryParams: { returnUrl } });
       return;
     }
     this.prefillFromSavedAddress();
@@ -111,6 +117,7 @@ export class MedicalStore {
     fd.append('state', FIXED_LOCATION.state);
     fd.append('pincode', FIXED_LOCATION.pincode);
     fd.append('notes', this.form.notes.trim());
+    if (this.shopId) fd.append('shop_id', this.shopId);
     fd.append('prescription', this.file, this.file.name);
 
     this.submitting = true;

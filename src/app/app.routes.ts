@@ -159,6 +159,36 @@ export const routes: Routes = [
       import('../app/shopkeeper/orders/orders').then((m) => m.ShopOrders),
   },
   {
+    path: 'shop/prescriptions',
+    loadComponent: () =>
+      import('../app/shopkeeper/prescriptions/prescriptions').then((m) => m.ShopPrescriptions),
+  },
+  {
+    path: 'shop/doctors',
+    loadComponent: () =>
+      import('../app/shopkeeper/doctors/doctors').then((m) => m.ShopDoctors),
+  },
+  {
+    path: 'shop/appointments',
+    loadComponent: () =>
+      import('../app/shopkeeper/appointments/appointments').then((m) => m.ShopAppointments),
+  },
+  {
+    path: 'shop/reviews',
+    loadComponent: () =>
+      import('../app/shopkeeper/reviews/reviews').then((m) => m.ShopReviews),
+  },
+  {
+    path: 'marketplace/doctor/:doctorId',
+    loadComponent: () =>
+      import('../app/marketplace-components/doctor-detail/doctor-detail').then((m) => m.DoctorDetail),
+  },
+  {
+    path: 'marketplace/appointments',
+    loadComponent: () =>
+      import('../app/marketplace-components/track-appointments/track-appointments').then((m) => m.TrackAppointments),
+  },
+  {
     path: 'track-services',
     loadComponent: () =>
       import('../app/marketplace-components/track-services/track-services').then((m) => m.TrackServices),

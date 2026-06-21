@@ -1,0 +1,77 @@
+<div class="rx-page">
+  <div class="rx-wrap">
+
+    <button type="button" class="rx-back" (click)="goBack()">← Back to dashboard</button>
+    <div class="rx-head">
+      <h1 class="rx-title">Prescriptions</h1>
+      <p class="rx-sub">Prescriptions customers uploaded to your pharmacy. Review the file and update the status.</p>
+    </div>
+
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+
+    @if (loading) {
+      <div class="rx-state">Loading…</div>
+    } @else if (orders.length === 0) {
+      <div class="rx-empty">
+        <div class="rx-empty-icon">💊</div>
+        <p>No prescriptions yet.</p>
+      </div>
+    } @else {
+      <div class="rx-list">
+        @for (o of orders; track o._id) {
+          <div class="rx-card">
+            <div class="rx-card-top">
+              <div>
+                <div class="rx-orderid">Rx #{{ o.order_id }}</div>
+                <div class="rx-meta">{{ formatDate(o.created_at) }}</div>
+              </div>
+              <span [class]="statusClass(o.status)">{{ statusLabel(o.status) | titlecase }}</span>
+            </div>
+
+            <!-- Prescription file -->
+            <div class="rx-file">
+              @if (o.prescription_url) {
+                @if (isPdf(o.prescription_url)) {
+                  <a class="rx-file-pdf" [href]="imageBaseUrl + o.prescription_url" target="_blank" rel="noopener">
+                    📄 Open prescription (PDF)
+                  </a>
+                } @else {
+                  <a [href]="imageBaseUrl + o.prescription_url" target="_blank" rel="noopener" title="Open full size">
+                    <img class="rx-file-img" [src]="imageBaseUrl + o.prescription_url" alt="prescription" />
+                  </a>
+                }
+              } @else {
+                <span class="rx-file-none">No file attached</span>
+              }
+            </div>
+
+            <!-- Notes -->
+            @if (o.notes) {
+              <div class="rx-notes">📝 {{ o.notes }}</div>
+            }
+
+            <!-- Customer details -->
+            <div class="rx-customer">
+              <div class="rx-cust-name">👤 {{ o.customer?.name }}</div>
+              <div class="rx-cust-line" *ngIf="o.customer?.phone">📞 <a [href]="'tel:' + o.customer.phone">{{ o.customer.phone }}</a></div>
+              <div class="rx-cust-line" *ngIf="o.customer?.address">
+                📍 {{ fullAddress(o.customer.address) }}
+              </div>
+            </div>
+
+            <!-- Status actions -->
+            <div class="rx-actions">
+              @for (s of statuses; track s) {
+                <button type="button" class="rx-status-btn" [class.active]="o.status === s"
+                  [disabled]="updatingId === o._id || o.status === s" (click)="setStatus(o, s)">
+                  {{ statusLabel(s) | titlecase }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

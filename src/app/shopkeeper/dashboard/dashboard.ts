@@ -46,6 +46,7 @@ export class ShopDashboard {
         { icon: '🏷️', title: 'Categories', desc: 'Create & manage product categories', route: '/shop/categories' },
         { icon: '🚚', title: 'Product Orders', desc: 'Customer orders with address & phone — update status', route: '/shop/orders' },
         { icon: '📍', title: 'Delivery Settings', desc: 'Self vs platform delivery, delivery radius', soon: true },
+        { icon: '⭐', title: 'Customer Reviews', desc: 'Ratings & feedback from your customers', route: '/shop/reviews' },
       ],
     },
     service: {
@@ -57,27 +58,30 @@ export class ShopDashboard {
         { icon: '✅', title: 'Booking Requests', desc: 'See customer requests, accept / reject', route: '/shop/service-bookings' },
         { icon: '🎯', title: 'Leads / Interested', desc: 'Customers who showed interest but haven’t booked', soon: true },
         { icon: '🏠', title: 'Service Area', desc: 'Coverage for home-visit services', soon: true },
+        { icon: '⭐', title: 'Customer Reviews', desc: 'Ratings & feedback from your customers', route: '/shop/reviews' },
       ],
     },
     prescription: {
       label: 'Pharmacy Tools',
       features: [
-        { icon: '📝', title: 'Prescriptions', desc: 'Verify, mark valid / needs clarification', soon: true },
+        { icon: '📝', title: 'Prescriptions', desc: 'Customer prescriptions with details — update status', route: '/shop/prescriptions' },
         { icon: '💊', title: 'Medicine Mapping', desc: 'Match items to stock, suggest substitutes', soon: true },
         { icon: '🧾', title: 'Order Status', desc: 'Pending verification → approved → dispensed', soon: true },
         { icon: '📦', title: 'Inventory (Batch/Expiry)', desc: 'Track batches and expiry dates', soon: true },
         { icon: '📄', title: 'Compliance', desc: 'Drug license & pharmacist registration', soon: true },
+        { icon: '⭐', title: 'Customer Reviews', desc: 'Ratings & feedback from your customers', route: '/shop/reviews' },
       ],
     },
     opd: {
       label: 'OPD / Hospital Tools',
       features: [
-        { icon: '👨‍⚕️', title: 'Doctor Profiles', desc: 'Specialization, qualification, registration no.', soon: true },
+        { icon: '👨‍⚕️', title: 'Doctor Profiles', desc: 'Specialization, qualification, registration no.', route: '/shop/doctors' },
         { icon: '📅', title: 'OPD Scheduling', desc: 'Slot scheduling per doctor', soon: true },
-        { icon: '🧑‍🤝‍🧑', title: 'Appointments', desc: 'Patient appointment list & history', soon: true },
+        { icon: '🧑‍🤝‍🧑', title: 'Appointments', desc: 'Patient requests — accept & set the time', route: '/shop/appointments' },
         { icon: '💵', title: 'Consultation & Tele', desc: 'Fees + teleconsultation toggle', soon: true },
         { icon: '🏥', title: 'Departments', desc: 'Manage departments for multi-doctor setups', soon: true },
         { icon: '📃', title: 'e-Prescription', desc: 'Generate after consultation', soon: true },
+        { icon: '⭐', title: 'Customer Reviews', desc: 'Ratings & feedback — filter by doctor', route: '/shop/reviews' },
       ],
     },
   };

@@ -29,6 +29,9 @@
       <button type="button" class="pill pill-rejected"
               [class.pill-active]="activeTab === 'ride_cancelled'"
               (click)="setTab('ride_cancelled')">{{ cancelledByRiderBookings.length }} Cancelled ride by rider</button>
+      <button type="button" class="pill pill-history"
+              [class.pill-active]="activeTab === 'history'"
+              (click)="setTab('history')">{{ historyBookings.length }} History</button>
     </div>
   </header>
 
@@ -499,18 +502,44 @@
       </div>
     </section>
 
+    <!-- ── HISTORY (all finished rides, as a compact list) ───────────── -->
+    <section class="booking-section" *ngIf="activeTab === 'history' && historyBookings.length > 0">
+      <div class="section-header confirmed-header">
+        <span class="section-icon">📜</span>
+        <h2 class="section-title">Bookings History</h2>
+      </div>
+
+      <ul class="history-list">
+        <li class="history-row" *ngFor="let b of historyBookings">
+          <div class="hist-main">
+            <div class="hist-route">{{ b.ride?.from ?? '—' }} → {{ b.ride?.to ?? '—' }}</div>
+            <div class="hist-meta">
+              <span class="hist-rider" (click)="goToRiderProfile(b.ride)" title="View rider profile">👤 {{ b.ride?.driver_name ?? '—' }}</span>
+              <span>📅 {{ formatDate(b.ride?.departure_time) }}</span>
+              <span>⏰ {{ formatTime(b.ride?.departure_time) }}</span>
+              <span>🪑 {{ b.seats_booked || 1 }}</span>
+              <span>₹{{ (b.ride?.price_per_seat || 0) * (b.seats_booked || 1) }}</span>
+            </div>
+          </div>
+          <span [class]="historyLabelClass(b)">{{ historyLabel(b) }}</span>
+        </li>
+      </ul>
+    </section>
+
     <!-- ── Per-tab empty state ── -->
     <div class="state-box" *ngIf="
       (activeTab === 'pending'   && pendingBookings.length === 0) ||
       (activeTab === 'confirmed' && confirmedBookings.length === 0) ||
       (activeTab === 'rejected'  && rejectedBookings.length === 0) ||
       (activeTab === 'cancelled' && cancelledByMeBookings.length === 0) ||
-      (activeTab === 'ride_cancelled' && cancelledByRiderBookings.length === 0)">
+      (activeTab === 'ride_cancelled' && cancelledByRiderBookings.length === 0) ||
+      (activeTab === 'history' && historyBookings.length === 0)">
       <div class="state-emoji">📭</div>
       <p class="state-text">
         No {{ activeTab === 'rejected' ? 'not approved' :
               activeTab === 'cancelled' ? 'cancelled by you' :
-              activeTab === 'ride_cancelled' ? 'rider-cancelled' : activeTab }} bookings.
+              activeTab === 'ride_cancelled' ? 'rider-cancelled' :
+              activeTab === 'history' ? 'ride history' : activeTab }} bookings.
       </p>
     </div>
 

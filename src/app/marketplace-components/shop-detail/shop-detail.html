@@ -37,6 +37,53 @@
         </div>
       </div>
 
+      <!-- Pharmacy: upload a prescription instead of browsing products -->
+      @if (isPharmacy) {
+        <div class="sd-card sd-rx">
+          <div class="sd-rx-icon">💊</div>
+          <h2 class="sd-rx-title">Order with a prescription</h2>
+          <p class="sd-rx-desc">Upload your doctor's prescription and {{ shop.shop_name }} will review it and prepare your medicines.</p>
+          <button type="button" class="sd-rx-btn" (click)="uploadPrescription()">📄 Upload Prescription</button>
+        </div>
+      } @else if (isHospital) {
+        <!-- OPD / Hospital: list doctors -->
+        <div class="sd-section-head">
+          <h2 class="sd-section-title">Doctors</h2>
+          <span class="sd-count">{{ doctors.length }}</span>
+        </div>
+        @if (doctors.length === 0) {
+          <div class="sd-empty">No doctors listed yet.</div>
+        } @else {
+          <div class="sd-grid">
+            @for (d of visibleDoctors; track d._id) {
+              <div class="sd-item sd-item--clickable sd-doc" (click)="openDoctor(d)">
+                <div class="sd-doc-avatar">
+                  @if (d.photo_url) {
+                    <img [src]="imageBase + d.photo_url" [alt]="d.name" />
+                  } @else {
+                    <span>{{ initials(d.name) }}</span>
+                  }
+                </div>
+                <div class="sd-item-body">
+                  <div class="sd-item-name">{{ d.name }}</div>
+                  <div class="sd-doc-spec">{{ d.specialization }}</div>
+                  <div class="sd-item-meta">
+                    @if (d.experience_years) { <span class="sd-item-sub">🩺 {{ d.experience_years }} yr</span> }
+                    @if (d.consultation_fee) { <span class="sd-item-price">₹{{ d.consultation_fee }}</span> }
+                  </div>
+                  <div class="sd-view">View profile →</div>
+                </div>
+              </div>
+            }
+          </div>
+          @if (hasMoreDoctors) {
+            <div class="sd-more-wrap">
+              <button type="button" class="sd-more" (click)="seeMore()">See more</button>
+            </div>
+          }
+        }
+      } @else {
+
       <!-- Items -->
       <div class="sd-section-head">
         <h2 class="sd-section-title">{{ isService ? 'Services' : 'Products' }}</h2>
@@ -88,6 +135,7 @@
             <button type="button" class="sd-more" (click)="seeMore()">See more</button>
           </div>
         }
+      }
       }
     </div>
   }
