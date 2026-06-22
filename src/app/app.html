@@ -12,5 +12,8 @@
 <!-- Floating cart button — only on the marketplace storefront -->
 <app-cart-fab *ngIf="isMarketplaceRoute"></app-cart-fab>
 
+<!-- AI assistant — available everywhere except admin -->
+<app-chatbot-widget *ngIf="!isAdminRoute"></app-chatbot-widget>
+
 
 <app-footer *ngIf="!isAdminRoute"></app-footer>

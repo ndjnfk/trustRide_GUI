@@ -29,6 +29,16 @@ export class CreateRide {
       // Dashboard popular-route tile se aaya routeId — from/to/via/price preselect karo
       const routeId = this.route.snapshot.queryParamMap.get('route')
       if (routeId) this.applyRoutePreset(routeId)
+
+      // Assistant deep-link: prefill from/to/date/time (e.g. /create-ride?from=..&to=..&date=..&time=..)
+      const qp = this.route.snapshot.queryParamMap
+      const from = qp.get('from'); const to = qp.get('to')
+      const date = qp.get('date'); const time = qp.get('time')
+      if (from) this.fromLocation = from
+      if (to) this.toLocation = to
+      if (date) this.rideDate = date           // expected format: YYYY-MM-DD
+      if (time) this.rideTime = time           // expected format: HH:MM
+      if (from || to || date || time) this.cdr.markForCheck()
     }
 
     // routeId ke hisaab se form prefill: from, to, selected route (via) aur price

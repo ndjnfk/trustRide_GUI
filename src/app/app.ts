@@ -16,11 +16,12 @@ import { filter } from 'rxjs/operators'
 import { HealthComponent } from './components/health/health';
 import { Charts } from './components/charts/charts';
 import { CartFab } from './marketplace-components/cart-fab/cart-fab';
+import { ChatbotWidget } from './components/chatbot-widget/chatbot-widget';
 
 
 @Component({
   selector: 'app-root',
-    imports: [CommonModule,AsyncPipe, RouterOutlet,Header,Footer,CartFab],
+    imports: [CommonModule,AsyncPipe, RouterOutlet,Header,Footer,CartFab,ChatbotWidget],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

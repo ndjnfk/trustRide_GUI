@@ -1,0 +1,44 @@
+<!-- Floating launcher -->
+<button type="button" class="cbw-fab" (click)="toggle()" [class.hidden]="open" aria-label="Open assistant">
+  💬
+</button>
+
+<!-- Chat panel -->
+@if (open) {
+  <div class="cbw-panel">
+    <div class="cbw-head">
+      <div class="cbw-head-title">
+        <span class="cbw-dot"></span> TrustRide Assistant
+      </div>
+      <button type="button" class="cbw-close" (click)="toggle()">✕</button>
+    </div>
+
+    <div class="cbw-body">
+      @for (m of messages; track $index) {
+        <div class="cbw-msg" [class.me]="m.from === 'me'" [class.bot]="m.from === 'bot'">
+          <div class="cbw-bubble">{{ m.text }}</div>
+          @if (m.action) {
+            <button type="button" class="cbw-action" (click)="runAction(m.action)">{{ actionLabel(m.action) }}</button>
+          }
+        </div>
+      }
+      @if (sending) {
+        <div class="cbw-msg bot"><div class="cbw-bubble cbw-typing"><span></span><span></span><span></span></div></div>
+      }
+    </div>
+
+    <!-- Suggestions (only before the first user message) -->
+    @if (messages.length <= 1) {
+      <div class="cbw-suggestions">
+        @for (s of suggestions; track s) {
+          <button type="button" class="cbw-chip" (click)="pick(s)">{{ s }}</button>
+        }
+      </div>
+    }
+
+    <form class="cbw-input" (ngSubmit)="send()">
+      <input type="text" [(ngModel)]="draft" name="draft" placeholder="Ask me anything…" autocomplete="off" />
+      <button type="submit" [disabled]="sending || !draft.trim()">➤</button>
+    </form>
+  </div>
+}
