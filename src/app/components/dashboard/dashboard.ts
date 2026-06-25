@@ -31,7 +31,8 @@ export class Dashboard {
     'Gurgaon Sector 21, Krishna Chowk',
     'Gurgaon Hero Honda Chowk',
     'Gurgaon Subhash Chowk',
-    'Gurgaon Vatika Chowk'
+    'Gurgaon Vatika Chowk',
+     'Gurgaon Candor Sector 21'
   ];
 
   readonly saharanpurAreas: string[] = [
@@ -46,6 +47,7 @@ export class Dashboard {
     'Saharanpur Sharda Nagar',
     'Saharanpur Hakikat Nagar',
     'Saharanpur Madhav Nagar'
+
     
   ];
 

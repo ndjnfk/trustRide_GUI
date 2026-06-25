@@ -114,6 +114,11 @@ export const routes: Routes = [
       import('../app/admin/prescriptions/prescriptions').then((m) => m.Prescriptions),
   },
   {
+    path: 'admin/reset-security',
+    loadComponent: () =>
+      import('../app/admin/reset-security/reset-security').then((m) => m.ResetSecurity),
+  },
+  {
     path: 'shop/register',
     loadComponent: () =>
       import('../app/shopkeeper/register/register').then((m) => m.ShopRegister),

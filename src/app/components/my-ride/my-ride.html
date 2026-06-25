@@ -9,19 +9,19 @@
 
     <div class="col-md-9 col-lg-8 mx-auto">
       <div class="stats_row row g-3">
-        <div class="col-12 col-md-4">
+        <div class="col-4">
           <div class="card p-4 rounded-4 h-100 d-flex justify-content-center align-items-center flex-column">
             <span class="stat-num">{{ allRides.length }}</span>
             <div class="stat-lbl">Total rides</div>
           </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-4">
           <div class="card  p-4 rounded-4 h-100 d-flex justify-content-center align-items-center flex-column">
             <span class="stat-num" [ngClass]="activeRides.length > 0 ? 'text-success' : 'text-black'">{{ activeRides.length }}</span>
             <div class="stat-lbl">Active</div>
           </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-4">
           <div class="card  p-4 rounded-4 h-100 d-flex justify-content-center align-items-center flex-column">
             <span class="stat-num">{{ totalSeats }}</span>
             <div class="stat-lbl">Seats offered</div>

@@ -497,11 +497,11 @@
 
 }
 
-/* ───────────────────────────────────────────────
+/* 
    Mobile-only Hero Card
    Desktop keeps the existing two cards (Rider + Ride Details);
    on mobile those are hidden and this combined card is shown.
-─────────────────────────────────────────────── */
+ */
 .rd-hero-mobile {
   display: none;
 }

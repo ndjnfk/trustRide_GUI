@@ -91,7 +91,7 @@ export class MyBookings implements OnInit {
   error = '';
 
   /** Active status filter tab */
-  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' | 'history' = 'pending';
+  activeTab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' | 'history' = 'confirmed';
 
   setTab(tab: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'ride_cancelled' | 'history'): void {
     this.activeTab = tab;

@@ -1,0 +1,101 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="reset-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex align-items-center gap-2 mb-4">
+        <h1 class="page-title m-0">Reset User Security</h1>
+      </div>
+
+      <div class="card reset-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            Reset a user's password and security question on their behalf. The user will be able to
+            log in with the new password immediately.
+          </p>
+
+          <form (ngSubmit)="submit()" novalidate>
+
+            <!-- User Email -->
+            <div class="mb-3">
+              <label class="form-label">User Email</label>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="userEmail"
+                name="userEmail"
+                placeholder="user@example.com"
+                autocomplete="off" />
+            </div>
+
+            <!-- New Password -->
+            <div class="mb-3">
+              <label class="form-label">New Password</label>
+              <div class="password-wrap">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  class="form-control"
+                  [(ngModel)]="newPassword"
+                  name="newPassword"
+                  placeholder="At least 8 characters"
+                  autocomplete="new-password" />
+                <button type="button" class="toggle-pass" (click)="showPassword = !showPassword">
+                  {{ showPassword ? '🙈' : '👁️' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                placeholder="Re-enter password"
+                autocomplete="new-password" />
+            </div>
+
+            <!-- Security Question -->
+            <div class="mb-3">
+              <label class="form-label">Security Question</label>
+              <select class="form-select" [(ngModel)]="securityQuesId" name="securityQuesId">
+                <option [ngValue]="null" disabled>Select a security question</option>
+                <option *ngFor="let q of securityQuestions" [ngValue]="q.id">{{ q.question }}</option>
+              </select>
+            </div>
+
+            <!-- Security Answer -->
+            <div class="mb-3">
+              <label class="form-label">Security Answer</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="newSecurityAns"
+                name="newSecurityAns"
+                placeholder="New security answer"
+                autocomplete="off" />
+            </div>
+
+            <!-- Error -->
+            <div class="alert alert-danger py-2" *ngIf="error">{{ error }}</div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="submitting">
+                {{ submitting ? 'Resetting…' : 'Reset Security' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="resetForm()" [disabled]="submitting">
+                Clear
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

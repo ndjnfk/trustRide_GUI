@@ -8,7 +8,6 @@ const SHOP_TYPES = [
   { value: 'product', label: 'Product Based', icon: '📦', desc: 'Sell physical products with stock' },
   { value: 'service', label: 'Service Based', icon: '🛠️', desc: 'Offer services / appointments' },
   { value: 'prescription', label: 'Prescription Based', icon: '💊', desc: 'Medical store — prescription orders' },
-  { value: 'opd', label: 'OPD / Hospitals', icon: '🏥', desc: 'Hospital — OPD appointments & consultations' },
 ];
 
 @Component({
@@ -23,7 +22,7 @@ export class ShopRegister {
   form = {
     owner_name: '',
     shop_name: '',
-    shop_type: '' as '' | 'product' | 'service' | 'prescription' | 'opd',
+    shop_type: '' as '' | 'product' | 'service' | 'prescription',
     address: '',
     phoneNumber: '',
     email: '',
@@ -43,7 +42,7 @@ export class ShopRegister {
     private cdr: ChangeDetectorRef
   ) {}
 
-  selectType(value: 'product' | 'service' | 'prescription' | 'opd') {
+  selectType(value: 'product' | 'service' | 'prescription') {
     this.form.shop_type = value;
   }
 

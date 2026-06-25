@@ -25,7 +25,8 @@ interface RideData {
   route_via : string;
   status: string;
   created_at: string;
-  
+  updated_at?: string;   // status change (complete/cancel) ka time — backend new Date() se set karta hai
+
 cancellation_reason:string
 }
 
@@ -225,12 +226,27 @@ private callUpdateStatus(ride: RideData, newStatus: string, reason: string): voi
     return this.allRides.filter(r => r.status === 'active');
   }
 
+  // ── History window: completed/cancelled rides sirf 4 din tak dikhao ──
+  // Reference = status change ka time (updated_at); na ho to departure_time.
+  private readonly HISTORY_DAYS = 4;
+  private withinHistoryWindow(dateStr?: string): boolean {
+    if (!dateStr) return false;
+    const t = new Date(dateStr).getTime();
+    if (isNaN(t)) return false;
+    const cutoff = Date.now() - this.HISTORY_DAYS * 24 * 60 * 60 * 1000;
+    return t >= cutoff;
+  }
+
   get pastRides(): RideData[] {
-    return this.allRides.filter(r => r.status === 'completed');
+    return this.allRides.filter(
+      r => r.status === 'completed' && this.withinHistoryWindow(r.updated_at ?? r.departure_time)
+    );
   }
 
   get cancelledRides(): RideData[] {
-    return this.allRides.filter(r => r.status === 'cancelled');
+    return this.allRides.filter(
+      r => r.status === 'cancelled' && this.withinHistoryWindow(r.updated_at ?? r.departure_time)
+    );
   }
 
   get totalSeats(): number {

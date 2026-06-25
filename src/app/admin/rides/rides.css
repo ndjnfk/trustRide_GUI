@@ -1,4 +1,158 @@
-/* ── Layout ──────────────────────────────────────────────────────────────────── */
+/*  Filters  */
+.filters-bar {
+  gap: 10px;
+  margin: 16px 0 18px;
+}
+
+.filter-input {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #e2e5ee;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: #1e1e2d;
+  background: #fff;
+  outline: none;
+}
+
+.filter-input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+input.filter-input[type='text'] {
+  min-width: 220px;
+  flex: 1 1 220px;
+}
+
+.clear-filters-btn {
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: #eef0f6;
+  color: #444b66;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #e1e4ef;
+}
+
+.no-rides-cell {
+  text-align: center;
+  padding: 28px 12px;
+  color: #8a90a6;
+  font-size: 14px;
+}
+
+/*  Edit ride  */
+.edit-btn {
+  border: none;
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 6px 9px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 6px;
+  transition: background 0.15s ease;
+}
+
+.edit-btn:hover {
+  background: #e0e7ff;
+}
+
+.edit-popup {
+  max-width: 560px;
+}
+
+.edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #444b66;
+}
+
+.edit-field--full {
+  grid-column: 1 / -1;
+}
+
+.edit-field input,
+.edit-field select,
+.edit-field textarea {
+  border: 1px solid #e2e5ee;
+  border-radius: 8px;
+  padding: 9px 11px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #1e1e2d;
+  outline: none;
+  width: 100%;
+}
+
+.edit-field input:focus,
+.edit-field select:focus,
+.edit-field textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.edit-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin: 14px 0 0;
+}
+
+.edit-actions {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.edit-cancel-btn,
+.edit-save-btn {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  border: none;
+}
+
+.edit-cancel-btn {
+  background: #eef0f6;
+  color: #444b66;
+}
+
+.edit-save-btn {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.edit-save-btn:disabled,
+.edit-cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 540px) {
+  .edit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*  Layout  */
 .admin-wrapper {
   display: flex;
   min-height: 100vh;
@@ -13,16 +167,13 @@
   overflow-x: hidden;
 }
 
-/* ── Container ───────────────────────────────────────────────────────────────── */
+/*  Container  */
 .admin-rides-container {
   max-width: 100%;
 }
 
-/* ── Page Header ─────────────────────────────────────────────────────────────── */
+/*  Page Header  */
 .page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 24px;
 }
 
@@ -49,7 +200,7 @@
   border-radius: 20px;
 }
 
-/* ── Table Wrapper ───────────────────────────────────────────────────────────── */
+/*  Table Wrapper  */
 .table-wrapper {
   background: #ffffff;
   border-radius: 14px;
@@ -57,7 +208,7 @@
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
 }
 
-/* ── Table ───────────────────────────────────────────────────────────────────── */
+/*  Table  */
 .rides-table {
   width: 100%;
   border-collapse: collapse;
@@ -97,7 +248,7 @@
   vertical-align: middle;
 }
 
-/* ── Cells ───────────────────────────────────────────────────────────────────── */
+/*  Cells  */
 .index-cell {
   color: #b5b5c3 !important;
   font-weight: 600;
@@ -172,7 +323,7 @@
   color: #1e1e2d;
 }
 
-/* ── Status Badge ────────────────────────────────────────────────────────────── */
+/*  Status Badge  */
 .status-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -197,7 +348,38 @@
   color: #f64e60;
 }
 
-/* ── Bookings Button ─────────────────────────────────────────────────────────── */
+/* Clickable cancelled badge → opens reason popup */
+.status-badge.clickable {
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.status-badge.clickable:hover {
+  filter: brightness(0.95);
+}
+
+.reason-hint {
+  margin-left: 4px;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Reason popup */
+.reason-popup {
+  max-width: 420px;
+}
+
+.reason-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #b91c1c;
+  font-style: italic;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/*  Bookings Button  */
 .bookings-btn {
   display: inline-flex;
   align-items: center;
@@ -220,7 +402,7 @@
   border-color: #3699ff;
 }
 
-/* ── States ──────────────────────────────────────────────────────────────────── */
+/*  States  */
 .loading-state,
 .error-state,
 .empty-state {
@@ -262,7 +444,7 @@
   font-size: 36px;
 }
 
-/* ── Popup Overlay ───────────────────────────────────────────────────────────── */
+/*  Popup Overlay  */
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -280,7 +462,7 @@
   to   { opacity: 1; }
 }
 
-/* ── Popup ───────────────────────────────────────────────────────────────────── */
+/*  Popup  */
 .popup {
   background: #ffffff;
   border-radius: 16px;
@@ -348,7 +530,7 @@
   color: #f64e60;
 }
 
-/* ── Popup Body ──────────────────────────────────────────────────────────────── */
+/*  Popup Body  */
 .popup-body {
   overflow-y: auto;
   padding: 16px 24px 24px;
@@ -357,7 +539,7 @@
   gap: 14px;
 }
 
-/* ── Booking Card ────────────────────────────────────────────────────────────── */
+/*  Booking Card  */
 .booking-card {
   background: #f7f8fc;
   border-radius: 12px;
@@ -408,7 +590,7 @@
   margin: 0;
 }
 
-/* ── Booking Status ──────────────────────────────────────────────────────────── */
+/*  Booking Status  */
 .booking-status {
   display: inline-block;
   padding: 3px 10px;
@@ -434,7 +616,7 @@
   color: #f64e60;
 }
 
-/* ── Review ──────────────────────────────────────────────────────────────────── */
+/*  Review  */
 .review-section {
   margin-top: 12px;
   padding-top: 12px;
@@ -466,7 +648,7 @@
   margin: 0;
 }
 
-/* ── No Bookings ─────────────────────────────────────────────────────────────── */
+/*  No Bookings  */
 .no-bookings {
   display: flex;
   flex-direction: column;
@@ -481,7 +663,7 @@
   font-size: 32px;
 }
 
-/* ── Responsive ──────────────────────────────────────────────────────────────── */
+/*  Responsive  */
 @media (max-width: 768px) {
   .admin-main {
     margin-left: 0;

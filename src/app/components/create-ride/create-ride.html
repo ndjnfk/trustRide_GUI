@@ -124,6 +124,9 @@
                     </span>
                   </div>
                 </div>
+                <div class="loc-error" *ngIf="fromInvalid && !showFromDropdown">
+                  Please pick a location from the list — custom locations aren't allowed.
+                </div>
               </div>
 
               <!-- Swap -->
@@ -161,6 +164,9 @@
                       {{ s.includes('Gurgaon') ? 'Gurgaon' : 'Saharanpur' }}
                     </span>
                   </div>
+                </div>
+                <div class="loc-error" *ngIf="toInvalid && !showToDropdown">
+                  Please pick a location from the list — custom locations aren't allowed.
                 </div>
               </div>
             </div>

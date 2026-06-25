@@ -4,12 +4,48 @@
     <div class="admin-rides-container">
 
       <!-- Header -->
-      <div class="page-header">
+      <div class="page-header d-flex align-items-center justify-content-between">
         <div class="header-left">
           <h1 class="page-title">All Rides</h1>
-          <span class="total-badge">{{ totalRides }} rides</span>
+          <span class="total-badge">{{ filteredRides.length }} / {{ totalRides }} rides</span>
         </div>
       </div>
+
+      <!-- Filters -->
+      @if (!loading && !error) {
+        <div class="filters-bar d-flex flex-wrap align-items-center">
+          <input
+            type="text"
+            class="filter-input"
+            placeholder="🔍 Search rider name"
+            [(ngModel)]="filterName"
+          />
+
+          <select class="filter-input" [(ngModel)]="filterScope">
+            <option value="all">All dates</option>
+            <option value="past">Previous (before today)</option>
+            <option value="upcoming">Today &amp; upcoming</option>
+          </select>
+
+          <select class="filter-input" [(ngModel)]="filterStatus">
+            <option value="">All status</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+
+          <input type="date" class="filter-input" [(ngModel)]="filterDate" title="Filter by date" />
+
+          <select class="filter-input" [(ngModel)]="filterRoute">
+            <option value="">All routes</option>
+            @for (route of routeOptions; track route) {
+              <option [value]="route">{{ route }}</option>
+            }
+          </select>
+
+          <button class="clear-filters-btn" (click)="clearFilters()">Clear</button>
+        </div>
+      }
 
       <!-- Error -->
       @if (error) {
@@ -40,7 +76,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (ride of rides; track ride.ride_id; let i = $index) {
+              @for (ride of filteredRides; track ride.ride_id; let i = $index) {
                 <tr class="ride-row">
                   <td class="index-cell">{{ i + 1 }}</td>
                   <td class="route-cell">
@@ -62,7 +98,15 @@
                   <td class="seats-cell">{{ ride.available_seats }}</td>
                   <td class="price-cell">₹{{ ride.price_per_seat }}</td>
                   <td class="status-cell">
-                    <span class="status-badge" [ngClass]="ride.status">{{ ride.status }}</span>
+                    <span
+                      class="status-badge"
+                      [ngClass]="ride.status"
+                      [class.clickable]="ride.status === 'cancelled' && ride.cancellation_reason"
+                      (click)="openReason(ride)"
+                    >
+                      {{ ride.status }}
+                      <span class="reason-hint" *ngIf="ride.status === 'cancelled' && ride.cancellation_reason">ⓘ</span>
+                    </span>
                   </td>
                   <td class="action-cell">
                     <button class="bookings-btn" (click)="openBookings(ride)">
@@ -72,7 +116,8 @@
                   </td>
                   <td class="action-cell">
 
- 
+  <button class="edit-btn" (click)="openEdit(ride)" title="Edit ride">✏️</button>
+
   <button
     class="delete-btn"
     (click)="deleteRide(ride)"
@@ -86,6 +131,10 @@
   </button>
 </td>
  
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="11" class="no-rides-cell">No rides match the selected filters.</td>
                 </tr>
               }
             </tbody>
@@ -163,6 +212,104 @@
         }
       </div>
 
+    </div>
+  </div>
+}
+
+<!-- ── Cancellation reason popup ── -->
+@if (reasonPopup.open) {
+  <div class="popup-overlay" (click)="closeReason()">
+    <div class="popup reason-popup" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <div class="popup-title-wrap">
+          <h2 class="popup-title">Cancellation Reason</h2>
+          <div class="popup-route" *ngIf="reasonPopup.from || reasonPopup.to">
+            {{ reasonPopup.from }}
+            <span class="arrow">→</span>
+            {{ reasonPopup.to }}
+          </div>
+        </div>
+        <button class="close-btn" (click)="closeReason()">✕</button>
+      </div>
+      <div class="popup-body">
+        <p class="reason-text">{{ reasonPopup.reason }}</p>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── Edit ride popup ── -->
+@if (editModal.open) {
+  <div class="popup-overlay" (click)="closeEdit()">
+    <div class="popup edit-popup" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <div class="popup-title-wrap">
+          <h2 class="popup-title">Edit Ride</h2>
+        </div>
+        <button class="close-btn" (click)="closeEdit()">✕</button>
+      </div>
+
+      <div class="popup-body">
+        <div class="edit-grid">
+          <label class="edit-field">
+            <span>From</span>
+            <input type="text" [(ngModel)]="editModal.form.from" />
+          </label>
+          <label class="edit-field">
+            <span>To</span>
+            <input type="text" [(ngModel)]="editModal.form.to" />
+          </label>
+          <label class="edit-field">
+            <span>Date</span>
+            <input type="date" [(ngModel)]="editModal.form.date" />
+          </label>
+          <label class="edit-field">
+            <span>Time</span>
+            <input type="time" [(ngModel)]="editModal.form.time" />
+          </label>
+          <label class="edit-field">
+            <span>Seats</span>
+            <input type="number" min="0" [(ngModel)]="editModal.form.available_seats" />
+          </label>
+          <label class="edit-field">
+            <span>Price (₹)</span>
+            <input type="number" min="0" [(ngModel)]="editModal.form.price_per_seat" />
+          </label>
+          <label class="edit-field">
+            <span>Status</span>
+            <select [(ngModel)]="editModal.form.status">
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+          <label class="edit-field edit-field--full">
+            <span>Route via</span>
+            <input type="text" [(ngModel)]="editModal.form.route_via" />
+          </label>
+          @if (editModal.form.status === 'cancelled') {
+            <label class="edit-field edit-field--full">
+              <span>Cancellation reason</span>
+              <input type="text" [(ngModel)]="editModal.form.cancellation_reason" />
+            </label>
+          }
+          <label class="edit-field edit-field--full">
+            <span>Notes</span>
+            <textarea rows="2" [(ngModel)]="editModal.form.additional_notes"></textarea>
+          </label>
+        </div>
+
+        @if (editModal.error) {
+          <p class="edit-error">{{ editModal.error }}</p>
+        }
+
+        <div class="edit-actions d-flex justify-content-end">
+          <button class="edit-cancel-btn" (click)="closeEdit()" [disabled]="editModal.saving">Cancel</button>
+          <button class="edit-save-btn" (click)="saveEdit()" [disabled]="editModal.saving">
+            {{ editModal.saving ? 'Saving…' : 'Save changes' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 }

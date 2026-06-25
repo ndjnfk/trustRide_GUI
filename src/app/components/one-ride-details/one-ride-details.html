@@ -204,7 +204,13 @@
         </div>
       </div>
 
-      
+
+      <!-- Note from rider -->
+      <div class="rd-card" *ngIf="rideData.additional_notes">
+        <p class="section-title">Note from rider</p>
+        <p style="margin:6px 0 0;font-size:14.5px;line-height:1.5;color:#374151;white-space:pre-wrap;word-break:break-word;background:#fffbeb;border-left:3px solid #f59e0b;border-radius:6px;padding:10px 12px;">📝 {{ rideData.additional_notes }}</p>
+      </div>
+
       <!-- Passengers Card -->
       <div class="rd-card">
         <p class="section-title">Passengers</p>

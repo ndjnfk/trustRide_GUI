@@ -93,7 +93,8 @@ export class CreateRide {
     'Gurgaon Sector 21, Krishna Chowk',
     'Gurgaon Hero Honda Chowk',
     'Gurgaon Subhash Chowk',
-    'Gurgaon Vatika Chowk'
+    'Gurgaon Vatika Chowk',
+    'Gurgaon Candor Sector 21'
 
   ];
 
@@ -322,13 +323,32 @@ selectRoute(route: typeof this.routeOptions[0]): void {
       this.getBaseCity(this.toLocation)
     );
   }
+  /** Exact (case-insensitive) match against the provided areas only.
+   *  Custom / free-text locations are NOT allowed. */
+  isKnownLocation(value: string): boolean {
+    const v = (value || '').trim().toLowerCase();
+    if (!v) return false;
+    return this.allLocations.some(loc => loc.toLowerCase() === v);
+  }
+
+  /** True when the user has typed something that isn't in the allowed list. */
+  get fromInvalid(): boolean {
+    return !!this.fromLocation.trim() && !this.isKnownLocation(this.fromLocation);
+  }
+
+  get toInvalid(): boolean {
+    return !!this.toLocation.trim() && !this.isKnownLocation(this.toLocation);
+  }
+
   get isFormValid(): boolean {
     return !!(
       this.fromLocation &&
       this.toLocation &&
+      this.isKnownLocation(this.fromLocation) &&   // sirf provided areas hi allowed
+      this.isKnownLocation(this.toLocation) &&
       this.rideDate &&
       this.rideTime &&
-      this.selectedRouteId && 
+      this.selectedRouteId &&
       !this.isSameRoute
     );
   }

@@ -39,7 +39,7 @@ export class SearchRides {
 
   /* ── City lists (same as dashboard) ── */
   readonly gurgaonAreas: string[] = [
-     'Gurgaon',
+    'Gurgaon',
     'Gurgaon Ambience Mall',
     'Gurgaon Cyber Park',
     'Gurgaon Rajiv Chowk',
@@ -50,7 +50,8 @@ export class SearchRides {
     'Gurgaon Sector 21, Krishna Chowk',
     'Gurgaon Hero Honda Chowk',
     'Gurgaon Subhash Chowk',
-    'Gurgaon Vatika Chowk'
+    'Gurgaon Vatika Chowk',
+    'Gurgaon Candor Sector 21'
   ];
 
   readonly saharanpurAreas: string[] = [

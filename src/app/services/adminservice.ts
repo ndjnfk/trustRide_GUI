@@ -204,6 +204,24 @@ private readonly API_URL = environment.apiUrl;
   })
 }
 
+  // Admin: update any field of a ride
+  updateRide(payload: {
+    ride_id: string;
+    from?: string;
+    to?: string;
+    departure_time?: string;   // fake-UTC ISO: `${date}T${time}:00.000Z`
+    available_seats?: number;
+    price_per_seat?: number;
+    route_via?: string;
+    status?: string;
+    cancellation_reason?: string;
+    additional_notes?: string;
+  }): Observable<any> {
+    return this.http.put(`${this.API_URL}/admin/updateRide`, payload, {
+      headers: AdminSessionHelper.getAuthHeaders()
+    })
+  }
+
 
 clearRedisData(): Observable<any> {
   return this.http.delete(`${this.API_URL}/admin/clearRedisData`, {
@@ -228,6 +246,20 @@ checkBounceEmail(email: string): Observable<BounceCheckResponse> {
   return this.http.post<BounceCheckResponse>(
     `${this.API_URL}/bounceCheck`,
     { email },
+    { headers: AdminSessionHelper.getAuthHeaders() }
+  );
+}
+
+// ── Reset a user's password + security question (admin) ───────
+resetUserSecurity(payload: {
+  userEmail: string;
+  newPassword: string;
+  newSecurityAns: string;
+  securityQuesId: number;
+}): Observable<{ message: string; status: boolean }> {
+  return this.http.post<{ message: string; status: boolean }>(
+    `${this.API_URL}/admin/reset-security`,
+    payload,
     { headers: AdminSessionHelper.getAuthHeaders() }
   );
 }
