@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Adminservice, User, UpdateVerificationRequest } from '../../services/adminservice';
+import { Adminservice, User, UpdateVerificationRequest, UpdateUserRoleRequest } from '../../services/adminservice';
 import { MaterialModule } from '../../shared/material/material-module';
 import { UserProfileDialog } from '../user-profile-dialog/user-profile-dialog';
 import { SideBar } from '../side-bar/side-bar';
@@ -38,6 +38,8 @@ export class AdminDashboard {
   searchTerm = '';
   isLoading = false;
   updatingUserId: string | null = null;
+  updatingRoleUserId: string | null = null;
+  roleOptions: Array<'passenger' | 'rider' | 'both' | 'admin'> = ['passenger', 'rider', 'both', 'admin'];
   activeFilter: 'all' | 'verified' | 'pending' | 'rejected' = 'all';
  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -230,6 +232,65 @@ loadUsers(): void {
     });
   }
  
+  // ── Role management ─────────────────────────────────────────────────────────
+  /** Fired when the admin picks a new role from the dropdown */
+  onRoleChange(user: User, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const newRole = select.value as 'passenger' | 'rider' | 'both' | 'admin';
+    const currentRole = this.getUserRole(user);
+
+    if (newRole === currentRole) return;
+
+    const confirmMsg = newRole === 'admin'
+      ? `Grant ADMIN access to "${user.fullName}"? They will be able to manage the entire platform.`
+      : `Change ${user.fullName}'s role to "${newRole}"?`;
+
+    if (!confirm(confirmMsg)) {
+      select.value = currentRole;   // revert the dropdown
+      return;
+    }
+
+    this.updateUserRole(user, newRole, select);
+  }
+
+  updateUserRole(
+    user: User,
+    newRole: 'passenger' | 'rider' | 'both' | 'admin',
+    select?: HTMLSelectElement
+  ): void {
+    this.updatingRoleUserId = user._id;
+
+    const payload: UpdateUserRoleRequest = {
+      user_id: user._id,
+      role: newRole
+    };
+
+    this.adminService.updateUserRole(payload).subscribe({
+      next: (response) => {
+        this.updatingRoleUserId = null;
+
+        if (response.success) {
+          const masterIdx = this.allUsers.findIndex(u => u._id === user._id);
+          if (masterIdx !== -1) {
+            this.allUsers[masterIdx].role = newRole;
+          }
+          user.role = newRole;
+          this.applyActiveFilter();
+          this.showSuccess(`${user.fullName}'s role has been changed to "${newRole}" ✓`);
+        } else {
+          if (select) select.value = this.getUserRole(user);
+          this.showError(response.message ?? 'Role update failed.');
+        }
+      },
+      error: (err) => {
+        this.updatingRoleUserId = null;
+        if (select) select.value = this.getUserRole(user);
+        console.error('Role update error:', err);
+        this.showError(err?.error?.message || 'Role update failed. Try again.');
+      }
+    });
+  }
+
   downloadIdCard(user: User): void {
     if (!user.professionalVerification?.id_card_url) {
       this.showError('this user id card is not available.');

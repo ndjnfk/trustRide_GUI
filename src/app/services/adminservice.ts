@@ -44,6 +44,7 @@ export interface User {
   phoneNumber: string;
   userCode: number;
   status: string;
+  role?: string;
   companyName:string,
   companyEmail:string,
   verificationStatus: string;
@@ -69,6 +70,16 @@ export interface UpdateVerificationResponse {
     userUpdated: boolean;
     verificationUpdated: boolean;
   };
+}
+
+export interface UpdateUserRoleRequest {
+  user_id: string;
+  role: 'rider' | 'passenger' | 'both' | 'admin';
+}
+
+export interface UpdateUserRoleResponse {
+  success: boolean;
+  message: string;
 }
 
 export interface BounceCheckResponse {
@@ -184,6 +195,15 @@ private readonly API_URL = environment.apiUrl;
     );
   }
  
+  // Admin: change any user's role (rider / passenger / both / admin)
+  updateUserRole(payload: UpdateUserRoleRequest): Observable<UpdateUserRoleResponse> {
+    return this.http.put<UpdateUserRoleResponse>(
+      `${this.API_URL}/admin/update-user-role`,
+      payload,
+      { headers: AdminSessionHelper.getAuthHeaders() }
+    );
+  }
+
   downloadIdCard(idCardUrl: string): void {
     const fullUrl = `${this.API_URL}${idCardUrl}`;
     const link = document.createElement('a');

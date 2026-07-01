@@ -29,6 +29,7 @@ export class App {
   protected readonly title = signal('realtime-app');
  isAdminRoute = true
  isMarketplaceRoute = false
+ isChatThreadRoute = false
 
   private router = inject(Router);
   protected loader = inject(LoaderServices);
@@ -57,6 +58,9 @@ ngOnInit() {
         const url = event.urlAfterRedirects
         this.isAdminRoute = url.startsWith('/admin')
         this.isMarketplaceRoute = url.startsWith('/marketplace')
+        // A single chat conversation (/chat/:threadId) has its own composer send
+        // button; hide the floating assistant here so the two don't overlap on mobile.
+        this.isChatThreadRoute = url.startsWith('/chat/')
       })
   }
 

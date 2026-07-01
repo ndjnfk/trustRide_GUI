@@ -198,6 +198,7 @@
                 <th>Name</th>
                 <th>Gender</th>
                 <th>Role</th>
+                <th>Set Role</th>
                 <th>Account</th>
                   <th>delete</th>
                 <th>Verification</th>
@@ -238,6 +239,17 @@
                   <span class="role-badge" [ngClass]="'role-' + getUserRole(user)">
                     {{ roleLabel(user) }}
                   </span>
+                </td>
+
+                <td data-label="Set Role">
+                  <select class="form-select form-select-sm role-select"
+                    [disabled]="updatingRoleUserId === user._id"
+                    (change)="onRoleChange(user, $event)">
+                    <option *ngFor="let r of roleOptions" [value]="r"
+                      [selected]="getUserRole(user) === r">
+                      {{ r | titlecase }}
+                    </option>
+                  </select>
                 </td>
 
                 <td data-label="Account">
@@ -315,7 +327,7 @@
               </tr>
 
               <tr *ngIf="!isLoading && displayedUsers.length === 0">
-                <td colspan="11">
+                <td colspan="12">
                   <div class="no-data">
                     <div class="no-data-icon-wrap">
                       <mat-icon>person_search</mat-icon>

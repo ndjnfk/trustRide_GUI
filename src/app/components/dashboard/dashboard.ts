@@ -32,7 +32,8 @@ export class Dashboard {
     'Gurgaon Hero Honda Chowk',
     'Gurgaon Subhash Chowk',
     'Gurgaon Vatika Chowk',
-     'Gurgaon Candor Sector 21'
+     'Gurgaon Candor Sector 21',
+     'Gurgaon Arjan Garh Metro Station'
   ];
 
   readonly saharanpurAreas: string[] = [
