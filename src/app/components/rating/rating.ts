@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Ride } from '../../services/ride';
+import { AuthHelper } from '../../helpers/auth-helper';
 import { environment } from '../../../../environment';
 
 interface Review {
@@ -47,11 +48,32 @@ export class Rating implements OnInit {
   receivedReviews: Review[] = [];
   givenReviews: Review[] = [];
 
-  constructor(private rideService: Ride, private route: ActivatedRoute, private router: Router) { }
+  // Kisi aur ki profile se khula ho to uski id, apni rating page pe khali
+  viewUserId = '';
+
+  // Profile se aayi id — router state se, URL se nahi, taaki address bar me
+  // kisi ki user id na dikhe. State refresh pe kho jati hai, tab apni ratings
+  // dikhengi, jo safe fallback hai.
+  private requestedUserId = '';
+
+  constructor(private rideService: Ride, private router: Router) {
+    const nav = this.router.getCurrentNavigation();
+    this.requestedUserId = nav?.extras?.state?.['user_id']
+      ?? (typeof history !== 'undefined' ? history.state?.['user_id'] : '')
+      ?? '';
+  }
 
   ngOnInit() {
-    // When opened from the profile rating link (?view=received), show only Received.
-    this.showGivenTab = this.route.snapshot.queryParamMap.get('view') !== 'received';
+    const requestedId = this.requestedUserId;
+    const myId = AuthHelper.getUserId();
+
+    // Apni hi profile khuli ho (ya koi id aayi hi na ho, jaise header ke link se)
+    // to dono tab dikhao — Given aur Received. Kisi aur ki profile pe sirf
+    // Received, kyunki usne kisko kya diya wo uska apna maamla hai.
+    const isSelf = !requestedId || (!!myId && requestedId === myId);
+
+    this.viewUserId  = isSelf ? '' : requestedId;
+    this.showGivenTab = isSelf;
     this.loadReviews('received');
   }
 
@@ -62,7 +84,7 @@ export class Rating implements OnInit {
 
  loadReviews(type: 'received' | 'given') {
   this.isLoading = true;
-  this.rideService.getReviewDetails(type).subscribe({
+  this.rideService.getReviewDetails(type, this.viewUserId || undefined).subscribe({
     next: (data: any[]) => {
       // API grouped data deta hai: [{ person, reviewCount, averageRating, reviews: [...] }]
       const mapped: Review[] = data.map(entry => {

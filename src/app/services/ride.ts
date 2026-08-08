@@ -164,8 +164,9 @@ createReview(payload: {
   return this.http.post(`${this.baseUrl}/createReview`, payload, { headers });
 }
 
-getReviewDetails(type: 'received' | 'given') {
-  return this.http.post<any[]>(`${this.baseUrl}/reviewsDetails`, { type }, {
+// userId khali ho to apne reviews aate hain, warna us banda ke jiski profile khuli hai
+getReviewDetails(type: 'received' | 'given', userId?: string) {
+  return this.http.post<any[]>(`${this.baseUrl}/reviewsDetails`, { type, userId }, {
     headers: { Authorization: `Bearer ${AuthHelper.getToken()}` }
   });
 }

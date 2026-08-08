@@ -60,15 +60,20 @@ ngOnInit(): void {
     this.dialogRef.close(null);
   }
 
+  // departure_time fake-UTC me store hota hai — wall-clock time par 'Z' laga ke.
+  // Yaani 5:00 AM ki ride DB me 05:00Z hai. Bina timeZone: 'UTC' ke browser ise
+  // asli UTC samajh kar IST me convert kar deta hai (+5:30) aur 10:30 AM dikhata hai.
   formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-IN', {
-      day: '2-digit', month: 'short', year: 'numeric'
+      day: '2-digit', month: 'short', year: 'numeric',
+      timeZone: 'UTC'
     });
   }
 
   formatTime(dateStr: string): string {
     return new Date(dateStr).toLocaleTimeString('en-IN', {
-      hour: '2-digit', minute: '2-digit', hour12: true
+      hour: '2-digit', minute: '2-digit', hour12: true,
+      timeZone: 'UTC'
     });
   }
  

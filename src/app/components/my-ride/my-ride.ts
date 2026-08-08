@@ -363,9 +363,11 @@ togglePassengers(rideId: string): void {
 
     this.rideService.getBookingsByRideId(rideId).subscribe({
       next: (res: any) => {
-        // 👇 passenger-cancelled bookings list me mat dikhao
+        // 👇 sirf pending/confirmed dikhao — cancelled (rider ya passenger,
+        // dono taraf se) hide, warna passenger dobara request kare to wahi
+        // naam do baar list me aa jata hai
         this.passengers[rideId] = (res.data?.bookings || []).filter(
-          (b: any) => b.status_by_passenger !== 'cancelled'
+          (b: any) => b.status !== 'cancelled' && b.status_by_passenger !== 'cancelled'
         );
 
         this.loadingPassengers[rideId] = false;
@@ -448,10 +450,18 @@ private callUpdateBookingStatus(booking: any, rideId: string, newStatus: string,
   this.bookingService.updateBookingStatus(booking.booking_id, newStatus, reason).subscribe({
     next: () => {
       const list = this.passengers[rideId];
-      const found = list.find((b: any) => b.booking_id === booking.booking_id);
-      if (found) {
-        found.status = newStatus;
-        if (reason) found.cancellation_reason = reason;
+
+      if (newStatus === 'cancelled') {
+        // cancelled booking list se hata do — sirf pending/confirmed dikhte hain
+        this.passengers[rideId] = list.filter(
+          (b: any) => b.booking_id !== booking.booking_id
+        );
+      } else {
+        const found = list.find((b: any) => b.booking_id === booking.booking_id);
+        if (found) {
+          found.status = newStatus;
+          if (reason) found.cancellation_reason = reason;
+        }
       }
 
       this.updatingBookingId = null;

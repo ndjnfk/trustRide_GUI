@@ -49,12 +49,31 @@ export class Dashboard {
     'Saharanpur Hakikat Nagar',
     'Saharanpur Madhav Nagar'
 
-    
+
+  ];
+
+  readonly mohaliAreas: string[] = [
+    'Mohali',
+    'Mohali Sohana Gurdwara',
+    'Mohali Homeland',
+    'Mohali Bestech Towers',
+    'Mohali Bhena Da Dhaba',
+    'Mohali Sector 43'
+  ];
+
+  readonly chandigarhAreas: string[] = [
+    'Chandigarh',
+    'Chandigarh Sector 17'
   ];
 
 
   get allAreas(): string[] {
-    return [...this.gurgaonAreas, ...this.saharanpurAreas];
+    return [
+      ...this.gurgaonAreas,
+      ...this.saharanpurAreas,
+      ...this.mohaliAreas,
+      ...this.chandigarhAreas,
+    ];
   }
 
   /* ── Form state ── */
@@ -151,6 +170,11 @@ export class Dashboard {
     this.router.navigate(['create-ride'], { queryParams: { route: routeId } });
   }
 
+  // Jin routes ka koi preset (via/price) nahi hai — sirf from/to prefill karo
+  goToRoutePair(from: string, to: string): void {
+    this.router.navigate(['create-ride'], { queryParams: { from, to } });
+  }
+
   /* ── Autocomplete ── */
   onFromInput(): void {
     const q = this.fromValue.toLowerCase();
@@ -236,6 +260,8 @@ export class Dashboard {
     const v = areaValue.toLowerCase().trim();
     if (v.startsWith('gurgaon')) return 'gurgaon';
     if (v.startsWith('saharanpur')) return 'saharanpur';
+    if (v.startsWith('mohali')) return 'mohali';
+    if (v.startsWith('chandigarh')) return 'chandigarh';
     // fallback: use first word
     return v.split(' ')[0];
   }

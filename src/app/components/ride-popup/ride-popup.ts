@@ -40,6 +40,8 @@ export class RidePopup {
     this.dialogRef.close();
   }
  
+  // departure_time fake-UTC hai (wall-clock + 'Z'), isliye UTC me hi read karo —
+  // warna browser IST convert kar ke +5:30 dikha dega.
   formatTime(iso: string): string {
     const d = new Date(iso);
     return d.toLocaleString('en-IN', {
@@ -49,6 +51,7 @@ export class RidePopup {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
+      timeZone: 'UTC'
     });
   }
   openRideDetail(rideId: string) {

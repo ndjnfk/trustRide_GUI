@@ -12,6 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Snackbar } from '../../services/snackbar';
 import { AuthHelper } from '../../helpers/auth-helper';
+import { baseCityOf, isCityPairBlocked } from '../../helpers/route-rules';
 
 @Component({
   selector: 'app-create-ride',
@@ -38,6 +39,7 @@ export class CreateRide {
       if (to) this.toLocation = to
       if (date) this.rideDate = date           // expected format: YYYY-MM-DD
       if (time) this.rideTime = time           // expected format: HH:MM
+      if (from || to) this.syncPriceToRange()  // prefilled cities ki price range lagao
       if (from || to || date || time) this.cdr.markForCheck()
     }
 
@@ -111,8 +113,36 @@ export class CreateRide {
     'Saharanpur Sharda Nagar',
     'Saharanpur Hakikat Nagar',
     'Saharanpur Madhav Nagar'
-    
+
   ];
+
+  readonly mohaliAreas: string[] = [
+    'Mohali',
+    'Mohali Sohana Gurdwara',
+    'Mohali Homeland',
+    'Mohali Bestech Towers',
+    'Mohali Bhena Da Dhaba',
+    'Mohali Sector 43'
+
+  ];
+
+  readonly chandigarhAreas: string[] = [
+    'Chandigarh',
+    'Chandigarh Sector 17'
+
+  ];
+
+  // In cities ke liye abhi koi predefined route (via/basePrice) nahi hai,
+  // isliye inke rides publish karte waqt route select karna optional hai.
+  private readonly routeOptionalCities = ['mohali', 'chandigarh'];
+
+  // Blocked city pairs helpers/route-rules.ts mein hain — register aur
+  // edit-profile bhi wahi list use karte hain.
+
+  // Price limits: Gurgaon ↔ Saharanpur vs Saharanpur ↔ Mohali/Chandigarh
+  private readonly PRICE_RANGE_DEFAULT = { min: 420, max: 550 };
+  private readonly PRICE_RANGE_OPTIONAL_ROUTE = { min: 350, max: 390 };
+
 readonly routeOptions = [
   {
     id: 'r1',
@@ -185,6 +215,8 @@ readonly routeOptions = [
   private allLocations: string[] = [
     ...this.gurgaonAreas,
     ...this.saharanpurAreas,
+    ...this.mohaliAreas,
+    ...this.chandigarhAreas,
   ];
 
   get minDate(): string {
@@ -192,19 +224,32 @@ readonly routeOptions = [
   }
 
   onFromInput(): void {
+    // User dropdown se select kiye bina bhi type kar sakta hai —
+    // route + price yahan bhi sync karo, warna stale value publish ho jaati hai
+    this.syncRouteSelection();
+    this.syncPriceToRange();
+
     const val = this.fromLocation.toLowerCase().trim();
     if (val.length < 2) {
       this.fromSuggestions = [];
       this.showFromDropdown = false;
       return;
     }
+    // Jo cities selected "To" ke saath blocked hain, wo suggest hi mat karo
+    const toCity = this.toLocation ? this.getBaseCity(this.toLocation) : '';
     this.fromSuggestions = this.allLocations
-      .filter(loc => loc.toLowerCase().includes(val))
+      .filter(loc =>
+        loc.toLowerCase().includes(val) &&
+        !this.isPairBlocked(this.getBaseCity(loc), toCity)
+      )
       .slice(0, 6);
     this.showFromDropdown = this.fromSuggestions.length > 0;
   }
 
   onToInput(): void {
+    this.syncRouteSelection();
+    this.syncPriceToRange();
+
     const val = this.toLocation.toLowerCase().trim();
     if (val.length < 2) {
       this.toSuggestions = [];
@@ -212,10 +257,13 @@ readonly routeOptions = [
       return;
     }
     // "To" mein sirf un locations ko dikhao jo "From" se alag hain
+    // aur jinki city "From" ki city ke saath blocked nahi hai
+    const fromCity = this.fromLocation ? this.getBaseCity(this.fromLocation) : '';
     this.toSuggestions = this.allLocations
       .filter(loc =>
         loc.toLowerCase().includes(val) &&
-        loc.toLowerCase() !== this.fromLocation.toLowerCase()
+        loc.toLowerCase() !== this.fromLocation.toLowerCase() &&
+        !this.isPairBlocked(this.getBaseCity(loc), fromCity)
       )
       .slice(0, 6);
     this.showToDropdown = this.toSuggestions.length > 0;
@@ -234,6 +282,9 @@ readonly routeOptions = [
   } else if (base === 'saharanpur' && !this.toLocation) {
     this.toLocation = 'Gurgaon';
   }
+    // Route ab is jodi ke liye valid na ho to purana selection hata do
+    this.syncRouteSelection();
+    this.syncPriceToRange();
     this.cdr.markForCheck();
   }
 
@@ -249,6 +300,8 @@ readonly routeOptions = [
   } else if (base === 'saharanpur' && !this.fromLocation) {
     this.fromLocation = 'Gurgaon';
   }
+  this.syncRouteSelection();
+  this.syncPriceToRange();
   this.cdr.markForCheck();
   }
 
@@ -256,6 +309,9 @@ readonly routeOptions = [
     const temp = this.fromLocation;
     this.fromLocation = this.toLocation;
     this.toLocation = temp;
+    // Direction badal gayi — purana route ab ulti direction ka hai
+    this.syncRouteSelection();
+    this.syncPriceToRange();
   }
 
   incrementSeats(): void {
@@ -282,11 +338,42 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   //   this.pricePerSeat += 50;
   // }
 
+  /** Saharanpur ↔ Mohali/Chandigarh par ₹350–₹390, baaki routes par ₹420–₹550. */
+  get minPrice(): number {
+    return this.isRouteOptional
+      ? this.PRICE_RANGE_OPTIONAL_ROUTE.min
+      : this.PRICE_RANGE_DEFAULT.min;
+  }
+
+  get maxPrice(): number {
+    return this.isRouteOptional
+      ? this.PRICE_RANGE_OPTIONAL_ROUTE.max
+      : this.PRICE_RANGE_DEFAULT.max;
+  }
+
+  /** From/To badalne par agar pehle chuna route ab is jodi ka nahi hai to
+   *  selection hata do — warna publish par galat route_via chala jaata hai. */
+  private syncRouteSelection(): void {
+    if (
+      this.selectedRouteId &&
+      !this.filteredRoutes.some(r => r.id === this.selectedRouteId)
+    ) {
+      this.selectedRouteId = '';
+    }
+  }
+
+  /** City badalne par range badal jaati hai — price bahar ho to base par reset. */
+  private syncPriceToRange(): void {
+    if (this.pricePerSeat < this.minPrice || this.pricePerSeat > this.maxPrice) {
+      this.pricePerSeat = this.minPrice;
+    }
+  }
+
   decrementPrice(): void {
-    if (this.pricePerSeat > 420) this.pricePerSeat -= 10;
+    if (this.pricePerSeat > this.minPrice) this.pricePerSeat -= 10;
   }
   incrementPrice(): void {
-  if (this.pricePerSeat < 550) this.pricePerSeat += 10;
+  if (this.pricePerSeat < this.maxPrice) this.pricePerSeat += 10;
 }
 
   get totalEarnings(): number {
@@ -300,18 +387,34 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   }
 
   getBaseCity(location: string): string {
+    return baseCityOf(location);
+  }
 
-    const value = location.trim().toLowerCase();
+  /** Kya do cities ke beech ride allowed hai? (route-rules ke hisaab se) */
+  private isPairBlocked(fromCity: string, toCity: string): boolean {
+    return isCityPairBlocked(fromCity, toCity);
+  }
 
-    if (value.includes('gurgaon')) {
-      return 'gurgaon';
-    }
+  /** Selected from/to jodi blocked hai — e.g. Gurgaon ↔ Mohali / Chandigarh. */
+  get isBlockedRoute(): boolean {
+    if (!this.fromLocation || !this.toLocation) return false;
+    return this.isPairBlocked(this.fromLocation, this.toLocation);
+  }
 
-    if (value.includes('saharanpur')) {
-      return 'saharanpur';
-    }
+  /** Mohali / Chandigarh wali rides par route selection optional hai. */
+  get isRouteOptional(): boolean {
+    const from = this.getBaseCity(this.fromLocation);
+    const to = this.getBaseCity(this.toLocation);
+    return (
+      this.routeOptionalCities.includes(from) ||
+      this.routeOptionalCities.includes(to)
+    );
+  }
 
-    return value;
+  /** Dropdown chip ka city label — "Mohali Sector 43" → "Mohali". */
+  cityTag(area: string): string {
+    const base = this.getBaseCity(area);
+    return base.charAt(0).toUpperCase() + base.slice(1);
   }
   get isSameRoute(): boolean {
 
@@ -349,8 +452,11 @@ selectRoute(route: typeof this.routeOptions[0]): void {
       this.isKnownLocation(this.toLocation) &&
       this.rideDate &&
       this.rideTime &&
-      this.selectedRouteId &&
-      !this.isSameRoute
+      (this.selectedRouteId || this.isRouteOptional) &&   // Mohali/Chandigarh par route optional
+      !this.isSameRoute &&
+      !this.isBlockedRoute &&
+      this.pricePerSeat >= this.minPrice &&
+      this.pricePerSeat <= this.maxPrice
     );
   }
   publishRide(): void {

@@ -40,7 +40,7 @@
           <span class="arrow">→</span>
           <span class="city">{{ ride.end_location.name }}</span>
         </div>
-        <p class="mb-0 fs-12 text_muted">  {{ ride.route_via }}</p>
+        <p class="mb-0 fs-12 text_muted" *ngIf="ride.route_via">  {{ ride.route_via }}</p>
         <div class="card-actions">
           <select
             class="status-select status-active"

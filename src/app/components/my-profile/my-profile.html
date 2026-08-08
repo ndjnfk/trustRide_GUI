@@ -37,7 +37,8 @@
         </p> -->
         <!-- Rating -->
         <div class="mt-3">
-          <div class="d-flex align-items-center gap-2 mb-3" routerLink="/rating-show" >
+          <div class="d-flex align-items-center gap-2 mb-3" routerLink="/rating-show"
+            [state]="{ user_id: userId }">
             <i class="ti ti-star-filled text-primary"></i>
  
             <span class="fw-semibold">
@@ -50,7 +51,7 @@
             <i class="ti ti-steering-wheel text-secondary"></i>
 
             <span>
-               5/5 - Good Driving Skills
+              {{ ratingDisplay }} - {{ ratingLabel }}
             </span>
           </div>
           }

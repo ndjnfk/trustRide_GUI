@@ -74,7 +74,7 @@ export class Register implements OnInit {
   showConfirm = false
   formSubmitted = false   // used to show all errors on submit click
   // register.component.ts — days ke paas
-locations = ['Gurgaon', 'Saharanpur']
+locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
 
   // ── Form ─────────────────────────────────────────────────────────────────────
   registerForm!: FormGroup
@@ -180,6 +180,7 @@ locations = ['Gurgaon', 'Saharanpur']
   removeTravelDay(index: number): void {
     this.travelDays.removeAt(index)
   }
+
 
   // ── Password strength score (0–5) ────────────────────────────────────────────
   get strengthChecks() {

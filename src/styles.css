@@ -1381,6 +1381,16 @@ button {
   color: #15803d;
   border: 1px solid rgba(22,163,74,0.25);
 }
+.d-tag.tag-mohali {
+  background: rgba(217,119,6,0.12);
+  color: #b45309;
+  border: 1px solid rgba(217,119,6,0.25);
+}
+.d-tag.tag-chandigarh {
+  background: rgba(147,51,234,0.12);
+  color: #7e22ce;
+  border: 1px solid rgba(147,51,234,0.25);
+}
 
 /* ─── ROUTE CONFIRM CHIP ─── */
 .route-info-chip {

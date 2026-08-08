@@ -48,6 +48,19 @@ export class AuthHelper {
     return !!this.getToken()
   }
 
+  // ✅ Token se apni user id nikalo.
+  // Token JWT nahi hai — login pe `auth:<userId>` banta hai (AuthController) aur
+  // Auth middleware usi string ko Redis key ki tarah use karta hai.
+  // Sirf UI decisions ke liye (apni profile hai ya kisi aur ki) — asli
+  // authorization backend hi karta hai, kyunki ye value client-side se aati hai.
+  static getUserId(): string {
+    const token = this.getToken()
+    if (!token) return ''
+
+    const [prefix, id] = token.split(':')
+    return prefix === 'auth' && id ? id : ''
+  }
+
 
   
 }

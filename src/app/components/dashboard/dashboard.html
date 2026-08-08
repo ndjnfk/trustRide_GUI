@@ -441,6 +441,26 @@
     </div>
   </div>
 
+  <!-- Saharanpur → Chandigarh (koi preset route nahi — from/to prefill hota hai) -->
+  <div class="col-12 col-md-6 col-xl-3">
+    <div class="route-tile reveal reveal-delay-1" style="cursor:pointer" (click)="goToRoutePair('Saharanpur', 'Chandigarh')">
+      <div class="rt-from d-flex">Saharanpur <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 350-390</span></div>
+      <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+      <div class="rt-to">Chandigarh</div>
+      <div class="rt-via">via Yamunanagar · Ambala · Zirakpur</div>
+    </div>
+  </div>
+
+  <!-- Chandigarh → Saharanpur -->
+  <div class="col-12 col-md-6 col-xl-3">
+    <div class="route-tile reveal reveal-delay-2" style="cursor:pointer" (click)="goToRoutePair('Chandigarh', 'Saharanpur')">
+      <div class="rt-from d-flex">Chandigarh <span class="ms-auto d-flex"><i class="ti ti-currency-rupee fs-20"></i> 350-390</span></div>
+      <div class="rt-arrow"><div class="rt-arrow-line"></div><i class="ti ti-arrow-right" style="font-size:13px;color:var(--primary)"></i></div>
+      <div class="rt-to">Saharanpur</div>
+      <div class="rt-via">via Zirakpur · Ambala · Yamunanagar</div>
+    </div>
+  </div>
+
 </div>
 </section>
 

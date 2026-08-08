@@ -100,7 +100,7 @@
                     <input
                       type="text"
                       class="loc-input"
-                      placeholder="e.g. Gurgaon, Saharanpur..."
+                      placeholder="e.g. Gurgaon, Saharanpur, Mohali, Chandigarh..."
                       [(ngModel)]="fromLocation"
                       (input)="onFromInput()"
                       autocomplete="off"
@@ -119,8 +119,10 @@
                       class="d-tag"
                       [class.tag-gurgaon]="s.includes('Gurgaon')"
                       [class.tag-saharanpur]="s.includes('Saharanpur')"
+                      [class.tag-mohali]="s.includes('Mohali')"
+                      [class.tag-chandigarh]="s.includes('Chandigarh')"
                     >
-                      {{ s.includes('Gurgaon') ? 'Gurgaon' : 'Saharanpur' }}
+                      {{ cityTag(s) }}
                     </span>
                   </div>
                 </div>
@@ -145,7 +147,7 @@
                     <input
                       type="text"
                       class="loc-input"
-                      placeholder="e.g. Saharanpur, Gurgaon..."
+                      placeholder="e.g. Saharanpur, Gurgaon, Chandigarh, Mohali..."
                       [(ngModel)]="toLocation"
                       (input)="onToInput()"
                       autocomplete="off"
@@ -160,8 +162,10 @@
                       class="d-tag"
                       [class.tag-gurgaon]="s.includes('Gurgaon')"
                       [class.tag-saharanpur]="s.includes('Saharanpur')"
+                      [class.tag-mohali]="s.includes('Mohali')"
+                      [class.tag-chandigarh]="s.includes('Chandigarh')"
                     >
-                      {{ s.includes('Gurgaon') ? 'Gurgaon' : 'Saharanpur' }}
+                      {{ cityTag(s) }}
                     </span>
                   </div>
                 </div>
@@ -183,7 +187,12 @@
             ❌ No rides available for same pickup and destination
           </div>
 
+          <div class="route-error" *ngIf="isBlockedRoute">
+            ❌ This route isn't available yet — please pick a different pickup or destination.
+          </div>
+
           <!-- Route Selection — fromLocation & toLocation select hone ke baad dikhega -->
+          <!-- Mohali / Chandigarh rides par koi preset route nahi hota, isliye yeh step skip -->
 
           <div class="section py-4 px-md-2" *ngIf="filteredRoutes.length > 0">
             <label class="section-label d-block mb-3">Select Route</label>
@@ -310,15 +319,15 @@
           <div class="section pt-2 pb-4 px-md-2">
             <label class="section-label">Price per Seat</label>
             <div class="price-row">
-              <button class="counter-btn" (click)="decrementPrice()"   *ngIf="selectedRouteId"  [disabled]="pricePerSeat <= 300" >−</button>
+              <button class="counter-btn" (click)="decrementPrice()"   *ngIf="(selectedRouteId || isRouteOptional) && !isBlockedRoute"  [disabled]="pricePerSeat <= minPrice" >−</button>
               <div class="price-display">
-                
-                <span class="price-val" *ngIf="selectedRouteId">₹{{ pricePerSeat }}</span>
-<span class="price-placeholder" *ngIf="!selectedRouteId">For Charges..Please select a route</span>
+
+                <span class="price-val" *ngIf="(selectedRouteId || isRouteOptional) && !isBlockedRoute">₹{{ pricePerSeat }}</span>
+<span class="price-placeholder" *ngIf="!((selectedRouteId || isRouteOptional) && !isBlockedRoute)">For Charges..Please select a route</span>
               </div>
-              <button class="counter-btn" (click)="incrementPrice()"   *ngIf="selectedRouteId"  [disabled]="pricePerSeat >= 560">+</button>
+              <button class="counter-btn" (click)="incrementPrice()"   *ngIf="(selectedRouteId || isRouteOptional) && !isBlockedRoute"  [disabled]="pricePerSeat >= maxPrice">+</button>
             </div>
-            <p class="price-hint">💡 Recommended: ₹400–₹550 for this route</p>
+            <p class="price-hint">💡 Allowed range: ₹{{ minPrice }}–₹{{ maxPrice }} for this route</p>
           </div>
 
           <!-- Vehicle -->

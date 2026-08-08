@@ -69,8 +69,27 @@ export class SearchRides {
     'Saharanpur Madhav Nagar'
   ];
 
+  readonly mohaliAreas: string[] = [
+    'Mohali',
+    'Mohali Sohana Gurdwara',
+    'Mohali Homeland',
+    'Mohali Bestech Towers',
+    'Mohali Bhena Da Dhaba',
+    'Mohali Sector 43'
+  ];
+
+  readonly chandigarhAreas: string[] = [
+    'Chandigarh',
+    'Chandigarh Sector 17'
+  ];
+
   get allAreas(): string[] {
-    return [...this.gurgaonAreas, ...this.saharanpurAreas];
+    return [
+      ...this.gurgaonAreas,
+      ...this.saharanpurAreas,
+      ...this.mohaliAreas,
+      ...this.chandigarhAreas,
+    ];
   }
 
   /* ── Form state ── */
@@ -186,6 +205,8 @@ export class SearchRides {
     const v = areaValue.toLowerCase().trim();
     if (v.startsWith('gurgaon')) return 'gurgaon';
     if (v.startsWith('saharanpur')) return 'saharanpur';
+    if (v.startsWith('mohali')) return 'mohali';
+    if (v.startsWith('chandigarh')) return 'chandigarh';
     return v.split(' ')[0];
   }
 
@@ -223,7 +244,10 @@ export class SearchRides {
           const rideTo = r.to.toLowerCase();
           const cityMatch = rideFrom.includes(fromCity) && rideTo.includes(toCity);
 
-          const rideDate = new Date(r.departure_time).toLocaleDateString('en-CA');
+          // UTC me hi calendar date nikalo — departure_time fake-UTC hai, aur IST
+          // shift late-evening ride ko agle din ke bucket me daal deta tha (20:00Z
+          // → 01:30 IST next day), jisse wo apni asli date pe search me aati hi nahi thi.
+          const rideDate = new Date(r.departure_time).toLocaleDateString('en-CA', { timeZone: 'UTC' });
           const dateMatch = rideDate === targetDate;
 
           const seatsMatch = (r.available_seats ?? 0) >= this.passengers;
