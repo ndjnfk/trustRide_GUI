@@ -93,6 +93,17 @@ export interface BounceCheckResponse {
   };
 }
 
+// A BlaBla ride as the admin fills it in — date/time stay as plain strings so
+// the value the admin typed is the value that gets stored (no timezone shift).
+export interface BlablaRidePayload {
+  source: string;
+  destination: string;
+  ride_date: string;   // YYYY-MM-DD
+  ride_time: string;   // HH:mm (24h)
+  url: string;
+  rider_name: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -282,6 +293,38 @@ resetUserSecurity(payload: {
     payload,
     { headers: AdminSessionHelper.getAuthHeaders() }
   );
+}
+
+// ── BlaBlaCar rides (hand-curated, separate collection) ───
+getBlablaRides(): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/blabla-rides`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+createBlablaRide(payload: BlablaRidePayload): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/blabla-rides`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateBlablaRide(id: string, payload: Partial<BlablaRidePayload>): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/blabla-rides/${id}`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteBlablaRide(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/blabla-rides/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// Bulk delete — DELETE ke saath body bhejna reliable nahi hai, isliye POST.
+bulkDeleteBlablaRides(ids: string[]): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/blabla-rides/bulk-delete`, { ids }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
 }
 
 // ── Categories ────────────────────────────────────────────

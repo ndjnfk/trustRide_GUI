@@ -3,7 +3,7 @@
 .sd-state { text-align: center; padding: 90px 16px; color: #94a3b8; }
 .sd-error { color: #dc2626; }
 
-/* Hero */
+
 .sd-hero {
   position: relative;
   height: 200px;
@@ -20,7 +20,7 @@
 
 .sd-wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
 
-/* Info card overlaps the hero (Swiggy style) */
+
 .sd-card { background: #fff; border: 1px solid #eef2ff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 87, 255, 0.06); }
 .sd-info { margin-top: -40px; padding: 18px 20px; position: relative; }
 .sd-info-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -37,13 +37,13 @@
 .sd-meta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.82rem; color: #64748b; }
 .sd-closed { color: #dc2626; font-weight: 600; }
 
-/* Section */
+
 .sd-section-head { display: flex; align-items: center; gap: 10px; margin: 26px 0 14px; }
 .sd-section-title { font-size: 1.15rem; font-weight: 800; color: #1a3c5e; margin: 0; }
 .sd-count { background: #e7edff; color: #4f46e5; font-size: 0.78rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
 .sd-empty { color: #94a3b8; text-align: center; padding: 30px; }
 
-/* Items grid */
+
 .sd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
 .sd-item { background: #fff; border: 1px solid #eef2ff; border-radius: 14px; overflow: hidden; box-shadow: 0 5px 16px rgba(0, 87, 255, 0.05); }
 .sd-item-img { position: relative; height: 130px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
@@ -59,12 +59,12 @@
 .sd-item-sub { font-size: 0.76rem; color: #64748b; }
 .sd-oos { color: #dc2626; font-weight: 600; }
 
-/* Clickable service card → detail page */
+
 .sd-item--clickable { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
 .sd-item--clickable:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0, 87, 255, 0.12); }
 .sd-view { margin-top: 8px; font-size: 0.82rem; font-weight: 700; color: #0057ff; }
 
-/* Service booking button */
+
 .sd-book {
   width: 100%;
   margin-top: 10px;
@@ -80,7 +80,6 @@
 }
 .sd-book:hover:not([disabled]) { background: #0046cc; }
 .sd-book[disabled] { opacity: 0.75; cursor: default; }
-.sd-book--done { background: #16a34a; }
 
 .sd-book-err {
   text-align: center;
@@ -96,7 +95,7 @@
 }
 .sd-more:hover { background: #0057ff; color: #fff; }
 
-/* Pharmacy prescription CTA */
+
 .sd-rx { text-align: center; padding: 28px 20px; }
 .sd-rx-icon { font-size: 44px; }
 .sd-rx-title { font-size: 1.15rem; font-weight: 800; color: #1a3c5e; margin: 8px 0 6px; }
@@ -107,7 +106,7 @@
 }
 .sd-rx-btn:hover { background: #0046cc; }
 
-/* Doctor cards (OPD) */
+
 .sd-doc { text-align: left; }
 .sd-doc-avatar {
   width: 100%; height: 120px; background: #e7edff; display: flex; align-items: center;

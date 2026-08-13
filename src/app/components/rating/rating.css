@@ -14,7 +14,7 @@
   color: var(--navy);
 }
 
-/* Title */
+
 .rating-title {
   font-weight: 700;
     font-size: 1.5rem;
@@ -24,7 +24,7 @@
     line-height: 46px;
 }
 
-/* Tabs */
+
 .rating-tabs {
   border-bottom: 1px solid var(--line);
   margin-bottom: 1.5rem;
@@ -52,7 +52,7 @@
   border-bottom-color: var(--navy);
 }
 
-/* Summary */
+
 .rating-summary {
   margin-bottom: 1.5rem;
 }
@@ -70,7 +70,7 @@
   margin-top: 0.35rem;
 }
 
-/* Breakdown */
+
 .rating-breakdown {
   margin-bottom: 0.5rem;
 }
@@ -94,14 +94,14 @@
   color: var(--navy);
 }
 
-/* Divider between summary and reviews */
+
 .section-divider {
   height: 6px;
   background: #f1f3f6;
   margin: 1rem -1.25rem 1.25rem;
 }
 
-/* Reviews */
+
 .review-item {
   padding: 0.75rem 0 1rem;
   border-bottom: 1px solid var(--line);
@@ -189,10 +189,6 @@
   padding: 1px 8px;
   margin-left: 6px;
   vertical-align: middle;
-}
-body.modal-open {
-  overflow: hidden !important;
-  padding-right: 0 !important;
 }
 .modal.show.d-block {
   position: fixed !important;

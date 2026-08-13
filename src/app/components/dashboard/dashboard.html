@@ -23,125 +23,39 @@
 
 </section>
 
- <!-- Search Card -->
-<section class="search_sec">
-  <div class="search-card">
-    <div class="search-strip">
+ <!-- ══ RIDE SOURCE PICKER ══ -->
+<!-- Search form ab home par nahi hai — TrustRideSRE card se hi search page khulta hai. -->
+<section class="picker_sec">
+  <div class="picker-card">
+    <div class="picker-grid">
 
-      <!-- FROM -->
-      <div class="sf sf_radius" #fromRef>
-        <div class="sf-label">Leaving from</div>
-        <div class="sf-row">
-          <i class="ti ti-map-pin"></i>
-          <input
-            class="sf-val sf-input"
-            [(ngModel)]="fromValue"
-            (input)="onFromInput()"
-            (focus)="focusFrom()"
-            placeholder="City, area or station…"
-            autocomplete="off"
-          />
-        </div>
-        <!-- Dropdown -->
-        <ul class="sf-dropdown" *ngIf="showFromDropdown && fromFiltered.length">
-          <li
-            *ngFor="let area of fromFiltered"
-            (mousedown)="selectFrom(area)"
-          >
-            <i class="ti ti-map-pin"></i> {{ area }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- SWAP -->
-      <div class="sf-swap" title="Swap" (click)="swap()">
-        <i class="ti ti-arrows-right-left"></i>
-      </div>
-
-      <!-- TO -->
-      <div class="sf" #toRef>
-        <div class="sf-label">Going to</div>
-        <div class="sf-row">
-          <i class="ti ti-map-pin-filled"></i>
-          <input
-            class="sf-val sf-input"
-            [(ngModel)]="toValue"
-            (input)="onToInput()"
-            (focus)="focusTo()"
-            placeholder="Your destination…"
-            autocomplete="off"
-          />
-        </div>
-        <!-- Dropdown -->
-        <ul class="sf-dropdown" *ngIf="showToDropdown && toFiltered.length">
-          <li
-            *ngFor="let area of toFiltered"
-            (mousedown)="selectTo(area)"
-          >
-            <i class="ti ti-map-pin-filled"></i> {{ area }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- WHEN -->
-      <!-- <div class="sf" style="flex:0.6">
-        <div class="sf-label">When</div>
-        <div class="sf-row date-toggle-row">
-          <i class="ti ti-calendar"></i>
-          <div class="date-toggle">
-            <button
-              class="dt-btn"
-              [class.active]="selectedDate === 'today'"
-              (click)="selectedDate = 'today'"
-            >Today</button>
-            <button
-              class="dt-btn"
-              [class.active]="selectedDate === 'tomorrow'"
-              (click)="selectedDate = 'tomorrow'"
-            >Tomorrow</button>
+      <!-- TrustRideSRE rides → our own rides list -->
+      <div class="picker-tile" (click)="goToTrustRideRides()">
+        <div class="pt-icon pt-icon-blue"><i class="ti ti-steering-wheel"></i></div>
+        <div class="pt-body">
+          <div class="pt-title">TrustRideSRE Rides</div>
+          <div class="pt-desc">
+            Verified rides published by our own community, with a shareable link for each one.
           </div>
         </div>
-      </div> -->
-
-      <!-- WHEN — 7-day dropdown -->
-      <div class="sf" style="flex:0.7">
-        <div class="sf-label">When</div>
-        <div class="sf-row">
-          <i class="ti ti-calendar"></i>
-          <select class="sf-val sf-select"  (change)="onDateChange($event)">
-            <option *ngFor="let d of dateOptions" [value]="d.value">
-              {{ d.label }}
-            </option>
-          </select>
+        <div class="pt-cta">
+          <i class="ti ti-list-search"></i> View rides
         </div>
       </div>
 
-      <!-- PASSENGERS -->
-      <div class="sf sf_passenger" style="flex:0.55">
-        <div class="sf-label">Passengers</div>
-        <div class="sf-row passenger-row">
-          <i class="ti ti-users"></i>
-          <div class="passenger-ctrl">
-            <button
-              class="pass-btn"
-              (click)="decrementPassengers()"
-              [disabled]="passengers <= 1"
-            >−</button>
-            <span class="pass-val">{{ passengers }}</span>
-            <button
-              class="pass-btn"
-              (click)="incrementPassengers()"
-              [disabled]="passengers >= 4"
-            >+</button>
+      <!-- BlaBla rides → curated list -->
+      <div class="picker-tile" (click)="goToBlablaRides()">
+        <div class="pt-icon pt-icon-green"><i class="ti ti-car"></i></div>
+        <div class="pt-body">
+          <div class="pt-title">BlaBla Rides</div>
+          <div class="pt-desc">
+            Rides we found on BlaBlaCar for the Gurgaon &harr; Saharanpur route.
           </div>
         </div>
+        <div class="pt-cta">
+          <i class="ti ti-external-link"></i> View rides
+        </div>
       </div>
-
-      <!-- SEARCH -->
-      <button class="search-go" (click)="search()">
-        <i class="ti ti-search"></i> Search
-      </button>
-
 
     </div>
   </div>

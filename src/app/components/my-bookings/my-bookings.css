@@ -1,12 +1,7 @@
-/* All styles for this component have been moved to src/styles.css
-   under the "MY BOOKINGS COMPONENT STYLES" section.
-   Rules are scoped with the .bookings-page wrapper class so they
-   do not collide with .route-line / .section-label used elsewhere. */
-/* ════════════════════════════════════════════════════════════
-   my-bookings.component.css — cancel button + reason popup
-═════════════════════════════════════════════════════════════ */
 
-/* ── Cancel button on card ── */
+
+
+
 .card-actions {
   margin-top: 12px;
 }
@@ -30,14 +25,14 @@
   transform: translateY(-1px);
 }
 
-/* ── "Cancelled by you" badge ── */
+
 .badge-cancelled-by-me {
   background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
-/* ── Modal overlay ── */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -56,7 +51,7 @@
   to { opacity: 1; }
 }
 
-/* ── Modal box ── */
+
 .cancel-modal {
   background: #ffffff;
   border-radius: 16px;
@@ -114,7 +109,7 @@
   margin-bottom: 10px;
 }
 
-/* ── Reason list ── */
+
 .reason-list {
   display: flex;
   flex-direction: column;
@@ -153,7 +148,7 @@
   cursor: pointer;
 }
 
-/* ── Other reason textarea ── */
+
 .other-reason-input {
   width: 100%;
   border: 1.5px solid #e5e7eb;
@@ -167,14 +162,14 @@
 
 .other-reason-input:focus { border-color: #ef4444; }
 
-/* ── Error ── */
+
 .modal-error {
   color: #dc2626;
   font-size: 13px;
   margin-bottom: 10px;
 }
 
-/* ── Action buttons ── */
+
 .modal-actions {
   display: flex;
   gap: 10px;
@@ -226,10 +221,4 @@
 
 .rider-name-link {
   cursor: pointer;
-}
-
-.cby-reason {
-  font-weight: 400;
-  color: #b91c1c;
-  font-style: italic;
 }

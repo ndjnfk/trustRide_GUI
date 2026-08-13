@@ -94,6 +94,11 @@ export const routes: Routes = [
       import('../app/admin/user-reviews/user-reviews').then((m) => m.UserReviews),
   },
   {
+    path: 'admin/blabla-rides',
+    loadComponent: () =>
+      import('../app/admin/blabla-rides/blabla-rides').then((m) => m.BlablaRides),
+  },
+  {
     path: 'admin/categories',
     loadComponent: () =>
       import('../app/admin/categories/categories').then((m) => m.Categories),
@@ -273,6 +278,17 @@ export const routes: Routes = [
     path: 'search-rides',
     loadComponent: () =>
       import('../app/components/search-rides/search-rides').then((m) => m.SearchRides),
+  },
+  // Public ride lists — no auth by design, sirf dekhne ke liye.
+  {
+    path: 'trustride-rides',
+    loadComponent: () =>
+      import('../app/components/trustride-rides/trustride-rides').then((m) => m.TrustrideRidesPage),
+  },
+  {
+    path: 'blabla-rides',
+    loadComponent: () =>
+      import('../app/components/blabla-rides/blabla-rides').then((m) => m.BlablaRidesPage),
   },
    {
     path: 'rating-show',

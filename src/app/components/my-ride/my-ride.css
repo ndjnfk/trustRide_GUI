@@ -2,7 +2,7 @@
   padding-top: 110px;
    padding-bottom: 50px;
 }
-/*  Loading / Error  */
+
 .loading {
   text-align: center;
   padding: 3rem;
@@ -20,7 +20,7 @@
   border: 1px solid #f5c6c6;
 }
 
-/*  Stats Row  */
+
 .stat-num {
   display: block;
   font-size: 26px;
@@ -33,7 +33,7 @@
   margin-top: 3px;
 }
 
-/*  Section Label  */
+
 .section-label {
   font-size: 11px;
   font-weight: 600;
@@ -43,7 +43,7 @@
   margin: 1.6rem 0 0.75rem;
 }
 
-/*  Ride Card  */
+
 .ride-card {
   background: #ffffff;
   border-radius: 14px;
@@ -57,19 +57,19 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
 }
 
-/* Active — blue left border */
+
 .ride-card.active {
   border-left: 3px solid #185FA5;
   border-radius: 0 14px 14px 0;
 }
 
-/* Past — muted */
+
 .ride-card.past {
   opacity: 0.65;
   background: #fafafa;
 }
 
-/*  Card Top  */
+
 .card-top {
   display: flex;
   align-items: center;
@@ -95,7 +95,7 @@
   color: #bbb;
 }
 
-/*  Status Badge  */
+
 .status-badge {
   font-size: 11px;
   font-weight: 600;
@@ -114,7 +114,7 @@
   color: #999;
 }
 
-/*  Card Meta  */
+
 .card-meta {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -144,14 +144,14 @@
   color: #185FA5;
 }
 
-/*  Divider  */
+
 .card-divider {
   height: 1px;
   background: #f0f0f0;
   margin: 12px 0;
 }
 
-/*  Card Footer  */
+
 .card-footer {
   display: flex;
   align-items: center;
@@ -163,7 +163,7 @@
   color: #bbb;
 }
 
-/*  Empty State  */
+
 .empty {
   text-align: center;
   padding: 1.5rem;
@@ -174,22 +174,17 @@
   border: 1px dashed #e0e0e0;
 }
 
-/*  Mobile Responsive  */
+
 @media (max-width: 540px) {
   .card-meta {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .stats-row {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
   }
 
   .stat-num {
     font-size: 20px;
   }
 
-  /*  Compact stat boxes: 3 chote boxes ek row mein (phone)  */
+  
   .stats_row.row {
     --bs-gutter-x: 0.5rem;
     --bs-gutter-y: 0.5rem;
@@ -218,14 +213,14 @@
     gap: 8px;
   }
 }
-/*  Card Actions  */
+
 .card-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/*  Copy shareable link  */
+
 .copy-link-btn {
   font-size: 11px;
   font-weight: 600;
@@ -269,7 +264,7 @@
   cursor: not-allowed;
 }
 
-/*  Status Dropdown  */
+
 .status-select {
   font-size: 11px;
   font-weight: 600;
@@ -294,7 +289,7 @@
   cursor: not-allowed;
 }
 
-/*  Delete Button  */
+
 .delete-btn {
   background: #fff0f0;
   border: 1px solid #f5c6c6;
@@ -314,7 +309,7 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-/*  Cancelled Card  */
+
 .ride-card.cancelled {
   opacity: 0.6;
   background: #fff8f8;
@@ -322,12 +317,12 @@
   border-radius: 0 14px 14px 0;
 }
 
-/*  Section Label Colors  */
+
 .section-label--active  { color: #185FA5; }
 .section-label--completed { color: #3B6D11; }
 .section-label--cancelled { color: #a32d2d; }
 
-/*  Status Colors  */
+
 .status-select.status-completed {
   background: #eaf3de;
   color: #3B6D11;
@@ -337,7 +332,7 @@
   background: #fcebeb;
   color: #a32d2d;
 }
-/*  Overlay  */
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -354,44 +349,9 @@
   to   { opacity: 1; }
 }
 
-/*  Confirm Box  */
-.confirm-box {
-  background: #fff;
-  border-radius: 16px;
-  padding: 2rem 1.75rem;
-  width: 340px;
-  text-align: center;
-  animation: slideUp 0.2s ease;
-}
-
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
-}
-
-.confirm-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.confirm-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin: 0 0 0.5rem;
-}
-
-.confirm-msg {
-  font-size: 14px;
-  color: #999;
-  margin: 0 0 1.5rem;
-  line-height: 1.6;
-}
-
-.confirm-btns {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
 }
 
 .btn-cancel {
@@ -406,19 +366,6 @@
 
 .btn-cancel:hover { background: #f5f5f5; }
 
-.btn-delete {
-  padding: 9px 24px;
-  border-radius: 8px;
-  border: none;
-  background: #e74c3c;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-delete:hover { background: #c0392b; }
-/*  Passengers Section  */
 .passengers-section {
   margin-top: 12px;
 }
@@ -649,7 +596,7 @@
 }
 .code-input{
     flex: 1 1 auto;
-    /* width: auto; */
+    
 }
 .verify-btn{
     flex-shrink: 0;

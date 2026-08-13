@@ -19,7 +19,7 @@
 .svc-empty-icon { font-size: 42px; margin-bottom: 10px; }
 .svc-empty p { margin-bottom: 16px; }
 
-/* Form */
+
 .svc-form-card { background: #fff; border: 1px solid #eef2ff; border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0, 87, 255, 0.06); }
 .svc-form-title { font-size: 1.05rem; font-weight: 700; color: #1a3c5e; margin: 0 0 14px; }
 .svc-form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
@@ -30,7 +30,7 @@
 .svc-image-pick { display: inline-block; padding: 8px 14px; border: 1.5px dashed #c7d2fe; border-radius: 10px; color: #0057ff; font-size: 0.85rem; font-weight: 600; cursor: pointer; background: #f8faff; }
 .svc-image-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; margin-left: 10px; vertical-align: middle; border: 1px solid #e2e8f0; }
 
-/* Grid */
+
 .svc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
 .svc-card { background: #fff; border: 1px solid #eef2ff; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 6px 18px rgba(0, 87, 255, 0.05); }
 .svc-card-img { height: 130px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
@@ -38,7 +38,6 @@
 .svc-noimg { font-size: 36px; opacity: 0.5; }
 
 .svc-card-body { padding: 12px 14px 6px; flex: 1; }
-.svc-card-cat { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.4px; color: #94a3b8; font-weight: 600; }
 .svc-card-name { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 2px 0 8px; }
 .svc-card-meta { display: flex; align-items: center; justify-content: space-between; }
 .svc-card-price { font-size: 1.05rem; font-weight: 800; color: #0057ff; }

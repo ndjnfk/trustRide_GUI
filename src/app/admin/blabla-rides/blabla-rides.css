@@ -1,0 +1,243 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.blabla-container {
+  max-width: 1250px;
+}
+
+/* ── Header ── */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.total-badge {
+  background: #4f46e5;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.table thead th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+}
+
+.route-arrow {
+  color: #94a3b8;
+  margin: 0 6px;
+}
+
+/* Long BlaBlaCar links must not stretch the table. */
+.ride-url {
+  display: inline-block;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  font-size: 13px;
+  color: #4f46e5;
+}
+
+/* ── Header actions ── */
+/* Phone par buttons title ke neeche wrap hote hain, desktop par right me. */
+.header-actions {
+  margin-left: auto;
+}
+
+.filter-count {
+  background: #4f46e5;
+  font-size: 11px;
+  padding: 3px 7px;
+  margin-left: 4px;
+}
+
+/* ── Filters ── */
+.filters-card {
+  background: #ffffff;
+}
+
+/* ── Bulk actions ── */
+/* Lambi list me scroll karte waqt bhi delete button haath me rahe. */
+.bulk-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.mobile-select-all {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bulk-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3730a3;
+  margin-right: 6px;
+}
+
+.select-box {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.select-box:disabled {
+  cursor: not-allowed;
+}
+
+/* Selected row alag dikhe — warna bulk delete se pehle confirm karna mushkil hai.
+   Bootstrap 5.3 row-state ko box-shadow inset se paint karta hai, isliye seedha
+   background-color dene par table-hover uske upar chadh jaata hai — uska apna
+   variable set karna sahi tareeka hai. */
+.blabla-table tbody tr.row-selected > td {
+  --bs-table-bg-state: #eef2ff;
+}
+
+.empty-icon {
+  font-size: 42px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 767.98px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 20px 14px;
+  }
+
+  .page-title {
+    font-size: 19px;
+  }
+
+  /* Phone par 6-column table kabhi fit nahi hoti — har row ko card bana do.
+     Markup wahi rehta hai (inline edit bhi chalti rahti hai), sirf display
+     badalti hai; column ka naam td ke data-label se aata hai. */
+  .blabla-table thead {
+    display: none;
+  }
+
+  .blabla-table,
+  .blabla-table tbody,
+  .blabla-table tr,
+  .blabla-table td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Har row apna card hai, to bahar wala card chrome hata do — warna card-in-card. */
+  .table-card {
+    background: transparent;
+    box-shadow: none !important;
+  }
+
+  .blabla-table tr {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 44px 12px 14px;   /* right me checkbox ki jagah */
+    margin-bottom: 12px;
+  }
+
+  .blabla-table tr.row-selected {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+  }
+
+  /* Card ka background tr par hai, to td ka apna paint hatana zaroori hai —
+     warna wo rounded corners ke bahar white square banata hai. */
+  .blabla-table td {
+    border: 0;
+    padding: 5px 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .blabla-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #6b7280;
+    margin-bottom: 2px;
+  }
+
+  /* Row number card layout me sirf shor hai. */
+  .blabla-table td.index-cell {
+    display: none;
+  }
+
+  /* Checkbox card ke top-right corner me. */
+  .blabla-table td.select-cell {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    padding: 0;
+  }
+
+  .blabla-table td.select-cell::before {
+    display: none;
+  }
+
+  .blabla-table td.actions-cell {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed #e5e7eb;
+    text-align: left;
+  }
+
+  .blabla-table td.actions-cell::before {
+    display: none;
+  }
+
+  .blabla-table td.actions-cell .btn {
+    flex: 1;
+    margin: 0 !important;   /* me-1 utility card layout me gap ke saath tootta hai */
+  }
+
+  .ride-url {
+    max-width: 100%;
+  }
+}

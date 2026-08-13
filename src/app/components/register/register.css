@@ -373,15 +373,6 @@ form {
   }
 }
 
-.check-icon {
-  font-size: 13px;
-  font-weight: 700;
-  width: 14px;
-  text-align: center;
-  color: var(--text-placeholder);
-  flex-shrink: 0;
-}
-
 
 .btn-submit {
   width: 100%;
@@ -460,7 +451,7 @@ form {
     grid-template-columns: 1fr;
   }
 }
-/* Gender select inherits .field and .input-wrap — only the select itself needs styling */
+
 .input-wrap select {
   width: 100%;
   height: 44px;
@@ -494,7 +485,7 @@ form {
 }
 .travel-day-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 36px;   /* col1: location, col2: day, col3: ✕ */
+  grid-template-columns: 1fr 1fr 36px;   
   gap: 8px;
   align-items: center;
   padding: 10px;
@@ -503,15 +494,15 @@ form {
   border-radius: var(--radius-md);
 }
 
-/* Row 1 → Going to + Going day */
-.travel-day-row .input-wrap:nth-of-type(1) { grid-column: 1; grid-row: 1; } /* goingTo */
-.travel-day-row .input-wrap:nth-of-type(2) { grid-column: 2; grid-row: 1; } /* going day */
 
-/* Row 2 → Coming to + Leaving day */
-.travel-day-row .input-wrap:nth-of-type(3) { grid-column: 1; grid-row: 2; } /* comingTo */
-.travel-day-row .input-wrap:nth-of-type(4) { grid-column: 2; grid-row: 2; } /* leaving day */
+.travel-day-row .input-wrap:nth-of-type(1) { grid-column: 1; grid-row: 1; } 
+.travel-day-row .input-wrap:nth-of-type(2) { grid-column: 2; grid-row: 1; } 
 
-/* ✕ button — dono rows ke beech vertically centered */
+
+.travel-day-row .input-wrap:nth-of-type(3) { grid-column: 1; grid-row: 2; } 
+.travel-day-row .input-wrap:nth-of-type(4) { grid-column: 2; grid-row: 2; } 
+
+
 .travel-day-row .remove-day-btn {
   grid-column: 3;
   grid-row: 1 / 3;

@@ -23,9 +23,11 @@
   ></textarea>
   <div class="char-count">{{ additionalNote.length }}/300</div>
 
-  <div class="error-msg" *ngIf="showError">
-    ⚠️ Please enter a reason to continue.
-  </div>
+  @if (showError) {
+    <div class="error-msg">
+      ⚠️ Please enter a reason to continue.
+    </div>
+  }
 
   <!-- Footer -->
   <div class="dialog-footer">

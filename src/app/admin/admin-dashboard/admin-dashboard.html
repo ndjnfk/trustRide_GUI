@@ -219,7 +219,7 @@
                 <td data-label="Name">
                   <div class="user-box">
                     <div class="avatar">
-                      {{ user.fullName?.charAt(0)?.toUpperCase() }}
+                      {{ (user.fullName || '').charAt(0).toUpperCase() }}
                     </div>
                     <div>
                       <div class="fw-semibold user-name-link" (click)="viewUserReviews(user)"

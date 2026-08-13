@@ -1,0 +1,467 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="blabla-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex flex-wrap align-items-center gap-2 mb-3">
+        <h1 class="page-title m-0">BlaBla Rides</h1>
+        <span class="badge rounded-pill total-badge">
+          @if (hasActiveFilters) {
+            {{ filteredRides.length }} / {{ total }}
+          } @else {
+            {{ total }}
+          }
+        </span>
+
+        <div class="header-actions d-flex gap-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [class.active]="showFilters"
+            (click)="showFilters = !showFilters"
+          >
+            Filters
+            @if (activeFilterCount) {
+              <span class="badge rounded-pill filter-count">{{ activeFilterCount }}</span>
+            }
+          </button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="showCreate = !showCreate">
+            {{ showCreate ? 'Close' : '+ Add ride' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Create form -->
+      @if (showCreate) {
+      <div class="card create-card mb-3 border-0 shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 text-muted mb-3">Add a BlaBlaCar ride</h2>
+          <form class="row g-2 align-items-end" (ngSubmit)="createRide()">
+
+            <div class="col-6 col-md-6 col-lg-2">
+              <label class="form-label field-label">Source</label>
+              <select
+                class="form-select"
+                name="source"
+                [(ngModel)]="form.source"
+                (ngModelChange)="onSourceChange(form)"
+                [disabled]="creating"
+              >
+                @for (city of cities; track city) {
+                  <option [value]="city">{{ city }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-2">
+              <label class="form-label field-label">Destination</label>
+              <select
+                class="form-select"
+                name="destination"
+                [(ngModel)]="form.destination"
+                (ngModelChange)="onDestinationChange(form)"
+                [disabled]="creating"
+              >
+                @for (city of cities; track city) {
+                  <option [value]="city">{{ city }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-2">
+              <label class="form-label field-label">Date</label>
+              <input
+                type="date"
+                class="form-control"
+                name="ride_date"
+                [(ngModel)]="form.ride_date"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-2">
+              <label class="form-label field-label">Time</label>
+              <input
+                type="time"
+                class="form-control"
+                name="ride_time"
+                [(ngModel)]="form.ride_time"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-2">
+              <label class="form-label field-label">Rider name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="e.g. Rahul"
+                name="rider_name"
+                [(ngModel)]="form.rider_name"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-2">
+              <label class="form-label field-label">BlaBlaCar URL</label>
+              <input
+                type="url"
+                class="form-control"
+                placeholder="https://www.blablacar.in/..."
+                name="url"
+                [(ngModel)]="form.url"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary" [disabled]="creating">
+                @if (creating) {
+                  <span class="spinner-border spinner-border-sm me-1"></span> Adding…
+                } @else {
+                  + Add BlaBla Ride
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      }
+
+      <!-- Error -->
+      @if (error) {
+        <div class="alert alert-danger d-flex align-items-center justify-content-between">
+          <span>⚠️ {{ error }}</span>
+          <button class="btn btn-sm btn-outline-danger" (click)="fetchRides()">Retry</button>
+        </div>
+      }
+
+      <!-- Filters -->
+      @if (!loading && !error && showFilters) {
+        <div class="card filters-card mb-3 border-0 shadow-sm">
+          <div class="card-body py-3">
+            <div class="row g-2 align-items-end">
+
+              <div class="col-12 col-md-4 col-xl-2">
+                <label class="form-label field-label">Search</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="🔍 Rider, route or URL"
+                  name="filterSearch"
+                  [(ngModel)]="filterSearch"
+                  (ngModelChange)="onFilterChange()"
+                />
+              </div>
+
+              <div class="col-6 col-md-4 col-xl-2">
+                <label class="form-label field-label">Source</label>
+                <select
+                  class="form-select"
+                  name="filterSource"
+                  [(ngModel)]="filterSource"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All</option>
+                  @for (city of sourceOptions; track city) {
+                    <option [value]="city">{{ city }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-6 col-md-4 col-xl-2">
+                <label class="form-label field-label">Destination</label>
+                <select
+                  class="form-select"
+                  name="filterDestination"
+                  [(ngModel)]="filterDestination"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All</option>
+                  @for (city of destinationOptions; track city) {
+                    <option [value]="city">{{ city }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-12 col-md-4 col-xl-2">
+                <label class="form-label field-label">When</label>
+                <select
+                  class="form-select"
+                  name="filterScope"
+                  [(ngModel)]="filterScope"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="all">All dates</option>
+                  <option value="past">Previous (before today)</option>
+                  <option value="upcoming">Today &amp; upcoming</option>
+                </select>
+              </div>
+
+              <div class="col-6 col-md-4 col-xl-2">
+                <label class="form-label field-label">From date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="filterFromDate"
+                  [(ngModel)]="filterFromDate"
+                  (ngModelChange)="onFilterChange()"
+                />
+              </div>
+
+              <div class="col-6 col-md-4 col-xl-2">
+                <label class="form-label field-label">To date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="filterToDate"
+                  [(ngModel)]="filterToDate"
+                  (ngModelChange)="onFilterChange()"
+                />
+              </div>
+
+              <div class="col-12">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  [disabled]="!hasActiveFilters"
+                  (click)="clearFilters(); onFilterChange()"
+                >
+                  Clear filters
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Bulk actions -->
+      @if (!loading && !error && selectedCount > 0) {
+        <div class="bulk-bar d-flex flex-wrap align-items-center gap-2 mb-3">
+          <span class="bulk-count">
+            {{ selectedCount }} ride{{ selectedCount === 1 ? '' : 's' }} selected
+          </span>
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            [disabled]="bulkDeleting"
+            (click)="bulkDelete()"
+          >
+            @if (bulkDeleting) {
+              <span class="spinner-border spinner-border-sm me-1"></span> Deleting…
+            } @else {
+              🗑 Delete selected
+            }
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="bulkDeleting"
+            (click)="clearSelection()"
+          >
+            Clear selection
+          </button>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading && !error) {
+        <!-- Mobile par thead chhup jaata hai, isliye select-all yahan alag se chahiye. -->
+        @if (filteredRides.length > 0) {
+          <label class="mobile-select-all d-flex d-md-none align-items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              class="form-check-input select-box m-0"
+              [checked]="allVisibleSelected"
+              [indeterminate]="someVisibleSelected"
+              [disabled]="bulkDeleting"
+              (change)="toggleAllVisible($any($event.target).checked)"
+            />
+            <span>Select all ({{ filteredRides.length }})</span>
+          </label>
+        }
+
+        <div class="card table-card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0 blabla-table">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 44px">
+                    <input
+                      type="checkbox"
+                      class="form-check-input select-box"
+                      title="Select all filtered rides"
+                      [checked]="allVisibleSelected"
+                      [indeterminate]="someVisibleSelected"
+                      [disabled]="filteredRides.length === 0 || bulkDeleting"
+                      (change)="toggleAllVisible($any($event.target).checked)"
+                    />
+                  </th>
+                  <th style="width: 56px">#</th>
+                  <th style="width: 220px">Route</th>
+                  <th style="width: 190px">Departure</th>
+                  <th style="width: 160px">Rider</th>
+                  <th>URL</th>
+                  <th class="text-end" style="width: 190px">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (ride of filteredRides; track ride._id; let i = $index) {
+                  <tr [class.row-selected]="isSelected(ride)">
+                    <td class="select-cell">
+                      <input
+                        type="checkbox"
+                        class="form-check-input select-box"
+                        [checked]="isSelected(ride)"
+                        [disabled]="bulkDeleting"
+                        (change)="toggleOne(ride, $any($event.target).checked)"
+                      />
+                    </td>
+                    <td class="text-muted index-cell">{{ i + 1 }}</td>
+
+                    <!-- Route -->
+                    <td data-label="Route">
+                      @if (editingId === ride._id) {
+                        <select
+                          class="form-select form-select-sm mb-1"
+                          name="editSource"
+                          [(ngModel)]="editForm.source"
+                          (ngModelChange)="onSourceChange(editForm)"
+                          [disabled]="savingId === ride._id"
+                        >
+                          @for (city of cities; track city) {
+                            <option [value]="city">{{ city }}</option>
+                          }
+                        </select>
+                        <select
+                          class="form-select form-select-sm"
+                          name="editDestination"
+                          [(ngModel)]="editForm.destination"
+                          (ngModelChange)="onDestinationChange(editForm)"
+                          [disabled]="savingId === ride._id"
+                        >
+                          @for (city of cities; track city) {
+                            <option [value]="city">{{ city }}</option>
+                          }
+                        </select>
+                      } @else {
+                        <span class="fw-medium">{{ ride.source }}</span>
+                        <span class="route-arrow">→</span>
+                        <span class="fw-medium">{{ ride.destination }}</span>
+                      }
+                    </td>
+
+                    <!-- Departure -->
+                    <td data-label="Departure">
+                      @if (editingId === ride._id) {
+                        <input
+                          type="date"
+                          class="form-control form-control-sm mb-1"
+                          name="editDate"
+                          [(ngModel)]="editForm.ride_date"
+                          [disabled]="savingId === ride._id"
+                        />
+                        <input
+                          type="time"
+                          class="form-control form-control-sm"
+                          name="editTime"
+                          [(ngModel)]="editForm.ride_time"
+                          [disabled]="savingId === ride._id"
+                        />
+                      } @else {
+                        {{ formatDateTime(ride) }}
+                      }
+                    </td>
+
+                    <!-- Rider -->
+                    <td data-label="Rider">
+                      @if (editingId === ride._id) {
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          name="editRider"
+                          [(ngModel)]="editForm.rider_name"
+                          [disabled]="savingId === ride._id"
+                        />
+                      } @else {
+                        {{ ride.rider_name }}
+                      }
+                    </td>
+
+                    <!-- URL -->
+                    <td data-label="URL">
+                      @if (editingId === ride._id) {
+                        <input
+                          type="url"
+                          class="form-control form-control-sm"
+                          name="editUrl"
+                          [(ngModel)]="editForm.url"
+                          [disabled]="savingId === ride._id"
+                        />
+                      } @else {
+                        <a class="ride-url" [href]="ride.url" target="_blank" rel="noopener">
+                          {{ ride.url }}
+                        </a>
+                      }
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="text-end actions-cell">
+                      @if (editingId === ride._id) {
+                        <button
+                          class="btn btn-sm btn-success me-1"
+                          type="button"
+                          (click)="saveEdit(ride)"
+                          [disabled]="savingId === ride._id"
+                        >
+                          @if (savingId === ride._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else { Save }
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="cancelEdit()">
+                          Cancel
+                        </button>
+                      } @else {
+                        <button class="btn btn-sm btn-outline-primary me-1" type="button" (click)="startEdit(ride)">
+                          Edit
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          type="button"
+                          (click)="deleteRide(ride)"
+                          [disabled]="deletingId === ride._id"
+                        >
+                          @if (deletingId === ride._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else { Delete }
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Empty -->
+        @if (filteredRides.length === 0) {
+          <div class="empty-state text-center text-muted py-5">
+            <div class="empty-icon mb-2">🚗</div>
+            @if (rides.length === 0) {
+              <p class="m-0">No BlaBla rides yet. Add your first one above.</p>
+            } @else {
+              <p class="m-0">No BlaBla rides match the selected filters.</p>
+              <button class="btn btn-sm btn-outline-secondary mt-3" (click)="clearFilters(); onFilterChange()">
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      }
+
+    </div>
+  </main>
+</div>

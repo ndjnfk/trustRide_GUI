@@ -1,0 +1,206 @@
+<div class="rl-page">
+
+  <!-- Header -->
+  <div class="rl-header">
+    <div class="rl-header-text">
+      <div class="rl-label">Shared by our team</div>
+      <h1 class="rl-title">BlaBla Rides</h1>
+      <p class="rl-sub">
+        Rides we found on BlaBlaCar for the Gurgaon &harr; Saharanpur route.
+        Tap any ride to open it on BlaBlaCar.
+      </p>
+    </div>
+    <div class="rl-header-actions">
+      <button class="rl-switch rl-desktop-only" type="button" (click)="goToTrustRideRides()">
+        <i class="ti ti-arrow-left"></i> TrustRideSRE rides
+      </button>
+
+      <!-- Filters tab tak band rehti hain jab tak ye icon click na ho -->
+      <button
+        class="rl-filter-toggle"
+        type="button"
+        [class.on]="showFilters"
+        [attr.aria-expanded]="showFilters"
+        aria-label="Toggle filters"
+        (click)="toggleFilters()"
+      >
+        <i class="ti ti-filter"></i>
+        @if (hasFilters) { <span class="rl-filter-dot"></span> }
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="rl-filters" [class.is-open]="showFilters">
+    <div class="rl-field">
+      <label class="rl-field-label" id="bb-route-label">Route</label>
+      <!-- Custom dropdown — native select ka option list browser render karta
+           hai, wo card se bahar nikal jaata tha aur style bhi nahi hota. -->
+      <div class="rl-select" #routeRef>
+        <button
+          class="rl-input rl-select-btn"
+          type="button"
+          aria-haspopup="listbox"
+          aria-labelledby="bb-route-label"
+          [attr.aria-expanded]="routeMenuOpen"
+          [class.on]="routeMenuOpen"
+          (click)="toggleRouteMenu()"
+        >
+          <span class="rl-select-value">{{ routeLabel }}</span>
+          <i class="ti ti-chevron-down rl-select-caret"></i>
+        </button>
+
+        @if (routeMenuOpen) {
+          <ul class="rl-select-menu" role="listbox">
+            <li
+              role="option"
+              [attr.aria-selected]="selectedRoute === ''"
+              [class.sel]="selectedRoute === ''"
+              (click)="pickRoute('')"
+            >All routes</li>
+            @for (route of routeOptions; track route.id) {
+              <li
+                role="option"
+                [attr.aria-selected]="selectedRoute === route.id"
+                [class.sel]="selectedRoute === route.id"
+                (click)="pickRoute(route.id)"
+              >{{ route.label }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+
+    <div class="rl-field">
+      <label class="rl-field-label" for="bb-date">Date</label>
+      <input
+        id="bb-date"
+        type="date"
+        class="rl-input"
+        [(ngModel)]="filterDate"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+
+    @if (hasFilters) {
+      <button class="rl-clear" type="button" (click)="clearFilters()">
+        <i class="ti ti-x"></i> Clear
+      </button>
+    }
+  </div>
+
+  <!-- Error -->
+  @if (error) {
+    <div class="rl-alert">
+      <span>⚠️ {{ error }}</span>
+      <button class="rl-retry" type="button" (click)="fetchRides()">Retry</button>
+    </div>
+  }
+
+  <!-- List -->
+  @if (!loading && !error) {
+    <div class="rl-count">
+      {{ rides.length }} ride{{ rides.length === 1 ? '' : 's' }}
+      @if (hasFilters) { <span class="rl-count-note">matching your filters</span> }
+      @if (totalPages > 1) {
+        <span class="rl-count-note">· showing {{ pageStart }}–{{ pageEnd }}</span>
+      }
+    </div>
+
+    @if (rides.length) {
+      <div class="row g-3">
+        @for (ride of pagedRides; track ride.ride_id) {
+          <div class="col-12 col-md-6 col-xl-4">
+            <!-- Seedha BlaBlaCar ka link — anchor hai taaki usi tab me khule
+                 aur browser ke normal link options bhi kaam karein. -->
+            <a class="rl-card" [href]="ride.url">
+
+              <div class="rl-card-top">
+                <span class="rl-badge">BlaBlaCar</span>
+              </div>
+
+              <div class="rl-route">
+                <span class="rl-city">{{ ride.source }}</span>
+                <i class="ti ti-arrow-narrow-right"></i>
+                <span class="rl-city">{{ ride.destination }}</span>
+              </div>
+
+              <div class="rl-meta">
+                <span><i class="ti ti-clock"></i> {{ formatDateTime(ride) }}</span>
+                <span><i class="ti ti-user"></i> {{ ride.rider_name }}</span>
+              </div>
+
+              <span class="rl-cta">Open on BlaBlaCar <i class="ti ti-external-link"></i></span>
+
+            </a>
+          </div>
+        }
+      </div>
+
+      @if (totalPages > 1) {
+        <nav class="rl-pager" aria-label="Ride list pages">
+          <button
+            type="button"
+            class="rl-page-btn rl-page-nav"
+            [disabled]="page === 1"
+            (click)="goToPage(page - 1)"
+            aria-label="Previous page"
+          >
+            <i class="ti ti-chevron-left"></i>
+          </button>
+
+          @if (firstShownPage > 1) {
+            <button type="button" class="rl-page-btn" (click)="goToPage(1)">1</button>
+            @if (firstShownPage > 2) { <span class="rl-page-gap">…</span> }
+          }
+
+          @for (n of pageNumbers; track n) {
+            <button
+              type="button"
+              class="rl-page-btn"
+              [class.is-active]="n === page"
+              [attr.aria-current]="n === page ? 'page' : null"
+              (click)="goToPage(n)"
+            >{{ n }}</button>
+          }
+
+          @if (lastShownPage < totalPages) {
+            @if (lastShownPage < totalPages - 1) { <span class="rl-page-gap">…</span> }
+            <button type="button" class="rl-page-btn" (click)="goToPage(totalPages)">
+              {{ totalPages }}
+            </button>
+          }
+
+          <button
+            type="button"
+            class="rl-page-btn rl-page-nav"
+            [disabled]="page === totalPages"
+            (click)="goToPage(page + 1)"
+            aria-label="Next page"
+          >
+            <i class="ti ti-chevron-right"></i>
+          </button>
+        </nav>
+      }
+    } @else {
+      <div class="rl-empty">
+        <div class="rl-empty-icon">🚗</div>
+        <p>
+          @if (hasFilters) {
+            No BlaBla rides match these filters. Try a different date or route.
+          } @else {
+            No BlaBla rides listed right now. Check back soon.
+          }
+        </p>
+        @if (hasFilters) {
+          <button class="rl-switch" type="button" (click)="clearFilters()">Clear filters</button>
+        } @else {
+          <button class="rl-switch" type="button" (click)="goToTrustRideRides()">
+            Browse TrustRideSRE rides
+          </button>
+        }
+      </div>
+    }
+  }
+
+</div>
