@@ -117,9 +117,17 @@ export class BlablaRides {
     return this.rides.filter((r) => {
       const date: string = r.ride_date ?? '';
 
-      // Text search — rider, URL ya route me se kahin bhi.
+      // Text search — rider, creator email, URL ya route me se kahin bhi.
       if (q) {
-        const haystack = [r.rider_name, r.url, r.source, r.destination, `${r.source} → ${r.destination}`]
+        const haystack = [
+          r.rider_name,
+          r.user_email,
+          r.created_by_name,
+          r.url,
+          r.source,
+          r.destination,
+          `${r.source} → ${r.destination}`,
+        ]
           .join(' ')
           .toLowerCase();
         if (!haystack.includes(q)) return false;

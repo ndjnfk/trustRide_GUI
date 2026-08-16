@@ -1,0 +1,194 @@
+<div class="rl-page">
+
+  <!-- Header -->
+  <div class="rl-header">
+    <div class="rl-header-text">
+      <div class="rl-label">Share your ride</div>
+      <h1 class="rl-title">Publish a BlaBla Ride</h1>
+      <p class="rl-sub">
+        Found a ride on BlaBlaCar for the Gurgaon &harr; Saharanpur route?
+        Add it here and it shows up for everyone. Only admin-verified accounts
+        can publish.
+      </p>
+    </div>
+    <div class="rl-header-actions">
+      <button class="rl-switch" type="button" (click)="goToRides()">
+        <i class="ti ti-arrow-left"></i> All BlaBla rides
+      </button>
+    </div>
+  </div>
+
+  @if (published) {
+
+    <!-- Success -->
+    <div class="cb-card cb-done">
+      <div class="cb-done-icon">✅</div>
+      <h2 class="cb-done-title">Ride published</h2>
+      <p class="cb-done-text">
+        Your ride is live on the BlaBla rides list and visible to the team.
+      </p>
+      <div class="cb-done-actions">
+        <button class="cb-submit" type="button" (click)="goToRides()">
+          View BlaBla rides
+        </button>
+        <button class="rl-switch" type="button" (click)="publishAnother()">
+          Publish another
+        </button>
+      </div>
+    </div>
+
+  } @else {
+
+    <!-- Error -->
+    @if (error) {
+      <div class="rl-alert">
+        <span>⚠️ {{ error }}</span>
+        @if (errorCode === 'EMAIL_NOT_REGISTERED') {
+          <button class="rl-retry" type="button" (click)="goToRegister()">Register</button>
+        }
+      </div>
+    }
+
+    <!-- Form -->
+    <div class="cb-card">
+      <form (ngSubmit)="submit()" novalidate>
+
+        <!-- Who is publishing -->
+        <div class="cb-section">
+          <h2 class="cb-section-title">Your account</h2>
+          <div class="cb-grid">
+            <div class="rl-field cb-col-full">
+              <label class="rl-field-label" for="cb-email">Registered email</label>
+              <input
+                id="cb-email"
+                type="email"
+                class="rl-input"
+                placeholder="you@company.com"
+                name="user_email"
+                autocomplete="email"
+                [(ngModel)]="form.user_email"
+                [disabled]="submitting"
+              />
+              <span class="cb-hint">
+                Must be a registered TrustRideSRE email that the admin has verified.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ride details -->
+        <div class="cb-section">
+          <h2 class="cb-section-title">Ride details</h2>
+          <div class="cb-grid">
+
+            <div class="rl-field">
+              <label class="rl-field-label" for="cb-source">Source</label>
+              <select
+                id="cb-source"
+                class="rl-input"
+                name="source"
+                [(ngModel)]="form.source"
+                (ngModelChange)="onSourceChange()"
+                [disabled]="submitting"
+              >
+                @for (city of cities; track city) {
+                  <option [value]="city">{{ city }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="rl-field">
+              <label class="rl-field-label" for="cb-destination">Destination</label>
+              <select
+                id="cb-destination"
+                class="rl-input"
+                name="destination"
+                [(ngModel)]="form.destination"
+                (ngModelChange)="onDestinationChange()"
+                [disabled]="submitting"
+              >
+                @for (city of cities; track city) {
+                  <option [value]="city">{{ city }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="rl-field">
+              <label class="rl-field-label" for="cb-date">Departure date</label>
+              <input
+                id="cb-date"
+                type="date"
+                class="rl-input"
+                name="ride_date"
+                [min]="minDate"
+                [(ngModel)]="form.ride_date"
+                [disabled]="submitting"
+              />
+            </div>
+
+            <div class="rl-field">
+              <label class="rl-field-label" for="cb-time">Departure time</label>
+              <input
+                id="cb-time"
+                type="time"
+                class="rl-input"
+                name="ride_time"
+                [(ngModel)]="form.ride_time"
+                [disabled]="submitting"
+              />
+            </div>
+
+            <div class="rl-field">
+              <label class="rl-field-label" for="cb-rider">Rider name</label>
+              <input
+                id="cb-rider"
+                type="text"
+                class="rl-input"
+                placeholder="e.g. Rahul"
+                name="rider_name"
+                [(ngModel)]="form.rider_name"
+                [disabled]="submitting"
+              />
+            </div>
+
+            <div class="rl-field cb-col-full">
+              <label class="rl-field-label" for="cb-url">BlaBlaCar URL</label>
+              <input
+                id="cb-url"
+                type="url"
+                class="rl-input"
+                placeholder="https://www.blablacar.in/..."
+                name="url"
+                [(ngModel)]="form.url"
+                [disabled]="submitting"
+              />
+              <span class="cb-hint">Paste the full link of the ride on BlaBlaCar.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="cb-actions">
+          <button class="cb-submit" type="submit" [disabled]="submitting">
+            @if (submitting) {
+              Publishing…
+            } @else {
+              Publish ride
+            }
+          </button>
+          <button
+            class="rl-clear"
+            type="button"
+            [disabled]="submitting"
+            (click)="goToRides()"
+          >
+            Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  }
+
+</div>

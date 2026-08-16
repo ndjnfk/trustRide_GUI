@@ -1033,6 +1033,11 @@ button {
 #create-pool .header__btn-label{
  display: none;
 }
+/* Chhoti screen par dono publish buttons icon-only — warna header me
+   sign-in/avatar ke liye jagah hi nahi bachti. */
+#publish-blabla .header__btn-label{
+ display: none;
+}
   .header__btn-create svg {
     width: 18px;
     height: 18px;

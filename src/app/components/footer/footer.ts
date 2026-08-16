@@ -53,7 +53,7 @@ export class Footer {
 
   mobileNavItems = [
     { key: 'search',      label: 'Search',      route: '/search-rides' },
-    { key: 'marketplace', label: 'Marketplace', route: '/marketplace' },
+    { key: 'emergency',   label: 'Emergency',   route: '/medical-emergency' },
     { key: 'publish',     label: 'Publish',     route: '/create-ride' },
     { key: 'rides',       label: 'Your rides',  route: '/get-ride' },
     { key: 'chat',        label: 'Chat',        route: '/chat' },

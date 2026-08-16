@@ -148,7 +148,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="🔍 Rider, route or URL"
+                  placeholder="🔍 Rider, email, route or URL"
                   name="filterSearch"
                   [(ngModel)]="filterSearch"
                   (ngModelChange)="onFilterChange()"
@@ -303,6 +303,7 @@
                   <th style="width: 220px">Route</th>
                   <th style="width: 190px">Departure</th>
                   <th style="width: 160px">Rider</th>
+                  <th style="width: 210px">Created by</th>
                   <th>URL</th>
                   <th class="text-end" style="width: 190px">Actions</th>
                 </tr>
@@ -387,6 +388,20 @@
                         />
                       } @else {
                         {{ ride.rider_name }}
+                      }
+                    </td>
+
+                    <!-- Created by — user panel se aayi ride par uska email. -->
+                    <td data-label="Created by">
+                      @if (ride.user_email) {
+                        <span class="creator-email" [title]="ride.user_email">
+                          {{ ride.user_email }}
+                        </span>
+                        @if (ride.created_by_name) {
+                          <div class="creator-name">{{ ride.created_by_name }}</div>
+                        }
+                      } @else {
+                        <span class="badge rounded-pill creator-admin">Admin</span>
                       }
                     </td>
 

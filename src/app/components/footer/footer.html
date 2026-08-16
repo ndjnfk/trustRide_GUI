@@ -180,7 +180,8 @@ Professionals, By the Professionals</p>
   <ng-container *ngFor="let item of mobileNavItems">
 
     <!-- ── Internal routes (routerLink) ── -->
-    <a *ngIf="isLoggedIn || item.key === 'search' || item.key === 'marketplace'"
+    <!-- Logout state me sirf Search — baaki sab tabs login ke baad hi. -->
+    <a *ngIf="isLoggedIn || item.key === 'search'"
        [routerLink]="item.route"
        routerLinkActive="footer__mobile-nav-item--active"
        class="footer__mobile-nav-item">
@@ -190,12 +191,12 @@ Professionals, By the Professionals</p>
           <circle cx="11" cy="11" r="7"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <!-- Marketplace -->
-        <svg *ngIf="item.key === 'marketplace'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 9l1.5-5.5A1 1 0 0 1 5.46 3h13.08a1 1 0 0 1 .96.5L21 9"/>
-          <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/>
-          <path d="M3 9h18"/>
-          <path d="M9 13a3 3 0 0 0 6 0"/>
+        <!-- Medical Emergency -->
+        <svg *ngIf="item.key === 'emergency'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/>
+          <rect x="3" y="5" width="18" height="15" rx="2"/>
+          <line x1="12" y1="9.5" x2="12" y2="15.5"/>
+          <line x1="9" y1="12.5" x2="15" y2="12.5"/>
         </svg>
         <!-- Publish -->
         <svg *ngIf="item.key === 'publish'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

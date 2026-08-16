@@ -203,6 +203,10 @@ export class BlablaRidesPage {
     this.router.navigate(['/trustride-rides']);
   }
 
+  goToCreateBlablaRide(): void {
+    this.router.navigate(['/create-blabla-ride']);
+  }
+
   formatDateTime(ride: BlablaRide): string {
     if (!ride.departure_time) return '—';
     // departure_time fake-UTC hai — UTC me hi padho, warna IST shift ho jaata hai.

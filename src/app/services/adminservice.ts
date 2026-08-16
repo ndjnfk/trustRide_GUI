@@ -104,6 +104,18 @@ export interface BlablaRidePayload {
   rider_name: string;
 }
 
+// A pharmacy card on the public "Medical Emergency" page. Admin ise haath se
+// bharta hai — card par sirf naam, WhatsApp number aur address dikhta hai.
+export interface MedicalEmergencyPayload {
+  shop_name: string;
+  city: string;              // base city — MEDICAL_EMERGENCY_CITIES me se ek
+  whatsapp_number: string;   // 10-digit Indian mobile
+  address: string;
+  open_time?: string;        // HH:mm (24h), '' = timing hata do
+  close_time?: string;       // HH:mm (24h)
+  is_active?: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -323,6 +335,31 @@ deleteBlablaRide(id: string): Observable<any> {
 // Bulk delete — DELETE ke saath body bhejna reliable nahi hai, isliye POST.
 bulkDeleteBlablaRides(ids: string[]): Observable<any> {
   return this.http.post(`${this.API_URL}/admin/blabla-rides/bulk-delete`, { ids }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Medical Emergency (pharmacy cards) ────────────────────
+getMedicalEmergencyPharmacies(): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/medical-emergency`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+createMedicalEmergencyPharmacy(payload: MedicalEmergencyPayload): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/medical-emergency`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateMedicalEmergencyPharmacy(id: string, payload: Partial<MedicalEmergencyPayload>): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/medical-emergency/${id}`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteMedicalEmergencyPharmacy(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/medical-emergency/${id}`, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }

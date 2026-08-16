@@ -1,0 +1,416 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="medical-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex flex-wrap align-items-center gap-2 mb-3">
+        <h1 class="page-title m-0">Medical Emergency</h1>
+        <span class="badge rounded-pill total-badge">
+          @if (hasActiveFilters) {
+            {{ filteredPharmacies.length }} / {{ total }}
+          } @else {
+            {{ total }}
+          }
+        </span>
+
+        <div class="header-actions d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-primary" (click)="showCreate = !showCreate">
+            {{ showCreate ? 'Close' : '+ Add pharmacy' }}
+          </button>
+        </div>
+      </div>
+
+      <p class="page-hint text-muted mb-3">
+        These cards show up on the public <strong>Medical Emergency</strong> page — pharmacy name,
+        WhatsApp icon and address.
+      </p>
+
+      <!-- Create form -->
+      @if (showCreate) {
+      <div class="card create-card mb-3 border-0 shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 text-muted mb-3">Add a pharmacy</h2>
+          <form class="row g-2 align-items-end" (ngSubmit)="createPharmacy()">
+
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label field-label">Pharmacy name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="e.g. Sharma Medical Store"
+                name="shop_name"
+                [(ngModel)]="form.shop_name"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-2">
+              <label class="form-label field-label">City</label>
+              <select
+                class="form-select"
+                name="city"
+                [(ngModel)]="form.city"
+                [disabled]="creating"
+              >
+                @for (city of cities; track city) {
+                  <option [value]="city">{{ city }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-2">
+              <label class="form-label field-label">WhatsApp number</label>
+              <div class="input-group">
+                <span class="input-group-text">+91</span>
+                <input
+                  type="tel"
+                  class="form-control"
+                  placeholder="10-digit"
+                  maxlength="10"
+                  name="whatsapp_number"
+                  [(ngModel)]="form.whatsapp_number"
+                  [disabled]="creating"
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+              <label class="form-label field-label">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Shop no., street, area"
+                name="address"
+                [(ngModel)]="form.address"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-6 col-md-3 col-lg-2">
+              <label class="form-label field-label">Opens at</label>
+              <input
+                type="time"
+                class="form-control"
+                name="open_time"
+                [(ngModel)]="form.open_time"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-6 col-md-3 col-lg-2">
+              <label class="form-label field-label">Closes at</label>
+              <input
+                type="time"
+                class="form-control"
+                name="close_time"
+                [(ngModel)]="form.close_time"
+                [disabled]="creating"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+              <button type="submit" class="btn btn-primary w-100" [disabled]="creating">
+                @if (creating) {
+                  <span class="spinner-border spinner-border-sm me-1"></span> Adding…
+                } @else {
+                  + Add pharmacy
+                }
+              </button>
+            </div>
+
+            <div class="col-12">
+              <small class="text-muted">
+                Shop timing is optional — leave both blank and the card simply won't show a timing row.
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+      }
+
+      <!-- Error -->
+      @if (error) {
+        <div class="alert alert-danger d-flex align-items-center justify-content-between">
+          <span>⚠️ {{ error }}</span>
+          <button class="btn btn-sm btn-outline-danger" (click)="fetchPharmacies()">Retry</button>
+        </div>
+      }
+
+      <!-- Filters -->
+      @if (!loading && !error && pharmacies.length > 0) {
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <input
+            type="text"
+            class="form-control search-input"
+            placeholder="🔍 Search by name, city, number or address"
+            name="filterSearch"
+            [(ngModel)]="filterSearch"
+            (ngModelChange)="onFilterChange()"
+          />
+          <select
+            class="form-select city-filter"
+            name="filterCity"
+            [(ngModel)]="filterCity"
+            (ngModelChange)="onFilterChange()"
+          >
+            <option value="">All cities</option>
+            @for (city of cities; track city) {
+              <option [value]="city">{{ city }}</option>
+            }
+          </select>
+          @if (hasActiveFilters) {
+            <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
+              Clear
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading && !error) {
+        <div class="card table-card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0 medical-table">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 56px">#</th>
+                  <th style="width: 220px">Pharmacy</th>
+                  <th style="width: 140px">City</th>
+                  <th style="width: 170px">WhatsApp</th>
+                  <th style="width: 170px">Timing</th>
+                  <th>Address</th>
+                  <th style="width: 120px">Status</th>
+                  <th class="text-end" style="width: 200px">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of pagedPharmacies; track p._id; let i = $index) {
+                  <tr [class.row-hidden]="p.is_active === false">
+                    <!-- Page 2 par bhi numbering aage badhti rahe. -->
+                    <td class="text-muted index-cell">{{ pageStart + i }}</td>
+
+                    <!-- Name -->
+                    <td data-label="Pharmacy">
+                      @if (editingId === p._id) {
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          name="editName"
+                          [(ngModel)]="editForm.shop_name"
+                          [disabled]="savingId === p._id"
+                        />
+                      } @else {
+                        <span class="fw-medium">{{ p.shop_name }}</span>
+                      }
+                    </td>
+
+                    <!-- City -->
+                    <td data-label="City">
+                      @if (editingId === p._id) {
+                        <select
+                          class="form-select form-select-sm"
+                          name="editCity"
+                          [(ngModel)]="editForm.city"
+                          [disabled]="savingId === p._id"
+                        >
+                          @for (city of cities; track city) {
+                            <option [value]="city">{{ city }}</option>
+                          }
+                        </select>
+                      } @else if (p.city) {
+                        <span class="badge rounded-pill city-badge">{{ p.city }}</span>
+                      } @else {
+                        <span class="text-muted city-missing">Not set</span>
+                      }
+                    </td>
+
+                    <!-- WhatsApp -->
+                    <td data-label="WhatsApp">
+                      @if (editingId === p._id) {
+                        <input
+                          type="tel"
+                          class="form-control form-control-sm"
+                          maxlength="10"
+                          name="editWhatsapp"
+                          [(ngModel)]="editForm.whatsapp_number"
+                          [disabled]="savingId === p._id"
+                        />
+                      } @else {
+                        <span class="wa-number">+91 {{ p.whatsapp_number }}</span>
+                      }
+                    </td>
+
+                    <!-- Timing -->
+                    <td data-label="Timing">
+                      @if (editingId === p._id) {
+                        <input
+                          type="time"
+                          class="form-control form-control-sm mb-1"
+                          name="editOpenTime"
+                          [(ngModel)]="editForm.open_time"
+                          [disabled]="savingId === p._id"
+                        />
+                        <input
+                          type="time"
+                          class="form-control form-control-sm"
+                          name="editCloseTime"
+                          [(ngModel)]="editForm.close_time"
+                          [disabled]="savingId === p._id"
+                        />
+                      } @else if (formatTiming(p)) {
+                        <span class="timing-text">{{ formatTiming(p) }}</span>
+                      } @else {
+                        <span class="text-muted city-missing">Not set</span>
+                      }
+                    </td>
+
+                    <!-- Address -->
+                    <td data-label="Address">
+                      @if (editingId === p._id) {
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          name="editAddress"
+                          [(ngModel)]="editForm.address"
+                          [disabled]="savingId === p._id"
+                        />
+                      } @else {
+                        <span class="address-text">{{ p.address }}</span>
+                      }
+                    </td>
+
+                    <!-- Status -->
+                    <td data-label="Status">
+                      @if (p.is_active === false) {
+                        <span class="badge rounded-pill status-hidden">Hidden</span>
+                      } @else {
+                        <span class="badge rounded-pill status-live">Visible</span>
+                      }
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="text-end actions-cell">
+                      @if (editingId === p._id) {
+                        <button
+                          class="btn btn-sm btn-success me-1"
+                          type="button"
+                          (click)="saveEdit(p)"
+                          [disabled]="savingId === p._id"
+                        >
+                          @if (savingId === p._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else { Save }
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="cancelEdit()">
+                          Cancel
+                        </button>
+                      } @else {
+                        <button
+                          class="btn btn-sm btn-outline-secondary me-1"
+                          type="button"
+                          (click)="toggleActive(p)"
+                          [disabled]="togglingId === p._id"
+                        >
+                          @if (togglingId === p._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else {
+                            {{ p.is_active === false ? 'Show' : 'Hide' }}
+                          }
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary me-1" type="button" (click)="startEdit(p)">
+                          Edit
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          type="button"
+                          (click)="deletePharmacy(p)"
+                          [disabled]="deletingId === p._id"
+                        >
+                          @if (deletingId === p._id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else { Delete }
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination — 20 rows per page -->
+        @if (totalPages > 1) {
+          <nav class="table-pager d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3"
+               aria-label="Pharmacy list pages">
+            <span class="small text-muted">
+              Showing {{ pageStart }}–{{ pageEnd }} of {{ filteredPharmacies.length }}
+            </span>
+
+            <div class="d-flex align-items-center gap-1">
+              <button
+                type="button"
+                class="btn btn-sm btn-light border"
+                [disabled]="page === 1"
+                (click)="goToPage(page - 1)"
+                aria-label="Previous page"
+              >
+                <i class="ti ti-chevron-left"></i>
+              </button>
+
+              @if (firstShownPage > 1) {
+                <button type="button" class="btn btn-sm btn-light border" (click)="goToPage(1)">1</button>
+                @if (firstShownPage > 2) { <span class="page-gap text-muted">…</span> }
+              }
+
+              @for (n of pageNumbers; track n) {
+                <button
+                  type="button"
+                  class="btn btn-sm border"
+                  [class.btn-primary]="n === page"
+                  [class.btn-light]="n !== page"
+                  [attr.aria-current]="n === page ? 'page' : null"
+                  (click)="goToPage(n)"
+                >{{ n }}</button>
+              }
+
+              @if (lastShownPage < totalPages) {
+                @if (lastShownPage < totalPages - 1) { <span class="page-gap text-muted">…</span> }
+                <button type="button" class="btn btn-sm btn-light border" (click)="goToPage(totalPages)">
+                  {{ totalPages }}
+                </button>
+              }
+
+              <button
+                type="button"
+                class="btn btn-sm btn-light border"
+                [disabled]="page === totalPages"
+                (click)="goToPage(page + 1)"
+                aria-label="Next page"
+              >
+                <i class="ti ti-chevron-right"></i>
+              </button>
+            </div>
+          </nav>
+        }
+
+        <!-- Empty -->
+        @if (filteredPharmacies.length === 0) {
+          <div class="empty-state text-center text-muted py-5">
+            <div class="empty-icon mb-2">💊</div>
+            @if (pharmacies.length === 0) {
+              <p class="m-0">No pharmacies yet. Add your first one above.</p>
+            } @else {
+              <p class="m-0">No pharmacy matches the selected filters.</p>
+              <button class="btn btn-sm btn-outline-secondary mt-3" (click)="clearFilters()">
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      }
+
+    </div>
+  </main>
+</div>

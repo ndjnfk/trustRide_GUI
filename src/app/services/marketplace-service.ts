@@ -120,6 +120,13 @@ export class MarketplaceService {
     });
   }
 
+  // Auth — pharmacy cards for the Medical Emergency page
+  getMedicalEmergencyPharmacies(): Observable<any> {
+    return this.http.get(`${this.API_URL}/medical-emergency`, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
   // Public — all categories with image
   getCategories(): Observable<any> {
     return this.http.get(`${this.API_URL}/marketplace/categories`);

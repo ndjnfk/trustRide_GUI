@@ -1,0 +1,236 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.medical-container {
+  max-width: 1250px;
+}
+
+/* ── Header ── */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.total-badge {
+  background: #4f46e5;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+.page-hint {
+  font-size: 13px;
+}
+
+.header-actions {
+  margin-left: auto;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.search-input {
+  max-width: 380px;
+}
+
+.city-filter {
+  max-width: 180px;
+}
+
+.city-badge {
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+
+/* City feature se pehle bani entries — admin ko dikhe ki bharna baaki hai. */
+.city-missing {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.timing-text {
+  font-size: 13px;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+/* ── Pagination ── */
+.table-pager .btn {
+  min-width: 34px;
+}
+
+.page-gap {
+  padding: 0 4px;
+}
+
+.table thead th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+}
+
+.wa-number {
+  font-size: 13px;
+  font-weight: 600;
+  color: #128c7e;
+  white-space: nowrap;
+}
+
+/* Address lambe hote hain — column ko phaila na dein. */
+.address-text {
+  display: inline-block;
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.status-live {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+
+.status-hidden {
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+
+/* Hidden card list me bhi halka dikhe. */
+.medical-table tbody tr.row-hidden > td {
+  opacity: 0.62;
+}
+
+.empty-icon {
+  font-size: 42px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 767.98px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 20px 14px;
+  }
+
+  .page-title {
+    font-size: 19px;
+  }
+
+  /* Phone par table fit nahi hoti — har row ko card bana do. Markup wahi
+     rehta hai (inline edit bhi chalti rahti hai), sirf display badalti hai;
+     column ka naam td ke data-label se aata hai. */
+  .medical-table thead {
+    display: none;
+  }
+
+  .medical-table,
+  .medical-table tbody,
+  .medical-table tr,
+  .medical-table td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Har row apna card hai, to bahar wala card chrome hata do — warna card-in-card. */
+  .table-card {
+    background: transparent;
+    box-shadow: none !important;
+  }
+
+  .medical-table tr {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+
+  /* Card ka background tr par hai, to td ka apna paint hatana zaroori hai —
+     warna wo rounded corners ke bahar white square banata hai. */
+  .medical-table td {
+    border: 0;
+    padding: 5px 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .medical-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #6b7280;
+    margin-bottom: 2px;
+  }
+
+  /* Row number card layout me sirf shor hai. */
+  .medical-table td.index-cell {
+    display: none;
+  }
+
+  .medical-table td.actions-cell {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed #e5e7eb;
+    text-align: left;
+  }
+
+  .medical-table td.actions-cell::before {
+    display: none;
+  }
+
+  .medical-table td.actions-cell .btn {
+    flex: 1;
+    margin: 0 !important;   /* me-1 utility card layout me gap ke saath tootta hai */
+  }
+
+  .address-text {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .search-input,
+  .city-filter {
+    max-width: 100%;
+  }
+}

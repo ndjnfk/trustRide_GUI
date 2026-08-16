@@ -1,0 +1,102 @@
+/* Page shell, .rl-input, .rl-field, .rl-alert etc. src/styles.css ke
+   "RIDE LIST PAGES" block se aate hain — yahan sirf form ka apna hissa hai. */
+
+.cb-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 26px 24px;
+  box-shadow: var(--sh-sm);
+  max-width: 760px;
+}
+
+.cb-section + .cb-section {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.cb-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin: 0 0 16px;
+}
+
+/* Do column — mobile par apne aap ek ho jaata hai. */
+.cb-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.cb-col-full { grid-column: 1 / -1; }
+
+@media (max-width: 560px) {
+  .cb-grid { grid-template-columns: 1fr; }
+  .cb-card { padding: 20px 16px; }
+}
+
+/* select ko .rl-input mila hai, par native arrow ke liye thodi jagah chahiye. */
+select.rl-input {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.cb-hint {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.cb-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+
+.cb-submit {
+  height: 46px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 99px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .15s, transform .15s var(--ease);
+}
+.cb-submit:hover:not(:disabled) { transform: translateY(-1px); }
+.cb-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+/* ── Success panel ── */
+.cb-done { text-align: center; }
+.cb-done-icon { font-size: 40px; margin-bottom: 10px; }
+.cb-done-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.cb-done-text {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 22px;
+}
+.cb-done-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}

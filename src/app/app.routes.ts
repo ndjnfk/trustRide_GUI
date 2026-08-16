@@ -119,6 +119,11 @@ export const routes: Routes = [
       import('../app/admin/prescriptions/prescriptions').then((m) => m.Prescriptions),
   },
   {
+    path: 'admin/medical-emergency',
+    loadComponent: () =>
+      import('../app/admin/medical-emergency/medical-emergency').then((m) => m.MedicalEmergency),
+  },
+  {
     path: 'admin/reset-security',
     loadComponent: () =>
       import('../app/admin/reset-security/reset-security').then((m) => m.ResetSecurity),
@@ -274,6 +279,15 @@ export const routes: Routes = [
       import('../app/marketplace-components/my-orders/my-orders').then((m) => m.MyOrders),
   },
 
+  // Admin-curated pharmacy contacts — public by design, koi login nahi chahiye.
+  {
+    path: 'medical-emergency',
+    loadComponent: () =>
+      import('../app/marketplace-components/medical-emergency/medical-emergency').then(
+        (m) => m.MedicalEmergency
+      ),
+  },
+
   {
     path: 'search-rides',
     loadComponent: () =>
@@ -289,6 +303,14 @@ export const routes: Routes = [
     path: 'blabla-rides',
     loadComponent: () =>
       import('../app/components/blabla-rides/blabla-rides').then((m) => m.BlablaRidesPage),
+  },
+  // User panel se BlaBla ride publish karne ka form — verification backend karta hai.
+  {
+    path: 'create-blabla-ride',
+    loadComponent: () =>
+      import('../app/components/create-blabla-ride/create-blabla-ride').then(
+        (m) => m.CreateBlablaRide
+      ),
   },
    {
     path: 'rating-show',

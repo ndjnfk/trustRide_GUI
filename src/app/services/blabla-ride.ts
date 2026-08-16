@@ -22,6 +22,20 @@ export interface BlablaRidesResponse {
 }
 
 /**
+ * User panel ke form se jaane wali ride.
+ * Date/time plain strings hi rehti hain — jo user ne bhara wahi store hota hai.
+ */
+export interface CreateBlablaRidePayload {
+  source: string;
+  destination: string;
+  ride_date: string;      // YYYY-MM-DD
+  ride_time: string;      // HH:mm (24h)
+  url: string;
+  rider_name: string;
+  user_email: string;     // registered + admin-verified hona chahiye
+}
+
+/**
  * BlaBlaCar rides the admin has curated by hand.
  *
  * Public on purpose — koi token nahi bhejte, user panel ko ye rides bina
@@ -43,5 +57,13 @@ export class BlablaRideService {
     if (filters.date) params['date'] = filters.date;
 
     return this.http.get<BlablaRidesResponse>(`${this.baseUrl}/blabla-rides`, { params });
+  }
+
+  /**
+   * Ride publish karo. Backend email ko `users` me dhoondhta hai aur
+   * verification check karta hai — fail hone par 404/403 aata hai.
+   */
+  createBlablaRide(payload: CreateBlablaRidePayload): Observable<any> {
+    return this.http.post(`${this.baseUrl}/blabla-rides`, payload);
   }
 }
