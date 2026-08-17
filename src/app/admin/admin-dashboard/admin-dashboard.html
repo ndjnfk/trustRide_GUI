@@ -197,6 +197,7 @@
                 <th>#Code</th>
                 <th>Name</th>
                 <th>Gender</th>
+                <th>Referred By</th>
                 <th>Role</th>
                 <th>Set Role</th>
                 <th>Account</th>
@@ -232,6 +233,13 @@
                 <td data-label="Gender">
                   <span class="gender-badge" [ngClass]="user.gender">
                     {{ user.gender | titlecase }}
+                  </span>
+                </td>
+
+                <td data-label="Referred By">
+                  <span class="small fw-semibold text-capitalize text-nowrap"
+                    [class.text-muted]="!user.referredBy">
+                    {{ user.referredBy || '—' }}
                   </span>
                 </td>
 
@@ -327,7 +335,7 @@
               </tr>
 
               <tr *ngIf="!isLoading && displayedUsers.length === 0">
-                <td colspan="12">
+                <td colspan="13">
                   <div class="no-data">
                     <div class="no-data-icon-wrap">
                       <mat-icon>person_search</mat-icon>

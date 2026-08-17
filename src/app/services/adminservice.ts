@@ -47,6 +47,7 @@ export interface User {
   role?: string;
   companyName:string,
   companyEmail:string,
+  referredBy?: string;
   verificationStatus: string;
   professionalVerification: ProfessionalVerification | null;
   created_at?: string;

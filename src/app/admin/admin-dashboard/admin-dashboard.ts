@@ -188,6 +188,7 @@ loadUsers(): void {
       return (
         (u.fullName || '').toLowerCase().includes(term) ||
         (u.gender || '').toLowerCase().includes(term) ||
+        (u.referredBy || '').toLowerCase().includes(term) ||
         (u.status || '').toLowerCase().includes(term) ||
         (u.verificationStatus || '').toLowerCase().includes(term) ||
         code.toLowerCase().includes(term)

@@ -121,6 +121,7 @@ export class MyProfile implements OnInit {
           totalCancelledBookings: d.total_cancelled_bookings ?? 0,
           totalBookings:          d.total_bookings ?? 0,
           companyName:        d.company_Name,
+          referredBy:         d.referred_by ?? d.referredBy,
           preferences:        d.preferences ?? [],
           preferredTravelDays: this.normalizeTravelDays(
             d.preferred_travel_days ?? d.preferredTravelDays ?? d.preferred_Travel_Days ?? d.travelDays

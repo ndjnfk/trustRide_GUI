@@ -85,6 +85,13 @@
           </div>
           }
  
+          @if (user?.referredBy) {
+          <div class="about-item">
+            <i class="ti ti-user-check"></i>
+            <span>Referred by: {{ user.referredBy }}</span>
+          </div>
+          }
+
           <!-- @if (user?.userCode) {
           <div class="about-item">
             <i class="ti ti-id-badge-2"></i>

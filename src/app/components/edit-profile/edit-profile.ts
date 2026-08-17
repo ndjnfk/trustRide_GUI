@@ -1,16 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Profileresponse, ProfileService, TravelDay } from '../../servies/profile-service';
+import { Profileresponse, ProfileService, TravelDay, Vehicle } from '../../servies/profile-service';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Snackbar } from '../../services/snackbar';
 import { environment } from '../../../../environment';
 import { forkJoin } from 'rxjs';
+import { VehicleDialog } from '../vehicle-dialog/vehicle-dialog';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 
 @Component({
   selector: 'app-edit-profile',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, VehicleDialog],
   templateUrl: './edit-profile.html',
   styleUrl: './edit-profile.css',
 })
@@ -24,6 +27,8 @@ export class EditProfile implements OnInit, OnDestroy {
     city: '',
     aboutUser: '',
     gender: '',
+    companyName: '',
+    referredBy: '',
   }
 
   allPreferences = [
@@ -41,11 +46,16 @@ export class EditProfile implements OnInit, OnDestroy {
   days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   preferredTravelDays: TravelDay[] = []
 
+  // ── Vehicles ──
+  vehicles: Vehicle[] = []
+
   avatarFile: File | null = null
   avatarPreview: string = ''
     private readonly BASE = environment.apiUrl;
   isLoading = false
   isSaving = false
+
+  @ViewChild(VehicleDialog) vehicleDialog!: VehicleDialog
 
   // ── Role switching ──
   currentRole = ''
@@ -60,7 +70,12 @@ export class EditProfile implements OnInit, OnDestroy {
     both: 'Passenger & Rider',
   }
 
-  constructor(private profileService: ProfileService,private router: Router,private snackbar:Snackbar) {}
+  constructor(
+    private profileService: ProfileService,
+    private router: Router,
+    private snackbar: Snackbar,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit() {
     this.loadProfile()
@@ -108,9 +123,12 @@ export class EditProfile implements OnInit, OnDestroy {
         this.form.city        = d.city        || ''
         this.form.aboutUser   = d.aboutUser       || ''
         this.form.gender      = d.gender || ''
+        this.form.companyName = d.companyName  || ''
+        this.form.referredBy  = d.referredBy   || ''
         this.selectedPrefs    = d.preferences || []
         this.preferredTravelDays = (d.preferredTravelDays || []).map(t => ({ ...t }))
-        
+        this.vehicles         = res.vehicles ?? []
+
  if (d.avatarUrl) this.avatarPreview = `${this.BASE}${d.avatarUrl}`
  console.log( `${this.BASE}${d.avatarUrl}` )  // ✅
         this.isLoading = false
@@ -178,6 +196,17 @@ export class EditProfile implements OnInit, OnDestroy {
       return
     }
 
+    // ✅ Company name aur Referred by dono registration par mandatory the —
+    //    edit karte waqt inhe blank nahi chhoda ja sakta.
+    if (!this.form.companyName?.trim()) {
+      this.snackbar.error('Company name is required.')
+      return
+    }
+    if (!this.form.referredBy?.trim()) {
+      this.snackbar.error('Referred by is required.')
+      return
+    }
+
     this.isSaving = true
     const formData = new FormData()
 
@@ -186,6 +215,8 @@ export class EditProfile implements OnInit, OnDestroy {
     formData.append('city',        this.form.city)
     formData.append('aboutUser',   this.form.aboutUser)
     formData.append('gender',      this.form.gender)
+    formData.append('companyName', this.form.companyName.trim())
+    formData.append('referredBy',  this.form.referredBy.trim())
 
     this.selectedPrefs.forEach(p => formData.append('preferences[]', p))
 
@@ -229,6 +260,56 @@ export class EditProfile implements OnInit, OnDestroy {
         this.isSaving = false
       }
     })
+  }
+
+  // ── Vehicle helpers ────────────────────────────────────────────────────────
+  openAddVehicle() {
+    this.vehicleDialog.open()
+  }
+
+  openEditVehicle(vehicle: Vehicle) {
+    this.vehicleDialog.open(vehicle)
+  }
+
+  // Dialog add aur edit dono ke liye same event emit karta hai — _id se decide karo
+  onVehicleSaved(vehicle: Vehicle) {
+    const index = this.vehicles.findIndex(v => v._id === vehicle._id)
+    if (index > -1) {
+      this.vehicles = this.vehicles.map(v => (v._id === vehicle._id ? vehicle : v))
+    } else {
+      this.vehicles = [...this.vehicles, vehicle]
+    }
+  }
+
+  deleteVehicle(vehicle: Vehicle) {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '350px',
+      data: {
+        title: 'Delete Vehicle',
+        message: `Are you sure you want to delete ${vehicle.model}?`,
+      },
+    })
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return
+
+      this.profileService.deleteVehicle(vehicle._id!).subscribe({
+        next: () => {
+          this.vehicles = this.vehicles.filter(v => v._id !== vehicle._id)
+          this.snackbar.success('Vehicle removed successfully')
+        },
+        error: () => {
+          this.snackbar.error('Failed to remove vehicle')
+        },
+      })
+    })
+  }
+
+  vehicleIcon(type: string): string {
+    const map: Record<string, string> = {
+      car: '🚗', bike: '🏍️', suv: '🚙', van: '🚐', truck: '🚚',
+    }
+    return map[type?.toLowerCase()] ?? '🚗'
   }
 
   // ── Preferred travel days helpers ──

@@ -66,6 +66,9 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 })
 export class Register implements OnInit {
 
+  // Default referrer — form load par pre-filled aata hai, user edit kar sakta hai
+  static readonly DEFAULT_REFERRED_BY = 'Vaibhav Vats'
+
   // ── UI state ────────────────────────────────────────────────────────────────
   isLoading = false
   errorMessage = ''
@@ -122,6 +125,17 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
           [
             Validators.required,
             Validators.minLength(4),
+            Validators.maxLength(100),
+          ],
+        ],
+
+        // ── referredBy: mandatory — kisne refer kiya ───────────────────────
+        //    Default se pre-filled, par user ise change kar sakta hai.
+        referredBy: [
+          Register.DEFAULT_REFERRED_BY,
+          [
+            Validators.required,
+            Validators.minLength(2),
             Validators.maxLength(100),
           ],
         ],
@@ -254,6 +268,7 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
       preferredTravelDays: this.travelDays.value,
       userEmail: this.f['userEmail'].value.trim().toLowerCase(),
       companyName: this.f['companyName'].value.trim(),
+      referredBy: this.f['referredBy'].value.trim(),
       phoneNumber: this.f['phoneNumber'].value.trim(),
       password: this.f['password'].value,
     }
@@ -279,9 +294,8 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
         //   }
         // })
 
-        // reset form
-        // reset form
-        this.registerForm.reset()
+        // reset form — referredBy wapas apni default value par aata hai
+        this.registerForm.reset({ referredBy: Register.DEFAULT_REFERRED_BY })
         this.travelDays.clear()
 
         // reset form state

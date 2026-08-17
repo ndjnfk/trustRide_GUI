@@ -139,6 +139,24 @@
           }
         </div>
 
+        <!-- REFERRED BY -->
+        <div class="field" [class.field--error]="f['referredBy'].touched && f['referredBy'].invalid">
+          <label for="referredBy">Referred By</label>
+
+          <div class="input-wrap">
+            <input id="referredBy" type="text" formControlName="referredBy" placeholder="Name of the person who referred you"
+              autocomplete="off" />
+          </div>
+
+          @if (f['referredBy'].touched && f['referredBy'].errors?.['required']) {
+          <span class="field-error"> Referred by is required. </span>
+          }
+
+          @if (f['referredBy'].touched && f['referredBy'].errors?.['minlength']) {
+          <span class="field-error"> Must be at least 2 characters. </span>
+          }
+        </div>
+
         <!-- PHONE -->
         <div class="field" [class.field--error]="f['phoneNumber'].touched && f['phoneNumber'].invalid">
           <label for="phoneNumber">Mobile Number</label>

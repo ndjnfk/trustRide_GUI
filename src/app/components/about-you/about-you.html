@@ -128,6 +128,20 @@
         </div>
         }
 
+        @if (user?.companyName) {
+        <div class="verified-item">
+          <i class="ti ti-circle-check-filled"></i>
+          <span class="text-capitalize">{{ user.companyName }}</span>
+        </div>
+        }
+
+        @if (user?.referredBy) {
+        <div class="verified-item">
+          <i class="ti ti-circle-check-filled"></i>
+          <span>Referred by: {{ user.referredBy }}</span>
+        </div>
+        }
+
         @if (user?.userCode) {
         <div class="verified-item">
           <i class="ti ti-circle-check-filled"></i>

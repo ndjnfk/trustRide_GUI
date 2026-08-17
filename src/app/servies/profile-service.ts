@@ -18,6 +18,8 @@ export interface UserProfile {
   avatarUrl?: string | null;
   created_at?: string;
   role?: string;
+  companyName?: string;
+  referredBy?: string;
   totalRides?: number | null;
   totalCancelledRides?: number;
   totalCancelledBookings?: number;
@@ -68,6 +70,8 @@ export interface ProfileData {
   created_at:         string | null
   city?:              string
   aboutUser?:         string
+  companyName?:       string
+  referredBy?:        string
   preferences?:       string[]
   preferredTravelDays?: TravelDay[]
 }
@@ -79,9 +83,10 @@ export interface UpdateTravelDaysResponse {
 }
 
 export interface Profileresponse {
-  success: boolean
-  message: string
-  user:    ProfileData
+  success:   boolean
+  message:   string
+  user:      ProfileData
+  vehicles?: Vehicle[]
 }
 
 export interface UpdateProfileResponse {
