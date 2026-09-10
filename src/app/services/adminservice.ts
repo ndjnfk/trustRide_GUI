@@ -117,6 +117,24 @@ export interface MedicalEmergencyPayload {
   is_active?: boolean;
 }
 
+
+// Admin-controlled signup cap. `enabled: false` = unlimited registrations.
+export interface RegistrationLimitData {
+  enabled: boolean;
+  limit: number;
+  registeredUsers: number;
+  remaining: number | null;   // null jab cap band ho
+  isFull: boolean;
+  alreadyOverLimit?: boolean;
+  updated_at?: string | null;
+  updated_by?: string | null;
+}
+
+export interface RegistrationLimitResponse {
+  success: boolean;
+  message?: string;
+  data: RegistrationLimitData;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -496,6 +514,54 @@ updatePrescriptionStatus(id: string, status: string): Observable<any> {
 
 deletePrescription(id: string): Observable<any> {
   return this.http.delete(`${this.API_URL}/admin/prescriptions/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Registration limit (max users allowed to sign up) ─────
+getRegistrationLimit(): Observable<RegistrationLimitResponse> {
+  return this.http.get<RegistrationLimitResponse>(`${this.API_URL}/admin/settings/registration-limit`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateRegistrationLimit(payload: { enabled: boolean; limit: number }): Observable<RegistrationLimitResponse> {
+  return this.http.put<RegistrationLimitResponse>(
+    `${this.API_URL}/admin/settings/registration-limit`,
+    payload,
+    { headers: AdminSessionHelper.getAuthHeaders() }
+  );
+}
+
+// ── Home page banners ─────────────────────────────────────
+getBanners(): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/banners`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// Multipart — banner ki cut-out image file ke saath jaati hai.
+// Content-Type header nahi bhejte, browser khud boundary set karta hai.
+createBanner(payload: FormData): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/banners`, payload, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+updateBanner(id: string, payload: FormData): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/banners/${id}`, payload, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+toggleBanner(id: string): Observable<any> {
+  return this.http.patch(`${this.API_URL}/admin/banners/${id}/toggle`, {}, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteBanner(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/banners/${id}`, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }

@@ -10,6 +10,8 @@ import { environment } from '../../../../environment';
 interface ProductForm {
   name: string;
   description: string;
+  /** Kis company / shop ka product hai — product page par dikhta hai. */
+  company_name: string;
   price: number | null;
   discount: number | null;
   stock: number | null;
@@ -65,6 +67,7 @@ export class Products {
     return {
       name: '',
       description: '',
+      company_name: '',
       price: null,
       discount: null,
       stock: null,
@@ -122,6 +125,7 @@ export class Products {
     this.form = {
       name: product.name ?? '',
       description: product.description ?? '',
+      company_name: product.company_name ?? '',
       price: product.price ?? null,
       discount: product.discount ?? null,
       stock: product.stock ?? null,
@@ -162,6 +166,7 @@ export class Products {
     const fd = new FormData();
     fd.append('name', this.form.name.trim());
     fd.append('description', this.form.description.trim());
+    fd.append('company_name', this.form.company_name.trim());
     fd.append('price', String(Number(this.form.price)));
     fd.append('stock', String(Number(this.form.stock)));
     fd.append('categoryId', this.form.categoryId);

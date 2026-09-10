@@ -6,8 +6,8 @@
     </header>
 
     <div class="mp-type-grid">
-      @for (t of shopTypes; track t.label) {
-        <button type="button" class="mp-type-card" [class.mp-type-card--urgent]="t.urgent" (click)="open(t)">
+      @for (t of tiles; track t.label) {
+        <button type="button" class="mp-type-card" (click)="open(t)">
           <span class="mp-type-icon">{{ t.icon }}</span>
           <span class="mp-type-label">{{ t.label }}</span>
           <span class="mp-type-desc">{{ t.desc }}</span>

@@ -76,6 +76,12 @@ export class Register implements OnInit {
   showPassword = false
   showConfirm = false
   formSubmitted = false   // used to show all errors on submit click
+
+  // Admin ne user cap laga di ho to form load hote hi banner dikh jaata hai —
+  // poora form bharne ke baad "full" sunna bura experience hai. Asli rok
+  // backend par hi lagti hai; ye sirf UI hint hai.
+  registrationClosed = false
+  registrationClosedMessage = ''
   // register.component.ts — days ke paas
 locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
 
@@ -91,6 +97,8 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
   ) { }
 
   ngOnInit(): void {
+    this.checkRegistrationStatus()
+
     this.registerForm = this.fb.group(
       {
         // ── fullName: trimmed string, min 2 chars ──────────────────────────
@@ -165,6 +173,23 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
       },
       { validators: passwordMatchValidator } // group-level validator
     )
+  }
+
+
+  // ── Signup cap check ────────────────────────────────────────────────────────
+  // Admin ne limit set ki hai aur wo bhar chuki hai to form ke upar banner
+  // dikhta hai aur submit disable ho jaata hai. Call fail ho jaaye to chup
+  // rehte hain — register endpoint waise bhi rok dega.
+  private checkRegistrationStatus(): void {
+    this.authService.getRegistrationStatus().subscribe({
+      next: (res) => {
+        this.registrationClosed = res?.open === false
+        this.registrationClosedMessage = res?.message || 'Registration is currently closed.'
+      },
+      error: () => {
+        this.registrationClosed = false
+      },
+    })
   }
 
   // ── Shorthand getter so HTML can use f['fieldName'] ─────────────────────────
@@ -249,6 +274,12 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
     // effect, sending two identical requests that race the backend uniqueness check.
     if (this.isLoading) return
 
+    // Cap bhar chuki hai — request bhejne ka koi matlab nahi.
+    if (this.registrationClosed) {
+      this.snackbar.error(this.registrationClosedMessage)
+      return
+    }
+
     this.formSubmitted = true
     this.errorMessage = ''
 
@@ -279,6 +310,21 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
 
         // stop loading
         this.isLoading = false
+
+        // Defensive: 2xx aane par bhi body me `status:false` ho sakta hai
+        // (purana ya proxy-behind server). Aise case me success popup dikha kar
+        // security-question page par bhejna sabse bura outcome hai — user ko
+        // lagta hai account ban gaya jabki bana hi nahi. Isliye body dekh kar
+        // hi success maante hain.
+        if (res && res.status === false) {
+          const msg = res.message || 'Registration failed. Please try again.'
+          if (res.errorCode === 'REGISTRATION_LIMIT_REACHED') {
+            this.registrationClosed = true
+            this.registrationClosedMessage = msg
+          }
+          this.snackbar.error(msg)
+          return
+        }
 
         // success popup
         this.snackbar.success('Registration successful')
@@ -321,6 +367,15 @@ locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
 
       error: (err: any) => {
         this.isLoading = false;
+
+        // Admin ki user-limit bhar gayi — banner bhi on kar do taaki dobara
+        // submit na ho aur wajah screen par dikhti rahe.
+        if (err?.error?.errorCode === 'REGISTRATION_LIMIT_REACHED') {
+          this.registrationClosed = true
+          this.registrationClosedMessage = err.error.message
+          this.snackbar.error(err.error.message)
+          return
+        }
 
         let message = 'Registration failed';
 

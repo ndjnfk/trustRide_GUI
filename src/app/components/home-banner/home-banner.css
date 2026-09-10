@@ -1,0 +1,221 @@
+/* ── Home page promo banner ─────────────────────────────────────────
+   Layout: text ek taraf, cut-out image doosri taraf. Kaunsi taraf, kitni
+   badi aur kitni shift — sab admin panel se aata hai (--hb-scale/x/y).
+   Mobile par image upar aa jaati hai aur text center ho jaata hai. */
+
+.hb-sec {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 8px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hb-card {
+  --hb-scale: 1;
+  --hb-x: 0px;
+  --hb-y: 0px;
+  --hb-scale-m: 1;
+  --hb-x-m: 0px;
+  --hb-y-m: 0px;
+
+  position: relative;
+  display: grid;
+  align-items: center;
+  gap: 24px;
+  padding: 34px 38px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+}
+
+/* Image kis taraf — column ka order badalta hai, markup wahi rehta hai. */
+.hb-img-right {
+  grid-template-columns: 1fr minmax(180px, 320px);
+}
+
+.hb-img-right .hb-text { order: 1; }
+.hb-img-right .hb-media { order: 2; }
+
+.hb-img-left {
+  grid-template-columns: minmax(180px, 320px) 1fr;
+}
+
+.hb-img-left .hb-media { order: 1; }
+.hb-img-left .hb-text { order: 2; }
+
+/* Halka sa glow taaki flat rang par cut-out image tairti hui lage.
+   Admin ise band kar sakta hai — chhoti image par circle bada dikhta hai. */
+.hb-glow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.hb-img-right.hb-glow::after { right: -60px; }
+.hb-img-left.hb-glow::after  { left: -60px; }
+
+/* ── Text ── */
+.hb-text {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.hb-title {
+  margin: 0 0 8px;
+  font-size: clamp(20px, 2.6vw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.hb-sub {
+  margin: 0;
+  font-size: clamp(13.5px, 1.4vw, 15.5px);
+  line-height: 1.55;
+  opacity: 0.82;
+  max-width: 52ch;
+}
+
+.hb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.hb-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.hb-btn:active {
+  transform: translateY(0);
+}
+
+.hb-btn-arrow {
+  transition: transform 0.15s ease;
+}
+
+.hb-btn:hover .hb-btn-arrow {
+  transform: translateX(3px);
+}
+
+/* ── Cut-out image ── */
+.hb-media {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+
+.hb-media img {
+  width: 100%;
+  max-height: 210px;
+  object-fit: contain;
+  /* Admin ke slider — scale pehle, phir nudge. Transform-origin center hai
+     taaki bada karne par image apni jagah se na khisake. */
+  transform: translate(var(--hb-x), var(--hb-y)) scale(var(--hb-scale));
+  transition: transform 0.2s ease;
+  /* Transparent PNG ke neeche soft shadow — drop-shadow alpha channel follow
+     karta hai, box-shadow poore box par lag jaata. */
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.32));
+}
+
+/* ── Themes ────────────────────────────────────────────────────────
+   Keys backend ke app/Constents/Banners.ts se match karti hain. Nayi theme
+   add karni ho to dono jagah add karni hogi. */
+
+.hb-ocean {
+  background: linear-gradient(120deg, #0b2a5b 0%, #123a7a 100%);
+  color: #ffffff;
+}
+
+.hb-ocean .hb-btn {
+  background: #ffffff;
+  color: #0b2a5b;
+}
+
+.hb-cream {
+  background: linear-gradient(120deg, #fdf6ec 0%, #f7e9d5 100%);
+  color: #1f2937;
+}
+
+.hb-cream .hb-btn {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.hb-forest {
+  background: linear-gradient(120deg, #0f3d2e 0%, #175c44 100%);
+  color: #ffffff;
+}
+
+.hb-forest .hb-btn {
+  background: #ffffff;
+  color: #0f3d2e;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hb-card,
+  .hb-img-left,
+  .hb-img-right {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 26px 22px 30px;
+    gap: 16px;
+  }
+
+  /* Mobile par image hamesha upar — chhoti screen par product hi pehle
+     dikhna chahiye, chahe desktop par kisi bhi taraf ho. */
+  .hb-img-left .hb-media,
+  .hb-img-right .hb-media {
+    order: -1;
+  }
+
+  .hb-img-left .hb-text,
+  .hb-img-right .hb-text {
+    order: 1;
+  }
+
+  .hb-media img {
+    max-height: 170px;
+    /* Mobile ke apne values — admin panel me Phone tab se set hote hain.
+       Desktop wale scale/offset yahan lagana galat hota tha: bade banner ka
+       135% phone ke chhote banner me bahut bada nikalta hai. */
+    transform: translate(var(--hb-x-m), var(--hb-y-m)) scale(var(--hb-scale-m));
+  }
+
+  .hb-sub {
+    margin-inline: auto;
+  }
+
+  .hb-img-left.hb-glow::after,
+  .hb-img-right.hb-glow::after {
+    left: 50%;
+    right: auto;
+    top: 26%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 240px;
+  }
+}

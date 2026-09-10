@@ -127,6 +127,15 @@ export class MarketplaceService {
     });
   }
 
+  // Public — saare active products (marketplace ka main grid).
+  // `categoryId` aur `search` optional filter hain.
+  getAllProducts(opts: { categoryId?: string; search?: string } = {}): Observable<any> {
+    const params: Record<string, string> = {};
+    if (opts.categoryId) params['categoryId'] = opts.categoryId;
+    if (opts.search) params['search'] = opts.search;
+    return this.http.get(`${this.API_URL}/marketplace/products`, { params });
+  }
+
   // Public — all categories with image
   getCategories(): Observable<any> {
     return this.http.get(`${this.API_URL}/marketplace/categories`);

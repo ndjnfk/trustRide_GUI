@@ -1,0 +1,115 @@
+<div class="mp-page">
+  <div class="container py-5 mt-5">
+
+    <button class="btn btn-link mp-back px-0 mb-3" (click)="goBack()">← Marketplace</button>
+
+    <div class="mb-4">
+      <h1 class="mp-title">Products</h1>
+      @if (!loading && !error) {
+        <p class="mp-subtitle m-0">{{ visibleProducts.length }} product(s) available</p>
+      }
+    </div>
+
+    <!-- Search -->
+    <div class="mp-search mb-3">
+      <span class="mp-search-icon">🔍</span>
+      <input
+        type="text"
+        class="form-control mp-search-input"
+        placeholder="Search by product or company..."
+        [(ngModel)]="searchQuery" />
+      @if (searchQuery) {
+        <button type="button" class="mp-search-clear" (click)="searchQuery = ''" aria-label="Clear">✕</button>
+      }
+    </div>
+
+    <!-- Category filter chips -->
+    @if (categories.length) {
+      <div class="mp-chips mb-4">
+        <button
+          type="button"
+          class="mp-chip"
+          [class.mp-chip--on]="activeCategoryId === null"
+          (click)="selectCategory(null)">
+          All
+        </button>
+        @for (cat of categories; track cat._id) {
+          <button
+            type="button"
+            class="mp-chip"
+            [class.mp-chip--on]="activeCategoryId === cat._id"
+            (click)="selectCategory(cat._id)">
+            {{ cat.category_name }}
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border mp-spinner" role="status"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (error && !loading) {
+      <div class="alert alert-danger text-center">{{ error }}</div>
+    }
+
+    <!-- Grid -->
+    @if (!loading && !error) {
+      <div class="row g-4">
+        @for (product of visibleProducts; track product._id) {
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="mp-product h-100" (click)="openProduct(product)">
+              <div class="mp-product-img">
+                @if (product.images?.length) {
+                  <img [src]="imageBase + product.images[0]" [alt]="product.name" />
+                } @else {
+                  <div class="mp-product-placeholder">📦</div>
+                }
+                @if (product.discount > 0) {
+                  <span class="mp-badge">{{ product.discount }}% OFF</span>
+                }
+                @if (product.images?.length > 1) {
+                  <span class="mp-imgcount">{{ product.images.length }} photos</span>
+                }
+              </div>
+              <div class="mp-product-body">
+                <h3 class="mp-product-name" [title]="product.name">{{ product.name }}</h3>
+
+                <!-- Kis company / shop ka product hai -->
+                @if (product.company_name) {
+                  <p class="mp-product-company">🏪 {{ product.company_name }}</p>
+                }
+
+                <div class="mp-price-row">
+                  <span class="mp-price">₹{{ product.final_price }}</span>
+                  @if (product.discount > 0) {
+                    <span class="mp-price-old">₹{{ product.price }}</span>
+                  }
+                </div>
+                <div class="mp-stock" [class.out]="product.stock <= 0">
+                  {{ product.stock > 0 ? 'In stock' : 'Out of stock' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (visibleProducts.length === 0) {
+        <div class="text-center text-muted py-5">
+          <div class="mp-empty-icon">📦</div>
+          @if (searchQuery) {
+            <p class="m-0">No products match "{{ searchQuery }}".</p>
+          } @else {
+            <p class="m-0">No products here yet. Admin abhi products add kar raha hai.</p>
+          }
+        </div>
+      }
+    }
+
+  </div>
+</div>

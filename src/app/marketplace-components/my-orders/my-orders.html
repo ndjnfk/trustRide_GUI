@@ -4,21 +4,19 @@
     <button class="btn btn-link mp-back px-0 mb-3" (click)="goShopping()">← Continue Shopping</button>
     <h1 class="mp-title mb-3">My Orders</h1>
 
-    <!-- 4-way request type toggle -->
+
+    <!-- Tab bar hata di gayi — filhaal sirf Products category chalu hai, to
+         ek hi tab bachta tha. Services / Pharmacy / Appointments ke panels
+         niche maujood hain (activeTab kabhi 'products' se badalta nahi, isliye
+         render nahi hote). Wapas chalu karna ho to ye toggle wapas laga do:
+
     <div class="mp-tabs mb-4">
-      <button type="button" class="mp-tab" [class.active]="activeTab === 'products'" (click)="setTab('products')">
-        🛍️ Products 
-      </button>
-      <button type="button" class="mp-tab" [class.active]="activeTab === 'services'" (click)="setTab('services')">
-        🛠️ Services 
-      </button>
-      <button type="button" class="mp-tab" [class.active]="activeTab === 'pharmacy'" (click)="setTab('pharmacy')">
-        💊 Pharmacy 
-      </button>
-      <button type="button" class="mp-tab" [class.active]="activeTab === 'appointments'" (click)="setTab('appointments')">
-        📅 Appointments 
-      </button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'products'" (click)="setTab('products')">🛍️ Products</button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'services'" (click)="setTab('services')">🛠️ Services</button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'pharmacy'" (click)="setTab('pharmacy')">💊 Pharmacy</button>
+      <button type="button" class="mp-tab" [class.active]="activeTab === 'appointments'" (click)="setTab('appointments')">📅 Appointments</button>
     </div>
+    -->
 
     <!-- Loading -->
     @if (loading) {

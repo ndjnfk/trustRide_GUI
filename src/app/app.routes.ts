@@ -124,10 +124,25 @@ export const routes: Routes = [
       import('../app/admin/medical-emergency/medical-emergency').then((m) => m.MedicalEmergency),
   },
   {
+    path: 'admin/banners',
+    loadComponent: () =>
+      import('../app/admin/banners/banners').then((m) => m.AdminBanners),
+  },
+  {
+    path: 'admin/registration-limit',
+    loadComponent: () =>
+      import('../app/admin/registration-limit/registration-limit').then((m) => m.RegistrationLimit),
+  },
+  {
     path: 'admin/reset-security',
     loadComponent: () =>
       import('../app/admin/reset-security/reset-security').then((m) => m.ResetSecurity),
   },
+  // ── Shopkeeper panel — FILHAAL BAND ─────────────────────────────
+  // Marketplace poora admin-managed hai. Components src/app/shopkeeper/ me
+  // maujood hain — wapas chalu karne ke liye niche ke routes uncomment karo
+  // aur backend ka /shop route group bhi.
+  /*
   {
     path: 'shop/register',
     loadComponent: () =>
@@ -193,11 +208,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/shopkeeper/reviews/reviews').then((m) => m.ShopReviews),
   },
+  */
   {
     path: 'marketplace/doctor/:doctorId',
     loadComponent: () =>
       import('../app/marketplace-components/doctor-detail/doctor-detail').then((m) => m.DoctorDetail),
   },
+  // Services / Appointments ke track pages — filhaal band, sirf Products
+  // category chalu hai. Order tracking /marketplace/orders par hoti hai.
+  /*
   {
     path: 'marketplace/appointments',
     loadComponent: () =>
@@ -208,6 +227,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/marketplace-components/track-services/track-services').then((m) => m.TrackServices),
   },
+  */
   {
     path: 'marketplace',
     loadComponent: () =>
@@ -234,6 +254,14 @@ export const routes: Routes = [
     path: 'marketplace/product-item/:productId',
     loadComponent: () =>
       import('../app/marketplace-components/shop-product-detail/shop-product-detail').then((m) => m.ShopProductDetail),
+  },
+  // Marketplace ka main page — saare products ek grid me, category sirf filter.
+  {
+    path: 'marketplace/products',
+    loadComponent: () =>
+      import('../app/marketplace-components/products-list/products-list').then(
+        (m) => m.ProductsList
+      ),
   },
   {
     path: 'marketplace/categories',
@@ -299,19 +327,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/components/trustride-rides/trustride-rides').then((m) => m.TrustrideRidesPage),
   },
-  {
-    path: 'blabla-rides',
-    loadComponent: () =>
-      import('../app/components/blabla-rides/blabla-rides').then((m) => m.BlablaRidesPage),
-  },
-  // User panel se BlaBla ride publish karne ka form — verification backend karta hai.
-  {
-    path: 'create-blabla-ride',
-    loadComponent: () =>
-      import('../app/components/create-blabla-ride/create-blabla-ride').then(
-        (m) => m.CreateBlablaRide
-      ),
-  },
+  // BlaBla routes filhaal band — site se BlaBla option hata diya gaya hai.
+  // {
+  //   path: 'blabla-rides',
+  //   loadComponent: () =>
+  //     import('../app/components/blabla-rides/blabla-rides').then((m) => m.BlablaRidesPage),
+  // },
+  // // User panel se BlaBla ride publish karne ka form — verification backend karta hai.
+  // {
+  //   path: 'create-blabla-ride',
+  //   loadComponent: () =>
+  //     import('../app/components/create-blabla-ride/create-blabla-ride').then(
+  //       (m) => m.CreateBlablaRide
+  //     ),
+  // },
    {
     path: 'rating-show',
     loadComponent: () =>

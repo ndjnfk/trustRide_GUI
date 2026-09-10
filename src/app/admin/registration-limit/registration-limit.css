@@ -1,0 +1,140 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.limit-container {
+  max-width: 560px;
+}
+
+/* ── Header ── */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── Card ── */
+.card,
+.limit-card {
+  border-radius: 12px;
+}
+
+/* ── Live status box ── */
+.status-box {
+  background: #f8f9fc;
+  border: 1px solid #e6e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.status-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.status-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e1e2d;
+}
+
+.progress-track {
+  height: 8px;
+  background: #e6e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4f46e5;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.progress-fill.is-full {
+  background: #dc2626;
+}
+
+.status-note {
+  font-size: 12.5px;
+  color: #6b7280;
+}
+
+.status-note--full {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* ── Form ── */
+.form-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.form-check-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.form-control:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 0.18rem rgba(79, 70, 229, 0.15);
+}
+
+.form-check-input:checked {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  font-weight: 600;
+  padding: 9px 22px;
+  border-radius: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+}
+
+.btn-outline-secondary {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 9px 22px;
+}
+
+/* ── Responsive (collapse sidebar offset on small screens) ── */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 70px 16px 24px;
+  }
+}

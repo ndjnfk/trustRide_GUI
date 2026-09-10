@@ -63,15 +63,42 @@
                 id="cb-email"
                 type="email"
                 class="rl-input"
+                [class.cb-input-ok]="emailState === 'ok'"
+                [class.cb-input-bad]="emailState === 'not_found' || emailState === 'not_verified' || emailState === 'invalid'"
                 placeholder="you@company.com"
                 name="user_email"
                 autocomplete="email"
                 [(ngModel)]="form.user_email"
+                (ngModelChange)="onEmailInput($event)"
                 [disabled]="submitting"
               />
-              <span class="cb-hint">
-                Must be a registered TrustRideSRE email that the admin has verified.
-              </span>
+
+              <!-- Type karte hi live check — hint uske hisaab se badalta hai. -->
+              @switch (emailState) {
+                @case ('checking') {
+                  <span class="cb-hint cb-hint-checking">⏳ {{ emailMessage }}</span>
+                }
+                @case ('ok') {
+                  <span class="cb-hint cb-hint-ok">✅ {{ emailMessage }}</span>
+                }
+                @case ('not_found') {
+                  <span class="cb-hint cb-hint-bad">
+                    ❌ {{ emailMessage }}
+                    <button type="button" class="cb-hint-link" (click)="goToRegister()">Register</button>
+                  </span>
+                }
+                @case ('not_verified') {
+                  <span class="cb-hint cb-hint-bad">⚠️ {{ emailMessage }}</span>
+                }
+                @case ('invalid') {
+                  <span class="cb-hint cb-hint-bad">❌ {{ emailMessage }}</span>
+                }
+                @default {
+                  <span class="cb-hint">
+                    Must be a registered TrustRideSRE email that the admin has verified.
+                  </span>
+                }
+              }
             </div>
           </div>
         </div>

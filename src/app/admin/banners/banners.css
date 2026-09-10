@@ -1,0 +1,434 @@
+/* ── Layout (baaki admin pages jaisa hi fixed sidebar offset) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.banners-container {
+  max-width: 900px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.form-control:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 0.18rem rgba(79, 70, 229, 0.15);
+}
+
+.form-check-input:checked {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+
+/* ── Live preview ──────────────────────────────────────────
+   Home page ke banner ka chhota version. Admin ko save karne se pehle
+   pata chal jaaye ki theme + image ka combination kaisa lagega. */
+.bn-preview {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 26px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.bn-preview-title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.bn-preview-sub {
+  margin-top: 6px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  opacity: 0.82;
+}
+
+.bn-preview-btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bn-preview-media {
+  display: flex;
+  justify-content: center;
+}
+
+.bn-preview-media img {
+  max-width: 100%;
+  max-height: 130px;
+  object-fit: contain;
+  /* Transparent PNG ke liye drop-shadow — box-shadow poore box par lagta
+     hai, cut-out ke aakaar par nahi. */
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.3));
+}
+
+/* ── Theme picker ── */
+.bn-themes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bn-theme {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px 7px 8px;
+  border-radius: 999px;
+  border: 2px solid #e6e8f0;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.bn-theme:hover {
+  border-color: #c7d2fe;
+}
+
+.bn-theme--on {
+  border-color: #4f46e5;
+}
+
+.bn-theme-swatch {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.bn-theme-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ── List rows ── */
+.bn-thumb {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 68px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.bn-thumb img {
+  max-width: 84%;
+  max-height: 84%;
+  object-fit: contain;
+}
+
+.bn-thumb-empty {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.bn-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e1e2d;
+}
+
+.bn-sub {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.bn-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.bn-tag {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.bn-tag--on {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.bn-tag--off {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 70px 16px 24px;
+  }
+
+  .bn-preview {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .bn-preview-media {
+    order: -1;
+  }
+}
+
+/* ── Preview: side + glow home page jaisa ─────────────────── */
+.bn-preview {
+  position: relative;
+  overflow: hidden;
+}
+
+.bn-preview--left {
+  grid-template-columns: 150px 1fr;
+}
+
+.bn-preview--left .bn-preview-media { order: 1; }
+.bn-preview--left .bn-preview-text  { order: 2; }
+
+.bn-preview--glow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -40px;
+  transform: translateY(-50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.bn-preview--left.bn-preview--glow::after {
+  right: auto;
+  left: -40px;
+}
+
+.bn-preview-text,
+.bn-preview-media {
+  position: relative;
+  z-index: 1;
+}
+
+.bn-preview-media img {
+  transition: transform 0.15s ease;
+}
+
+.bn-preview-note {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ── Placement controls ───────────────────────────────────── */
+.bn-place {
+  background: #f8f9fc;
+  border: 1px solid #e6e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.bn-place-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.bn-place-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.bn-place-row {
+  display: grid;
+  grid-template-columns: 72px 1fr 52px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.bn-place-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+}
+
+.bn-place-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4f46e5;
+  text-align: right;
+  /* Tabular figures — warna slider ghumate waqt number ki width badalti
+     rehti hai aur row hilti hui dikhti hai. */
+  font-variant-numeric: tabular-nums;
+}
+
+.bn-range {
+  margin: 0;
+}
+
+.bn-range::-webkit-slider-thumb {
+  background: #4f46e5;
+}
+
+.bn-range::-moz-range-thumb {
+  background: #4f46e5;
+  border: none;
+}
+
+/* Side toggle */
+.bn-side {
+  display: flex;
+  gap: 6px;
+}
+
+.bn-side-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 2px solid #e6e8f0;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.bn-side-btn:hover {
+  border-color: #c7d2fe;
+}
+
+.bn-side-btn--on {
+  border-color: #4f46e5;
+  color: #4f46e5;
+}
+
+@media (max-width: 576px) {
+  .bn-place-row {
+    grid-template-columns: 62px 1fr 46px;
+    gap: 8px;
+  }
+}
+
+/* ── Device toggle ─────────────────────────────────────────
+   Preview ki chaudai aur placement sliders dono isi se chalte hain. */
+.bn-device {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.bn-device-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.bn-device-btn--on {
+  background: #fff;
+  color: #4f46e5;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+/* Phone preview — home page ke mobile layout jaisa: image upar, text center,
+   aur chaudai phone jitni taaki text ka wrap bhi asli jaisa dikhe. */
+.bn-preview--phone {
+  grid-template-columns: 1fr;
+  max-width: 360px;
+  text-align: center;
+  padding: 22px 18px 24px;
+  gap: 14px;
+}
+
+.bn-preview--phone .bn-preview-media { order: -1; }
+.bn-preview--phone .bn-preview-text  { order: 1; }
+
+.bn-preview--phone .bn-preview-media img {
+  max-height: 120px;
+}
+
+.bn-preview--phone.bn-preview--glow::after {
+  left: 50%;
+  right: auto;
+  top: 26%;
+  transform: translateX(-50%);
+  width: 170px;
+  height: 170px;
+}
+
+.bn-place-hint {
+  margin: -4px 0 10px;
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.bn-shared {
+  font-weight: 500;
+  color: #94a3b8;
+}

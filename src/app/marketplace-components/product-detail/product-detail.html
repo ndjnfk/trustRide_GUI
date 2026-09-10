@@ -51,6 +51,19 @@
             <span class="mp-cat">{{ product.category_name }}</span>
             <h1 class="mp-name">{{ product.name }}</h1>
 
+            <!-- Kis company / shop ka product hai — admin product ke saath
+                 `company_name` bharta hai; purane shopkeeper products par
+                 backend shop ka naam bhar deta hai. -->
+            @if (product.company_name) {
+              <div class="mp-seller">
+                <span class="mp-seller-avatar">🏪</span>
+                <span class="mp-seller-text">
+                  <span class="mp-seller-label">Sold by</span>
+                  <span class="mp-seller-name">{{ product.company_name }}</span>
+                </span>
+              </div>
+            }
+
             <div class="mp-price-row">
               <span class="mp-price">₹{{ displayPrice }}</span>
               @if (!hasVariants && product.discount > 0) {
@@ -138,7 +151,7 @@
             }
           </div>
 
-          <!-- Write a review (only if the user bought it) -->
+          <!-- Write a review — sirf delivery ho chuki ho tab -->
           @if (canReview) {
             <div class="mp-write-review mb-4">
               <h3 class="h6 mb-2">{{ hasReviewed ? 'Update your review' : 'Write a review' }}</h3>
@@ -165,8 +178,12 @@
                 }
               </button>
             </div>
+          } @else if (awaitingDelivery) {
+            <p class="mp-review-note mb-4">
+              📦 Your order is on the way. You can rate this product once it is delivered.
+            </p>
           } @else if (marketplace.isLoggedIn()) {
-            <p class="text-muted small mb-4">You can review this product after purchasing it.</p>
+            <p class="text-muted small mb-4">You can rate this product after your order is delivered.</p>
           }
 
           <!-- All reviews -->

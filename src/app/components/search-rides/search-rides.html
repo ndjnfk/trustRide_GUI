@@ -52,15 +52,31 @@
       </div>
 
       <!-- WHEN -->
-      <div class="sf" style="flex:0.7">
+      <div
+        class="sf sf-date"
+        style="flex:0.7"
+        role="button"
+        tabindex="0"
+        (click)="picker.open()"
+        (keydown.enter)="picker.open()"
+        (keydown.space)="picker.open(); $event.preventDefault()"
+      >
         <div class="sf-label">When</div>
         <div class="sf-row">
           <i class="ti ti-calendar"></i>
-          <select class="sf-val sf-select" (change)="onDateChange($event)">
-            <option *ngFor="let d of dateOptions" [value]="d.value">
-              {{ d.label }}
-            </option>
-          </select>
+          <span class="sf-val sf-date-val">{{ dateLabel }}</span>
+          <i class="ti ti-chevron-down sf-date-caret"></i>
+          <input
+            class="sf-date-hidden"
+            [matDatepicker]="picker"
+            [min]="minDate"
+            [value]="selectedDate"
+            (dateChange)="onDateChange($event)"
+            readonly
+            tabindex="-1"
+            aria-hidden="true"
+          />
+          <mat-datepicker #picker panelClass="sf-date-panel"></mat-datepicker>
         </div>
       </div>
 

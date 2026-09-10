@@ -4,6 +4,8 @@ import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild, inje
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { Router, RouterModule } from '@angular/router';
 import { Ride as RideService } from '../../services/ride';
 import { LoaderServices } from '../../services/loader-services';
@@ -27,7 +29,8 @@ export interface Ride {
 
 @Component({
   selector: 'app-search-rides',
-  imports: [CommonModule, FormsModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, RouterModule, HttpClientModule, MatDatepickerModule],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './search-rides.html',
   styleUrl: './search-rides.css',
 })
@@ -103,8 +106,12 @@ export class SearchRides {
   showToDropdown = false;
 
   passengers = 1;
-  selectedDateValue = '';
-  dateOptions: { label: string; value: string }[] = [];
+
+  /* ── Date state (calendar) ── */
+  selectedDate: Date = this.startOfToday();
+  minDate: Date = this.startOfToday();
+  /** 'YYYY-MM-DD' — yahi value ride filter me compare hoti hai */
+  selectedDateValue = this.toDateValue(this.startOfToday());
 
   loadingRides: Set<string> = new Set();
 
@@ -133,7 +140,7 @@ export class SearchRides {
   }
 
   ngOnInit(): void {
-    this.buildDateOptions();
+    this.resetDate();
   }
 
   /* ── Autocomplete ── */
@@ -294,31 +301,49 @@ export class SearchRides {
     });
   }
 
-  buildDateOptions(): void {
-    const opts: { label: string; value: string }[] = [];
+  /* ── Date helpers ── */
+  private startOfToday(): Date {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
 
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() + i);
+  /** Local calendar date ko 'YYYY-MM-DD' me badalta hai (UTC shift ke bina). */
+  private toDateValue(d: Date): string {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      const value = `${yyyy}-${mm}-${dd}`;
+  private resetDate(): void {
+    this.minDate = this.startOfToday();
+    this.selectedDate = this.startOfToday();
+    this.selectedDateValue = this.toDateValue(this.selectedDate);
+  }
 
-      let label: string;
-      if (i === 0)
-        label = `Today, ${dd} ${d.toLocaleString('en-IN', { month: 'short' })}`;
-      else if (i === 1)
-        label = `Tomorrow, ${dd} ${d.toLocaleString('en-IN', { month: 'short' })}`;
-      else
-        label = `${d.toLocaleString('en-IN', { weekday: 'short' })}, ${dd} ${d.toLocaleString('en-IN', { month: 'short' })}`;
+  /** Field me dikhne wala label — aaj/kal ke liye friendly naam. */
+  get dateLabel(): string {
+    const d = this.selectedDate;
+    if (!d) return 'Select date';
 
-      opts.push({ label, value });
-    }
+    const picked = new Date(d);
+    picked.setHours(0, 0, 0, 0);
+    const diffDays = Math.round(
+      (picked.getTime() - this.startOfToday().getTime()) / 86400000
+    );
 
-    this.dateOptions = opts;
-    this.selectedDateValue = opts[0].value;
+    const dd = String(picked.getDate()).padStart(2, '0');
+    const mon = picked.toLocaleString('en-IN', { month: 'short' });
+
+    if (diffDays === 0) return `Today, ${dd} ${mon}`;
+    if (diffDays === 1) return `Tomorrow, ${dd} ${mon}`;
+
+    const weekday = picked.toLocaleString('en-IN', { weekday: 'short' });
+    // Agle saal ki date ho to saal bhi dikha do, warna confusion hota hai
+    return picked.getFullYear() !== this.startOfToday().getFullYear()
+      ? `${weekday}, ${dd} ${mon} ${picked.getFullYear()}`
+      : `${weekday}, ${dd} ${mon}`;
   }
 
   incrementPassengers(): void {
@@ -329,9 +354,18 @@ export class SearchRides {
     if (this.passengers > 1) this.passengers--;
   }
 
-  onDateChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.selectedDateValue = select.value;
+  onDateChange(event: MatDatepickerInputEvent<Date>): void {
+    const picked = event.value;
+    if (!picked) return;
+
+    this.selectedDate = picked;
+    this.selectedDateValue = this.toDateValue(picked);
+
+    // Date badalte hi apne aap search — tabhi jab route already bhara ho,
+    // warna user ko khaali "location daalo" error milta rahega.
+    if (this.fromValue.trim() && this.toValue.trim()) {
+      this.search();
+    }
   }
 
   /* ── Results ── */
@@ -343,7 +377,7 @@ export class SearchRides {
     this.fromValue = '';
     this.toValue = '';
     this.passengers = 1;
-    this.selectedDateValue = this.dateOptions[0]?.value ?? '';
+    this.resetDate();
     this.showFromDropdown = false;
     this.showToDropdown = false;
     this.fromFiltered = [];

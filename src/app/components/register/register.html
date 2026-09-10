@@ -72,6 +72,22 @@
       </div>
       }
 
+      <!-- Registration cap full — admin ne user limit set ki hai -->
+      @if (registrationClosed) {
+      <div class="alert alert--error alert--blocked" role="alert">
+        <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span>
+          <span class="alert__title">Registration closed</span>
+          {{ registrationClosedMessage }}
+        </span>
+      </div>
+      }
+
       <!-- FORM -->
       <form *ngIf="registerForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate autocomplete="off"
         class="d-flex flex-column gap-3">
@@ -340,10 +356,12 @@
         </div>
 
         <!-- SUBMIT -->
-        <button type="submit" class="btn-submit btn w-100" [disabled]="isLoading">
+        <button type="submit" class="btn-submit btn w-100" [disabled]="isLoading || registrationClosed">
           @if (isLoading) {
           <span class="spinner"></span>
           <span>Creating account...</span>
+          } @else if (registrationClosed) {
+          <span>Registration Closed</span>
           } @else {
           <span>Create Account</span>
           }

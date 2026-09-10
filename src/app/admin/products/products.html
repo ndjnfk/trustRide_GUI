@@ -154,6 +154,19 @@
           </div>
 
           <div class="col-12">
+            <label class="form-label">Company / Shop</label>
+            <input
+              type="text"
+              class="form-control"
+              name="company_name"
+              [(ngModel)]="form.company_name"
+              placeholder="e.g. Sharma Traders" />
+            <small class="form-text text-muted">
+              Product page par "Sold by" ke saath ye naam dikhta hai.
+            </small>
+          </div>
+
+          <div class="col-12">
             <label class="form-label">Description</label>
             <textarea class="form-control" rows="2" name="description" [(ngModel)]="form.description"></textarea>
           </div>

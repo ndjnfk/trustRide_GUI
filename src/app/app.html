@@ -12,9 +12,10 @@
 <!-- Floating cart button — only on the marketplace storefront -->
 <app-cart-fab *ngIf="isMarketplaceRoute"></app-cart-fab>
 
-<!-- AI assistant — available everywhere except admin and inside a chat conversation
-     (the chat composer's send button would otherwise sit behind this FAB on mobile) -->
-<app-chatbot-widget *ngIf="!isAdminRoute && !isChatThreadRoute"></app-chatbot-widget>
+<!-- AI assistant — admin, marketplace aur ek chat conversation ke andar nahi.
+     Marketplace par cart FAB usi jagah baithta hai (dono overlap karte the),
+     aur assistant sirf rides ke liye hai — products ke baare me kuch nahi jaanta. -->
+<app-chatbot-widget *ngIf="!isAdminRoute && !isMarketplaceRoute && !isChatThreadRoute"></app-chatbot-widget>
 
 
 <app-footer *ngIf="!isAdminRoute"></app-footer>

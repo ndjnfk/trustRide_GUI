@@ -36,6 +36,19 @@ export interface CreateBlablaRidePayload {
 }
 
 /**
+ * Live email check ka jawab. HTTP hamesha 200 aata hai — "email nahi mila"
+ * bhi ek valid jawab hai, error nahi.
+ */
+export interface BlablaEmailCheck {
+  success: boolean;
+  exists: boolean;
+  verified: boolean;
+  verification_status?: string;
+  error_code?: 'INVALID_EMAIL' | 'EMAIL_NOT_REGISTERED' | 'USER_NOT_VERIFIED' | 'VERIFICATION_REJECTED';
+  message: string;
+}
+
+/**
  * BlaBlaCar rides the admin has curated by hand.
  *
  * Public on purpose — koi token nahi bhejte, user panel ko ye rides bina
@@ -65,5 +78,15 @@ export class BlablaRideService {
    */
   createBlablaRide(payload: CreateBlablaRidePayload): Observable<any> {
     return this.http.post(`${this.baseUrl}/blabla-rides`, payload);
+  }
+
+  /**
+   * Email registered + admin-verified hai ya nahi — form me type karte hi
+   * call hota hai, taaki user ko submit tak intezaar na karna pade.
+   */
+  checkBlablaEmail(email: string): Observable<BlablaEmailCheck> {
+    return this.http.get<BlablaEmailCheck>(`${this.baseUrl}/blabla-rides/check-email`, {
+      params: { email },
+    });
   }
 }

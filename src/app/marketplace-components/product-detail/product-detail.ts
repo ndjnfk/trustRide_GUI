@@ -31,6 +31,8 @@ export class ProductDetail {
   avgRating = 0;
   reviewCount = 0;
   canReview = false;
+  /** Order pada hai par abhi deliver nahi hua — rating tab tak band. */
+  awaitingDelivery = false;
   hasReviewed = false;
   myRating = 0;
   myComment = '';
@@ -188,6 +190,7 @@ export class ProductDetail {
       this.marketplace.getReviewEligibility(productId).subscribe({
         next: (res: any) => {
           this.canReview = !!res.can_review;
+          this.awaitingDelivery = !!res.awaiting_delivery;
           this.hasReviewed = !!res.has_reviewed;
           if (res.review) {
             this.myRating = res.review.rating || 0;

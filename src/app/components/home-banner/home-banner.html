@@ -1,0 +1,31 @@
+@if (banners.length) {
+  <section class="hb-sec">
+    @for (b of banners; track b._id) {
+      <div [class]="cardClass(b)" [style]="cardVars(b)">
+
+        <div class="hb-text">
+          <h2 class="hb-title">{{ b.title }}</h2>
+          @if (b.subtitle) {
+            <p class="hb-sub">{{ b.subtitle }}</p>
+          }
+          @if (b.button_label && b.button_link) {
+            <button type="button" class="hb-btn" (click)="openLink(b)">
+              {{ b.button_label }}
+              <span class="hb-btn-arrow" aria-hidden="true">→</span>
+            </button>
+          }
+        </div>
+
+        <!-- Transparent cut-out — iske peeche theme ka rang hi background hai.
+             Scale aur offset admin panel se aate hain (har PNG ka apna padding
+             hota hai, ek fixed layout sab par theek nahi baithta). -->
+        @if (b.image_url) {
+          <div class="hb-media">
+            <img [src]="imageBase + b.image_url" [alt]="b.title" loading="lazy" />
+          </div>
+        }
+
+      </div>
+    }
+  </section>
+}

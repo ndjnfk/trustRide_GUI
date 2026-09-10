@@ -4,10 +4,11 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Ride } from '../../services/ride';
 import { AuthHelper } from '../../helpers/auth-helper';
+import { HomeBanner } from '../home-banner/home-banner';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, HomeBanner],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

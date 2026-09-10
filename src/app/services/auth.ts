@@ -47,6 +47,15 @@ export class AuthService {
     return this.http.post(`${this.api}/auth/register`, data)
   }
 
+
+  // ── Registration open hai ya admin ne cap laga di hai ─────
+  // Public endpoint — form load hote hi check ho jaata hai.
+  getRegistrationStatus(): Observable<{ status: boolean; open: boolean; message: string | null }> {
+    return this.http.get<{ status: boolean; open: boolean; message: string | null }>(
+      `${this.api}/auth/registration-status`
+    )
+  }
+
   // ── Verify Email (send verification mail after register) ─────────────────────────────
   verifyEmail(email: string): Observable<any> {
     return this.http.post(`${this.api}/verify-email`, { email })

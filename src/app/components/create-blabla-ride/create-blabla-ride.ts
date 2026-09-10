@@ -1,10 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BlablaRideService, CreateBlablaRidePayload } from '../../services/blabla-ride';
+import { Subject, of } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
+import {
+  BlablaEmailCheck,
+  BlablaRideService,
+  CreateBlablaRidePayload,
+} from '../../services/blabla-ride';
 import { LoaderServices } from '../../services/loader-services';
 import { Snackbar } from '../../services/snackbar';
+
+/** Email field ke neeche jo hint dikhta hai uski haalat. */
+export type EmailCheckState =
+  | 'idle'        // khaali field — kuch mat dikhao
+  | 'invalid'     // shakal hi galat hai, API call ka matlab nahi
+  | 'checking'    // request ja chuki hai
+  | 'ok'          // registered + admin-verified
+  | 'not_found'   // is email ka koi account hi nahi
+  | 'not_verified'; // account hai par admin ne verify nahi kiya
+
+const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * User panel ka BlaBla ride form.
@@ -20,7 +46,7 @@ import { Snackbar } from '../../services/snackbar';
   templateUrl: './create-blabla-ride.html',
   styleUrl: './create-blabla-ride.css',
 })
-export class CreateBlablaRide {
+export class CreateBlablaRide implements OnInit, OnDestroy {
   /** Sirf ye do base cities — baaki sab inhi ke areas hain. */
   readonly cities: string[] = ['Gurgaon', 'Saharanpur'];
 
@@ -34,6 +60,13 @@ export class CreateBlablaRide {
   /** Backend ka error_code — verification wale case me extra hint dikhane ke liye. */
   errorCode = '';
 
+  /* ── Live email check ── */
+  emailState: EmailCheckState = 'idle';
+  emailMessage = '';
+
+  private emailTyped$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
   private loader = inject(LoaderServices);
 
   constructor(
@@ -42,6 +75,73 @@ export class CreateBlablaRide {
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
+
+  ngOnInit(): void {
+    this.emailTyped$
+      .pipe(
+        map((value) => (value ?? '').trim()),
+        // Har keystroke par request bhejna fizool hai — ruk kar ek hi bhejo.
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap((email) => this.markEmailPending(email)),
+        // Adhoore email par API call ka koi matlab nahi.
+        filter((email) => EMAIL_SHAPE.test(email)),
+        switchMap((email) =>
+          this.blablaService.checkBlablaEmail(email).pipe(
+            // Network gir gaya to chup rehna behtar — submit par wahi check
+            // dobara hota hai, wahan asli error dikh jaayega.
+            catchError(() => of(null))
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((res) => this.applyEmailCheck(res));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /** Har keystroke yahin aata hai — pipe khud debounce/dedupe sambhalta hai. */
+  onEmailInput(value: string): void {
+    this.emailTyped$.next(value);
+  }
+
+  private markEmailPending(email: string): void {
+    if (!email) {
+      this.emailState = 'idle';
+      this.emailMessage = '';
+    } else if (!EMAIL_SHAPE.test(email)) {
+      this.emailState = 'invalid';
+      this.emailMessage = 'Please enter a valid email address';
+    } else {
+      this.emailState = 'checking';
+      this.emailMessage = 'Checking this email…';
+    }
+    this.cdr.detectChanges();
+  }
+
+  private applyEmailCheck(res: BlablaEmailCheck | null): void {
+    // null = request fail — 'checking' par atke rehne se accha hint hata do.
+    if (!res) {
+      this.emailState = 'idle';
+      this.emailMessage = '';
+    } else if (res.verified) {
+      this.emailState = 'ok';
+      this.emailMessage = res.message;
+    } else if (res.exists) {
+      this.emailState = 'not_verified';
+      this.emailMessage = res.message;
+    } else if (res.error_code === 'INVALID_EMAIL') {
+      this.emailState = 'invalid';
+      this.emailMessage = res.message;
+    } else {
+      this.emailState = 'not_found';
+      this.emailMessage = res.message;
+    }
+    this.cdr.detectChanges();
+  }
 
   private emptyForm(): CreateBlablaRidePayload {
     return {
@@ -73,8 +173,13 @@ export class CreateBlablaRide {
   private validate(): string {
     const f = this.form;
     if (!f.user_email.trim()) return 'Your registered email is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.user_email.trim())) {
+    if (!EMAIL_SHAPE.test(f.user_email.trim())) {
       return 'Please enter a valid email address';
+    }
+    // Live check pehle hi bata chuka hai ki ye email nahi chalega — bekaar ka
+    // round-trip mat karo. 'checking'/'idle' par rok nahi, backend dekh lega.
+    if (this.emailState === 'not_found' || this.emailState === 'not_verified') {
+      return this.emailMessage;
     }
     if (!f.source || !f.destination) return 'Source and destination are required';
     if (f.source === f.destination) return 'Source and destination cannot be the same city';
@@ -107,7 +212,8 @@ export class CreateBlablaRide {
     const problem = this.validate();
     if (problem) {
       this.error = problem;
-      this.errorCode = '';
+      // Live check ne roka ho to banner me bhi "Register" button dikhna chahiye.
+      this.errorCode = this.emailState === 'not_found' ? 'EMAIL_NOT_REGISTERED' : '';
       this.snackbar.error(problem);
       return;
     }

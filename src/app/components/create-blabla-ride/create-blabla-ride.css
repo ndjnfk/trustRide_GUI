@@ -100,3 +100,23 @@ select.rl-input {
   gap: 12px;
   flex-wrap: wrap;
 }
+
+/* ── Live email check ── */
+.rl-input.cb-input-ok { border-color: #16a34a; }
+.rl-input.cb-input-bad { border-color: #dc2626; }
+
+.cb-hint-checking { color: var(--text-2); }
+.cb-hint-ok { color: #15803d; }
+.cb-hint-bad { color: #dc2626; }
+
+.cb-hint-link {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 4px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,0 +1,282 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="banners-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title m-0">Home Banners</h1>
+        <button type="button" class="btn btn-primary" (click)="openCreate()" *ngIf="!showForm">
+          + New Banner
+        </button>
+      </div>
+
+      <p class="text-muted mb-4" *ngIf="!showForm">
+        These banners appear on the home page, right below the TrustRideSRE Rides card.
+        Upload a <strong>background-free (transparent PNG)</strong> product photo — the banner
+        colour comes from the theme, so a cut-out image sits cleanly on any of them.
+      </p>
+
+      <!-- ── Form ── -->
+      <div class="card border-0 shadow-sm mb-4" *ngIf="showForm">
+        <div class="card-body">
+          <h2 class="h6 mb-3">{{ editingId ? 'Edit banner' : 'New banner' }}</h2>
+
+          <!-- Device toggle — preview ki chaudai aur niche ke placement
+               sliders dono isi se chalte hain, isliye galat device ki
+               setting badalne ka mauka nahi milta. -->
+          <div class="bn-device mb-2">
+            <button type="button" class="bn-device-btn"
+              [class.bn-device-btn--on]="device === 'desktop'"
+              (click)="device = 'desktop'">🖥️ Desktop</button>
+            <button type="button" class="bn-device-btn"
+              [class.bn-device-btn--on]="device === 'mobile'"
+              (click)="device = 'mobile'">📱 Phone</button>
+          </div>
+
+          <!-- Live preview — home page ke banner ka chhota version.
+               Image par wahi transform lagta hai jo asli banner par lagega. -->
+          <div
+            class="bn-preview mb-2"
+            [class.bn-preview--phone]="isMobile"
+            [class.bn-preview--left]="form.image_side === 'left' && !isMobile"
+            [class.bn-preview--glow]="form.show_glow"
+            [style.background]="activeTheme()?.background || '#0b2a5b'"
+            [style.color]="activeTheme()?.text || '#ffffff'">
+            <div class="bn-preview-text">
+              <div class="bn-preview-title">{{ form.title || 'Banner title' }}</div>
+              <div class="bn-preview-sub" *ngIf="form.subtitle">{{ form.subtitle }}</div>
+              <span
+                class="bn-preview-btn"
+                *ngIf="form.button_label"
+                [style.background]="activeTheme()?.text || '#ffffff'"
+                [style.color]="activeTheme()?.background || '#0b2a5b'">
+                {{ form.button_label }} →
+              </span>
+            </div>
+            <div class="bn-preview-media" *ngIf="previewImage()">
+              <img [src]="previewImage()" [style]="previewImageStyle()" alt="Banner preview" />
+            </div>
+          </div>
+          <p class="bn-preview-note mb-4">
+            Live preview — {{ isMobile ? 'this is how it looks on a phone.' : 'this is how it looks on a desktop.' }}
+          </p>
+
+          <form (ngSubmit)="save()" novalidate>
+            <div class="row g-3">
+
+              <div class="col-12">
+                <label class="form-label">Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="title" maxlength="80"
+                  [(ngModel)]="form.title" placeholder="e.g. Now on TrustRide Marketplace" />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Subtitle</label>
+                <textarea class="form-control" rows="2" name="subtitle" maxlength="200"
+                  [(ngModel)]="form.subtitle"
+                  placeholder="One short line about the offer"></textarea>
+              </div>
+
+              <div class="col-12 col-md-5">
+                <label class="form-label">Button label</label>
+                <input type="text" class="form-control" name="button_label" maxlength="40"
+                  [(ngModel)]="form.button_label" placeholder="e.g. Shop now" />
+              </div>
+
+              <div class="col-12 col-md-7">
+                <label class="form-label">Button link</label>
+                <input type="text" class="form-control" name="button_link" maxlength="300"
+                  [(ngModel)]="form.button_link" placeholder="/marketplace/products" />
+                <small class="form-text text-muted">
+                  Internal page like <code>/marketplace/products</code>, or a full https:// link.
+                </small>
+              </div>
+
+              <!-- Theme -->
+              <div class="col-12">
+                <label class="form-label">Theme</label>
+                <div class="bn-themes">
+                  <button
+                    type="button"
+                    class="bn-theme"
+                    *ngFor="let t of themes"
+                    [class.bn-theme--on]="form.theme === t.key"
+                    (click)="form.theme = t.key">
+                    <span class="bn-theme-swatch"
+                      [style.background]="t.background"
+                      [style.color]="t.text">Aa</span>
+                    <span class="bn-theme-label">{{ t.label }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Image -->
+              <div class="col-12">
+                <label class="form-label">Product image (transparent PNG)</label>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                  <input type="file" class="form-control bn-file" accept="image/png,image/webp,image/jpeg"
+                    (change)="onImagePicked($event)" />
+                  <button type="button" class="btn btn-outline-secondary btn-sm"
+                    *ngIf="previewImage()" (click)="removeImage()">
+                    Remove image
+                  </button>
+                </div>
+                <small class="form-text text-muted">
+                  PNG / WebP with no background works best. Max 4 MB.
+                </small>
+              </div>
+
+              <!-- ── Image placement ──
+                   Har cut-out PNG ka apna padding aur aspect ratio hota hai,
+                   isliye ek fixed layout sab par theek nahi baithta. -->
+              <div class="col-12" *ngIf="previewImage()">
+                <div class="bn-place">
+                  <div class="bn-place-head">
+                    <span class="bn-place-title">
+                      Image placement — {{ isMobile ? 'Phone' : 'Desktop' }}
+                    </span>
+                    <span class="d-flex gap-3">
+                      <button type="button" class="btn btn-sm btn-link p-0"
+                        *ngIf="isMobile" (click)="copyDesktopToMobile()">
+                        Copy from desktop
+                      </button>
+                      <button type="button" class="btn btn-sm btn-link p-0" (click)="resetPlacement()">
+                        Reset
+                      </button>
+                    </span>
+                  </div>
+
+                  <p class="bn-place-hint">
+                    Desktop and phone are saved separately — switch the toggle above the preview
+                    to adjust the other one.
+                  </p>
+
+                  <!-- Side: phone par image hamesha text ke upar aati hai,
+                       to left/right sirf desktop ke liye dikhta hai. -->
+                  <div class="bn-place-row" *ngIf="!isMobile">
+                    <label class="bn-place-label">Side</label>
+                    <div class="bn-side">
+                      <button type="button" class="bn-side-btn"
+                        [class.bn-side-btn--on]="form.image_side === 'left'"
+                        (click)="form.image_side = 'left'">◧ Left</button>
+                      <button type="button" class="bn-side-btn"
+                        [class.bn-side-btn--on]="form.image_side === 'right'"
+                        (click)="form.image_side = 'right'">◨ Right</button>
+                    </div>
+                  </div>
+
+                  <!-- Size -->
+                  <div class="bn-place-row">
+                    <label class="bn-place-label">Size</label>
+                    <input type="range" class="form-range bn-range"
+                      [min]="limits.scale.min" [max]="limits.scale.max" step="5"
+                      [value]="scale"
+                      (input)="onScale($any($event.target).value)" />
+                    <span class="bn-place-value">{{ scale }}%</span>
+                  </div>
+
+                  <!-- Nudge left / right -->
+                  <div class="bn-place-row">
+                    <label class="bn-place-label">Move ↔</label>
+                    <input type="range" class="form-range bn-range"
+                      [min]="limits.offsetX.min" [max]="limits.offsetX.max" step="2"
+                      [value]="offsetX"
+                      (input)="onOffsetX($any($event.target).value)" />
+                    <span class="bn-place-value">{{ offsetX }}px</span>
+                  </div>
+
+                  <!-- Nudge up / down -->
+                  <div class="bn-place-row">
+                    <label class="bn-place-label">Move ↕</label>
+                    <input type="range" class="form-range bn-range"
+                      [min]="limits.offsetY.min" [max]="limits.offsetY.max" step="2"
+                      [value]="offsetY"
+                      (input)="onOffsetY($any($event.target).value)" />
+                    <span class="bn-place-value">{{ offsetY }}px</span>
+                  </div>
+
+                  <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" id="bannerGlow"
+                      name="show_glow" [(ngModel)]="form.show_glow" />
+                    <label class="form-check-label" for="bannerGlow">
+                      Soft circle behind the image <span class="bn-shared">(both devices)</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Visible -->
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="bannerActive"
+                    name="is_active" [(ngModel)]="form.is_active" />
+                  <label class="form-check-label" for="bannerActive">
+                    Show this banner on the home page
+                  </label>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="alert alert-danger py-2 mt-3" *ngIf="error">{{ error }}</div>
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="saving">
+                {{ saving ? 'Saving…' : (editingId ? 'Update Banner' : 'Create Banner') }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="closeForm()" [disabled]="saving">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── List ── -->
+      <div class="text-muted" *ngIf="loading">Loading banners…</div>
+      <div class="alert alert-danger" *ngIf="error && !showForm && !loading">{{ error }}</div>
+
+      <div *ngIf="!loading && !showForm">
+        <div class="text-muted" *ngIf="banners.length === 0">No banners yet.</div>
+
+        <div class="card border-0 shadow-sm mb-3 bn-row" *ngFor="let b of banners">
+          <div class="card-body d-flex align-items-center gap-3 flex-wrap">
+
+            <div class="bn-thumb"
+              [style.background]="themeOf(b)?.background || '#0b2a5b'">
+              <img *ngIf="b.image_url" [src]="imageBase + b.image_url" [alt]="b.title" />
+              <span *ngIf="!b.image_url" class="bn-thumb-empty">No image</span>
+            </div>
+
+            <div class="bn-info flex-grow-1">
+              <div class="bn-title">{{ b.title }}</div>
+              <div class="bn-sub" *ngIf="b.subtitle">{{ b.subtitle }}</div>
+              <div class="bn-meta">
+                <span class="bn-tag">{{ themeOf(b)?.label || b.theme }}</span>
+                <span class="bn-tag" *ngIf="b.button_label">{{ b.button_label }} → {{ b.button_link }}</span>
+                <span class="bn-tag" [class.bn-tag--on]="b.is_active" [class.bn-tag--off]="!b.is_active">
+                  {{ b.is_active ? 'Visible' : 'Hidden' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="toggle(b)">
+                {{ b.is_active ? 'Hide' : 'Show' }}
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="openEdit(b)">
+                Edit
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(b)">
+                Delete
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

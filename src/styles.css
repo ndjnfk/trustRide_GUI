@@ -3911,6 +3911,55 @@ app-my-bookings {
   .bookings-page .page-header   { flex-direction: column; align-items: flex-start; }
 }
 
+/* ── Search rides button (header) ──
+   Sirf icon, kyunki header pehle hi bhara hai. Mobile par chhupa rehta hai —
+   wahan side drawer se hi navigate hota hai. */
+.header__btn-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: transparent;
+  color: var(--h-primary, #2563eb);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 50%;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header__btn-search svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.header__btn-search:hover {
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--h-primary, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+}
+
+.header__btn-search:active { transform: translateY(0); }
+
+/* Search page par pehle se ho to button bhara hua dikhe. */
+.header__btn-search--active {
+  background: var(--h-primary, #2563eb);
+  border-color: var(--h-primary, #2563eb);
+  color: #fff;
+}
+.header__btn-search--active:hover {
+  background: var(--h-primary, #2563eb);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .header__btn-search { display: none; }
+}
+
 /* ── PWA Install button (header) ── */
 .header__btn-install {
   display: inline-flex;
@@ -3971,4 +4020,11 @@ app-my-bookings {
 {background: transparent;}
  .cdk-overlay-backdrop-showing {
     opacity: 1;
+}
+/* ── Search bar ka date calendar (search-rides "When" field) ──
+   Overlay body me render hota hai, isliye styling yahan global rakhi hai. */
+.sf-date-panel .mat-datepicker-content,
+.sf-date-panel.mat-datepicker-content {
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
 }

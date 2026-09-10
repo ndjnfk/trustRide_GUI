@@ -1,0 +1,102 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="limit-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex align-items-center gap-2 mb-4">
+        <h1 class="page-title m-0">Registration Limit</h1>
+      </div>
+
+      <div class="card limit-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            Cap how many users can sign up on TrustRide. For example, set the limit to
+            <strong>125</strong> and the 126th person who tries to register will be blocked with a
+            "registration closed" message. Existing users are never removed.
+          </p>
+
+          <!-- Live status -->
+          <div class="status-box mb-4" *ngIf="!loading && status">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="status-label">Registered users</span>
+              <span class="status-value">
+                {{ status.registeredUsers }}<ng-container *ngIf="status.enabled"> / {{ status.limit }}</ng-container>
+              </span>
+            </div>
+
+            <div class="progress-track" *ngIf="status.enabled">
+              <div class="progress-fill" [class.is-full]="status.isFull" [style.width.%]="usedPercent"></div>
+            </div>
+
+            <p class="status-note mt-2 mb-0" *ngIf="!status.enabled">
+              No limit is set — registration is open to everyone.
+            </p>
+            <p class="status-note status-note--full mt-2 mb-0" *ngIf="status.enabled && status.isFull">
+              Limit reached — new registrations are blocked.
+            </p>
+            <p class="status-note mt-2 mb-0" *ngIf="status.enabled && !status.isFull">
+              {{ status.remaining }} more {{ status.remaining === 1 ? 'user' : 'users' }} can still register.
+            </p>
+          </div>
+
+          <div class="text-muted mb-4" *ngIf="loading">Loading current settings…</div>
+
+          <form (ngSubmit)="save()" novalidate>
+
+            <!-- Enable toggle -->
+            <div class="form-check form-switch mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="enabledToggle"
+                [(ngModel)]="enabled"
+                name="enabled"
+                [disabled]="loading || submitting" />
+              <label class="form-check-label" for="enabledToggle">
+                Limit the number of registered users
+              </label>
+            </div>
+
+            <!-- Limit -->
+            <div class="mb-3" *ngIf="enabled">
+              <label class="form-label">Maximum users allowed</label>
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="limit"
+                name="limit"
+                min="1"
+                step="1"
+                placeholder="e.g. 125"
+                [disabled]="loading || submitting"
+                autocomplete="off" />
+              <small class="form-text text-muted">
+                Once this many users have registered, further signups are rejected.
+              </small>
+            </div>
+
+            <!-- Error -->
+            <div class="alert alert-danger py-2" *ngIf="error">{{ error }}</div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="loading || submitting">
+                {{ submitting ? 'Saving…' : 'Save Limit' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="load()"
+                [disabled]="loading || submitting">
+                Refresh
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

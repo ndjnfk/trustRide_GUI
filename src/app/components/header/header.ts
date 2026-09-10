@@ -111,13 +111,15 @@ getInitials(name: string): string {
     this.chat.offThreadUpdate(this.onChatUpdate);
   }
   navItems = [
-    { label: 'Publish BlaBla Ride', route: '/create-blabla-ride', icon: 'car' },
-    { label: 'BlaBla Rides', route: '/blabla-rides', icon: 'compass' },
+    // BlaBla entries filhaal band — site se BlaBla option hata diya gaya hai.
+    // { label: 'Publish BlaBla Ride', route: '/create-blabla-ride', icon: 'car' },
+    // { label: 'BlaBla Rides', route: '/blabla-rides', icon: 'compass' },
     { label: 'My Rides', route: '/get-ride', icon: 'car' },
     { label: 'Explore Rides', route: '/available-rides', icon: 'compass' },
     { label: 'My Bookings', route: '/get-bookings', icon: 'ticket' },
     { label: 'Medical Emergency', route: '/medical-emergency', icon: 'medical' },
 
+    { label: 'Marketplace', route: '/marketplace', icon: 'shop' },
     { label: 'Track Orders', route: '/marketplace/orders', icon: 'package' },
     { label: 'Profile', route: '/about-you', icon: 'user' },
     { label: 'Company Members', route: '/company-members', icon: 'users' },

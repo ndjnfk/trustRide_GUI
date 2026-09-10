@@ -32,7 +32,8 @@ export class MyOrders {
   loading = false;
   error = '';
 
-  /** which of the 4 request types is shown */
+  /** Kaunsa request type dikh raha hai. Tab bar hata di gayi hai (sirf
+   *  Products chalu hai), isliye ye hamesha 'products' rehta hai. */
   activeTab: 'products' | 'services' | 'pharmacy' | 'appointments' = 'products';
 
   /** existing reviews keyed by source_id ({rating, comment}) */
@@ -65,22 +66,18 @@ export class MyOrders {
     this.loading = true;
     this.error = '';
 
+    // Sirf product orders + unke reviews. Pehle yahan prescriptions, service
+    // bookings aur appointments bhi parallel fetch hote the — wo categories
+    // band hain, to 3 request har baar bekaar jaati thi.
     forkJoin({
       orders: this.marketplace.getMyOrders().pipe(catchError(() => of(null))),
-      prescriptions: this.marketplace.getMyPrescriptions().pipe(catchError(() => of(null))),
-      services: this.marketplace.getMyServiceBookings().pipe(catchError(() => of(null))),
-      appointments: this.marketplace.getMyAppointments().pipe(catchError(() => of(null))),
       reviews: this.marketplace.getMyShopReviews().pipe(catchError(() => of(null))),
     }).subscribe({
       next: (res: any) => {
-        // If everything failed, surface an error; otherwise show what we have.
-        if (!res.orders && !res.prescriptions && !res.services && !res.appointments) {
+        if (!res.orders) {
           this.error = 'Failed to load your orders.';
         } else {
           this.orders = res.orders?.orders || [];
-          this.prescriptionOrders = res.prescriptions?.orders || [];
-          this.serviceBookings = res.services?.data || [];
-          this.appointments = res.appointments?.data || [];
           this.reviews = res.reviews?.reviews || {};
         }
         this.loading = false;

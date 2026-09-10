@@ -187,16 +187,35 @@
 .sf-dropdown::-webkit-scrollbar { width: 4px; }
 .sf-dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-/* Date select */
-.sf-select {
-  border: none;
-  outline: none;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
+/* Date field (calendar picker) */
+.sf-date { outline: none; }
+.sf-date:focus-visible { background: var(--bg_light1); }
+
+.sf-date-val {
+  flex: 1;
+  user-select: none;
+}
+
+.sf-date-caret {
+  font-size: 14px !important;
+  color: var(--muted) !important;
+  transition: transform .15s;
+}
+.sf-date:hover .sf-date-caret { color: var(--primary) !important; }
+
+/* Datepicker ka asli input chhupa hua hai — sirf calendar overlay
+   ko anchor karne ke liye hai, isliye field ke bilkul neeche rakha hai. */
+.sf-date-hidden {
+  position: absolute;
+  left: 0;
+  bottom: 0;
   width: 100%;
+  height: 0;
   padding: 0;
+  margin: 0;
+  border: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Passenger control */
