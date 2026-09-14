@@ -135,6 +135,50 @@ export interface RegistrationLimitResponse {
   message?: string;
   data: RegistrationLimitData;
 }
+
+// ── Ride clicks ─────────────────────────────────────────────────────
+// Ek viewer ne ek ride par kitne click kiye. `name` logged-in user ka asli
+// naam hota hai, guest ke liye server-assigned label — guest1, guest2…
+export interface RideClickViewer {
+  // Delete ka address — `user:<id>` ya `guest:<deviceId>`.
+  viewer_key: string;
+  name: string;
+  type: 'user' | 'guest';
+  clicks: number;
+  last_click_at?: string | null;
+}
+
+// Ek ride ka total + uske andar ka viewer-wise breakdown (dropdown me khulta hai).
+export interface RideClickRow {
+  ride_id: string;
+  from: string;
+  to: string;
+  departure_time: string | null;
+  driver_name: string;
+  ride_exists: boolean;
+  total_clicks: number;
+  last_click_at: string | null;
+  viewers: RideClickViewer[];
+}
+
+export interface RideClicksResponse {
+  success: boolean;
+  summary: {
+    total_clicks: number;
+    total_rides: number;
+    total_viewers: number;
+    guest_clicks: number;
+    user_clicks: number;
+  };
+  rides: RideClickRow[];
+  viewers: (RideClickViewer & { rides: number })[];
+}
+
+export interface RideClickDeleteResponse {
+  success: boolean;
+  deleted: number;
+  message?: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -562,6 +606,37 @@ toggleBanner(id: string): Observable<any> {
 
 deleteBanner(id: string): Observable<any> {
   return this.http.delete(`${this.API_URL}/admin/banners/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Ride clicks (analytics) ───────────────────────────────
+// Ride-wise total clicks + har ride ke andar viewer-wise breakdown.
+getRideClicks(): Observable<RideClicksResponse> {
+  return this.http.get<RideClicksResponse>(`${this.API_URL}/admin/ride-clicks`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// Ek ride ke saare click records hatao — ride khud nahi delete hoti.
+deleteRideClicks(ride_id: string): Observable<RideClickDeleteResponse> {
+  return this.http.delete<RideClickDeleteResponse>(`${this.API_URL}/admin/ride-clicks/ride`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    body: { ride_id }
+  });
+}
+
+// Ek viewer ka record. ride_id do to sirf us ride se, warna sabhi rides se.
+deleteViewerClicks(viewer_key: string, ride_id?: string): Observable<RideClickDeleteResponse> {
+  return this.http.delete<RideClickDeleteResponse>(`${this.API_URL}/admin/ride-clicks/viewer`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    body: ride_id ? { viewer_key, ride_id } : { viewer_key }
+  });
+}
+
+// Poora click data clear. Guest labels (guest1, guest2…) bane rehte hain.
+deleteAllRideClicks(): Observable<RideClickDeleteResponse> {
+  return this.http.delete<RideClickDeleteResponse>(`${this.API_URL}/admin/ride-clicks/all`, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }

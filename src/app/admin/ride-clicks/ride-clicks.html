@@ -1,0 +1,252 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="clicks-container">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Ride Clicks</h1>
+          <p class="page-sub">
+            Har ride kitni baar kholi gayi, aur kisne kholi. Guests ko server
+            khud label deta hai — guest1, guest2…
+          </p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" type="button" (click)="load()" [disabled]="loading">
+            {{ loading ? 'Loading…' : 'Refresh' }}
+          </button>
+          <button
+            class="btn-danger"
+            type="button"
+            *ngIf="rides.length"
+            (click)="clearAll()"
+            [disabled]="loading || isDeleting('all')">
+            {{ isDeleting('all') ? 'Clearing…' : 'Clear all stats' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="alert-error" *ngIf="error">{{ error }}</div>
+
+      <div class="loading-note" *ngIf="loading">Loading click stats…</div>
+
+      <!-- Summary tiles -->
+      <ng-container *ngIf="!loading">
+        <div class="stat-row" *ngIf="data as stats">
+          <div class="stat-tile">
+            <div class="stat-label">Total clicks</div>
+            <div class="stat-value">{{ stats.summary.total_clicks }}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Rides clicked</div>
+            <div class="stat-value">{{ stats.summary.total_rides }}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Unique viewers</div>
+            <div class="stat-value">{{ stats.summary.total_viewers }}</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Logged in vs guest</div>
+            <div class="stat-value">
+              {{ stats.summary.user_clicks }}<span class="stat-split"> / {{ stats.summary.guest_clicks }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Ride-wise totals.
+           Ye section jaan-boojh kar kisi *ngIf ke andar nahi hai — canvas ko
+           pehle render se hi DOM me rehna chahiye, warna @ViewChild ko element
+           milta hi nahi aur chart khaali reh jaata hai. -->
+      <section class="panel" *ngIf="!error">
+        <div class="panel-head">
+          <h2 class="panel-title">Clicks per ride</h2>
+          <span class="panel-note" *ngIf="rides.length > topRides.length">
+            Top {{ topRides.length }} of {{ rides.length }} — full list below
+          </span>
+        </div>
+
+        <div class="chart-box" [style.height.px]="chartHeight">
+          <canvas #clicksCanvas></canvas>
+        </div>
+
+        <p class="empty" *ngIf="!loading && !topRides.length">
+          No ride has been clicked yet.
+        </p>
+      </section>
+
+      <ng-container *ngIf="!loading">
+      <ng-container *ngIf="data as stats">
+
+        <!-- Ride-wise + viewer breakdown -->
+        <section class="panel" *ngIf="rides.length">
+          <div class="panel-head">
+            <h2 class="panel-title">Ride-wise breakdown</h2>
+            <div class="panel-tools">
+              <input
+                class="search-input"
+                type="text"
+                placeholder="Search ride, driver or viewer…"
+                [(ngModel)]="search"
+                name="rideClickSearch"
+                autocomplete="off" />
+              <button class="btn-ghost" type="button" (click)="expandAll()">Expand all</button>
+              <button class="btn-ghost" type="button" (click)="collapseAll()">Collapse</button>
+            </div>
+          </div>
+
+          <div class="ride-list">
+            <div class="ride-item" *ngFor="let ride of filteredRides; trackBy: trackByRide">
+
+              <!-- Ride row — click karo to viewer breakdown khulta hai.
+                   Trash ko toggle ke andar nahi rakh sakte (button ke andar
+                   button invalid HTML hai), isliye dono ek flex wrapper me. -->
+              <div class="ride-row-wrap" [class.is-open]="isExpanded(ride.ride_id)">
+                <button
+                  class="ride-row"
+                  type="button"
+                  [attr.aria-expanded]="isExpanded(ride.ride_id)"
+                  (click)="toggle(ride.ride_id)">
+
+                  <span class="ride-caret" aria-hidden="true">
+                    {{ isExpanded(ride.ride_id) ? '▾' : '▸' }}
+                  </span>
+
+                  <span class="ride-main">
+                    <span class="ride-route">
+                      {{ rideLabel(ride) }}
+                      <span class="tag tag-deleted" *ngIf="!ride.ride_exists">deleted</span>
+                    </span>
+                    <span class="ride-meta">
+                      {{ formatDateTime(ride.departure_time) }}
+                      <ng-container *ngIf="ride.driver_name"> · {{ ride.driver_name }}</ng-container>
+                      · {{ ride.viewers.length }} viewer{{ ride.viewers.length === 1 ? '' : 's' }}
+                    </span>
+                  </span>
+
+                  <span class="ride-count">
+                    {{ ride.total_clicks }}
+                    <span class="ride-count-unit">clicks</span>
+                  </span>
+                </button>
+
+                <button
+                  class="btn-icon-danger"
+                  type="button"
+                  [attr.aria-label]="'Delete click stats for ' + rideLabel(ride)"
+                  title="Delete this ride's click stats"
+                  [disabled]="isDeleting('ride:' + ride.ride_id)"
+                  (click)="deleteRideStats(ride, $event)">
+                  {{ isDeleting('ride:' + ride.ride_id) ? '…' : '🗑' }}
+                </button>
+              </div>
+
+              <!-- Viewer-wise breakdown -->
+              <div class="viewer-panel" *ngIf="isExpanded(ride.ride_id)">
+                <table class="viewer-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Viewer</th>
+                      <th scope="col">Type</th>
+                      <th scope="col" class="num">Clicks</th>
+                      <th scope="col" class="num">Share</th>
+                      <th scope="col">Last click</th>
+                      <th scope="col" class="act"><span class="sr-only">Delete</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let viewer of ride.viewers">
+                      <td class="viewer-name">{{ viewer.name }}</td>
+                      <td>
+                        <span class="tag" [class.tag-guest]="viewer.type === 'guest'">
+                          {{ viewer.type === 'guest' ? 'Guest' : 'Logged in' }}
+                        </span>
+                      </td>
+                      <td class="num strong">{{ viewer.clicks }}</td>
+                      <td class="num">
+                        <span class="share-wrap">
+                          <span class="share-track">
+                            <span
+                              class="share-fill"
+                              [style.width.%]="sharePercent(viewer.clicks, ride.total_clicks)"></span>
+                          </span>
+                          <span class="share-pct">
+                            {{ sharePercent(viewer.clicks, ride.total_clicks) }}%
+                          </span>
+                        </span>
+                      </td>
+                      <td class="muted">{{ formatClickedAt(viewer.last_click_at) }}</td>
+                      <td class="act">
+                        <button
+                          class="btn-icon-danger"
+                          type="button"
+                          [attr.aria-label]="'Delete ' + viewer.name + ' clicks on this ride'"
+                          title="Delete this viewer's clicks on this ride"
+                          [disabled]="isDeleting('viewer:' + ride.ride_id + ':' + viewer.viewer_key)"
+                          (click)="deleteViewerStats(ride, viewer)">
+                          {{ isDeleting('viewer:' + ride.ride_id + ':' + viewer.viewer_key) ? '…' : '🗑' }}
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+            <p class="empty" *ngIf="!filteredRides.length">No ride matches this search.</p>
+          </div>
+        </section>
+
+        <!-- Overall per-person totals -->
+        <section class="panel" *ngIf="stats.viewers.length">
+          <div class="panel-head">
+            <h2 class="panel-title">Clicks per person (all rides)</h2>
+          </div>
+
+          <table class="viewer-table">
+            <thead>
+              <tr>
+                <th scope="col">Viewer</th>
+                <th scope="col">Type</th>
+                <th scope="col" class="num">Total clicks</th>
+                <th scope="col" class="num">Rides clicked</th>
+                <th scope="col">Last click</th>
+                <th scope="col" class="act"><span class="sr-only">Delete</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let viewer of stats.viewers">
+                <td class="viewer-name">{{ viewer.name }}</td>
+                <td>
+                  <span class="tag" [class.tag-guest]="viewer.type === 'guest'">
+                    {{ viewer.type === 'guest' ? 'Guest' : 'Logged in' }}
+                  </span>
+                </td>
+                <td class="num strong">{{ viewer.clicks }}</td>
+                <td class="num">{{ viewer.rides }}</td>
+                <td class="muted">{{ formatClickedAt(viewer.last_click_at) }}</td>
+                <td class="act">
+                  <button
+                    class="btn-icon-danger"
+                    type="button"
+                    [attr.aria-label]="'Remove ' + viewer.name + ' from all click stats'"
+                    title="Remove this viewer from every ride's stats"
+                    [disabled]="isDeleting('all-rides:' + viewer.viewer_key)"
+                    (click)="deleteViewerEverywhere(viewer)">
+                    {{ isDeleting('all-rides:' + viewer.viewer_key) ? '…' : '🗑' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </ng-container>
+      </ng-container>
+
+    </div>
+  </main>
+</div>

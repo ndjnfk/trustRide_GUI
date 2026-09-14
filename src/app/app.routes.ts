@@ -89,6 +89,11 @@ export const routes: Routes = [
     loadComponent: () => import('../app/admin/rides/rides').then((m) => m.Rides),
   },
   {
+    path: 'admin/ride-clicks',
+    loadComponent: () =>
+      import('../app/admin/ride-clicks/ride-clicks').then((m) => m.RideClicks),
+  },
+  {
     path: 'admin/user-reviews/:userId',
     loadComponent: () =>
       import('../app/admin/user-reviews/user-reviews').then((m) => m.UserReviews),

@@ -41,7 +41,12 @@ export class AuthInterceptor implements HttpInterceptor {
         const isAuthEndpoint =
           req.url.includes('/login') || req.url.includes('/logout');
 
-        if (sessionExpired && !isAuthEndpoint) {
+        // Ride click counter background me chalta hai aur guest ke liye bhi —
+        // uske fail hone par kisi ko logout nahi karna chahiye.
+        // (admin ka /admin/ride-clicks isme nahi aata — wahan 401 par logout sahi hai)
+        const isBestEffort = !isAdminRequest && req.url.includes('/ride-clicks');
+
+        if (sessionExpired && !isAuthEndpoint && !isBestEffort) {
           this.handleSessionExpired(isAdminRequest);
         }
 

@@ -10,6 +10,7 @@ import { environment } from '../../../../environment';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { AuthService } from '../../services/auth';
 import { ChatService } from '../../services/chat-service';
+import { RideClickTracker } from '../../services/ride-click-tracker';
 
 @Component({
   selector: 'app-one-ride-details',
@@ -36,7 +37,8 @@ export class OneRideDetails {
     private snack: Snackbar,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private chat: ChatService
+    private chat: ChatService,
+    private clickTracker: RideClickTracker
   ) {}
 
   startingChat = false;
@@ -81,6 +83,11 @@ export class OneRideDetails {
   }
 
   this.rideId = rideId;
+
+  // Ride click count — har entry point (list card, search, share link) yahin
+  // aa kar khulta hai, isliye ek hi jagah ginna kaafi hai. Admin panel ke
+  // "Ride Clicks" chart ka data yahin se banta hai.
+  this.clickTracker.track(rideId);
 
   // Identify the logged-in viewer so we can detect their own cancelled booking
   if (AuthHelper.isLoggedIn()) {
