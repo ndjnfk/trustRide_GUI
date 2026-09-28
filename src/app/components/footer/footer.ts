@@ -52,8 +52,13 @@ export class Footer {
   ];
 
   mobileNavItems = [
+    // Tiffin aur Emergency tabs filhaal website se band — admin panel me pages
+    // chaalu hain. Tiffin ki jagah wapas Search aa gaya hai (jaisa pehle tha).
+    // Inhe wapas chalu karo to footer.html ka *ngIf bhi dekh lena — logged-out
+    // visitor ko sirf pehla public tab dikhta hai.
+    // { key: 'tiffin',      label: 'Tiffin',      route: '/tiffin-service' },
+    // { key: 'emergency',   label: 'Emergency',   route: '/medical-emergency' },
     { key: 'search',      label: 'Search',      route: '/search-rides' },
-    { key: 'emergency',   label: 'Emergency',   route: '/medical-emergency' },
     { key: 'publish',     label: 'Publish',     route: '/create-ride' },
     { key: 'rides',       label: 'Your rides',  route: '/get-ride' },
     { key: 'chat',        label: 'Chat',        route: '/chat' },

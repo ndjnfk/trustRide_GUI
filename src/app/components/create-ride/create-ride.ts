@@ -116,30 +116,19 @@ export class CreateRide {
 
   ];
 
-  readonly mohaliAreas: string[] = [
-    'Mohali',
-    'Mohali Sohana Gurdwara',
-    'Mohali Homeland',
-    'Mohali Bestech Towers',
-    'Mohali Bhena Da Dhaba',
-    'Mohali Sector 43'
-
-  ];
-
-  readonly chandigarhAreas: string[] = [
-    'Chandigarh',
-    'Chandigarh Sector 17'
-
-  ];
-
-  // In cities ke liye abhi koi predefined route (via/basePrice) nahi hai,
-  // isliye inke rides publish karte waqt route select karna optional hai.
-  private readonly routeOptionalCities = ['mohali', 'chandigarh'];
+  // Jin cities ke liye koi predefined route (via/basePrice) nahi hai, unke
+  // rides publish karte waqt route select karna optional rehta hai. Abhi khaali
+  // hai — bachi hui dono cities ke beech preset routes maujood hain. List
+  // jaan-boojh kar rakhi hai: nayi city bina preset route ke khule to yahan
+  // add kar dena.
+  private readonly routeOptionalCities: string[] = [];
 
   // Blocked city pairs helpers/route-rules.ts mein hain — register aur
   // edit-profile bhi wahi list use karte hain.
 
-  // Price limits: Gurgaon ↔ Saharanpur vs Saharanpur ↔ Mohali/Chandigarh
+  // Price limit: Gurgaon ↔ Saharanpur. Doosra band (₹350–₹390) un routes ke
+  // liye tha jinka koi preset route nahi tha; abhi koi aisi city nahi hai,
+  // par routeOptionalCities bharte hi ye wapas lag jaayega.
   private readonly PRICE_RANGE_DEFAULT = { min: 420, max: 550 };
   private readonly PRICE_RANGE_OPTIONAL_ROUTE = { min: 350, max: 390 };
 
@@ -215,8 +204,6 @@ readonly routeOptions = [
   private allLocations: string[] = [
     ...this.gurgaonAreas,
     ...this.saharanpurAreas,
-    ...this.mohaliAreas,
-    ...this.chandigarhAreas,
   ];
 
   get minDate(): string {
@@ -338,7 +325,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   //   this.pricePerSeat += 50;
   // }
 
-  /** Saharanpur ↔ Mohali/Chandigarh par ₹350–₹390, baaki routes par ₹420–₹550. */
+  /** Preset route waali jodi par ₹420–₹550; bina preset waali (abhi koi nahi) par ₹350–₹390. */
   get minPrice(): number {
     return this.isRouteOptional
       ? this.PRICE_RANGE_OPTIONAL_ROUTE.min
@@ -395,13 +382,13 @@ selectRoute(route: typeof this.routeOptions[0]): void {
     return isCityPairBlocked(fromCity, toCity);
   }
 
-  /** Selected from/to jodi blocked hai — e.g. Gurgaon ↔ Mohali / Chandigarh. */
+  /** Selected from/to jodi BLOCKED_CITY_PAIRS mein hai (abhi list khaali hai). */
   get isBlockedRoute(): boolean {
     if (!this.fromLocation || !this.toLocation) return false;
     return this.isPairBlocked(this.fromLocation, this.toLocation);
   }
 
-  /** Mohali / Chandigarh wali rides par route selection optional hai. */
+  /** Bina preset route waali cities par route selection optional hai. */
   get isRouteOptional(): boolean {
     const from = this.getBaseCity(this.fromLocation);
     const to = this.getBaseCity(this.toLocation);
@@ -411,7 +398,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
     );
   }
 
-  /** Dropdown chip ka city label — "Mohali Sector 43" → "Mohali". */
+  /** Dropdown chip ka city label — "Gurgaon Cyber Park" → "Gurgaon". */
   cityTag(area: string): string {
     const base = this.getBaseCity(area);
     return base.charAt(0).toUpperCase() + base.slice(1);
@@ -452,7 +439,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
       this.isKnownLocation(this.toLocation) &&
       this.rideDate &&
       this.rideTime &&
-      (this.selectedRouteId || this.isRouteOptional) &&   // Mohali/Chandigarh par route optional
+      (this.selectedRouteId || this.isRouteOptional) &&   // bina preset route waali cities par optional
       !this.isSameRoute &&
       !this.isBlockedRoute &&
       this.pricePerSeat >= this.minPrice &&

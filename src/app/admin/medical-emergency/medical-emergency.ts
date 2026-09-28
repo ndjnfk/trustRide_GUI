@@ -15,7 +15,7 @@ import { LoaderServices } from '../../services/loader-services';
 export class MedicalEmergency {
   // API ki MEDICAL_EMERGENCY_CITIES ke saath match karti hai — sirf base cities,
   // baaki sab inke areas hain aur address me chali jaati hain.
-  readonly cities: string[] = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali'];
+  readonly cities: string[] = ['Gurgaon', 'Saharanpur'];
 
   pharmacies: any[] = [];
   total = 0;

@@ -127,6 +127,13 @@ export class MarketplaceService {
     });
   }
 
+  // Auth — tiffin cards for the Tiffin Service page
+  getTiffinServices(): Observable<any> {
+    return this.http.get(`${this.API_URL}/tiffin-service`, {
+      headers: AuthHelper.getAuthHeader(),
+    });
+  }
+
   // Public — saare active products (marketplace ka main grid).
   // `categoryId` aur `search` optional filter hain.
   getAllProducts(opts: { categoryId?: string; search?: string } = {}): Observable<any> {

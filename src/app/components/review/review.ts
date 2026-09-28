@@ -6,6 +6,7 @@ import { AuthHelper } from '../../helpers/auth-helper';
 import { Ride } from '../../services/ride';
 import { AuthService } from '../../services/auth';
 import { Snackbar } from '../../services/snackbar';
+import { getSkippedReviewRides, markReviewRideSkipped } from '../../helpers/review-skip';
 
 @Component({
   selector: 'app-review',
@@ -19,6 +20,7 @@ export class Review {
   rideId: string = '';
   selectedReviewee: any = null;
   isSubmitting: boolean = false;
+  isSkipping: boolean = false;
   rating: number = 0;
   reviewText: string = '';
 
@@ -44,6 +46,12 @@ export class Review {
     }
 
     this.rideId = rideId;
+
+    // Pehle hi skip ho chuki ride ka form dobara mat dikhao
+    if (getSkippedReviewRides().includes(rideId)) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
 
     this.rideService.getPendingReviews().subscribe({
       next: (res) => {
@@ -141,6 +149,34 @@ export class Review {
         this.isSubmitting = false;
         const msg = err?.error?.message ?? 'Something went wrong. Please try again.';
         this.snackBar.error(msg);
+      }
+    });
+  }
+
+  // Skip — is ride ka review form dobara kabhi nahi dikhega.
+  // Local guard pehle lagta hai taaki API slow/fail hone par bhi form wapas na aaye.
+  skipReview() {
+    if (this.isSkipping || this.isSubmitting) return;
+
+    const rideId = this.rideId;
+    if (!rideId) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    this.isSkipping = true;
+    markReviewRideSkipped(rideId);
+
+    this.rideService.skipReview(rideId).subscribe({
+      next: () => {
+        this.isSkipping = false;
+        this.snackBar.success('Review skipped. We won’t ask again for this ride.');
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        // Backend fail hua to bhi user ko yahan mat rok — local guard laga hua hai
+        this.isSkipping = false;
+        this.router.navigate(['/dashboard']);
       }
     });
   }

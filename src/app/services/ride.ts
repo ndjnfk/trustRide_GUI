@@ -6,6 +6,7 @@ import { environment } from '../../../environment';
 import { AuthHelper } from '../helpers/auth-helper';
 import { SKIP_LOADER_HEADER } from '../interceptors/loader-interceptor';
 import { Router } from '@angular/router';
+import { getSkippedReviewRides } from '../helpers/review-skip';
 export interface RideData {
   ride_id: string;
   driver_id: string;
@@ -164,6 +165,15 @@ createReview(payload: {
   return this.http.post(`${this.baseUrl}/createReview`, payload, { headers });
 }
 
+// Review form skip — backend booking par flag laga deta hai, isliye ye ride
+// dobara getPendingReviews me nahi aayegi (na is device par, na kisi aur par).
+skipReview(rideId: string): Observable<any> {
+  const token = AuthHelper.getToken();
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+  return this.http.post(`${this.baseUrl}/skipReview`, { rideId }, { headers });
+}
+
 // userId khali ho to apne reviews aate hain, warna us banda ke jiski profile khuli hai
 getReviewDetails(type: 'received' | 'given', userId?: string) {
   return this.http.post<any[]>(`${this.baseUrl}/reviewsDetails`, { type, userId }, {
@@ -178,7 +188,10 @@ checkPendingReviews() {
   this.getPendingReviews().subscribe({
     next: (res) => {
       console.log('pending reviews:', res);
-      const pending = res.pending_reviews ?? [];
+      const skipped = getSkippedReviewRides();
+      const pending = (res.pending_reviews ?? []).filter(
+        (p: any) => !skipped.includes(p.ride_id)
+      );
 
       if (pending.length === 0) {
         console.log('no pending reviews — dashboard allow');

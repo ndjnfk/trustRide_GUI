@@ -106,6 +106,60 @@ input:focus {
   background: #1d4ed8;
 }
 
+.submit-btn:disabled,
+.skip-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Submit + Skip ek row me; chhoti screen par stack ho jaate hain */
+.review-actions {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.review-actions .submit-btn {
+  flex: 1 1 auto;
+}
+
+.skip-btn {
+  flex: 0 0 auto;
+  min-width: 110px;
+  border: 1px solid #d1d5db;
+  background: transparent;
+  color: #4b5563;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.skip-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.skip-hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .review-actions {
+    flex-direction: column;
+  }
+
+  .skip-btn {
+    width: 100%;
+  }
+}
+
 @media (max-width: 576px) {
 
   .review-card {

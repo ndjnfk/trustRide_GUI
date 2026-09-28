@@ -129,6 +129,11 @@ export const routes: Routes = [
       import('../app/admin/medical-emergency/medical-emergency').then((m) => m.MedicalEmergency),
   },
   {
+    path: 'admin/tiffin-service',
+    loadComponent: () =>
+      import('../app/admin/tiffin-service/tiffin-service').then((m) => m.AdminTiffinService),
+  },
+  {
     path: 'admin/banners',
     loadComponent: () =>
       import('../app/admin/banners/banners').then((m) => m.AdminBanners),
@@ -214,112 +219,129 @@ export const routes: Routes = [
       import('../app/shopkeeper/reviews/reviews').then((m) => m.ShopReviews),
   },
   */
-  {
-    path: 'marketplace/doctor/:doctorId',
-    loadComponent: () =>
-      import('../app/marketplace-components/doctor-detail/doctor-detail').then((m) => m.DoctorDetail),
-  },
-  // Services / Appointments ke track pages — filhaal band, sirf Products
-  // category chalu hai. Order tracking /marketplace/orders par hoti hai.
-  /*
-  {
-    path: 'marketplace/appointments',
-    loadComponent: () =>
-      import('../app/marketplace-components/track-appointments/track-appointments').then((m) => m.TrackAppointments),
-  },
-  {
-    path: 'track-services',
-    loadComponent: () =>
-      import('../app/marketplace-components/track-services/track-services').then((m) => m.TrackServices),
-  },
-  */
-  {
-    path: 'marketplace',
-    loadComponent: () =>
-      import('../app/marketplace-components/marketplace-home/marketplace-home').then(
-        (m) => m.MarketplaceHome
-      ),
-  },
-  {
-    path: 'marketplace/shops/:type',
-    loadComponent: () =>
-      import('../app/marketplace-components/shops-list/shops-list').then((m) => m.ShopsList),
-  },
-  {
-    path: 'marketplace/shop/:shopId',
-    loadComponent: () =>
-      import('../app/marketplace-components/shop-detail/shop-detail').then((m) => m.ShopDetail),
-  },
-  {
-    path: 'marketplace/service/:serviceId',
-    loadComponent: () =>
-      import('../app/marketplace-components/service-detail/service-detail').then((m) => m.ServiceDetail),
-  },
-  {
-    path: 'marketplace/product-item/:productId',
-    loadComponent: () =>
-      import('../app/marketplace-components/shop-product-detail/shop-product-detail').then((m) => m.ShopProductDetail),
-  },
-  // Marketplace ka main page — saare products ek grid me, category sirf filter.
-  {
-    path: 'marketplace/products',
-    loadComponent: () =>
-      import('../app/marketplace-components/products-list/products-list').then(
-        (m) => m.ProductsList
-      ),
-  },
-  {
-    path: 'marketplace/categories',
-    loadComponent: () =>
-      import('../app/marketplace-components/categories/categories').then(
-        (m) => m.MarketplaceCategories
-      ),
-  },
-  {
-    path: 'marketplace/medical-store',
-    loadComponent: () =>
-      import('../app/marketplace-components/medical-store/medical-store').then(
-        (m) => m.MedicalStore
-      ),
-  },
-  {
-    path: 'marketplace/category/:categoryId',
-    loadComponent: () =>
-      import('../app/marketplace-components/category-products/category-products').then(
-        (m) => m.CategoryProducts
-      ),
-  },
-  {
-    path: 'marketplace/product/:productId',
-    loadComponent: () =>
-      import('../app/marketplace-components/product-detail/product-detail').then(
-        (m) => m.ProductDetail
-      ),
-  },
-  {
-    path: 'marketplace/cart',
-    loadComponent: () =>
-      import('../app/marketplace-components/cart/cart').then((m) => m.Cart),
-  },
-  {
-    path: 'marketplace/checkout',
-    loadComponent: () =>
-      import('../app/marketplace-components/checkout/checkout').then((m) => m.Checkout),
-  },
-  {
-    path: 'marketplace/orders',
-    loadComponent: () =>
-      import('../app/marketplace-components/my-orders/my-orders').then((m) => m.MyOrders),
-  },
-
-  // Admin-curated pharmacy contacts — public by design, koi login nahi chahiye.
-  {
-    path: 'medical-emergency',
-    loadComponent: () =>
-      import('../app/marketplace-components/medical-emergency/medical-emergency').then(
-        (m) => m.MedicalEmergency
-      ),
-  },
+  // ── Marketplace / Products / Tiffin / Medical Emergency — FILHAAL BAND ──
+  // Website par ye pages abhi show nahi karne. Components
+  // src/app/marketplace-components/ me maujood hain aur admin panel ke
+  // pages (/admin/products, /admin/categories, /admin/orders,
+  // /admin/medical-emergency, /admin/tiffin-service) jaise the waise chaalu
+  // hain. Wapas chalu karne ke liye niche ke routes uncomment karo aur
+  // header/footer ke links bhi (header.html, header.ts, footer.html, footer.ts).
+  //   {
+  //     path: 'marketplace/doctor/:doctorId',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/doctor-detail/doctor-detail').then((m) => m.DoctorDetail),
+  //   },
+  //   // Services / Appointments ke track pages — filhaal band, sirf Products
+  //   // category chalu hai. Order tracking /marketplace/orders par hoti hai.
+  //   /*
+  //   {
+  //     path: 'marketplace/appointments',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/track-appointments/track-appointments').then((m) => m.TrackAppointments),
+  //   },
+  //   {
+  //     path: 'track-services',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/track-services/track-services').then((m) => m.TrackServices),
+  //   },
+  //   */
+  //   {
+  //     path: 'marketplace',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/marketplace-home/marketplace-home').then(
+  //         (m) => m.MarketplaceHome
+  //       ),
+  //   },
+  //   {
+  //     path: 'marketplace/shops/:type',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/shops-list/shops-list').then((m) => m.ShopsList),
+  //   },
+  //   {
+  //     path: 'marketplace/shop/:shopId',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/shop-detail/shop-detail').then((m) => m.ShopDetail),
+  //   },
+  //   {
+  //     path: 'marketplace/service/:serviceId',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/service-detail/service-detail').then((m) => m.ServiceDetail),
+  //   },
+  //   {
+  //     path: 'marketplace/product-item/:productId',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/shop-product-detail/shop-product-detail').then((m) => m.ShopProductDetail),
+  //   },
+  //   // Marketplace ka main page — saare products ek grid me, category sirf filter.
+  //   {
+  //     path: 'marketplace/products',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/products-list/products-list').then(
+  //         (m) => m.ProductsList
+  //       ),
+  //   },
+  //   {
+  //     path: 'marketplace/categories',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/categories/categories').then(
+  //         (m) => m.MarketplaceCategories
+  //       ),
+  //   },
+  //   {
+  //     path: 'marketplace/medical-store',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/medical-store/medical-store').then(
+  //         (m) => m.MedicalStore
+  //       ),
+  //   },
+  //   {
+  //     path: 'marketplace/category/:categoryId',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/category-products/category-products').then(
+  //         (m) => m.CategoryProducts
+  //       ),
+  //   },
+  //   {
+  //     path: 'marketplace/product/:productId',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/product-detail/product-detail').then(
+  //         (m) => m.ProductDetail
+  //       ),
+  //   },
+  //   {
+  //     path: 'marketplace/cart',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/cart/cart').then((m) => m.Cart),
+  //   },
+  //   {
+  //     path: 'marketplace/checkout',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/checkout/checkout').then((m) => m.Checkout),
+  //   },
+  //   {
+  //     path: 'marketplace/orders',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/my-orders/my-orders').then((m) => m.MyOrders),
+  //   },
+  // 
+  //   // Admin-curated pharmacy contacts — public by design, koi login nahi chahiye.
+  //   {
+  //     path: 'medical-emergency',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/medical-emergency/medical-emergency').then(
+  //         (m) => m.MedicalEmergency
+  //       ),
+  //   },
+  // 
+  //   // Admin-curated tiffin services — Medical Emergency ka hi jaddha, order
+  //   // WhatsApp par jaata hai.
+  //   {
+  //     path: 'tiffin-service',
+  //     loadComponent: () =>
+  //       import('../app/marketplace-components/tiffin-service/tiffin-service').then(
+  //         (m) => m.TiffinService
+  //       ),
+  //   },
 
   {
     path: 'search-rides',

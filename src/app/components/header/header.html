@@ -39,12 +39,15 @@
                        BlaBla Rides
                     </a>
                 </li> -->
-                <li>
+                <!-- Medical Emergency filhaal website se band — admin panel me
+                     page chaalu hai (/admin/medical-emergency). Wapas dikhana ho
+                     to ye block uncomment karo. -->
+                <!-- <li>
                     <a class="header__nav-link" routerLink="/medical-emergency"
                        routerLinkActive="header__nav-link--active">
                        Medical Emergency
                     </a>
-                </li>
+                </li> -->
 
                 <!-- <li>
                     <a class="header__nav-link" routerLink="/passinger-list" routerLinkActive="header__nav-link--active">
@@ -123,11 +126,18 @@
                 </button>
 
                 <div class="header__dropdown" *ngIf="isUserDropdownOpen" role="menu">
-                    <div class="header__dropdown-user">
-                        <strong>{{ userData?.Name }}</strong>
-                        <small>{{ userData?.Email }}</small>
+                    <!-- Naam/email upar chipke rehte hain — list lambi ho to bhi
+                         menu kiska hai ye dikhta rehna chahiye. -->
+                    <div class="header__dropdown-head">
+                        <div class="header__dropdown-user">
+                            <strong>{{ userData?.Name }}</strong>
+                            <small>{{ userData?.Email }}</small>
+                        </div>
+                        <div class="header__dropdown-divider"></div>
                     </div>
-                    <div class="header__dropdown-divider"></div>
+
+                    <!-- Sirf ye beech wala hissa scroll hota hai. -->
+                    <div class="header__dropdown-scroll">
                     <!-- Login ke baad BlaBla publish yahan se milta hai (mobile par
                          side drawer ke navItems me wahi entry hai). -->
                     <!-- <a class="header__dropdown-item" routerLink="/create-blabla-ride">
@@ -153,6 +163,7 @@
                         </svg>
                         Profile
                     </a> -->
+                    <!-- 1. Profile -->
                     <a class="header__dropdown-item" routerLink="/about-you">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -160,6 +171,8 @@
                         </svg>
                         Profile
                     </a>
+
+                    <!-- 2. Messages -->
                     <a class="header__dropdown-item" routerLink="/chat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
@@ -167,16 +180,57 @@
                         Messages
                         <span class="header__chat-badge" *ngIf="unreadChats > 0">{{ unreadChats > 99 ? '99+' : unreadChats }}</span>
                     </a>
-                     <a class="header__dropdown-item" routerLink="/auto-generated">
+
+                    <!-- 3. Marketplace / 4. Tiffin Service — dono filhaal website
+                         se band. Admin panel me pages chaalu hain
+                         (/admin/products, /admin/tiffin-service). Wapas dikhana
+                         ho to ye dono block uncomment karo. -->
+                    <!-- <a class="header__dropdown-item" routerLink="/marketplace">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <polyline points="23 4 23 10 17 10" />
-                            <polyline points="1 20 1 14 7 14" />
-                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                            <path d="M3 9l1.5-5.5A1 1 0 0 1 5.46 3h13.08a1 1 0 0 1 .96.5L21 9" />
+                            <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
+                            <path d="M3 9h18" />
+                            <path d="M9 13a3 3 0 0 0 6 0" />
                         </svg>
-                       Update Rides
+                        Marketplace
                     </a>
 
-                     <a class="header__dropdown-item" routerLink="/user-matched">
+                    <a class="header__dropdown-item" routerLink="/tiffin-service">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 3.5c0 .8-1 1.2-1 2" />
+                            <path d="M15 3.5c0 .8-1 1.2-1 2" />
+                            <rect x="4" y="7" width="16" height="4" rx="1" />
+                            <path d="M5.5 11h13l-.8 8.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5.5 11z" />
+                            <line x1="5.9" y1="15.5" x2="18.1" y2="15.5" />
+                        </svg>
+                        Tiffin Service
+                    </a> -->
+
+                    <!-- 5. rating — filhaal band (laptop + mobile dono se hata
+                         diya). Wapas dikhana ho to niche wala block uncomment
+                         karo aur header.ts ke navItems me 'Rating' bhi. -->
+                    <!-- <a class="header__dropdown-item" routerLink="/rating-show">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                        rating
+                    </a> -->
+
+                    <!-- 6. Track Orders — marketplace ke saath hi band. -->
+                    <!-- <a class="header__dropdown-item" routerLink="/marketplace/orders">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                        Track Orders
+                    </a> -->
+
+                    <!-- 7. User Preferences Matched — filhaal band (laptop +
+                         mobile dono se hata diya). Wapas dikhana ho to niche
+                         wala block uncomment karo aur header.ts ke navItems me
+                         'User Preferences Matched' bhi. -->
+                    <!-- <a class="header__dropdown-item" routerLink="/user-matched">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <line x1="4" y1="21" x2="4" y2="14" />
                             <line x1="4" y1="10" x2="4" y2="3" />
@@ -188,10 +242,10 @@
                             <line x1="9" y1="8" x2="15" y2="8" />
                             <line x1="17" y1="16" x2="23" y2="16" />
                         </svg>
-                       User Preferences Matched
-                    </a>
+                        User Preferences Matched
+                    </a> -->
 
-                    
+                    <!-- 8. Company Members -->
                     <a class="header__dropdown-item" routerLink="/company-members">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -201,31 +255,19 @@
                         </svg>
                         Company Members
                     </a>
-                      <a class="header__dropdown-item" routerLink="/rating-show">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                        </svg>
-                        rating
-                    </a>
-                    <a class="header__dropdown-item" routerLink="/marketplace">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M3 9l1.5-5.5A1 1 0 0 1 5.46 3h13.08a1 1 0 0 1 .96.5L21 9" />
-                            <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
-                            <path d="M3 9h18" />
-                            <path d="M9 13a3 3 0 0 0 6 0" />
-                        </svg>
-                        Marketplace
-                    </a>
 
-
-                     <a class="header__dropdown-item" routerLink="/marketplace/orders">
+                    <!-- Update Rides — filhaal band (laptop + mobile dono se
+                         hata diya). Wapas dikhana ho to niche wala block
+                         uncomment karo aur header.ts ke navItems me
+                         'Update Rides' bhi. -->
+                    <!-- <a class="header__dropdown-item" routerLink="/auto-generated">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                         </svg>
-                        Track Orders
-                    </a>
+                        Update Rides
+                    </a> -->
                     <!-- <a class="header__dropdown-item" routerLink="/settings">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <circle cx="12" cy="12" r="3" />
@@ -234,6 +276,10 @@
                         </svg>
                         Settings
                     </a> -->
+                    </div>
+                    <!-- Sign Out hamesha neeche chipka rehta hai — scroll ke saath
+                         upar nahi jaata. -->
+                    <div class="header__dropdown-foot">
                     <div class="header__dropdown-divider"></div>
                     <a class="header__dropdown-item header__dropdown-item--danger" routerLink="/logout">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -243,6 +289,7 @@
                         </svg>
                         Sign Out
                     </a>
+                    </div>
                 </div>
             </div>
 
@@ -370,7 +417,9 @@
                 </svg>
                 Sign Out
             </a>
- <a class="drawer__ticket" routerLink="/create-ticket" (click)="closeMobileMenu()">
+            <!-- Raise a Ticket — filhaal band (screenshot me Sign Out ke alawa
+                 sab hatane ko bola tha). Wapas chahiye to uncomment karo. -->
+            <!-- <a class="drawer__ticket" routerLink="/create-ticket" (click)="closeMobileMenu()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/>
                     <line x1="12" y1="5" x2="12" y2="7"/>
@@ -378,7 +427,7 @@
                     <line x1="12" y1="17" x2="12" y2="19"/>
                 </svg>
                 Raise a Ticket
-            </a>
+            </a> -->
             <!-- WhatsApp community groups -->
             <!-- <a class="drawer__whatsapp" href="https://chat.whatsapp.com/Kbwe6ioXypN8fOO2szNCT0"
                target="_blank" rel="noopener noreferrer" (click)="closeMobileMenu()">
@@ -387,13 +436,15 @@
                 </svg>
                 Join Saharanpur Chandigarh Community
             </a> -->
-            <a class="drawer__whatsapp" href="https://chat.whatsapp.com/KrW5aGD3Xu5I3hvJdfeJu0?s=cl&p=a&ilr=4"
+            <!-- TrustRideSRE WhatsApp group filhaal band — website par show nahi
+                 karna. Wapas dikhana ho to niche ka anchor uncomment kar do. -->
+            <!-- <a class="drawer__whatsapp" href="https://chat.whatsapp.com/KrW5aGD3Xu5I3hvJdfeJu0?s=cl&p=a&ilr=4"
                target="_blank" rel="noopener noreferrer" (click)="closeMobileMenu()">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.359.101 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.582 0 11.943-5.359 11.945-11.892a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
-               Join TrustRideSRE 
-            </a>
+               Join TrustRideSRE
+            </a> -->
         </div>
     </aside>
 

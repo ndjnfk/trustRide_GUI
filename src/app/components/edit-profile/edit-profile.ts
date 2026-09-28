@@ -42,7 +42,7 @@ export class EditProfile implements OnInit, OnDestroy {
   selectedPrefs: string[] = []
 
   // ── Preferred travel days ──
-  locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
+  locations = ['Gurgaon', 'Saharanpur']
   days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   preferredTravelDays: TravelDay[] = []
 

@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Ride } from '../../services/ride';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { HomeBanner } from '../home-banner/home-banner';
+import { getSkippedReviewRides } from '../../helpers/review-skip';
 
 @Component({
   selector: 'app-dashboard',
@@ -104,7 +105,10 @@ export class Dashboard {
 
     this.rideService.getPendingReviews().subscribe({
       next: (res) => {
-        const pending = res.pending_reviews ?? [];
+        const skipped = getSkippedReviewRides();
+        const pending = (res.pending_reviews ?? []).filter(
+          (p: any) => !skipped.includes(p.ride_id)
+        );
 
         if (pending.length === 0) {
           return; // dashboard khulne do

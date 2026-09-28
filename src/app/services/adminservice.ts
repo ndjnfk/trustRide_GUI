@@ -117,6 +117,26 @@ export interface MedicalEmergencyPayload {
   is_active?: boolean;
 }
 
+// A tiffin card on the public "Tiffin Service" page. Shape MedicalEmergencyPayload
+// jaisa hi hai — bas ek optional rate extra, kyunki tiffin choose karne me
+// price sabse pehla sawaal hota hai.
+export interface TiffinServicePayload {
+  shop_name: string;
+  city: string;                     // base city — TIFFIN_SERVICE_CITIES me se ek
+  whatsapp_number: string;          // 10-digit Indian mobile
+  address: string;
+  price_per_tiffin?: number | null; // null = rate hata do
+  // Teeno meal windows optional — HH:mm (24h), '' = wo meal ka timing hata do.
+  // Har meal ka start aur end dono saath bharein ya dono khaali.
+  breakfast_start?: string;
+  breakfast_end?: string;
+  lunch_start?: string;
+  lunch_end?: string;
+  dinner_start?: string;
+  dinner_end?: string;
+  is_active?: boolean;
+}
+
 
 // Admin-controlled signup cap. `enabled: false` = unlimited registrations.
 export interface RegistrationLimitData {
@@ -423,6 +443,31 @@ updateMedicalEmergencyPharmacy(id: string, payload: Partial<MedicalEmergencyPayl
 
 deleteMedicalEmergencyPharmacy(id: string): Observable<any> {
   return this.http.delete(`${this.API_URL}/admin/medical-emergency/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Tiffin Service (tiffin cards) ─────────────────────────
+getTiffinServices(): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/tiffin-service`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+createTiffinService(payload: TiffinServicePayload): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/tiffin-service`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateTiffinService(id: string, payload: Partial<TiffinServicePayload>): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/tiffin-service/${id}`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteTiffinService(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/tiffin-service/${id}`, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }

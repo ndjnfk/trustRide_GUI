@@ -326,6 +326,37 @@ background: rgba(59, 130, 246, 0.12);
   color: #0f7a41;
 }
 
+/* Support email chip — WhatsApp group ki jagah. Shape wahi hai, rang site ke
+   indigo accent ka (Raise a Ticket jaisa). */
+.footer__email {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--f-radius-pill);
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #4f46e5;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--f-transition), border-color var(--f-transition), color var(--f-transition);
+}
+
+.footer__email svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: #6366f1;
+}
+
+.footer__email:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.55);
+  color: #4338ca;
+}
+
 
 
 @media (max-width: 768px) {

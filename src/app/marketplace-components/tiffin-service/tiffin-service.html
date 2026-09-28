@@ -1,0 +1,162 @@
+<div class="ts-page">
+  <div class="ts-wrap">
+
+    <header class="ts-head">
+      <span class="ts-badge">🍱 Tiffin Service</span>
+      <!-- Heading screen reader / SEO ke liye rehti hai — dikhti nahi, kyunki
+           badge aur promise band page ko waise hi label kar dete hain. -->
+      <h1 class="ts-sr-only">Tiffin Service</h1>
+    </header>
+
+    <!-- Order promise — user ko pehle hi pata chal jaaye ki order WhatsApp par
+         hi jaata hai, app me koi cart/checkout nahi hai. -->
+    <div class="ts-promise">
+      <span class="ts-promise-icon" aria-hidden="true">🛵</span>
+      <div class="ts-promise-text">
+        <strong>Home-cooked meals — delivered to your door.</strong>
+        <span>
+          Tap the WhatsApp icon, send your tiffin plan (daily or monthly) and the
+          kitchen delivers it straight to your address.
+        </span>
+      </div>
+    </div>
+
+    @if (!loading && !error && tiffins.length > 0) {
+      <input
+        type="text"
+        class="ts-search"
+        placeholder="🔍 Search by city, tiffin service name or address"
+        [value]="search"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+    }
+
+    @if (loading) {
+      <div class="ts-state">Loading tiffin services…</div>
+    } @else if (error) {
+      <div class="ts-state ts-error">
+        {{ error }}
+        <button type="button" class="ts-retry" (click)="load()">Retry</button>
+      </div>
+    } @else if (filteredTiffins.length === 0) {
+      <div class="ts-empty">
+        <div class="ts-empty-icon">🍱</div>
+        @if (tiffins.length === 0) {
+          <p>No tiffin services listed yet. Please check back soon.</p>
+        } @else {
+          <p>No tiffin service matches “{{ search }}”.</p>
+        }
+      </div>
+    } @else {
+      <div class="ts-count">
+        {{ filteredTiffins.length }} tiffin service{{ filteredTiffins.length === 1 ? '' : 's' }}
+        @if (totalPages > 1) {
+          <span class="ts-count-note">· showing {{ pageStart }}–{{ pageEnd }}</span>
+        }
+      </div>
+
+      <div class="ts-grid">
+        @for (t of pagedTiffins; track t._id) {
+          <article class="ts-card">
+            <!-- Layout Medical Emergency card se match karta hai: badge → naam →
+                 meta rows (rate/timing/address). -->
+            <div class="ts-card-top">
+              @if (t.city) {
+                <span class="ts-badge-city">{{ t.city }}</span>
+              }
+            </div>
+
+            <h2 class="ts-card-name">{{ t.shop_name }}</h2>
+
+            <div class="ts-meta">
+              @if (formatPrice(t)) {
+                <span class="ts-meta-row ts-meta-price">
+                  <i class="ti ti-currency-rupee" aria-hidden="true"></i>
+                  <span>{{ formatPrice(t) }}</span>
+                </span>
+              }
+
+              <!-- Breakfast / lunch / dinner — sirf bhare hue meals ki row. -->
+              @for (meal of mealTimings(t); track meal.label) {
+                <span class="ts-meta-row ts-meta-meal">
+                  <i [class]="meal.icon" aria-hidden="true"></i>
+                  <span class="ts-meal-label">{{ meal.label }}</span>
+                  <span class="ts-meal-time">{{ meal.time }}</span>
+                </span>
+              }
+
+              <!-- Address left, WhatsApp icon right — number kahin nahi dikhta,
+                   icon par tap karte hi chat khul jaati hai. -->
+              <span class="ts-meta-row ts-meta-addr">
+                <i class="ti ti-map-pin" aria-hidden="true"></i>
+                <span class="ts-addr-text">{{ t.address }}</span>
+
+                <a
+                  class="ts-wa"
+                  [href]="whatsappLink(t)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [attr.aria-label]="'Order from ' + t.shop_name + ' on WhatsApp'"
+                  [title]="'Order from ' + t.shop_name + ' on WhatsApp'"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.359.101 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.582 0 11.943-5.359 11.945-11.892a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                </a>
+              </span>
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- Pagination — 20 cards per page. Global .rl-pager styles wahi hain jo
+           Medical Emergency aur BlaBla rides list par hain. -->
+      @if (totalPages > 1) {
+        <nav class="rl-pager" aria-label="Tiffin service list pages">
+          <button
+            type="button"
+            class="rl-page-btn rl-page-nav"
+            [disabled]="page === 1"
+            (click)="goToPage(page - 1)"
+            aria-label="Previous page"
+          >
+            <i class="ti ti-chevron-left"></i>
+          </button>
+
+          @if (firstShownPage > 1) {
+            <button type="button" class="rl-page-btn" (click)="goToPage(1)">1</button>
+            @if (firstShownPage > 2) { <span class="rl-page-gap">…</span> }
+          }
+
+          @for (n of pageNumbers; track n) {
+            <button
+              type="button"
+              class="rl-page-btn"
+              [class.is-active]="n === page"
+              [attr.aria-current]="n === page ? 'page' : null"
+              (click)="goToPage(n)"
+            >{{ n }}</button>
+          }
+
+          @if (lastShownPage < totalPages) {
+            @if (lastShownPage < totalPages - 1) { <span class="rl-page-gap">…</span> }
+            <button type="button" class="rl-page-btn" (click)="goToPage(totalPages)">
+              {{ totalPages }}
+            </button>
+          }
+
+          <button
+            type="button"
+            class="rl-page-btn rl-page-nav"
+            [disabled]="page === totalPages"
+            (click)="goToPage(page + 1)"
+            aria-label="Next page"
+          >
+            <i class="ti ti-chevron-right"></i>
+          </button>
+        </nav>
+      }
+    }
+
+  </div>
+</div>

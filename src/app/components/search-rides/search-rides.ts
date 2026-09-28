@@ -72,26 +72,10 @@ export class SearchRides {
     'Saharanpur Madhav Nagar'
   ];
 
-  readonly mohaliAreas: string[] = [
-    'Mohali',
-    'Mohali Sohana Gurdwara',
-    'Mohali Homeland',
-    'Mohali Bestech Towers',
-    'Mohali Bhena Da Dhaba',
-    'Mohali Sector 43'
-  ];
-
-  readonly chandigarhAreas: string[] = [
-    'Chandigarh',
-    'Chandigarh Sector 17'
-  ];
-
   get allAreas(): string[] {
     return [
       ...this.gurgaonAreas,
       ...this.saharanpurAreas,
-      ...this.mohaliAreas,
-      ...this.chandigarhAreas,
     ];
   }
 
@@ -212,8 +196,6 @@ export class SearchRides {
     const v = areaValue.toLowerCase().trim();
     if (v.startsWith('gurgaon')) return 'gurgaon';
     if (v.startsWith('saharanpur')) return 'saharanpur';
-    if (v.startsWith('mohali')) return 'mohali';
-    if (v.startsWith('chandigarh')) return 'chandigarh';
     return v.split(' ')[0];
   }
 

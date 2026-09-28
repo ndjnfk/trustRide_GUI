@@ -100,7 +100,7 @@
                     <input
                       type="text"
                       class="loc-input"
-                      placeholder="e.g. Gurgaon, Saharanpur, Mohali, Chandigarh..."
+                      placeholder="e.g. Gurgaon, Saharanpur..."
                       [(ngModel)]="fromLocation"
                       (input)="onFromInput()"
                       autocomplete="off"
@@ -119,8 +119,6 @@
                       class="d-tag"
                       [class.tag-gurgaon]="s.includes('Gurgaon')"
                       [class.tag-saharanpur]="s.includes('Saharanpur')"
-                      [class.tag-mohali]="s.includes('Mohali')"
-                      [class.tag-chandigarh]="s.includes('Chandigarh')"
                     >
                       {{ cityTag(s) }}
                     </span>
@@ -147,7 +145,7 @@
                     <input
                       type="text"
                       class="loc-input"
-                      placeholder="e.g. Saharanpur, Gurgaon, Chandigarh, Mohali..."
+                      placeholder="e.g. Saharanpur, Gurgaon..."
                       [(ngModel)]="toLocation"
                       (input)="onToInput()"
                       autocomplete="off"
@@ -162,8 +160,6 @@
                       class="d-tag"
                       [class.tag-gurgaon]="s.includes('Gurgaon')"
                       [class.tag-saharanpur]="s.includes('Saharanpur')"
-                      [class.tag-mohali]="s.includes('Mohali')"
-                      [class.tag-chandigarh]="s.includes('Chandigarh')"
                     >
                       {{ cityTag(s) }}
                     </span>
@@ -192,7 +188,7 @@
           </div>
 
           <!-- Route Selection — fromLocation & toLocation select hone ke baad dikhega -->
-          <!-- Mohali / Chandigarh rides par koi preset route nahi hota, isliye yeh step skip -->
+          <!-- Bina preset route waali cities par yeh step skip hota hai -->
 
           <div class="section py-4 px-md-2" *ngIf="filteredRoutes.length > 0">
             <label class="section-label d-block mb-3">Select Route</label>

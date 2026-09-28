@@ -83,7 +83,7 @@ export class Register implements OnInit {
   registrationClosed = false
   registrationClosedMessage = ''
   // register.component.ts — days ke paas
-locations = ['Gurgaon', 'Saharanpur', 'Chandigarh', 'Mohali']
+locations = ['Gurgaon', 'Saharanpur']
 
   // ── Form ─────────────────────────────────────────────────────────────────────
   registerForm!: FormGroup
