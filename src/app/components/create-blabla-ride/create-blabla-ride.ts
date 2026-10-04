@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { cityNames, DEFAULT_LOCATION_CITIES, otherCity } from '../../helpers/locations';
+import { LocationService } from '../../services/location-service';
 import { Subject, of } from 'rxjs';
 import {
   catchError,
@@ -47,8 +49,8 @@ const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   styleUrl: './create-blabla-ride.css',
 })
 export class CreateBlablaRide implements OnInit, OnDestroy {
-  /** Sirf ye do base cities — baaki sab inhi ke areas hain. */
-  readonly cities: string[] = ['Gurgaon', 'Saharanpur'];
+  /** Sirf base cities — baaki sab inhi ke areas hain. List admin panel (GET /locations) se. */
+  cities: string[] = cityNames(DEFAULT_LOCATION_CITIES);
 
   form: CreateBlablaRidePayload = this.emptyForm();
 
@@ -68,6 +70,7 @@ export class CreateBlablaRide implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private loader = inject(LoaderServices);
+  private locationService = inject(LocationService);
 
   constructor(
     private blablaService: BlablaRideService,
@@ -77,6 +80,11 @@ export class CreateBlablaRide implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.locationService.getCities().pipe(takeUntil(this.destroy$)).subscribe((cities) => {
+      this.cities = cityNames(cities);
+      this.cdr.detectChanges();
+    });
+
     this.emailTyped$
       .pipe(
         map((value) => (value ?? '').trim()),
@@ -160,13 +168,18 @@ export class CreateBlablaRide implements OnInit, OnDestroy {
     return new Date(Date.now() + 5.5 * 60 * 60 * 1000).toISOString().slice(0, 10);
   }
 
-  // Sirf do hi routes hain — ek badlo to doosra apne aap set ho jaata hai.
+  // Source aur destination same ho gaye to doosri taraf pehli alag city daal do.
+  // (Admin panel se kitni bhi cities ho sakti hain, isliye seedha swap nahi.)
   onSourceChange(): void {
-    this.form.destination = this.form.source === 'Gurgaon' ? 'Saharanpur' : 'Gurgaon';
+    if (this.form.destination === this.form.source) {
+      this.form.destination = otherCity(this.cities, this.form.source);
+    }
   }
 
   onDestinationChange(): void {
-    this.form.source = this.form.destination === 'Gurgaon' ? 'Saharanpur' : 'Gurgaon';
+    if (this.form.source === this.form.destination) {
+      this.form.source = otherCity(this.cities, this.form.destination);
+    }
   }
 
   /** Returns an error message, or '' when the form is good to send. */

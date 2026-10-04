@@ -5,6 +5,7 @@ export const environment = {
   apiUrl: 'https://trustridesre.com/api',   // AdonisJS dev server
   // apiUrl: 'http://34.207.242.45:3333/',   // AdonisJS dev server
   // apiUrl:'https://bsf2020.fun/api'
+  // apiUrl: 'https://trustridesre.com/new-design/api', 
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

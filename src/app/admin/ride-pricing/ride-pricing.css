@@ -1,0 +1,32 @@
+/* Baaki layout ../registration-limit/registration-limit.css se aata hai */
+.pricing-container { max-width: 640px; }
+
+.formula {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e1e2d;
+  background: #eef2ff;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.formula small {
+  display: block;
+  margin-top: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.km-input { width: 90px; padding: 6px 10px; }
+
+.calc {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  color: #374151;
+}
+.calc b { text-align: right; color: #1e1e2d; }
+.calc .calc-total { border-top: 1px dashed #d1d5db; padding-top: 8px; font-weight: 700; color: #4f46e5; }

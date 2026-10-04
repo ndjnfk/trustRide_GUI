@@ -11,10 +11,11 @@ import { AuthHelper } from '../../helpers/auth-helper';
 import { AuthService } from '../../services/auth';
 import { ChatService } from '../../services/chat-service';
 import { RideClickTracker } from '../../services/ride-click-tracker';
+import { RideRouteMap } from '../ride-route-map/ride-route-map';
 
 @Component({
   selector: 'app-one-ride-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RideRouteMap],
   templateUrl: './one-ride-details.html',
   styleUrl: './one-ride-details.css',
 })

@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:new-design": "ng build --base-href /new-design/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:realtime-app": "node dist/realtime-app/server/server.mjs",
@@ -35,6 +36,7 @@
     "@capacitor/status-bar": "^7.0.6",
     "chart.js": "^4.5.1",
     "express": "^5.1.0",
+    "leaflet": "^1.9.4",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.3",
     "tslib": "^2.3.0"
@@ -45,6 +47,7 @@
     "@angular/compiler-cli": "^21.2.0",
     "@capacitor/cli": "^7.6.5",
     "@types/express": "^5.0.1",
+    "@types/leaflet": "1.9",
     "@types/node": "^20.17.19",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",

@@ -1,0 +1,281 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.locations-container {
+  max-width: 760px;
+}
+
+/* ── Header ── */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.intro {
+  font-size: 13.5px;
+}
+
+.search-input {
+  max-width: 320px;
+}
+
+/* ── City card ── */
+.city-card {
+  border-radius: 12px;
+}
+
+.master-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.city-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: #1e1e2d;
+}
+
+.count-pill {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4f46e5;
+  background: #eef2ff;
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+/* ── Expand / collapse ── */
+.city-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.city-toggle .city-name {
+  display: block;
+}
+
+.city-toggle:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.chevron {
+  display: inline-block;
+  font-size: 16px;
+  color: #6b7280;
+  transition: transform 0.15s ease;
+}
+
+.chevron.is-open {
+  transform: rotate(90deg);
+}
+
+.search-input {
+  flex: 1 1 220px;
+}
+
+/* ── Add city ── */
+.add-city-card {
+  border-radius: 12px;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.city-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+.city-card.is-hidden-city .city-name {
+  color: #9ca3af;
+}
+
+.hidden-city-note {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #b45309;
+  background: #fffbeb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0 0 12px;
+}
+
+/* ── Inputs ── */
+.form-control {
+  border-radius: 8px;
+}
+
+.input-group .form-control:not(:first-child) {
+  border-radius: 0;
+}
+
+.input-group .form-control:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group > :last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.prefix {
+  font-weight: 600;
+  color: #374151;
+  background: #f8f9fc;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.form-control:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 0.18rem rgba(79, 70, 229, 0.15);
+}
+
+.form-check-input:checked {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  font-weight: 600;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+
+/* ── Area rows ── */
+.area-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 10px 4px;
+  border-top: 1px solid #eef0f5;
+}
+
+.area-row--master {
+  background: #f8f9fc;
+  border-radius: 8px;
+  border-top: none;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+}
+
+.area-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e1e2d;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.area-prefix {
+  color: #9ca3af;
+}
+
+.area-row.is-hidden .area-name {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.area-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-check-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #374151;
+  min-width: 48px;
+}
+
+.btn-link {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.edit-form {
+  flex: 1;
+}
+
+/* Map point status */
+.coords-badge {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #0f766e;
+  background: #ccfbf1;
+  border-radius: 999px;
+  padding: 1px 8px;
+  text-decoration: none;
+  vertical-align: middle;
+}
+.coords-badge.is-missing { color: #92400e; background: #fef3c7; }
+.coords-help { display: block; margin-top: 4px; font-size: 11.5px; color: #6b7280; }
+
+.badge-status--fixed {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.empty-note {
+  font-size: 13px;
+  color: #6b7280;
+  padding: 10px 4px;
+  border-top: 1px solid #eef0f5;
+}
+
+/* ── Responsive (collapse sidebar offset on small screens) ── */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 70px 16px 24px;
+  }
+
+  .search-input {
+    max-width: none;
+  }
+}

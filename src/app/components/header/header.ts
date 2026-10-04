@@ -1,15 +1,16 @@
 import { Component, NgZone } from '@angular/core';
 import { HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { User } from '../../services/user';
 import { Ride } from '../../services/ride';
-import { map, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { PwaInstallService } from '../../services/pwa-install';
 import { ChatService } from '../../services/chat-service';
+import { WalletResponse, WalletService } from '../../services/wallet-service';
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,10 @@ export class Header {
   isScrolled = false;
   isMobileMenuOpen = false;
   isUserDropdownOpen = false;
+  isWalletOpen = false;
+  /** Wallet (platform fee baaki) — null = abhi load nahi hua / login nahi */
+  wallet: WalletResponse | null = null;
+  private navSub?: Subscription;
   activePollsCount = 3;
   unreadChats = 0;
   private onChatUpdate = () => this.zone.run(() => { this.unreadChats++; });
@@ -32,6 +37,8 @@ export class Header {
     public pwa: PwaInstallService,
     private chat: ChatService,
     private zone: NgZone,
+    private walletService: WalletService,
+    private router: Router,
   ) {}
 
   /** Show the install button only to logged-in users who can still install. */
@@ -51,6 +58,12 @@ export class Header {
   userData: any;
   hasActiveRides:any;
   ngOnInit(): void {
+
+    // Wallet: har page change par taaza (ride complete karke lautne par nayi fee dikhe)
+    this.refreshWallet();
+    this.navSub = this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => this.refreshWallet());
 
     // Chat: live unread badge
     if (AuthHelper.getToken()) {
@@ -107,8 +120,26 @@ getInitials(name: string): string {
     });
   }
 
+  refreshWallet(): void {
+    if (!AuthHelper.getToken()) {
+      this.wallet = null;
+      return;
+    }
+    this.walletService.getWallet().subscribe({
+      next: (res) => { this.wallet = res?.success ? res : null; },
+      error: () => { /* wallet chip purana hi rahe */ },
+    });
+  }
+
+  toggleWallet(e: MouseEvent): void {
+    e.stopPropagation();
+    this.isWalletOpen = !this.isWalletOpen;
+    this.isUserDropdownOpen = false;
+  }
+
   ngOnDestroy(): void {
     this.chat.offThreadUpdate(this.onChatUpdate);
+    this.navSub?.unsubscribe();
   }
   navItems = [
     // BlaBla entries filhaal band — site se BlaBla option hata diya gaya hai.
@@ -124,10 +155,10 @@ getInitials(name: string): string {
     // { label: 'Track Orders', route: '/marketplace/orders', icon: 'package' },
     { label: 'Profile', route: '/about-you', icon: 'user' },
     { label: 'Company Members', route: '/company-members', icon: 'users' },
-    // Rating / Update Rides / User Preferences Matched filhaal band — laptop
-    // dropdown (header.html) se bhi hata diye hain. Wapas dikhane ke liye ye
-    // lines aur header.html ke wo blocks uncomment karo.
-    // { label: 'Rating', route: '/rating-show', icon: 'star' },
+    { label: 'Rating', route: '/rating-show', icon: 'star' },
+    // Update Rides / User Preferences Matched filhaal band — laptop dropdown
+    // (header.html) se bhi hata diye hain. Wapas dikhane ke liye ye lines aur
+    // header.html ke wo blocks uncomment karo.
     // { label: 'Update Rides', route: '/auto-generated', icon: 'compass' },
     // { label: 'User Preferences Matched ', route: '/user-matched', icon: 'compass' },
    
@@ -142,6 +173,9 @@ getInitials(name: string): string {
   onDocumentClick(e: MouseEvent): void {
     if (!(e.target as HTMLElement).closest('.user-menu')) {
       this.isUserDropdownOpen = false;
+    }
+    if (!(e.target as HTMLElement).closest('.wallet-menu')) {
+      this.isWalletOpen = false;
     }
   }
  

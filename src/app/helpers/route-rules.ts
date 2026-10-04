@@ -3,8 +3,28 @@
  * yahin se padhte hain taaki rule kahin alag na ho jaaye.
  */
 
-/** App ki base cities — baaki saare location names inhi ke andar ke areas hain. */
+/**
+ * App ki default base cities — baaki saare location names inhi ke andar ke areas hain.
+ * Admin panel se jodi gayi cities LocationService `setBaseCities()` se judti hain.
+ */
 export const BASE_CITIES = ['gurgaon', 'saharanpur'] as const;
+
+let baseCities: string[] = [...BASE_CITIES];
+
+/** Abhi jitni base cities pata hain (default + admin wali), lowercase. */
+export function getBaseCities(): readonly string[] {
+  return baseCities;
+}
+
+/** Admin wali cities register karo. Default cities kabhi nahi hatti. */
+export function setBaseCities(keys: string[]): void {
+  const next = new Set<string>(BASE_CITIES);
+  for (const key of keys) {
+    const k = String(key ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+    if (k) next.add(k);
+  }
+  baseCities = [...next];
+}
 
 /**
  * Jin cities ke beech rides allowed nahi hain (dono direction band).
@@ -21,19 +41,21 @@ export const BLOCKED_CITY_PAIRS: readonly (readonly [string, string])[] = [];
  * "Gurgaon Cyber Park" → "gurgaon", "Saharanpur Court Road" → "saharanpur".
  * Unknown value ho to trimmed lowercase string wapas milti hai.
  */
-export function baseCityOf(location: string): string {
-  const value = (location || '').trim().toLowerCase();
+export function baseCityOf(location: string, cities: readonly string[] = baseCities): string {
+  const value = (location || '').replace(/\s+/g, ' ').trim().toLowerCase();
   if (!value) return '';
 
   // Naming convention "City + area" hai, isliye jo city naam string mein
   // SABSE PEHLE aata hai wahi base city hai — warna "Saharanpur Gurgaon Road"
-  // check-order ki wajah se galti se gurgaon ban jaata.
+  // check-order ki wajah se galti se gurgaon ban jaata. Ek hi position par do
+  // match hon ("Noida" / "Noida Extension") to lamba naam jeetta hai.
   let match = '';
   let matchIndex = Infinity;
 
-  for (const city of BASE_CITIES) {
+  for (const city of cities) {
     const index = value.indexOf(city);
-    if (index !== -1 && index < matchIndex) {
+    if (index === -1) continue;
+    if (index < matchIndex || (index === matchIndex && city.length > match.length)) {
       matchIndex = index;
       match = city;
     }

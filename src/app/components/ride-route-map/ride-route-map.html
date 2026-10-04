@@ -1,0 +1,98 @@
+<div class="rm">
+  <!-- Summary: chuna hua rasta (picker mode me list parent dikhata hai) -->
+  @if (!picker && routes[selected]; as r) {
+    <div class="rm-summary">
+      <div class="rm-stat">
+        <span class="rm-stat-icon rm-stat-icon--blue"><i class="ti ti-road"></i></span>
+        <span><strong>{{ r.distance_km }} km</strong><small>Distance</small></span>
+      </div>
+      <div class="rm-stat">
+        <span class="rm-stat-icon rm-stat-icon--green"><i class="ti ti-clock-hour-4"></i></span>
+        <span><strong>{{ formatDuration(r.duration_min) }}</strong><small>Drive time</small></span>
+      </div>
+      <span class="rm-badge"><i class="ti ti-car"></i> By road</span>
+    </div>
+  }
+
+  @if (!picker && from && to) {
+    <div class="rm-ends">
+      <span class="rm-end"><span class="rm-end-dot rm-end-dot--pickup"></span>{{ from.name }}</span>
+      <span class="rm-end-line" aria-hidden="true"></span>
+      <span class="rm-end"><span class="rm-end-dot rm-end-dot--drop"></span>{{ to.name }}</span>
+    </div>
+  }
+
+  <!-- Map — container hamesha DOM me rahe, taaki Leaflet ko sahi size mile -->
+  <div class="rm-map-wrap" [class.rm-map-wrap--tall]="picker" [hidden]="!loading && !(from && to)">
+    <div #mapEl class="rm-map" role="img" [attr.aria-label]="from && to ? 'Map from ' + from.name + ' to ' + to.name : 'Route map'"></div>
+    @if (loading) {
+      <div class="rm-overlay"><span class="rm-spinner"></span> Loading map…</div>
+    } @else {
+      <button type="button" class="rm-fab" (click)="recenter()" title="Show full route" aria-label="Show full route">
+        <i class="ti ti-focus-centered"></i>
+      </button>
+    }
+  </div>
+
+  @if (approximate) {
+    <p class="rm-note rm-note--info">
+      <i class="ti ti-info-circle"></i>
+      Exact area not found on the map — showing the city centre for
+      {{ from?.approximate ? from?.name : to?.name }}.
+    </p>
+  }
+
+  @if (error && !loading && !picker) {
+    <p class="rm-note rm-note--warn"><i class="ti ti-alert-triangle"></i> {{ error }}</p>
+  }
+
+  <!-- Alternative raaste -->
+  @if (!picker && routes.length > 1) {
+    <div class="rm-routes" role="radiogroup" aria-label="Routes">
+      @for (r of routes; track $index) {
+        <button
+          type="button"
+          class="rm-route"
+          role="radio"
+          [attr.aria-checked]="selected === $index"
+          [class.active]="selected === $index"
+          (click)="selectRoute($index)"
+        >
+          <strong>Route {{ $index + 1 }}@if ($index === 0) {<em>{{ riderChose ? "Rider's route" : 'Fastest' }}</em>}</strong>
+          <span>{{ r.distance_km }} km · {{ formatDuration(r.duration_min) }}@if (r.tolls != null) { · {{ r.tolls ? r.tolls + ' toll' + (r.tolls > 1 ? 's' : '') : 'No tolls' }}}</span>
+          @if (r.summary) {<small>via {{ r.summary }}</small>}
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Meri location se pickup -->
+  @if (!picker && from && !loading) {
+    <div class="rm-me">
+      @if (fromHere) {
+        <span>
+          <i class="ti ti-current-location"></i>
+          You are <strong>{{ fromHere.distance_km }} km</strong>
+          ({{ formatDuration(fromHere.duration_min) }}) from the pickup
+        </span>
+      } @else {
+        <button type="button" class="rm-me-btn" (click)="useMyLocation()" [disabled]="locating">
+          <i class="ti ti-current-location"></i>
+          {{ locating ? 'Finding you…' : 'How far is the pickup from me?' }}
+        </button>
+      }
+      @if (locationIsRough) {
+        <small class="rm-warn">
+          <i class="ti ti-alert-triangle"></i>
+          Your device gave an approximate location (±{{ accuracyText }}) — computers without GPS guess it
+          from the internet connection. Not right? <strong>Tap your real location on the map.</strong>
+        </small>
+      } @else if (fromHere || mapPickEnabled) {
+        <small class="rm-hint">Wrong spot? Tap the map to set your location.</small>
+      }
+      @if (locateError) {
+        <small class="rm-error">{{ locateError }}</small>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,231 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="locations-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <h1 class="page-title m-0">Locations</h1>
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="load()" [disabled]="loading">
+          Refresh
+        </button>
+      </div>
+
+      <p class="text-muted intro mb-3">
+        Pickup and drop points shown in <strong>Search</strong> and <strong>Publish ride</strong>.
+        Each area belongs to a master city. Hidden cities and areas disappear from the dropdowns
+        right away; rides already published with that location are not affected.
+      </p>
+
+      <!-- Add master city -->
+      <section class="card add-city-card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <form (ngSubmit)="addCity()" novalidate>
+            <label class="form-label" for="newCity">Add master city</label>
+            <div class="input-group">
+              <input
+                id="newCity"
+                type="text"
+                class="form-control"
+                [(ngModel)]="newCityName"
+                name="newCityName"
+                placeholder="e.g. Dehradun"
+                maxlength="40"
+                [disabled]="addingCity"
+                autocomplete="off" />
+              <button type="submit" class="btn btn-primary" [disabled]="addingCity">
+                {{ addingCity ? 'Adding…' : 'Add city' }}
+              </button>
+            </div>
+            <small class="form-text text-muted">
+              Letters only. Routes to a new city have no preset route and use the
+              ₹350–₹390 price range on Publish ride.
+            </small>
+          </form>
+        </div>
+      </section>
+
+      <div class="list-tools d-flex flex-wrap align-items-center gap-2 mb-4">
+        <input
+          type="search"
+          class="form-control search-input"
+          placeholder="Search areas…"
+          [(ngModel)]="search"
+          name="search"
+          autocomplete="off" />
+        <button type="button" class="btn btn-link btn-sm" (click)="expandAll()">Expand all</button>
+        <button type="button" class="btn btn-link btn-sm" (click)="collapseAll()">Collapse all</button>
+      </div>
+
+      <div class="text-muted" *ngIf="loading">Loading locations…</div>
+      <div class="alert alert-danger py-2" *ngIf="error">{{ error }}</div>
+
+      @for (city of cities; track city._id) {
+        <section class="card city-card border-0 shadow-sm mb-4" [class.is-hidden-city]="!city.is_active">
+          <div class="card-body">
+
+            <!-- Master city — header par click se areas khulte/band hote hain -->
+            <div class="city-head d-flex flex-wrap align-items-center justify-content-between gap-2" [class.mb-3]="isOpen(city)">
+              <button
+                type="button"
+                class="city-toggle"
+                (click)="toggleExpand(city)"
+                [attr.aria-expanded]="isOpen(city)"
+                [attr.aria-controls]="'city-body-' + city._id">
+                <span class="chevron" [class.is-open]="isOpen(city)" aria-hidden="true">▸</span>
+                <span>
+                  <span class="master-label">Master city</span>
+                  <span class="city-name">{{ city.name }}</span>
+                </span>
+              </button>
+              <div class="city-actions">
+                <span class="count-pill">
+                  {{ visibleCount(city) }} visible · {{ city.areas.length - visibleCount(city) }} hidden
+                </span>
+                <div class="form-check form-switch m-0" [title]="city.is_active ? 'City visible — click to hide' : 'City hidden — click to show'">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'city-vis-' + city._id"
+                    [checked]="city.is_active"
+                    [disabled]="busyCity === city._id"
+                    (change)="toggleCity(city)" />
+                  <label class="form-check-label" [for]="'city-vis-' + city._id">
+                    {{ city.is_active ? 'Shown' : 'Hidden' }}
+                  </label>
+                </div>
+                <button type="button" class="btn btn-link btn-sm text-danger" (click)="removeCity(city)" [disabled]="busyCity === city._id">
+                  Delete city
+                </button>
+              </div>
+            </div>
+
+            @if (isOpen(city)) {
+            <div [id]="'city-body-' + city._id">
+            <p class="hidden-city-note" *ngIf="!city.is_active">
+              This city and all its areas are hidden from Search and Publish ride.
+            </p>
+
+            <!-- Add area -->
+            <form class="add-row mb-3" (ngSubmit)="addArea(city)" novalidate>
+              <div class="input-group">
+                <span class="input-group-text prefix">{{ city.name }}</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="newArea[city._id]"
+                  [name]="'new-' + city._id"
+                  placeholder="New area, e.g. Court Road"
+                  maxlength="70"
+                  [disabled]="adding[city._id]"
+                  autocomplete="off" />
+                <button type="submit" class="btn btn-primary" [disabled]="adding[city._id]">
+                  {{ adding[city._id] ? 'Adding…' : 'Add area' }}
+                </button>
+              </div>
+            </form>
+
+            <!-- City itself — shown whenever the city is shown -->
+            <div class="area-row area-row--master">
+              @if (editingCityCoordsId === city._id) {
+                <form class="edit-form" (ngSubmit)="saveCityCoords(city)" novalidate>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text prefix">{{ city.name }} map point</span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="cityCoords"
+                      name="cityCoords"
+                      placeholder="lat, lng — e.g. 29.9680, 77.5510"
+                      autocomplete="off" />
+                    <button type="submit" class="btn btn-primary" [disabled]="busyCity === city._id">Save</button>
+                    <button type="button" class="btn btn-outline-secondary" (click)="editingCityCoordsId = ''">Cancel</button>
+                  </div>
+                </form>
+              } @else {
+                <span class="area-name">
+                  {{ city.name }}
+                  <span class="coords-badge" [class.is-missing]="city.lat == null">{{ coordsLabel(city) }}</span>
+                </span>
+                <div class="area-actions">
+                  <span class="badge-status badge-status--fixed">City itself</span>
+                  <button type="button" class="btn btn-link btn-sm" (click)="startCityCoords(city)">Map point</button>
+                </div>
+              }
+            </div>
+
+            <!-- Areas -->
+            @for (area of filteredAreas(city); track area.id) {
+              <div class="area-row" [class.is-hidden]="!area.is_active">
+
+                @if (editingId === area.id) {
+                  <form class="edit-form" (ngSubmit)="saveEdit(city, area)" novalidate>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text prefix">{{ city.name }}</span>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="editingName"
+                        name="editingName"
+                        maxlength="70"
+                        autocomplete="off"
+                        aria-label="Area name" />
+                    </div>
+                    <div class="input-group input-group-sm mt-2">
+                      <span class="input-group-text prefix">Map point</span>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="editingCoords"
+                        name="editingCoords"
+                        placeholder="lat, lng — empty = find automatically"
+                        autocomplete="off"
+                        aria-label="Map point (latitude, longitude)" />
+                      <button type="submit" class="btn btn-primary" [disabled]="busyId === area.id">Save</button>
+                      <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">Cancel</button>
+                    </div>
+                    <small class="coords-help">Tip: in Google Maps, right-click the place and click the numbers to copy them.</small>
+                  </form>
+                } @else {
+                  <span class="area-name">
+                    <span class="area-prefix">{{ city.name }}</span> {{ areaSuffix(city, area.name) }}
+                    <span class="coords-badge" [class.is-missing]="area.lat == null">{{ coordsLabel(area) }}</span>
+                  </span>
+
+                  <div class="area-actions">
+                    <div class="form-check form-switch m-0" [title]="area.is_active ? 'Visible — click to hide' : 'Hidden — click to show'">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [id]="'vis-' + area.id"
+                        [checked]="area.is_active"
+                        [disabled]="busyId === area.id"
+                        (change)="toggle(city, area)" />
+                      <label class="form-check-label" [for]="'vis-' + area.id">
+                        {{ area.is_active ? 'Shown' : 'Hidden' }}
+                      </label>
+                    </div>
+                    <button type="button" class="btn btn-link btn-sm" (click)="startEdit(city, area)" [disabled]="busyId === area.id">
+                      Edit
+                    </button>
+                    <button type="button" class="btn btn-link btn-sm text-danger" (click)="remove(city, area)" [disabled]="busyId === area.id">
+                      Delete
+                    </button>
+                  </div>
+                }
+              </div>
+            } @empty {
+              <p class="empty-note m-0">
+                {{ search.trim() ? 'No areas match your search.' : 'No areas yet — add one above.' }}
+              </p>
+            }
+            </div>
+            }
+
+          </div>
+        </section>
+      }
+
+    </div>
+  </main>
+</div>

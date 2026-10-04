@@ -139,6 +139,16 @@ export const routes: Routes = [
       import('../app/admin/banners/banners').then((m) => m.AdminBanners),
   },
   {
+    path: 'admin/locations',
+    loadComponent: () =>
+      import('../app/admin/locations/locations').then((m) => m.AdminLocations),
+  },
+  {
+    path: 'admin/ride-pricing',
+    loadComponent: () =>
+      import('../app/admin/ride-pricing/ride-pricing').then((m) => m.RidePricing),
+  },
+  {
     path: 'admin/registration-limit',
     loadComponent: () =>
       import('../app/admin/registration-limit/registration-limit').then((m) => m.RegistrationLimit),

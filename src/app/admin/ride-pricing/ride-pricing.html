@@ -1,0 +1,127 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="limit-container pricing-container">
+
+      <div class="page-header d-flex align-items-center gap-2 mb-4">
+        <h1 class="page-title m-0">Ride Pricing</h1>
+      </div>
+
+      <div class="card limit-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            When a rider publishes a ride, the price per seat is calculated from the road distance
+            between pickup and drop:
+          </p>
+          <div class="formula mb-4">
+            (distance ÷ mileage × fuel price) ÷ seats + (toll plazas × toll per plaza) ÷ toll seats
+            <small>rounded to ₹10 · toll plazas are counted on the route the rider picks (OpenStreetMap) · the rider can move the price up or down by the adjustment below</small>
+          </div>
+
+          <div class="text-muted mb-4" *ngIf="loading">Loading current settings…</div>
+
+          <form (ngSubmit)="save()" novalidate>
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <label class="form-label" for="fuel">Fuel price (₹ per litre)</label>
+                <input id="fuel" type="number" class="form-control" [(ngModel)]="form.fuel_price_per_litre"
+                  name="fuel" min="1" step="0.5" [disabled]="loading || submitting" />
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label" for="mileage">Car mileage (km per litre)</label>
+                <input id="mileage" type="number" class="form-control" [(ngModel)]="form.mileage_kmpl"
+                  name="mileage" min="1" step="0.5" [disabled]="loading || submitting" />
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label" for="seats">Share fuel cost between (seats)</label>
+                <input id="seats" type="number" class="form-control" [(ngModel)]="form.cost_sharing_seats"
+                  name="seats" min="1" max="8" step="1" [disabled]="loading || submitting" />
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label" for="adjust">Rider can adjust by (± ₹)</label>
+                <input id="adjust" type="number" class="form-control" [(ngModel)]="form.rider_adjust"
+                  name="adjust" min="0" step="10" [disabled]="loading || submitting" />
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label" for="toll">Toll per plaza (₹, approx.)</label>
+                <input id="toll" type="number" class="form-control" [(ngModel)]="form.toll_per_plaza"
+                  name="toll" min="0" step="10" [disabled]="loading || submitting" />
+                <small class="form-text text-muted">Average car toll at one plaza; 0 = don't add tolls.</small>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label" for="tollSeats">Split toll between (people)</label>
+                <input id="tollSeats" type="number" class="form-control" [(ngModel)]="form.toll_sharing_seats"
+                  name="tollSeats" min="1" max="8" step="1" [disabled]="loading || submitting" />
+              </div>
+            </div>
+
+            <!-- Live preview -->
+            <div class="status-box mt-4" *ngIf="!loading">
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <span class="status-label">Preview for</span>
+                <input type="number" class="form-control km-input" [(ngModel)]="sampleKm" name="sampleKm"
+                  min="1" aria-label="Sample distance in km" />
+                <span class="status-label">km,</span>
+                <input type="number" class="form-control km-input" [(ngModel)]="sampleTolls" name="sampleTolls"
+                  min="0" aria-label="Sample toll plazas" />
+                <span class="status-label">toll plazas</span>
+              </div>
+              @if (preview; as p) {
+                <div class="calc">
+                  <span>{{ sampleKm }} km ÷ {{ form.mileage_kmpl }} km/L</span><b>{{ p.litres | number: '1.2-2' }} L</b>
+                  <span>× ₹{{ form.fuel_price_per_litre }}/L</span><b>₹{{ p.fuelCost | number: '1.0-2' }}</b>
+                  <span>÷ {{ form.cost_sharing_seats }} seats</span><b>₹{{ p.perSeat | number: '1.0-2' }}</b>
+                  @if (p.tollCost) {
+                    <span>+ toll {{ sampleTolls }} × ₹{{ form.toll_per_plaza }} ÷ {{ form.toll_sharing_seats }}</span><b>₹{{ p.tollPerSeat | number: '1.0-2' }}</b>
+                  }
+                  <span class="calc-total">Suggested price per seat</span><b class="calc-total">₹{{ p.suggested }}</b>
+                  <span>Rider can choose</span><b>₹{{ p.min }} – ₹{{ p.max }}</b>
+                </div>
+              } @else {
+                <p class="status-note m-0">Enter valid numbers to see the preview.</p>
+              }
+            </div>
+
+            <div class="alert alert-danger py-2 mt-3" *ngIf="error">{{ error }}</div>
+
+            <p class="status-note mt-3 mb-0">
+              Changes apply to rides published or edited from now on. Existing rides keep their price.
+              <ng-container *ngIf="updatedAt"> Last updated {{ updatedAt | date: 'medium' }}.</ng-container>
+            </p>
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="loading || submitting">
+                {{ submitting ? 'Saving…' : 'Save Pricing' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="load()" [disabled]="loading || submitting">
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TrustRide fee — alag, chhota. Sirf dikhti hai; ride price me na judti na katti -->
+      <div class="card limit-card border-0 shadow-sm mt-4">
+        <div class="card-body">
+          <h2 class="h6 fw-bold mb-1">TrustRide service fee</h2>
+          <p class="text-muted small mb-3">
+            Shown to riders on the publish page. It is <b>not</b> added to or taken out of the ride price. 0 = FREE.
+          </p>
+          <form class="d-flex flex-wrap align-items-end gap-2" (ngSubmit)="saveFee()" novalidate>
+            <div>
+              <label class="form-label" for="platformFee">Fee (₹ per seat)</label>
+              <input id="platformFee" type="number" class="form-control km-input" [(ngModel)]="fee" name="platformFee"
+                min="0" step="5" [disabled]="feeLoading || feeSaving" />
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="feeLoading || feeSaving">
+              {{ feeSaving ? 'Saving…' : 'Save fee' }}
+            </button>
+          </form>
+          <div class="alert alert-danger py-2 mt-3 mb-0" *ngIf="feeError">{{ feeError }}</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

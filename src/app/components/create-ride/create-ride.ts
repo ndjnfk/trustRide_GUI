@@ -13,19 +13,32 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Snackbar } from '../../services/snackbar';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { baseCityOf, isCityPairBlocked } from '../../helpers/route-rules';
+import { DEFAULT_LOCATION_CITIES, flattenAreas } from '../../helpers/locations';
+import { LocationService } from '../../services/location-service';
+import {
+  PriceQuote, RideRouteResponse, RouteMapService, RouteOption, TOLL_RETRIES, TOLL_RETRY_MS,
+  formatDuration, hasMissingTolls, mergeTolls,
+} from '../../services/route-map-service';
+import { RideRouteMap } from '../ride-route-map/ride-route-map';
 
 @Component({
   selector: 'app-create-ride',
-  imports: [MatSnackBarModule, ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [MatSnackBarModule, ReactiveFormsModule, CommonModule, FormsModule, RideRouteMap],
   templateUrl: './create-ride.html',
   styleUrl: './create-ride.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateRide {
-  constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef, private route: ActivatedRoute) { }
+  constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef, private route: ActivatedRoute, private locationService?: LocationService, private routeMaps?: RouteMapService) { }
 
     ngOnInit(): void {
       this.rideService.checkPendingReviews()
+
+      // Admin panel wali live list — hidden areas isme nahi aate
+      this.locationService?.getCities().subscribe(cities => {
+        this.allLocations = flattenAreas(cities)
+        this.cdr.markForCheck()
+      })
 
       // Dashboard popular-route tile se aaya routeId — from/to/via/price preselect karo
       const routeId = this.route.snapshot.queryParamMap.get('route')
@@ -55,9 +68,9 @@ export class CreateRide {
     }
 
     private cityDisplayName(base: string): string {
-      if (base === 'gurgaon') return 'Gurgaon'
-      if (base === 'saharanpur') return 'Saharanpur'
-      return base
+      // City ka naam hi list ka pehla area hai ("Gurgaon", "New Delhi")
+      const exact = this.allLocations.find(loc => loc.toLowerCase() === base)
+      return exact ?? base.charAt(0).toUpperCase() + base.slice(1)
     }
   // Form fields
   fromLocation = '';
@@ -78,57 +91,22 @@ export class CreateRide {
   createdRideId = '';
   readonly origin = typeof window !== 'undefined' ? window.location.origin : '';
 
-  // ─── Ek hi array — sabhi location names ───────────────────────────
-  // "From" input mein: Gurgaon ya Saharanpur wale names filter honge
-  // "To"   input mein: destination wale names filter honge
+  // ─── Sabhi location names — admin panel se manage hote hain ──────
+  // API (GET /locations) se aate hain; tab tak / fail hone par default list.
+  // "From" aur "To" dono inhi me se filter hote hain — free text allowed nahi.
   // ─────────────────────────────────────────────────────────────────
-
-  readonly gurgaonAreas: string[] = [
-    'Gurgaon',
-    'Gurgaon Ambience Mall',
-    'Gurgaon Cyber Park',
-    'Gurgaon Rajiv Chowk',
-    'Gurgaon Iffco Chowk',
-    'Gurgaon Huda City Center Secor 29',
-    'Gurgaon Sector 32 ,Jharsa Institutional Area',
-    'Gurgaon Sector 48,Candor Tech Space',
-    'Gurgaon Sector 21, Krishna Chowk',
-    'Gurgaon Hero Honda Chowk',
-    'Gurgaon Subhash Chowk',
-    'Gurgaon Vatika Chowk',
-    'Gurgaon Candor Sector 21',
-    'Gurgaon Arjan Garh Metro Station'
-
-  ];
-
-  readonly saharanpurAreas: string[] = [
-    'Saharanpur',
-    'Saharanpur Clock Tower',
-    'Saharanpur Dehradun Chowk',
-    'Saharanpur Anupam Sweets',
-    'Saharanpur Court Road',
-    'Saharanpur Vishwakarma Chowk',
-    'Saharanpur Hasanpur Chungi',
-    'Saharanpur J V Jain College',
-    'Saharanpur Sharda Nagar',
-    'Saharanpur Hakikat Nagar',
-    'Saharanpur Madhav Nagar'
-
-  ];
+  private allLocations: string[] = flattenAreas(DEFAULT_LOCATION_CITIES);
 
   // Jin cities ke liye koi predefined route (via/basePrice) nahi hai, unke
-  // rides publish karte waqt route select karna optional rehta hai. Abhi khaali
-  // hai — bachi hui dono cities ke beech preset routes maujood hain. List
-  // jaan-boojh kar rakhi hai: nayi city bina preset route ke khule to yahan
-  // add kar dena.
-  private readonly routeOptionalCities: string[] = [];
+  // rides publish karte waqt route select karna optional rehta hai. Ab ye list
+  // apne aap banti hai: admin panel se judi har nayi city (jiska routeOptions
+  // me koi preset nahi) isme aati hai — Gurgaon/Saharanpur par presets hain.
 
   // Blocked city pairs helpers/route-rules.ts mein hain — register aur
   // edit-profile bhi wahi list use karte hain.
 
   // Price limit: Gurgaon ↔ Saharanpur. Doosra band (₹350–₹390) un routes ke
-  // liye tha jinka koi preset route nahi tha; abhi koi aisi city nahi hai,
-  // par routeOptionalCities bharte hi ye wapas lag jaayega.
+  // liye hai jinka koi preset route nahi — yaani admin ki jodi hui nayi cities.
   private readonly PRICE_RANGE_DEFAULT = { min: 420, max: 550 };
   private readonly PRICE_RANGE_OPTIONAL_ROUTE = { min: 350, max: 390 };
 
@@ -199,17 +177,13 @@ readonly routeOptions = [
     label: 'Via Dhaula Kuan'
   },
 ];
-  // From input: Gurgaon + Saharanpur dono se filter hoga
-  // To input:   bhi dono se filter hoga (user kahi se bhi ja sakta hai)
-  private allLocations: string[] = [
-    ...this.gurgaonAreas,
-    ...this.saharanpurAreas,
-  ];
 
   get minDate(): string {
     return new Date().toISOString().split('T')[0];
   }
 
+  // Dropdown card ke right me khulta hai aur scroll hota hai — isliye ab
+  // 6 ki limit nahi. Kuch type na kiya ho (focus par) to poori list dikhti hai.
   onFromInput(): void {
     // User dropdown se select kiye bina bhi type kar sakta hai —
     // route + price yahan bhi sync karo, warna stale value publish ho jaati hai
@@ -217,20 +191,14 @@ readonly routeOptions = [
     this.syncPriceToRange();
 
     const val = this.fromLocation.toLowerCase().trim();
-    if (val.length < 2) {
-      this.fromSuggestions = [];
-      this.showFromDropdown = false;
-      return;
-    }
     // Jo cities selected "To" ke saath blocked hain, wo suggest hi mat karo
     const toCity = this.toLocation ? this.getBaseCity(this.toLocation) : '';
-    this.fromSuggestions = this.allLocations
-      .filter(loc =>
-        loc.toLowerCase().includes(val) &&
-        !this.isPairBlocked(this.getBaseCity(loc), toCity)
-      )
-      .slice(0, 6);
+    this.fromSuggestions = this.allLocations.filter(loc =>
+      loc.toLowerCase().includes(val) &&
+      !this.isPairBlocked(this.getBaseCity(loc), toCity)
+    );
     this.showFromDropdown = this.fromSuggestions.length > 0;
+    this.showToDropdown = false;
   }
 
   onToInput(): void {
@@ -238,22 +206,22 @@ readonly routeOptions = [
     this.syncPriceToRange();
 
     const val = this.toLocation.toLowerCase().trim();
-    if (val.length < 2) {
-      this.toSuggestions = [];
-      this.showToDropdown = false;
-      return;
-    }
     // "To" mein sirf un locations ko dikhao jo "From" se alag hain
     // aur jinki city "From" ki city ke saath blocked nahi hai
     const fromCity = this.fromLocation ? this.getBaseCity(this.fromLocation) : '';
-    this.toSuggestions = this.allLocations
-      .filter(loc =>
-        loc.toLowerCase().includes(val) &&
-        loc.toLowerCase() !== this.fromLocation.toLowerCase() &&
-        !this.isPairBlocked(this.getBaseCity(loc), fromCity)
-      )
-      .slice(0, 6);
+    this.toSuggestions = this.allLocations.filter(loc =>
+      loc.toLowerCase().includes(val) &&
+      loc.toLowerCase() !== this.fromLocation.toLowerCase() &&
+      !this.isPairBlocked(this.getBaseCity(loc), fromCity)
+    );
     this.showToDropdown = this.toSuggestions.length > 0;
+    this.showFromDropdown = false;
+  }
+
+  /** Dropdown row ki doosri line — "Saharanpur" ke liye "Master city", baaki ke liye city. */
+  suggestionSubtitle(name: string): string {
+    const city = this.cityTag(name);
+    return city.toLowerCase() === name.trim().toLowerCase() ? 'Master city · all areas' : `${city} area`;
   }
 
   selectFrom(name: string): void {
@@ -301,6 +269,118 @@ readonly routeOptions = [
     this.syncPriceToRange();
   }
 
+  // ─── Wizard: Route → Via → When → Seats → Price ─────────────────
+  // Har step ek hi card me aata hai. "Via" me map se asli raaste (OSRM) aate
+  // hain; wo na milein to preset routes. Admin ki nayi city par preset nahi
+  // hota — wahan live raaste na milein to Via step hat jaata hai.
+  step = 0;
+
+  private readonly ALL_STEPS = [
+    { key: 'route', label: 'Route' },
+    { key: 'via', label: 'Via' },
+    { key: 'when', label: 'When' },
+    { key: 'seats', label: 'Seats' },
+    { key: 'price', label: 'Price' },
+  ] as const;
+
+  get steps() {
+    return this.ALL_STEPS.filter(s =>
+      s.key !== 'via' || !this.isRouteOptional || this.routeOptionsLoading || this.liveRoutes.length > 0
+    );
+  }
+
+  get currentStep(): string {
+    // From/To badalne se step count badal sakta hai — index ko range me rakho
+    const steps = this.steps;
+    return steps[Math.min(this.step, steps.length - 1)].key;
+  }
+
+  get isLastStep(): boolean {
+    return this.step >= this.steps.length - 1;
+  }
+
+  /** Current step ka data poora hai? Continue button isi par chalta hai. */
+  get canContinue(): boolean {
+    switch (this.currentStep) {
+      case 'route':
+        return !!(
+          this.isKnownLocation(this.fromLocation) &&
+          this.isKnownLocation(this.toLocation) &&
+          !this.isSameRoute &&
+          !this.isBlockedRoute
+        );
+      case 'via':
+        // Live raaste aa rahe hon to ruko; aa gaye to unme se ek chuna hi hota hai
+        if (this.selectedLiveRoute) return true;
+        return !this.routeOptionsLoading && (!!this.selectedRouteId || this.isRouteOptional);
+      case 'when':
+        return !!(this.rideDate && this.rideTime && this.rideDate >= this.minDate);
+      case 'seats':
+        return this.seats >= 1 && this.seats <= 4;
+      default:
+        return this.isFormValid && !this.quoteLoading;
+    }
+  }
+
+  nextStep(): void {
+    if (!this.canContinue) return;
+    if (this.isLastStep) {
+      this.publishRide();
+      return;
+    }
+    if (this.currentStep === 'route') {
+      this.requestQuote();
+      this.requestRouteOptions();
+    }
+    this.step++;
+    // Via step par pehla route pehle se chuna ho — sabse sasta/common wala
+    if (this.currentStep === 'via' && !this.selectedRouteId && this.filteredRoutes.length) {
+      this.selectRoute(this.filteredRoutes[0]);
+    }
+    this.syncPriceToRange();
+    this.cdr.markForCheck();
+  }
+
+  prevStep(): void {
+    if (this.step > 0) this.step--;
+    this.cdr.markForCheck();
+  }
+
+  /** Stepper par pichhle step par click karke wapas ja sakte hain, aage nahi. */
+  goToStep(index: number): void {
+    if (index < this.step) this.step = index;
+    this.cdr.markForCheck();
+  }
+
+  /** Popular routes card — preset routes se: distance aur sabse kam price. */
+  get popularRoutes() {
+    const pairs = new Map<string, { from: string; to: string; distance: number; price: number }>();
+    for (const r of this.routeOptions) {
+      const key = `${r.from}>${r.to}`;
+      const cur = pairs.get(key);
+      if (!cur) pairs.set(key, { from: r.from, to: r.to, distance: r.distance, price: r.basePrice });
+      else {
+        cur.distance = Math.min(cur.distance, r.distance);
+        cur.price = Math.min(cur.price, r.basePrice);
+      }
+    }
+    return [...pairs.values()].map(p => ({
+      ...p,
+      fromName: this.cityDisplayName(p.from),
+      toName: this.cityDisplayName(p.to),
+    }));
+  }
+
+  pickPopularRoute(p: { fromName: string; toName: string }): void {
+    this.fromLocation = p.fromName;
+    this.toLocation = p.toName;
+    this.showFromDropdown = this.showToDropdown = false;
+    this.step = 0;
+    this.syncRouteSelection();
+    this.syncPriceToRange();
+    this.cdr.markForCheck();
+  }
+
   incrementSeats(): void {
     if (this.seats < 4) this.seats++;
   }
@@ -317,7 +397,8 @@ readonly routeOptions = [
 
 selectRoute(route: typeof this.routeOptions[0]): void {
   this.selectedRouteId = route.id;
-  this.pricePerSeat = route.basePrice;
+  // Quote mila hai to price distance se bana hai — via sirf raasta batata hai
+  if (!this.activeQuote) this.pricePerSeat = route.basePrice;
   this.cdr.markForCheck();
 }
 
@@ -327,15 +408,185 @@ selectRoute(route: typeof this.routeOptions[0]): void {
 
   /** Preset route waali jodi par ₹420–₹550; bina preset waali (abhi koi nahi) par ₹350–₹390. */
   get minPrice(): number {
+    const q = this.activeQuote;
+    if (q) return q.min;
     return this.isRouteOptional
       ? this.PRICE_RANGE_OPTIONAL_ROUTE.min
       : this.PRICE_RANGE_DEFAULT.min;
   }
 
   get maxPrice(): number {
+    const q = this.activeQuote;
+    if (q) return q.max;
     return this.isRouteOptional
       ? this.PRICE_RANGE_OPTIONAL_ROUTE.max
       : this.PRICE_RANGE_DEFAULT.max;
+  }
+
+  // ─── Price quote (admin ka formula: distance ÷ mileage × fuel ÷ seats + toll ÷ 4 + fee) ───
+  // Route step se aage badhte hi backend se aata hai (distance Redis/OSRM se).
+  // Raasta chunne / uske toll aane par dobara — toll ka hissa price me judta hai.
+  // Na aaye (routing down) to upar wali purani fixed range fallback hai.
+  quote: PriceQuote | null = null;
+  private quoteFor = '';
+  quoteLoading = false;
+  quoteError = '';
+
+  private get routeKey(): string {
+    return `${this.fromLocation.trim().toLowerCase()}|${this.toLocation.trim().toLowerCase()}`;
+  }
+
+  /** Chune raaste ke toll plaza — pata na ho to 0 (price me toll nahi judta) */
+  get selectedTolls(): number {
+    return this.selectedLiveRoute?.tolls ?? 0;
+  }
+
+  private get quoteKey(): string {
+    return `${this.routeKey}|${this.selectedLiveRoute ? this.selectedLive : -1}|${this.selectedTolls}`;
+  }
+
+  /** Quote sirf abhi ke from/to, chune raaste (km) aur uske toll ka ho tabhi maano — badla to purana bekaar. */
+  get activeQuote(): PriceQuote | null {
+    return this.quote && this.quoteFor === this.quoteKey ? this.quote : null;
+  }
+
+  requestQuote(): void {
+    if (!this.routeMaps) return;
+    const key = this.quoteKey;
+    const pick = { route: this.selectedLiveRoute ? this.selectedLive : undefined, tolls: this.selectedTolls };
+    if (this.quoteFor === key && (this.quote || this.quoteLoading)) return;
+
+    this.quoteFor = key;
+    this.quote = null;
+    this.quoteError = '';
+    this.quoteLoading = true;
+    this.cdr.markForCheck();
+
+    this.routeMaps.getPriceQuote(this.fromLocation.trim(), this.toLocation.trim(), pick).subscribe({
+      next: (res) => {
+        if (this.quoteFor !== key) return; // beech me route badal gaya
+        this.quoteLoading = false;
+        if (res.success && res.quote) {
+          this.quote = res.quote;
+          this.pricePerSeat = res.quote.suggested;
+        } else {
+          this.quoteError = res.message || 'Could not calculate the price for this route.';
+        }
+        this.syncPriceToRange();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        if (this.quoteFor !== key) return;
+        this.quoteLoading = false;
+        this.quoteError = 'Could not calculate the price for this route.';
+        this.syncPriceToRange();
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  // ─── Live raaste — "What is your route?" (OSRM, backend Redis cache) ───
+  // Sabse tez pehle aata hai aur wahi pehle se chuna hota hai. Price chune
+  // raaste ki km + uske toll se banta hai (raasta badla to quote dobara).
+  routeOptionsRes: RideRouteResponse | null = null;
+  private routeOptionsFor = '';
+  routeOptionsLoading = false;
+  selectedLive = -1;
+  readonly formatDuration = formatDuration;
+
+  /** Sirf abhi ke from/to ke raaste — route badla to purane bekaar. */
+  get liveOptions(): RideRouteResponse | null {
+    return this.routeOptionsFor === this.routeKey ? this.routeOptionsRes : null;
+  }
+
+  get liveRoutes(): RouteOption[] {
+    return this.liveOptions?.routes ?? [];
+  }
+
+  get selectedLiveRoute(): RouteOption | null {
+    return this.liveRoutes[this.selectedLive] ?? null;
+  }
+
+  /** "Fastest" badge — OSRM aam taur par pehla hi deta hai, phir bhi min dekh lo. */
+  get fastestLiveIndex(): number {
+    const r = this.liveRoutes;
+    return r.reduce((best, cur, i) => (cur.duration_min < r[best].duration_min ? i : best), 0);
+  }
+
+  requestRouteOptions(): void {
+    if (!this.routeMaps) return;
+    const key = this.routeKey;
+    if (this.routeOptionsFor === key && (this.routeOptionsRes?.success || this.routeOptionsLoading)) return;
+
+    this.routeOptionsFor = key;
+    this.routeOptionsRes = null;
+    this.selectedLive = -1;
+    this.routeOptionsLoading = true;
+    this.cdr.markForCheck();
+
+    const done = (res: RideRouteResponse | null) => {
+      if (this.routeOptionsFor !== key) return; // beech me route badal gaya
+      this.routeOptionsLoading = false;
+      this.routeOptionsRes = res;
+      this.selectedLive = res?.routes?.length ? 0 : -1;
+      if (res?.success && hasMissingTolls(res.routes)) this.retryTolls(key, 1);
+      this.requestQuote(); // pehle raaste ke toll ke saath
+      this.cdr.markForCheck();
+    };
+    this.routeMaps.getRouteOptions(this.fromLocation.trim(), this.toLocation.trim()).subscribe({
+      next: (res) => done(res),
+      error: () => done(null),
+    });
+  }
+
+  /** 0 → "No tolls", 1 → "1 toll", 4 → "4 tolls" (plaza ki ginti) */
+  tollLabel(tolls: number): string {
+    return tolls ? `${tolls} toll${tolls > 1 ? 's' : ''}` : 'No tolls';
+  }
+
+  /** Toll ki ginti pehli baar na aayi ho to thodi der baad dobara poochho. */
+  private retryTolls(key: string, attempt: number): void {
+    if (attempt > TOLL_RETRIES || !this.routeMaps) return;
+    clearTimeout(this.tollTimer);
+    this.tollTimer = setTimeout(() => {
+      if (this.routeOptionsFor !== key) return; // route badal gaya
+      this.routeMaps!.getRouteOptions(this.fromLocation.trim(), this.toLocation.trim()).subscribe({
+        next: (res) => {
+          const current = this.liveOptions?.routes;
+          if (this.routeOptionsFor !== key || !current) return;
+          if (mergeTolls(current, res?.routes ?? [])) this.retryTolls(key, attempt + 1);
+          this.requestQuote(); // toll aa gaye — price me jodo
+          this.cdr.markForCheck();
+        },
+        error: () => this.retryTolls(key, attempt + 1),
+      });
+    }, TOLL_RETRY_MS);
+  }
+
+  private tollTimer?: ReturnType<typeof setTimeout>;
+
+  ngOnDestroy(): void {
+    clearTimeout(this.tollTimer);
+  }
+
+  selectLiveRoute(index: number): void {
+    this.selectedLive = index;
+    this.requestQuote(); // naye raaste ki km + toll se price
+    this.cdr.markForCheck();
+  }
+
+  /** Earnings card — route step ke baad, jab price ban chuka ho (quote ya fallback range). */
+  get earningsReady(): boolean {
+    return this.step > 0 && !this.quoteLoading && !this.routeOptionsLoading;
+  }
+
+  /** TrustRide fee (per seat) — sirf dikhti hai; price me na judti, na kamai se katti. */
+  get platformFee(): number {
+    return this.activeQuote?.breakdown.platform_fee ?? 0;
+  }
+
+  get riderReceives(): number {
+    return this.pricePerSeat * this.seats;
   }
 
   /** From/To badalne par agar pehle chuna route ab is jodi ka nahi hai to
@@ -352,7 +603,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   /** City badalne par range badal jaati hai — price bahar ho to base par reset. */
   private syncPriceToRange(): void {
     if (this.pricePerSeat < this.minPrice || this.pricePerSeat > this.maxPrice) {
-      this.pricePerSeat = this.minPrice;
+      this.pricePerSeat = this.activeQuote?.suggested ?? this.minPrice;
     }
   }
 
@@ -392,16 +643,14 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   get isRouteOptional(): boolean {
     const from = this.getBaseCity(this.fromLocation);
     const to = this.getBaseCity(this.toLocation);
-    return (
-      this.routeOptionalCities.includes(from) ||
-      this.routeOptionalCities.includes(to)
-    );
+    if (!from || !to) return false;
+    const presetCities = new Set(this.routeOptions.flatMap(r => [r.from, r.to]));
+    return !presetCities.has(from) || !presetCities.has(to);
   }
 
   /** Dropdown chip ka city label — "Gurgaon Cyber Park" → "Gurgaon". */
   cityTag(area: string): string {
-    const base = this.getBaseCity(area);
-    return base.charAt(0).toUpperCase() + base.slice(1);
+    return this.cityDisplayName(this.getBaseCity(area));
   }
   get isSameRoute(): boolean {
 
@@ -439,7 +688,7 @@ selectRoute(route: typeof this.routeOptions[0]): void {
       this.isKnownLocation(this.toLocation) &&
       this.rideDate &&
       this.rideTime &&
-      (this.selectedRouteId || this.isRouteOptional) &&   // bina preset route waali cities par optional
+      (this.selectedLiveRoute || this.selectedRouteId || this.isRouteOptional) &&   // bina preset route waali cities par optional
       !this.isSameRoute &&
       !this.isBlockedRoute &&
       this.pricePerSeat >= this.minPrice &&
@@ -453,6 +702,8 @@ console.log( this.rideTime)
     // const departureDateUTC = new Date(localDateTimeString).toISOString();
      const departureIso = `${this.rideDate}T${this.rideTime}:00.000Z`
     const selectedRoute = this.routeOptions.find(r => r.id === this.selectedRouteId);
+    // Map se chuna rasta ho to wahi — ride detail map par bhi yahi dikhega
+    const live = this.selectedLiveRoute;
 
     const payload = {
       start_location: { name: this.fromLocation },
@@ -460,7 +711,16 @@ console.log( this.rideTime)
       departure_time: departureIso,
       available_seats: this.seats,
       price_per_seat: this.pricePerSeat,
-      route_via: selectedRoute?.via ?? '',
+      route_via: live ? live.summary || `${live.distance_km} km by road` : selectedRoute?.via ?? '',
+      ...(live && {
+        route: {
+          distance_km: live.distance_km,
+          duration_min: live.duration_min,
+          polyline: live.polyline,
+          summary: live.summary ?? '',
+          ...(live.tolls != null && { tolls: live.tolls }),
+        },
+      }),
        additional_notes: this.notes
     };
 
@@ -560,6 +820,10 @@ console.log( this.rideTime)
     this.notes = '';
     this.formSubmitted = false;
     this.selectedRouteId = ''
+    this.selectedLive = -1;
+    this.routeOptionsFor = '';
+    this.routeOptionsRes = null;
+    this.step = 0;
   }
 
   @HostListener('document:click', ['$event'])

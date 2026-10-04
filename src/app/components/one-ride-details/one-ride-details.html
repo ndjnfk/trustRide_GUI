@@ -204,6 +204,11 @@
         </div>
       </div>
 
+      <!-- Route map — pickup → drop, distance, time, alternative raaste -->
+      <div class="rd-card">
+        <p class="section-title">Route map</p>
+        <app-ride-route-map [rideId]="rideId"></app-ride-route-map>
+      </div>
 
       <!-- Note from rider -->
       <div class="rd-card" *ngIf="rideData.additional_notes">

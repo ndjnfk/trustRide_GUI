@@ -10,7 +10,9 @@
 //   → Error → banner show karta hai
 // ============================================================
 
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
+import { cityNames, DEFAULT_LOCATION_CITIES } from '../../helpers/locations'
+import { LocationService } from '../../services/location-service'
 import { CommonModule } from '@angular/common'
 import { RouterLink, Router } from '@angular/router'
 import {
@@ -83,7 +85,9 @@ export class Register implements OnInit {
   registrationClosed = false
   registrationClosedMessage = ''
   // register.component.ts — days ke paas
-locations = ['Gurgaon', 'Saharanpur']
+  // Master cities — admin panel wali location list se (GET /locations)
+  locations: string[] = cityNames(DEFAULT_LOCATION_CITIES)
+  private locationService = inject(LocationService)
 
   // ── Form ─────────────────────────────────────────────────────────────────────
   registerForm!: FormGroup
@@ -98,6 +102,7 @@ locations = ['Gurgaon', 'Saharanpur']
 
   ngOnInit(): void {
     this.checkRegistrationStatus()
+    this.locationService.getCities().subscribe(cities => this.locations = cityNames(cities))
 
     this.registerForm = this.fb.group(
       {

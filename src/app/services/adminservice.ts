@@ -156,6 +156,73 @@ export interface RegistrationLimitResponse {
   data: RegistrationLimitData;
 }
 
+// ── Ride pricing ────────────────────────────────────────────────────
+// Price/seat = (distance ÷ mileage × fuel price) ÷ seats
+//             + (toll plaza × toll_per_plaza) ÷ toll_sharing_seats,
+// ₹10 me round; rider ±rider_adjust kar sakta hai. TrustRide fee alag (PlatformFee*).
+export interface RidePricingSettings {
+  fuel_price_per_litre: number;
+  mileage_kmpl: number;
+  cost_sharing_seats: number;
+  rider_adjust: number;
+  toll_per_plaza: number;
+  toll_sharing_seats: number;
+  updated_at?: string | null;
+  updated_by?: string | null;
+}
+
+export interface RidePricingResponse {
+  success: boolean;
+  message?: string;
+  data: RidePricingSettings;
+  limits: Record<keyof Omit<RidePricingSettings, 'updated_at' | 'updated_by'>, { min: number; max: number }>;
+}
+
+// ── TrustRide service fee — sirf dikhti hai, ride price me nahi judti ──
+export interface PlatformFeeSettings {
+  fee_per_seat: number;
+  updated_at?: string | null;
+  updated_by?: string | null;
+}
+
+export interface PlatformFeeResponse {
+  success: boolean;
+  message?: string;
+  data: PlatformFeeSettings;
+  limits: { fee_per_seat: { min: number; max: number } };
+}
+
+// ── Locations ───────────────────────────────────────────────────────
+// Master cities (admin jod sakta hai) aur unke andar areas. `is_active: false` =
+// search/publish ke dropdown se hidden.
+// Map point — 'admin' = haath se set, 'geocoded' = naam se OpenStreetMap ne dhoondha
+export interface AdminLocationCoords {
+  lat?: number | null;
+  lng?: number | null;
+  coords_source?: 'admin' | 'geocoded' | null;
+}
+
+export interface AdminLocationArea extends AdminLocationCoords {
+  id: string;
+  name: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AdminLocationCity extends AdminLocationCoords {
+  _id: string;          // city key = lowercase naam — 'gurgaon', 'new delhi'
+  name: string;
+  is_active: boolean;   // false = poori city search/publish se hidden
+  sort_order: number;
+  areas: AdminLocationArea[];
+}
+
+export interface AdminLocationsResponse {
+  success: boolean;
+  cities: AdminLocationCity[];
+}
+
 // ── Ride clicks ─────────────────────────────────────────────────────
 // Ek viewer ne ek ride par kitne click kiye. `name` logged-in user ka asli
 // naam hota hai, guest ke liye server-assigned label — guest1, guest2…
@@ -622,6 +689,33 @@ updateRegistrationLimit(payload: { enabled: boolean; limit: number }): Observabl
   );
 }
 
+// ── Ride pricing (fuel, mileage, seats, platform fee, rider ±) ─────
+getRidePricing(): Observable<RidePricingResponse> {
+  return this.http.get<RidePricingResponse>(`${this.API_URL}/admin/settings/ride-pricing`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateRidePricing(
+  payload: Omit<RidePricingSettings, 'updated_at' | 'updated_by'>
+): Observable<RidePricingResponse> {
+  return this.http.put<RidePricingResponse>(`${this.API_URL}/admin/settings/ride-pricing`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+getPlatformFee(): Observable<PlatformFeeResponse> {
+  return this.http.get<PlatformFeeResponse>(`${this.API_URL}/admin/settings/platform-fee`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updatePlatformFee(fee_per_seat: number): Observable<PlatformFeeResponse> {
+  return this.http.put<PlatformFeeResponse>(`${this.API_URL}/admin/settings/platform-fee`, { fee_per_seat }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
 // ── Home page banners ─────────────────────────────────────
 getBanners(): Observable<any> {
   return this.http.get(`${this.API_URL}/admin/banners`, {
@@ -651,6 +745,66 @@ toggleBanner(id: string): Observable<any> {
 
 deleteBanner(id: string): Observable<any> {
   return this.http.delete(`${this.API_URL}/admin/banners/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── Locations (master city → areas) ───────────────────────
+// Saari cities, hidden areas ke saath.
+getAdminLocations(): Observable<AdminLocationsResponse> {
+  return this.http.get<AdminLocationsResponse>(`${this.API_URL}/admin/locations`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+createLocationCity(name: string): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/locations`, { name }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+toggleLocationCity(cityKey: string): Observable<any> {
+  return this.http.patch(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}/toggle`, {}, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteLocationCity(cityKey: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+createLocationArea(cityKey: string, payload: { name: string; is_active?: boolean }): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}/areas`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateLocationCityCoords(cityKey: string, payload: { lat: number | null; lng: number | null }): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}/coords`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+updateLocationArea(
+  cityKey: string,
+  areaId: string,
+  payload: { name?: string; is_active?: boolean; lat?: number | null; lng?: number | null }
+): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}/areas/${areaId}`, payload, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+toggleLocationArea(cityKey: string, areaId: string): Observable<any> {
+  return this.http.patch(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}/areas/${areaId}/toggle`, {}, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteLocationArea(cityKey: string, areaId: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/locations/${encodeURIComponent(cityKey)}/areas/${areaId}`, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }

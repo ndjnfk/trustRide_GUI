@@ -116,6 +116,27 @@
 
                 <span class="header__btn-label">sign in</span>
             </a>
+            <!-- Wallet — user par platform ki kitni fee baaki hai (ride complete hone par judti hai) -->
+            <div class="wallet-menu" *ngIf="isLoggedIn() && wallet">
+                <button type="button" class="header__wallet" (click)="toggleWallet($event)"
+                    [attr.aria-expanded]="isWalletOpen" aria-label="Platform fees due" title="Platform fees you owe TrustRide">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h14a2 2 0 0 1 2 2v3" />
+                        <path d="M3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3" />
+                        <path d="M17 12h4v4h-4a2 2 0 0 1 0-4Z" />
+                    </svg>
+                    <span>₹{{ wallet.due | number: '1.0-0' }}</span>
+                </button>
+                <div class="header__wallet-panel" *ngIf="isWalletOpen" role="dialog" aria-label="Wallet">
+                    <div class="header__wallet-head">
+                        <small>Platform fees due</small>
+                        <strong>₹{{ wallet.due | number: '1.0-0' }}</strong>
+                        <small>What you owe TrustRide for the rides you've used. Added after every completed ride.</small>
+                    </div>
+                </div>
+            </div>
+
             <!-- User menu -->
             <div class="user-menu" *ngIf="isLoggedIn()" (click)="toggleDropdown($event)">
                 <button class="header__avatar" [class.header__avatar--open]="isUserDropdownOpen" aria-label="User menu">
@@ -206,15 +227,13 @@
                         Tiffin Service
                     </a> -->
 
-                    <!-- 5. rating — filhaal band (laptop + mobile dono se hata
-                         diya). Wapas dikhana ho to niche wala block uncomment
-                         karo aur header.ts ke navItems me 'Rating' bhi. -->
-                    <!-- <a class="header__dropdown-item" routerLink="/rating-show">
+                    <!-- 5. Rating (mobile drawer me header.ts ke navItems se) -->
+                    <a class="header__dropdown-item" routerLink="/rating-show">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                         </svg>
-                        rating
-                    </a> -->
+                        Rating
+                    </a>
 
                     <!-- 6. Track Orders — marketplace ke saath hi band. -->
                     <!-- <a class="header__dropdown-item" routerLink="/marketplace/orders">

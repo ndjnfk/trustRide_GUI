@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { BLOCKED_CITY_PAIRS, baseCityOf, isCityPairBlocked } from './route-rules';
+import { afterEach, describe, expect, it } from 'vitest';
+import { BLOCKED_CITY_PAIRS, baseCityOf, isCityPairBlocked, setBaseCities } from './route-rules';
 
 describe('baseCityOf', () => {
   it.each([
@@ -49,5 +49,27 @@ describe('isCityPairBlocked', () => {
   it('koi ek value khaali ho to blocked nahi maanta', () => {
     expect(isCityPairBlocked('Gurgaon', '')).toBe(false);
     expect(isCityPairBlocked('', 'Saharanpur')).toBe(false);
+  });
+});
+
+describe('admin wali master cities', () => {
+  afterEach(() => setBaseCities([]));
+
+  it('nayi city ke areas usi city par resolve hote hain', () => {
+    setBaseCities(['dehradun']);
+    expect(baseCityOf('Dehradun ISBT')).toBe('dehradun');
+    expect(baseCityOf('Dehradun Saharanpur Road')).toBe('dehradun');
+    expect(baseCityOf('Gurgaon Cyber Park')).toBe('gurgaon');
+  });
+
+  it('default cities kabhi nahi hatti', () => {
+    setBaseCities([]);
+    expect(baseCityOf('Saharanpur Court Road')).toBe('saharanpur');
+  });
+
+  it('ek hi position par lamba city naam jeetta hai', () => {
+    setBaseCities(['noida', 'noida extension']);
+    expect(baseCityOf('Noida Extension Gaur City')).toBe('noida extension');
+    expect(baseCityOf('Noida Sector 18')).toBe('noida');
   });
 });

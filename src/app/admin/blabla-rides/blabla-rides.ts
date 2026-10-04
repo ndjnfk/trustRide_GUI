@@ -5,6 +5,8 @@ import { Adminservice, BlablaRidePayload } from '../../services/adminservice';
 import { SideBar } from '../side-bar/side-bar';
 import { Snackbar } from '../../services/snackbar';
 import { LoaderServices } from '../../services/loader-services';
+import { LocationService } from '../../services/location-service';
+import { cityNames, DEFAULT_LOCATION_CITIES, otherCity } from '../../helpers/locations';
 
 @Component({
   selector: 'app-admin-blabla-rides',
@@ -13,8 +15,8 @@ import { LoaderServices } from '../../services/loader-services';
   styleUrl: './blabla-rides.css',
 })
 export class BlablaRides {
-  // Sirf ye do base cities — baaki sab inhi ke areas hain.
-  readonly cities: string[] = ['Gurgaon', 'Saharanpur'];
+  // Sirf base cities — baaki sab inhi ke areas hain. List Locations page (GET /locations) se.
+  cities: string[] = cityNames(DEFAULT_LOCATION_CITIES);
 
   rides: any[] = [];
   total = 0;
@@ -49,6 +51,7 @@ export class BlablaRides {
   showFilters = false;
 
   private loader = inject(LoaderServices);
+  private locationService = inject(LocationService);
 
   constructor(
     private adminService: Adminservice,
@@ -57,6 +60,10 @@ export class BlablaRides {
   ) {}
 
   ngOnInit() {
+    this.locationService.getCities().subscribe((cities) => {
+      this.cities = cityNames(cities);
+      this.cdr.detectChanges();
+    });
     this.fetchRides();
   }
 
@@ -249,13 +256,14 @@ export class BlablaRides {
     });
   }
 
-  // Source badalte hi doosri city destination me daal do — sirf do hi routes hain.
+  // Source aur destination same ho gaye to doosri taraf pehli alag city daal do.
+  // (Locations page se kitni bhi cities ho sakti hain, isliye seedha swap nahi.)
   onSourceChange(form: BlablaRidePayload) {
-    form.destination = form.source === 'Gurgaon' ? 'Saharanpur' : 'Gurgaon';
+    if (form.destination === form.source) form.destination = otherCity(this.cities, form.source);
   }
 
   onDestinationChange(form: BlablaRidePayload) {
-    form.source = form.destination === 'Gurgaon' ? 'Saharanpur' : 'Gurgaon';
+    if (form.source === form.destination) form.source = otherCity(this.cities, form.destination);
   }
 
   /** Returns an error message, or '' when the form is good to send. */

@@ -54,7 +54,12 @@ export class ChatService {
     // "unstable", which on a webview shows a never-ending loading state until the
     // user interacts. Event callbacks re-enter the zone themselves (zone.run).
     this.zone.runOutsideAngular(() => {
-      this.socket = io(this.api, {
+      // apiUrl ka path (/api, /new-design/api) namespace nahi, nginx ka prefix hai —
+      // socket usi prefix ke /socket.io/ par: /new-design/api → /new-design/socket.io/
+      const url = new URL(this.api, window.location.origin);
+      const base = url.pathname.replace(/\/+$/, '').replace(/\/api$/, '');
+      this.socket = io(url.origin, {
+        path: `${base}/socket.io/`,
         auth: { token },
         transports: ['websocket', 'polling'],
         reconnection: true,

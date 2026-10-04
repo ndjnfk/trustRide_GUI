@@ -1,4 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
+import { cityNames, DEFAULT_LOCATION_CITIES } from '../../helpers/locations';
+import { LocationService } from '../../services/location-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Profileresponse, ProfileService, TravelDay, Vehicle } from '../../servies/profile-service';
@@ -42,7 +44,9 @@ export class EditProfile implements OnInit, OnDestroy {
   selectedPrefs: string[] = []
 
   // ── Preferred travel days ──
-  locations = ['Gurgaon', 'Saharanpur']
+  // Master cities — admin panel wali location list se (GET /locations)
+  locations: string[] = cityNames(DEFAULT_LOCATION_CITIES)
+  private locationService = inject(LocationService)
   days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   preferredTravelDays: TravelDay[] = []
 
@@ -78,6 +82,7 @@ export class EditProfile implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.locationService.getCities().subscribe(cities => this.locations = cityNames(cities))
     this.loadProfile()
     this.loadRole()
   }

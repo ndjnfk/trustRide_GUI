@@ -13,6 +13,9 @@ import { BookingService, BookSeatResponse } from '../../services/booking-service
 import { Snackbar } from '../../services/snackbar';
 import { BookingDialog, BookingDialogResult } from '../booking-dialog/booking-dialog';
 import { AuthHelper } from '../../helpers/auth-helper';
+import { DEFAULT_LOCATION_CITIES, flattenAreas } from '../../helpers/locations';
+import { LocationService } from '../../services/location-service';
+import { baseCityOf } from '../../helpers/route-rules';
 
 export interface Ride {
   ride_id: string;
@@ -40,44 +43,9 @@ export class SearchRides {
   from = '';
   to = '';
 
-  /* ── City lists (same as dashboard) ── */
-  readonly gurgaonAreas: string[] = [
-    'Gurgaon',
-    'Gurgaon Ambience Mall',
-    'Gurgaon Cyber Park',
-    'Gurgaon Rajiv Chowk',
-    'Gurgaon Iffco Chowk',
-    'Gurgaon Huda City Center Secor 29',
-    'Gurgaon Sector 32 ,Jharsa Institutional Area',
-    'Gurgaon Sector 48,Candor Tech Space',
-    'Gurgaon Sector 21, Krishna Chowk',
-    'Gurgaon Hero Honda Chowk',
-    'Gurgaon Subhash Chowk',
-    'Gurgaon Vatika Chowk',
-    'Gurgaon Candor Sector 21',
-    'Gurgaon Arjan Garh Metro Station'
-  ];
-
-  readonly saharanpurAreas: string[] = [
-    'Saharanpur',
-    'Saharanpur Clock Tower',
-    'Saharanpur Dehradun Chowk',
-    'Saharanpur Anupam Sweets',
-    'Saharanpur Court Road',
-    'Saharanpur Vishwakarma Chowk',
-    'Saharanpur Hasanpur Chungi',
-    'Saharanpur J V Jain College',
-    'Saharanpur Sharda Nagar',
-    'Saharanpur Hakikat Nagar',
-    'Saharanpur Madhav Nagar'
-  ];
-
-  get allAreas(): string[] {
-    return [
-      ...this.gurgaonAreas,
-      ...this.saharanpurAreas,
-    ];
-  }
+  /* ── Location list — admin panel se manage hoti hai (GET /locations) ── */
+  // API aane tak / fail hone par default list, taaki dropdown kabhi khaali na ho.
+  allAreas: string[] = flattenAreas(DEFAULT_LOCATION_CITIES);
 
   /* ── Form state ── */
   fromValue = '';
@@ -103,6 +71,7 @@ export class SearchRides {
   @ViewChild('toRef') toRef!: ElementRef;
 
   private loader = inject(LoaderServices);
+  private locationService = inject(LocationService);
 
   constructor(
     private snackBar: MatSnackBar,
@@ -125,6 +94,12 @@ export class SearchRides {
 
   ngOnInit(): void {
     this.resetDate();
+
+    // Hidden areas is list me nahi aate
+    this.locationService.getCities().subscribe((cities) => {
+      this.allAreas = flattenAreas(cities);
+      this.cdr.detectChanges();
+    });
   }
 
   /* ── Autocomplete ── */
@@ -193,10 +168,8 @@ export class SearchRides {
   }
 
   private getBaseCity(areaValue: string): string {
-    const v = areaValue.toLowerCase().trim();
-    if (v.startsWith('gurgaon')) return 'gurgaon';
-    if (v.startsWith('saharanpur')) return 'saharanpur';
-    return v.split(' ')[0];
+    // Admin panel wali nayi cities bhi pehchani jaati hain
+    return baseCityOf(areaValue);
   }
 
   private getTargetDate(): string {

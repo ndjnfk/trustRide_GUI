@@ -1,0 +1,328 @@
+.rm { display: flex; flex-direction: column; gap: 12px; }
+
+/* ── Stats ── */
+.rm-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.rm-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 8px 8px;
+  background: #fff;
+  border: 1px solid #e8edf6;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(11, 27, 63, 0.04);
+}
+.rm-stat strong { display: block; font-size: 15px; font-weight: 700; color: #0b1b3f; line-height: 1.15; }
+.rm-stat small { display: block; font-size: 11px; font-weight: 500; color: #6b7a99; letter-spacing: 0.02em; }
+.rm-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+.rm-stat-icon--blue { background: #eaf1ff; color: #0a58ff; }
+.rm-stat-icon--green { background: #e3f8ef; color: #0f9d77; }
+.rm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: #f3f5fa;
+  color: #52607a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── Pickup → Drop strip ── */
+.rm-ends { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #0b1b3f; min-width: 0; }
+.rm-end { display: inline-flex; align-items: center; gap: 7px; min-width: 0; text-transform: capitalize; }
+.rm-end-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
+.rm-end-dot--pickup { background: #10b981; box-shadow: 0 0 0 3px #d1fae5; }
+.rm-end-dot--drop { background: #0a58ff; box-shadow: 0 0 0 3px #dbe7ff; }
+.rm-end-line {
+  flex: 1;
+  min-width: 24px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #b8c4dc 0 6px, transparent 6px 11px);
+}
+
+/* ── Map ── */
+.rm-map-wrap {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e3e8f2;
+  box-shadow: 0 10px 30px -12px rgba(10, 88, 255, 0.25), 0 2px 6px rgba(11, 27, 63, 0.06);
+}
+.rm-map { height: 340px; width: 100%; background: #eef3ff; }
+.rm-map-wrap--tall .rm-map { height: 460px; }
+.rm-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #eef3ff, #f5f3ff);
+  font-size: 13px;
+  font-weight: 500;
+  color: #52607a;
+  z-index: 500;
+}
+.rm-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #c7d6ff;
+  border-top-color: #0a58ff;
+  animation: rm-spin 0.8s linear infinite;
+}
+.rm-fab {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0b1b3f;
+  font-size: 19px;
+  box-shadow: 0 4px 14px rgba(11, 27, 63, 0.18);
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.rm-fab:hover { color: #0a58ff; transform: translateY(-1px); }
+.rm-fab:focus-visible { outline: 2px solid #0a58ff; outline-offset: 2px; }
+
+.rm-note { margin: 0; font-size: 12.5px; color: #6b7a99; display: flex; gap: 7px; align-items: flex-start; line-height: 1.45; }
+.rm-note i { margin-top: 1px; }
+.rm-note--info { background: #f4f7ff; border: 1px solid #e1e9fb; border-radius: 10px; padding: 8px 12px; color: #43527a; }
+.rm-note--info i { color: #0a58ff; }
+.rm-note--warn { color: #b45309; }
+
+.rm-routes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.rm-route {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e3e8f2;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  color: #6b7a99;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.rm-route strong { font-size: 13px; color: #0b1b3f; }
+.rm-route em {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #0f9d77;
+  background: #dff7ef;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+}
+.rm-route.active { border-color: #0a58ff; background: #eef3ff; box-shadow: 0 0 0 3px rgba(10, 88, 255, 0.1); }
+.rm-route:focus-visible, .rm-me-btn:focus-visible { outline: 2px solid #0a58ff; outline-offset: 2px; }
+
+.rm-me { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #0b1b3f; }
+.rm-me i { color: #7c3aed; }
+.rm-me-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ddd6fe;
+  background: #f5f3ff;
+  color: #5b21b6;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 999px;
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.rm-me-btn:hover:not(:disabled) { background: #ede9fe; }
+.rm-me-btn:disabled { opacity: 0.6; cursor: wait; }
+.rm-error { color: #dc2626; }
+.rm-warn { color: #92400e; background: #fffbeb; border-radius: 8px; padding: 6px 10px; line-height: 1.45; }
+.rm-warn i { color: #d97706; }
+.rm-hint { color: #6b7a99; }
+
+/* Map par click ke baad marker/rasta par kaala focus-box na aaye */
+:host ::ng-deep .leaflet-interactive:focus { outline: none; }
+
+/* ── Leaflet ke andar ke elements (Angular encapsulation ke bahar bante hain) ── */
+:host ::ng-deep .leaflet-container { font-family: inherit; }
+:host ::ng-deep .leaflet-bar {
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(11, 27, 63, 0.18);
+}
+:host ::ng-deep .leaflet-bar a {
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  border-bottom-color: #eef1f7;
+  color: #0b1b3f;
+}
+:host ::ng-deep .leaflet-bar a:hover { color: #0a58ff; background: #f5f8ff; }
+:host ::ng-deep .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.75);
+  border-top-left-radius: 8px;
+  font-size: 10px;
+}
+:host ::ng-deep .leaflet-tooltip {
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 9px;
+  font-size: 12px;
+  color: #0b1b3f;
+  box-shadow: 0 4px 14px rgba(11, 27, 63, 0.18);
+}
+
+/* Rasta */
+:host ::ng-deep .rm-casing { filter: drop-shadow(0 2px 3px rgba(11, 27, 63, 0.3)); }
+:host ::ng-deep .rm-alt { cursor: pointer; }
+:host ::ng-deep .rm-flow { animation: rm-flow 1.1s linear infinite; }
+
+/* Pins — anchor (0,0) point par hai, sab kuch usi ke hisaab se */
+:host ::ng-deep .rm-pin-icon { background: none; border: 0; }
+:host ::ng-deep .rm-pin { position: relative; }
+:host ::ng-deep .rm-pin-label {
+  position: absolute;
+  left: 0;
+  bottom: 22px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 260px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(11, 27, 63, 0.2);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #0b1b3f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  pointer-events: none;
+}
+:host ::ng-deep .rm-pin-label b {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+:host ::ng-deep .rm-pin--pickup .rm-pin-label b { background: #10b981; }
+:host ::ng-deep .rm-pin--drop .rm-pin-label b { background: #0a58ff; }
+:host ::ng-deep .rm-pin--drop .rm-pin-label { bottom: 44px; }
+/* Pickup ka label neeche — upar wala area (aur meri location wali line) na dhake */
+:host ::ng-deep .rm-pin--pickup .rm-pin-label { bottom: auto; top: 16px; }
+
+/* Kinaare ke paas pin — label andar ki taraf (placeLabels() lagata hai) */
+:host ::ng-deep .rm-pin-label--start { left: -14px; transform: none; }
+:host ::ng-deep .rm-pin-label--end { left: auto; right: -14px; transform: none; }
+:host ::ng-deep .rm-pin .rm-pin-label--below { bottom: auto; top: 16px; }
+:host ::ng-deep .rm-pin .rm-pin-label--above { top: auto; bottom: 22px; }
+
+/* Pickup: hara gola + pulse */
+:host ::ng-deep .rm-pin--pickup .rm-pin-mark {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(11, 27, 63, 0.35);
+}
+:host ::ng-deep .rm-pin--pickup .rm-pin-mark::after,
+:host ::ng-deep .rm-me-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.5;
+  z-index: -1;
+  animation: rm-pulse 2s ease-out infinite;
+}
+
+/* Drop: blue teardrop pin, nok exact point par */
+:host ::ng-deep .rm-pin--drop .rm-pin-mark {
+  position: absolute;
+  left: -15px;
+  top: -40px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: linear-gradient(135deg, #3b7bff, #0a58ff);
+  border: 3px solid #fff;
+  box-shadow: -2px 3px 8px rgba(11, 27, 63, 0.35);
+}
+:host ::ng-deep .rm-pin--drop .rm-pin-mark::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Meri location: purple dot + pulse */
+:host ::ng-deep .rm-me-dot {
+  position: absolute;
+  left: -8px;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #7c3aed;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(11, 27, 63, 0.35);
+}
+
+@keyframes rm-flow { to { stroke-dashoffset: -18; } }
+@keyframes rm-pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+@keyframes rm-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  :host ::ng-deep .rm-flow,
+  :host ::ng-deep .rm-pin--pickup .rm-pin-mark::after,
+  :host ::ng-deep .rm-me-dot::after,
+  .rm-spinner { animation: none; }
+}
+
+@media (max-width: 575px) {
+  .rm-map, .rm-map-wrap--tall .rm-map { height: 260px; }
+  .rm-stat { flex: 1; }
+  :host ::ng-deep .rm-pin-label { max-width: 200px; font-size: 11px; }
+}

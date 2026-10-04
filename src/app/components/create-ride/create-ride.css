@@ -1,16 +1,19 @@
-/* Styles moved to global src/styles.css (scoped under .page-wrapper, vars prefixed with --cr_) */
-.counter-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* Page styles global src/styles.css me hain ("CREATE RIDE" block, .cr ke andar
+   scoped) — component budget (4kB) ke andar rehne ke liye. Yahan sirf success
+   popup ka share-link box hai. */
 
 /* ─── Shareable link box (success popup) ─── */
 .share_link_box {
-  background: rgba(99, 102, 241, 0.05);
-  border: 1px dashed rgba(99, 102, 241, 0.3);
+  background: rgba(10, 88, 255, 0.05);
+  border: 1px dashed rgba(10, 88, 255, 0.3);
   border-radius: 12px;
   padding: 14px;
   text-align: left;
+}
+
+.share_link_box p {
+  font-size: 12px;
+  margin: 0 0 8px;
 }
 
 .share_link_input {
@@ -29,7 +32,7 @@
   font-weight: 600;
   white-space: nowrap;
   color: #ffffff;
-  background: #4f46e5;
+  background: #0a58ff;
   border: none;
   border-radius: 8px;
   padding: 8px 14px;
@@ -37,14 +40,6 @@
   transition: background 0.18s ease;
 }
 
-.loc-error {
-  margin-top: 6px;
-  font-size: 12.5px;
-  color: #dc2626;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
 .btn-copy-link:hover {
-  background: #4338ca;
+  background: #0747d4;
 }
