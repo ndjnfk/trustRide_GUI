@@ -1,0 +1,219 @@
+/* ══════════════════════════════════════
+   JOB CARD — careers page aur home dono par ek hi card.
+   Desktop ≥ 992px · Tablet 576–991px · Phone < 576px
+══════════════════════════════════════ */
+:host {
+  display: block;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+}
+
+.job-card {
+  display: grid;
+  grid-template-columns: 1fr 230px 230px;
+  background: #ffffff;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.job-card:hover,
+.job-card:focus-visible {
+  box-shadow: 0 10px 30px rgba(39, 112, 232, 0.12);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.job-card__main {
+  padding: 28px 40px 10px;
+  min-width: 0;
+}
+
+.job-card__title {
+  margin: 0 0 14px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  color: #0b1460;
+}
+
+.job-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 8px;
+  font-size: 14px;
+}
+
+.job-card__meta i {
+  margin-right: 8px;
+  font-size: 15px;
+}
+
+.job-card__company {
+  display: inline-flex;
+  align-items: center;
+  color: #2770e8;
+}
+
+.job-card__location {
+  display: inline-flex;
+  align-items: center;
+  color: #6b7280;
+}
+
+.job-card__pill {
+  margin-left: 0;
+  padding: 6px 12px;
+  color: #6b7280;
+  background: #ecf0fb;
+  border-radius: 22px;
+  line-height: 1.4;
+}
+
+.job-card__date {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 36px;
+  border-left: 1px solid #f1f3f7;
+  border-right: 1px solid #f1f3f7;
+}
+
+.job-card__deadline {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2770e8;
+}
+
+.job-card__vacancies {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.job-card__action {
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+}
+
+.job-card__apply {
+  display: inline-block;
+  padding: 10px 24px;
+  font-size: 14px;
+  color: #2770e8;
+  background: #e5edfc;
+  border-radius: 30px;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.job-card__apply:hover {
+  color: #ffffff;
+  background: #2770e8;
+}
+
+.job-card__posted {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0 40px 14px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+@media (max-width: 991.98px) {
+  .job-card {
+    grid-template-columns: 1fr 23% 24%;
+  }
+
+  .job-card__main {
+    padding: 28px 18px 10px 56px;
+  }
+
+  .job-card__title {
+    margin-bottom: 14px;
+  }
+
+  .job-card__meta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 18px;
+  }
+
+  .job-card__company {
+    grid-column: 1 / -1;
+  }
+
+  .job-card__pill {
+    margin-left: 0;
+    padding: 10px 14px;
+  }
+
+  .job-card__date {
+    padding: 0 18px 0 56px;
+  }
+
+  .job-card__action {
+    justify-content: center;
+    padding: 0 22px;
+  }
+
+  .job-card__apply {
+    padding: 12px 22px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .job-card {
+    grid-template-columns: 1fr;
+  }
+
+  .job-card__main {
+    padding: 26px 22px 18px 56px;
+  }
+
+  .job-card__date {
+    padding: 18px 22px 18px 56px;
+    border: none;
+    border-top: 1px solid #f1f3f7;
+    border-bottom: 1px solid #f1f3f7;
+  }
+
+  .job-card__action {
+    justify-content: flex-start;
+    padding: 18px 22px 18px 56px;
+  }
+
+  .job-card__apply {
+    padding: 14px 34px;
+  }
+
+  .job-card__posted {
+    padding: 0 22px 16px 56px;
+  }
+}
+
+/* ── Teaser (home): Apply column nahi, isliye do hi column ── */
+:host(.is-teaser) .job-card {
+  grid-template-columns: 1fr 230px;
+}
+
+:host(.is-teaser) .job-card__date {
+  border-right: none;
+}
+
+@media (max-width: 991.98px) {
+  :host(.is-teaser) .job-card {
+    grid-template-columns: 1fr 30%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  :host(.is-teaser) .job-card {
+    grid-template-columns: 1fr;
+  }
+
+  :host(.is-teaser) .job-card__date {
+    border-bottom: none;
+  }
+}

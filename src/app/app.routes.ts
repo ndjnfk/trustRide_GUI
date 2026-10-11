@@ -139,6 +139,11 @@ export const routes: Routes = [
       import('../app/admin/banners/banners').then((m) => m.AdminBanners),
   },
   {
+    path: 'admin/jobs',
+    loadComponent: () =>
+      import('../app/admin/jobs/jobs').then((m) => m.AdminJobs),
+  },
+  {
     path: 'admin/locations',
     loadComponent: () =>
       import('../app/admin/locations/locations').then((m) => m.AdminLocations),
@@ -364,6 +369,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/components/trustride-rides/trustride-rides').then((m) => m.TrustrideRidesPage),
   },
+  // Home page ke route cards — wahi list page, par route URL se lock rehta hai.
+  // :route = 'saharanpur-gurgaon' | 'gurgaon-saharanpur' (public, no login).
+  {
+    path: 'rides/:route',
+    loadComponent: () =>
+      import('../app/components/trustride-rides/trustride-rides').then((m) => m.TrustrideRidesPage),
+  },
   // BlaBla routes filhaal band — site se BlaBla option hata diya gaya hai.
   // {
   //   path: 'blabla-rides',
@@ -397,6 +409,34 @@ export const routes: Routes = [
     path: 'about-you',
     loadComponent: () =>
       import('../app/components/about-you/about-you').then((m) => m.AboutYou),
+  },
+  // Jobs / careers page — public, koi login nahi chahiye.
+  {
+    path: 'careers',
+    loadComponent: () =>
+      import('../app/components/careers/careers').then((m) => m.Careers),
+  },
+  // 'careers/post' aur 'careers/mine' ko ':id' se pehle rakhna — warna wo id ban jaate.
+  {
+    path: 'careers/post',
+    loadComponent: () =>
+      import('../app/components/post-job/post-job').then((m) => m.PostJob),
+  },
+  {
+    path: 'careers/mine',
+    loadComponent: () =>
+      import('../app/components/my-jobs/my-jobs').then((m) => m.MyJobs),
+  },
+  // Apni posting ka edit — wahi form, backend sirf owner ko allow karta hai.
+  {
+    path: 'careers/:id/edit',
+    loadComponent: () =>
+      import('../app/components/post-job/post-job').then((m) => m.PostJob),
+  },
+  {
+    path: 'careers/:id',
+    loadComponent: () =>
+      import('../app/components/job-detail/job-detail').then((m) => m.JobDetail),
   },
   {
     path: 'my-profile',

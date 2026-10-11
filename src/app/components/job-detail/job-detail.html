@@ -1,0 +1,131 @@
+<section class="job-page">
+  <div class="job-page__band"></div>
+
+  <div class="job-page__inner">
+    <div class="job-page__bar">
+      <a class="job-page__back" routerLink="/careers" fragment="openings">
+        <i class="ti ti-arrow-left"></i> All openings
+      </a>
+      @if (isOwner()) {
+        <a class="job-page__edit" [routerLink]="['/careers', job()!._id, 'edit']">
+          <i class="ti ti-pencil"></i> Edit your post
+        </a>
+      }
+    </div>
+
+    @if (loading()) {
+      <p class="job-page__state">Loading job details…</p>
+    } @else if (notFound() || !job()) {
+      <div class="job-page__state">
+        <p>This job opening is no longer available.</p>
+        <a class="job-apply" routerLink="/careers">View other openings</a>
+      </div>
+    } @else {
+      @let j = job()!;
+
+      <div class="job-top">
+        <!-- Summary card -->
+        <aside class="job-summary">
+          <div class="job-summary__head">
+            @if (logoUrl()) {
+              <img class="job-summary__logo job-summary__logo--img" [src]="logoUrl()" [alt]="j.company + ' logo'" />
+            } @else {
+              <div class="job-summary__logo">{{ initial() }}</div>
+            }
+            <h1 class="job-summary__company">
+              {{ j.company }}
+              <i class="ti ti-discount-check-filled"></i>
+            </h1>
+          </div>
+
+          <dl class="job-summary__list">
+            <dt>Job Title</dt><dd>{{ j.title }}</dd>
+            @if (j.experience) {
+              <dt>Experience</dt><dd>{{ j.experience }}</dd>
+            }
+            @if (j.vacancies) {
+              <dt>Vacancies</dt><dd>{{ j.vacancies }}</dd>
+            }
+            @if (j.office_time) {
+              <dt>Office time</dt><dd>{{ j.office_time }}</dd>
+            }
+            <dt>Location</dt><dd>{{ j.location }}</dd>
+            @if (j.job_type || j.work_mode) {
+              <dt>Job Type</dt>
+              <dd>
+                {{ j.job_type }}
+                @if (j.work_mode) { <span class="job-pill">{{ j.work_mode }}</span> }
+              </dd>
+            }
+            @if (j.salary) {
+              <dt>Salary</dt><dd>{{ j.salary }}</dd>
+            }
+            @if (j.category) {
+              <dt>Category</dt><dd>{{ j.category }}</dd>
+            }
+            <dt>Deadline</dt>
+            <dd>{{ j.deadline ? (j.deadline | date: 'dd MMMM, yyyy') : 'Apply anytime' }}</dd>
+            <dt>HR Email</dt>
+            <dd><a class="job-summary__mail" [href]="'mailto:' + j.apply_email">{{ j.apply_email }}</a></dd>
+          </dl>
+
+          <div class="job-summary__footer">
+            @if (applyHref()) {
+              <a class="job-apply" [href]="applyHref()" target="_blank" rel="noopener">Apply Now</a>
+            }
+            <div class="job-share">
+              <span>Share On:</span>
+              <a [href]="share().facebook" target="_blank" rel="noopener" aria-label="Share on Facebook"><i class="ti ti-brand-facebook"></i></a>
+              <a [href]="share().twitter" target="_blank" rel="noopener" aria-label="Share on X"><i class="ti ti-brand-x"></i></a>
+              <a [href]="share().linkedin" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+              <a [href]="share().whatsapp" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><i class="ti ti-brand-whatsapp"></i></a>
+            </div>
+          </div>
+
+          @if (pdfDownload() || imageDownload()) {
+            <div class="job-downloads">
+              @if (pdfDownload()) {
+                <a class="job-download" [href]="pdfDownload()"><i class="ti ti-file-type-pdf"></i> Job Details (PDF)</a>
+              }
+              @if (imageDownload()) {
+                <a class="job-download" [href]="imageDownload()"><i class="ti ti-photo-down"></i> Job Image</a>
+              }
+            </div>
+          }
+
+          <p class="job-summary__posted">
+            Posted by {{ j.posted_by_name || 'TrustRide user' }} · {{ j.created_at | date: 'dd MMM yyyy' }}
+          </p>
+        </aside>
+
+        <!-- Company + skills -->
+        <div class="job-side">
+          @if (j.company_description) {
+            <div class="job-block">
+              <h2 class="job-block__title"><span class="job-block__icon"><i class="ti ti-building"></i></span>Company Description</h2>
+              <p class="job-block__text">{{ j.company_description }}</p>
+            </div>
+          }
+
+          @if (j.skills.length) {
+            <div class="job-block">
+              <h2 class="job-block__title"><span class="job-block__icon"><i class="ti ti-tools"></i></span>Skills</h2>
+              <div class="job-skills">
+                @for (skill of j.skills; track $index) {
+                  <span class="job-skill job-skill--{{ skillTone($index) }}">{{ skill }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (j.description) {
+        <div class="job-block job-block--wide">
+          <h2 class="job-block__title"><span class="job-block__icon"><i class="ti ti-file-description"></i></span>Description</h2>
+          <p class="job-block__text job-block__text--pre">{{ j.description }}</p>
+        </div>
+      }
+    }
+  </div>
+</section>

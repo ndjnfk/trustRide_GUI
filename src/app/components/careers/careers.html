@@ -1,0 +1,204 @@
+<!-- ══ Careers hero ══ -->
+<section class="careers-hero">
+  <div class="careers-hero__inner">
+
+    <div class="careers-hero__content">
+      <p class="careers-hero__eyebrow">Join Us</p>
+      <h1 class="careers-hero__title">TrustHire</h1>
+      <p class="careers-hero__text">
+        Connecting great talent with trusted opportunities for a brighter future.
+      </p>
+      <button type="button" class="careers-hero__btn" (click)="scrollToOpenings()">
+        View Openings
+      </button>
+    </div>
+
+    <!-- Isometric illustration: platform + happy candidate -->
+    <div class="careers-hero__art" aria-hidden="true">
+      <svg viewBox="0 0 600 720" xmlns="http://www.w3.org/2000/svg">
+        <!-- back glass walls -->
+        <polygon points="15,380 15,195 300,30 300,215" fill="#7aa7f2" opacity="0.55" />
+        <polygon points="300,215 300,30 520,157 520,342" fill="#6c9cf0" opacity="0.5" />
+
+        <!-- lower block -->
+        <polygon points="45,413 300,561 300,690 45,542" fill="#c9dbf8" />
+        <polygon points="300,561 555,413 555,542 300,690" fill="#e4edfc" />
+
+        <!-- top slab -->
+        <polygon points="15,380 300,545 300,561 15,396" fill="#d9e8fd" />
+        <polygon points="300,545 585,380 585,396 300,561" fill="#b9d3f8" />
+        <polygon points="15,380 300,215 585,380 300,545" fill="#eaf1f6" />
+
+        <!-- shadow under the person -->
+        <ellipse cx="322" cy="358" rx="58" ry="30" fill="#c8dcf6" />
+
+        <!-- briefcase -->
+        <polygon points="360,326 405,300 405,350 360,376" fill="#1b2a6b" />
+        <polygon points="352,321 360,326 360,376 352,371" fill="#121d52" />
+        <polygon points="352,321 397,295 405,300 360,326" fill="#26388a" />
+        <path d="M368 316 C 368 290, 392 278, 394 302" fill="none" stroke="#1b2a6b" stroke-width="4" stroke-linecap="round" />
+        <line x1="372" y1="336" x2="372" y2="346" stroke="#3b4f9e" stroke-width="2" />
+        <line x1="393" y1="324" x2="393" y2="334" stroke="#3b4f9e" stroke-width="2" />
+
+        <!-- legs -->
+        <path d="M297 206 L353 206 L348 292 L344 344 L330 344 L327 268 L321 268 L311 350 L295 350 L293 280 Z" fill="#0f1c6e" />
+        <!-- shoes -->
+        <path d="M293 346 L312 346 L312 356 L285 360 C 280 360, 282 350, 293 346 Z" fill="#0b1550" />
+        <path d="M330 340 L345 340 L346 350 L326 354 C 321 354, 322 344, 330 340 Z" fill="#0b1550" />
+
+        <!-- arms (raised) -->
+        <path d="M298 122 L262 58" stroke="#e3ebf5" stroke-width="18" stroke-linecap="round" />
+        <path d="M352 122 L386 52" stroke="#d3dfee" stroke-width="18" stroke-linecap="round" />
+        <circle cx="259" cy="50" r="10" fill="#f0a47e" />
+        <circle cx="389" cy="44" r="10" fill="#f0a47e" />
+
+        <!-- torso -->
+        <path d="M292 112 L358 112 L356 210 L296 210 Z" fill="#e8eef6" />
+        <path d="M335 112 L358 112 L356 210 L338 210 Z" fill="#d3dfee" />
+        <line x1="325" y1="130" x2="325" y2="208" stroke="#c2d1e6" stroke-width="2" />
+
+        <!-- neck + tie -->
+        <rect x="317" y="98" width="16" height="16" fill="#e0956f" />
+        <path d="M319 112 L331 112 L327 122 L323 122 Z" fill="#0f1c6e" />
+        <path d="M325 122 C 318 140, 322 156, 334 150 C 344 145, 352 128, 362 118" fill="none" stroke="#0f1c6e" stroke-width="5" stroke-linecap="round" />
+
+        <!-- head -->
+        <ellipse cx="325" cy="80" rx="20" ry="23" fill="#f0a47e" />
+        <path d="M304 76 C 300 54, 330 46, 344 60 C 348 66, 346 76, 343 82 C 340 72, 334 68, 324 70 C 316 70, 310 74, 304 76 Z" fill="#0f1c6e" />
+
+        <!-- paper in hand -->
+        <g transform="rotate(-28 230 40)">
+          <path d="M200 10 L248 10 L262 24 L262 78 L200 78 Z" fill="#ffffff" />
+          <path d="M248 10 L248 24 L262 24 Z" fill="#dbe6f4" />
+          <line x1="210" y1="38" x2="250" y2="38" stroke="#a9c3ea" stroke-width="2" />
+          <line x1="210" y1="48" x2="250" y2="48" stroke="#a9c3ea" stroke-width="2" />
+          <line x1="210" y1="58" x2="242" y2="58" stroke="#a9c3ea" stroke-width="2" />
+        </g>
+      </svg>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ Openings — latest 10, naye se purane ══ -->
+<section id="openings" class="careers-openings">
+  <div class="careers-openings__inner">
+
+    <h2 class="openings-title">
+      Are You Ready To <span class="openings-title__accent">Join Our Team?</span>
+    </h2>
+
+    <div class="openings-post">
+      <span>Hiring?</span>
+      <button type="button" class="openings-post__btn" (click)="postJob()">
+        <i class="ti ti-plus"></i> Post a Job
+      </button>
+      @if (isLoggedIn) {
+        <a class="openings-post__mine" routerLink="/careers/mine">My posts</a>
+      }
+    </div>
+
+    <form class="openings-filter" (ngSubmit)="fetchJobs()">
+      <div class="openings-filter__group">
+        <i class="ti ti-search openings-filter__icon"></i>
+        <label class="openings-filter__label">
+          <span class="openings-filter__caption">Job title</span>
+          <input
+            type="text"
+            class="openings-filter__field"
+            placeholder="e.g. Developer, Driver"
+            name="title"
+            [(ngModel)]="filters.title"
+          />
+        </label>
+      </div>
+      <div class="openings-filter__group">
+        <i class="ti ti-category openings-filter__icon"></i>
+        <label class="openings-filter__label">
+          <span class="openings-filter__caption">Category</span>
+          <select class="openings-filter__field" name="category" [(ngModel)]="filters.category">
+            <option value="">All categories</option>
+            @for (c of categories(); track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="openings-filter__group">
+        <i class="ti ti-map-pin openings-filter__icon"></i>
+        <label class="openings-filter__label">
+          <span class="openings-filter__caption">Location</span>
+          <select class="openings-filter__field" name="location" [(ngModel)]="filters.location">
+            <option value="">All locations</option>
+            @for (l of locations(); track l) {
+              <option [value]="l">{{ l }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="openings-filter__actions">
+        <button type="button" class="openings-filter__btn openings-filter__btn--reset" (click)="resetFilters()">
+          Reset
+        </button>
+        <button type="submit" class="openings-filter__btn openings-filter__btn--submit">
+          <i class="ti ti-search"></i> Search
+        </button>
+      </div>
+    </form>
+
+    @if (error()) {
+      <p class="openings-empty">{{ error() }}</p>
+    } @else if (!loading() && jobs().length === 0) {
+      <p class="openings-empty">No openings right now. Check back soon!</p>
+    }
+
+    <div class="openings-list">
+      @for (job of jobs(); track job._id) {
+        <app-job-card [job]="job" />
+      }
+    </div>
+
+    @if (pages() > 1) {
+      <nav class="openings-pager" aria-label="Job openings pages">
+        <button
+          type="button"
+          class="openings-pager__btn openings-pager__btn--nav"
+          [disabled]="page() === 1 || loading()"
+          (click)="goToPage(page() - 1)"
+        >
+          <i class="ti ti-chevron-left"></i> Prev
+        </button>
+
+        @for (item of pageItems(); track $index) {
+          @if (item === null) {
+            <span class="openings-pager__gap">…</span>
+          } @else {
+            <button
+              type="button"
+              class="openings-pager__btn"
+              [class.openings-pager__btn--active]="item === page()"
+              [attr.aria-current]="item === page() ? 'page' : null"
+              [disabled]="loading()"
+              (click)="goToPage(item)"
+            >
+              {{ item }}
+            </button>
+          }
+        }
+
+        <button
+          type="button"
+          class="openings-pager__btn openings-pager__btn--nav"
+          [disabled]="page() === pages() || loading()"
+          (click)="goToPage(page() + 1)"
+        >
+          Next <i class="ti ti-chevron-right"></i>
+        </button>
+      </nav>
+      <p class="openings-pager__info">
+        Page {{ page() }} of {{ pages() }} · {{ total() }} openings
+      </p>
+    }
+
+  </div>
+</section>

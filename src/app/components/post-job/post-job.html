@@ -1,0 +1,204 @@
+<section class="post-job">
+  <div class="post-job__inner">
+    <a class="post-job__back" routerLink="/careers" fragment="openings">
+      <i class="ti ti-arrow-left"></i> All openings
+    </a>
+
+    @if (editId) {
+      <h1 class="post-job__title">Edit <span>Job Opening</span></h1>
+      <p class="post-job__hint">
+        Changes show up on the Careers page right away. Only fields marked
+        <b class="pj-req">*</b> are required.
+      </p>
+    } @else {
+      <h1 class="post-job__title">Post a <span>Job Opening</span></h1>
+      <p class="post-job__hint">
+        Your opening goes live on the Careers page right away. Only fields marked
+        <b class="pj-req">*</b> are required.
+      </p>
+    }
+
+    @if (loadingJob()) {
+      <p class="post-job__hint">Loading your job opening…</p>
+    }
+
+    <form class="post-job__card" (ngSubmit)="submit()">
+      <h2 class="post-job__section">Job basics</h2>
+      <div class="post-job__grid">
+        <label class="pj-field pj-field--wide">
+          <span>Job title <b class="pj-req">*</b></span>
+          <input type="text" name="title" maxlength="100" placeholder="e.g. Junior Software Engineer" [(ngModel)]="form.title" />
+        </label>
+        <label class="pj-field">
+          <span>Company <b class="pj-req">*</b></span>
+          <input type="text" name="company" maxlength="100" placeholder="Company name" [(ngModel)]="form.company" />
+        </label>
+        <label class="pj-field">
+          <span>Location <b class="pj-req">*</b></span>
+          <input type="text" name="location" maxlength="120" placeholder="e.g. Gurgaon, India" [(ngModel)]="form.location" />
+        </label>
+        <label class="pj-field">
+          <span>HR contact email <b class="pj-req">*</b></span>
+          <input type="email" name="apply_email" maxlength="120" placeholder="hr@company.com" [(ngModel)]="form.apply_email" />
+        </label>
+        <label class="pj-field">
+          <span>Apply link <b class="pj-req">*</b></span>
+          <input type="url" name="apply_link" maxlength="300" placeholder="https://company.com/careers/apply" [(ngModel)]="form.apply_link" />
+        </label>
+      </div>
+
+      <h2 class="post-job__section">More about the role <small>(optional)</small></h2>
+      <div class="post-job__grid">
+        <label class="pj-field">
+          <span>Category</span>
+          <select name="category" [(ngModel)]="form.category">
+            <option value="">Select category</option>
+            @for (c of categories(); track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        <label class="pj-field">
+          <span>Job type</span>
+          <select name="job_type" [(ngModel)]="form.job_type">
+            <option value="">Select job type</option>
+            @for (t of jobTypes(); track t) { <option [value]="t">{{ t }}</option> }
+          </select>
+        </label>
+        <label class="pj-field">
+          <span>Work mode</span>
+          <select name="work_mode" [(ngModel)]="form.work_mode">
+            <option value="">Select work mode</option>
+            @for (m of workModes(); track m) { <option [value]="m">{{ m }}</option> }
+          </select>
+        </label>
+        <label class="pj-field">
+          <span>Experience</span>
+          <select name="experience" [(ngModel)]="form.experience">
+            <option value="">Select experience</option>
+            @for (e of experienceLevels(); track e) { <option [value]="e">{{ e }}</option> }
+          </select>
+        </label>
+        <label class="pj-field">
+          <span>Vacancies</span>
+          <input type="number" name="vacancies" min="1" max="1000" placeholder="e.g. 2" [(ngModel)]="form.vacancies" />
+        </label>
+        <label class="pj-field">
+          <span>Deadline</span>
+          <input type="date" name="deadline" [min]="today" [(ngModel)]="form.deadline" />
+        </label>
+        <label class="pj-field">
+          <span>Office time</span>
+          <input type="text" name="office_time" maxlength="100" placeholder="e.g. Mon – Sat : 9 AM to 6 PM" [(ngModel)]="form.office_time" />
+        </label>
+        <label class="pj-field">
+          <span>Salary</span>
+          <input type="text" name="salary" maxlength="60" placeholder="e.g. ₹25,000 / month" [(ngModel)]="form.salary" />
+        </label>
+        <label class="pj-field pj-field--wide">
+          <span>Company description</span>
+          <textarea name="company_description" rows="3" maxlength="2000" placeholder="A few lines about the company" [(ngModel)]="form.company_description"></textarea>
+        </label>
+        <label class="pj-field pj-field--wide">
+          <span>Job description</span>
+          <textarea name="description" rows="6" maxlength="8000" placeholder="Responsibilities, qualifications, perks…" [(ngModel)]="form.description"></textarea>
+        </label>
+        <label class="pj-field pj-field--wide">
+          <span>Skills <small>(comma separated)</small></span>
+          <input type="text" name="skills" placeholder="e.g. Communication, Angular, Driving licence" [(ngModel)]="form.skills" />
+        </label>
+      </div>
+
+      <h2 class="post-job__section">Files <small>(optional)</small></h2>
+      <div class="pj-files">
+        <!-- Company logo -->
+        <div class="pj-file">
+          <span class="pj-file__label">Company logo</span>
+          <label class="pj-file__drop">
+            @if (previews().logo) {
+              <img class="pj-file__thumb pj-file__thumb--logo" [src]="previews().logo" alt="Logo preview" />
+            } @else if (existingFiles().logo && !removeFiles.logo) {
+              <img class="pj-file__thumb pj-file__thumb--logo" [src]="fileUrl(existingFiles().logo)" alt="Current logo" />
+            } @else {
+              <i class="ti ti-building"></i>
+            }
+            <span class="pj-file__name">{{ files.logo?.name || (existingFiles().logo ? 'Replace logo' : 'Choose logo') }}</span>
+            <small>PNG, JPG or WEBP · max 2 MB</small>
+            <input #logoInput type="file" accept="image/png,image/jpeg,image/webp" (change)="onFile('logo', $event)" />
+          </label>
+          @if (files.logo) {
+            <button type="button" class="pj-file__clear" (click)="clearFile('logo', logoInput)">Remove</button>
+          }
+          @if (existingFiles().logo && !files.logo) {
+            <label class="pj-file__current">
+              <input type="checkbox" name="remove_logo" [(ngModel)]="removeFiles.logo" />
+              Remove current logo
+              <a [href]="fileUrl(existingFiles().logo)" target="_blank" rel="noopener">(view)</a>
+            </label>
+          }
+        </div>
+
+        <!-- Opening image -->
+        <div class="pj-file">
+          <span class="pj-file__label">Opening image</span>
+          <label class="pj-file__drop">
+            @if (previews().image) {
+              <img class="pj-file__thumb" [src]="previews().image" alt="Image preview" />
+            } @else if (existingFiles().image && !removeFiles.image) {
+              <img class="pj-file__thumb" [src]="fileUrl(existingFiles().image)" alt="Current image" />
+            } @else {
+              <i class="ti ti-photo"></i>
+            }
+            <span class="pj-file__name">{{ files.image?.name || (existingFiles().image ? 'Replace image' : 'Choose image') }}</span>
+            <small>Job poster · max 5 MB</small>
+            <input #imageInput type="file" accept="image/png,image/jpeg,image/webp" (change)="onFile('image', $event)" />
+          </label>
+          @if (files.image) {
+            <button type="button" class="pj-file__clear" (click)="clearFile('image', imageInput)">Remove</button>
+          }
+          @if (existingFiles().image && !files.image) {
+            <label class="pj-file__current">
+              <input type="checkbox" name="remove_image" [(ngModel)]="removeFiles.image" />
+              Remove current image
+              <a [href]="fileUrl(existingFiles().image)" target="_blank" rel="noopener">(view)</a>
+            </label>
+          }
+        </div>
+
+        <!-- PDF -->
+        <div class="pj-file">
+          <span class="pj-file__label">PDF file</span>
+          <label class="pj-file__drop">
+            <i class="ti ti-file-type-pdf"></i>
+            <span class="pj-file__name">{{ files.pdf?.name || (existingFiles().pdf ? 'Replace PDF' : 'Choose PDF') }}</span>
+            <small>Job description PDF · max 10 MB</small>
+            <input #pdfInput type="file" accept="application/pdf" (change)="onFile('pdf', $event)" />
+          </label>
+          @if (files.pdf) {
+            <button type="button" class="pj-file__clear" (click)="clearFile('pdf', pdfInput)">Remove</button>
+          }
+          @if (existingFiles().pdf && !files.pdf) {
+            <label class="pj-file__current">
+              <input type="checkbox" name="remove_pdf" [(ngModel)]="removeFiles.pdf" />
+              Remove current PDF
+              <a [href]="fileUrl(existingFiles().pdf)" target="_blank" rel="noopener">(view)</a>
+            </label>
+          }
+        </div>
+      </div>
+
+      @if (error()) {
+        <p class="post-job__error">{{ error() }}</p>
+      }
+
+      <div class="post-job__actions">
+        <a class="pj-btn pj-btn--ghost" [routerLink]="editId ? '/careers/mine' : '/careers'">Cancel</a>
+        <button type="submit" class="pj-btn pj-btn--primary" [disabled]="saving() || loadingJob()">
+          @if (editId) {
+            {{ saving() ? 'Saving…' : 'Save Changes' }}
+          } @else {
+            {{ saving() ? 'Posting…' : 'Post Job' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

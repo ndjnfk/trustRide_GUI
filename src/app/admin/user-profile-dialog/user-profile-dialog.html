@@ -87,6 +87,64 @@
     </ng-template>
   </div>
 
+  <!-- Wallet — platform fee jo user par baaki hai -->
+  <div class="wallet-section">
+    <div class="wallet-head">
+      <label class="travel-label">Wallet</label>
+      @if (!walletLoading() && !walletError()) {
+        <span class="wallet-rides">{{ walletTx().length }} {{ walletTx().length === 1 ? 'ride' : 'rides' }}</span>
+      }
+    </div>
+
+    @if (walletLoading()) {
+      <span class="travel-empty">Loading wallet…</span>
+    } @else if (walletError()) {
+      <span class="wallet-error">{{ walletError() }}</span>
+    } @else {
+      <div class="wallet-total">
+        <span class="wallet-total__label">Total fees due</span>
+        <span class="wallet-total__amount">₹{{ walletDue() | number: '1.0-2' }}</span>
+      </div>
+
+      @if (walletTx().length) {
+        <div class="wallet-table-wrap">
+          <table class="wallet-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Ride</th>
+                <th>Role</th>
+                <th class="num">Seats</th>
+                <th class="num">Fee / seat</th>
+                <th class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of walletTx(); track tx._id) {
+                <tr>
+                  <td class="nowrap">{{ tx.created_at | date: 'dd MMM yyyy' }}</td>
+                  <td>{{ tx.from || '—' }} → {{ tx.to || '—' }}</td>
+                  <td>
+                    @if (tx.role) {
+                      <span class="wallet-role" [class.wallet-role--rider]="tx.role === 'rider'">{{ tx.role }}</span>
+                    } @else {
+                      —
+                    }
+                  </td>
+                  <td class="num">{{ tx.seats ?? '—' }}</td>
+                  <td class="num">{{ tx.fee_per_seat != null ? '₹' + tx.fee_per_seat : '—' }}</td>
+                  <td class="num strong">₹{{ tx.amount | number: '1.0-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <span class="travel-empty">No completed rides yet — nothing due.</span>
+      }
+    }
+  </div>
+
   <div class="dialog-actions">
     <button mat-flat-button mat-dialog-close>
       Close

@@ -1,0 +1,164 @@
+/* ── Layout (matches other admin pages with the fixed sidebar) ── */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f8;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 28px 24px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.jobs-container {
+  max-width: 1250px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1e2d;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.total-badge {
+  background: #4f46e5;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+.approved-badge {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+.page-hint {
+  font-size: 13px;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.search-input {
+  max-width: 380px;
+}
+
+.status-filter {
+  max-width: 180px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+/* ── Job row ── */
+.job-row--off {
+  opacity: 0.75;
+  background: #fafafa;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+.job-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1e2d;
+}
+
+.status-on {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+}
+
+.status-closed {
+  background: #e5e7eb;
+  color: #4b5563;
+  font-size: 11px;
+}
+
+.status-off {
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 11px;
+}
+
+.job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.job-poster {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.job-poster strong {
+  color: #4f46e5;
+}
+
+.job-logo {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid #eef0f4;
+}
+
+.job-logo--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #eef2ff;
+  border: none;
+}
+
+.job-files {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.edit-form {
+  padding-top: 14px;
+  border-top: 1px solid #eef0f4;
+}
+
+/* ── Mobile — sidebar drawer ban jaata hai ── */
+@media (max-width: 767.98px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 20px 14px;
+  }
+
+  .search-input,
+  .status-filter {
+    max-width: none;
+  }
+
+  .job-actions {
+    width: 100%;
+  }
+}

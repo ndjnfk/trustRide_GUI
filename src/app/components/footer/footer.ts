@@ -28,7 +28,7 @@ export class Footer {
     company: [
       { label: 'About Us',     route: '/about'   },
       { label: 'Blog',         route: '/blog'    },
-      // { label: 'Careers',      route: '/careers' },
+      { label: 'Careers',      route: '/careers' },
       // { label: 'Press Kit',    route: '/press'   },
     ],
     support: [

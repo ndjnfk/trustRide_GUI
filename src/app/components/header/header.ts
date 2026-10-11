@@ -148,6 +148,7 @@ getInitials(name: string): string {
     { label: 'My Rides', route: '/get-ride', icon: 'car' },
     { label: 'Explore Rides', route: '/available-rides', icon: 'compass' },
     { label: 'My Bookings', route: '/get-bookings', icon: 'ticket' },
+    { label: 'Jobs', route: '/careers', icon: 'briefcase' },
     // Medical Emergency / Marketplace / Track Orders filhaal website se band —
     // admin panel me pages chaalu hain. Wapas chalu karne ke liye uncomment karo.
     // { label: 'Medical Emergency', route: '/medical-emergency', icon: 'medical' },
@@ -156,6 +157,7 @@ getInitials(name: string): string {
     { label: 'Profile', route: '/about-you', icon: 'user' },
     { label: 'Company Members', route: '/company-members', icon: 'users' },
     { label: 'Rating', route: '/rating-show', icon: 'star' },
+    { label: 'My Job Posts', route: '/careers/mine', icon: 'briefcase' },
     // Update Rides / User Preferences Matched filhaal band — laptop dropdown
     // (header.html) se bhi hata diye hain. Wapas dikhane ke liye ye lines aur
     // header.html ke wo blocks uncomment karo.

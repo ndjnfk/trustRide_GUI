@@ -4,13 +4,27 @@
   <div class="rl-header">
     <div class="rl-header-text">
       <div class="rl-label rl-label-blue">Published by our community</div>
-      <h1 class="rl-title">TrustRideSRE Rides</h1>
-      <p class="rl-sub">
-        Every live ride with its shareable link. Tap a ride to see full details, or copy
-        the link to send it to someone.
-      </p>
+      @if (lockedRoute) {
+        <h1 class="rl-title">{{ lockedRoute.label }}</h1>
+        <p class="rl-sub">
+          Upcoming TrustRideSRE rides on this route, day by day. Tap a ride to see full
+          details — you'll only need to log in when you book a seat.
+        </p>
+      } @else {
+        <h1 class="rl-title">TrustRideSRE Rides</h1>
+        <p class="rl-sub">
+          Every live ride with its shareable link. Tap a ride to see full details, or copy
+          the link to send it to someone.
+        </p>
+      }
     </div>
     <div class="rl-header-actions">
+      @if (lockedRoute) {
+        <button class="rl-switch" type="button" (click)="reverseRoute()" aria-label="Reverse direction">
+          <i class="ti ti-arrows-exchange"></i>
+          <span class="rl-desktop-only">Reverse direction</span>
+        </button>
+      }
       <button class="rl-switch rl-desktop-only" type="button" (click)="goToSearch()">
         <i class="ti ti-search"></i> Search rides
       </button>
@@ -36,6 +50,8 @@
 
   <!-- Filters -->
   <div class="rl-filters" [class.is-open]="showFilters">
+    <!-- Route page (/rides/:route) par route URL se fix hai — dropdown nahi. -->
+    @if (!lockedRoute) {
     <div class="rl-field">
       <label class="rl-field-label" id="tr-route-label">Route</label>
       <!-- Custom dropdown — native select ka option list browser render karta
@@ -74,6 +90,7 @@
         }
       </div>
     </div>
+    }
 
     <div class="rl-field">
       <label class="rl-field-label" for="tr-date">Date</label>
@@ -81,6 +98,7 @@
         id="tr-date"
         type="date"
         class="rl-input"
+        [min]="today"
         [(ngModel)]="filterDate"
         (ngModelChange)="applyFilters()"
       />
@@ -112,8 +130,15 @@
     </div>
 
     @if (rides.length) {
-      <div class="row g-3">
-        @for (ride of pagedRides; track ride.ride_id) {
+      <!-- Date-wise groups: Today, Tomorrow, phir aage — purane din kabhi nahi. -->
+      @for (group of rideGroups; track group.date) {
+      <div class="rl-day">
+        <span class="rl-day-label">{{ group.label }}</span>
+        <span class="rl-day-sub">{{ group.sub }}</span>
+        <span class="rl-day-count">{{ group.rides.length }} ride{{ group.rides.length === 1 ? '' : 's' }}</span>
+      </div>
+      <div class="row g-3 rl-day-rides">
+        @for (ride of group.rides; track ride.ride_id) {
           <div class="col-12 col-md-6 col-xl-4">
             <!-- Ride ka apna shareable link — anchor hai, isliye new tab / copy
                  link sab browser ke normal tareeke se chalta hai. -->
@@ -135,7 +160,7 @@
               </div>
 
               <div class="rl-meta">
-                <span><i class="ti ti-clock"></i> {{ formatDateTime(ride.departure_time) }}</span>
+                <span><i class="ti ti-clock"></i> {{ formatTime(ride.departure_time) }}</span>
                 <span><i class="ti ti-user"></i> {{ ride.driver_name }}</span>
                 <span>
                   <i class="ti ti-armchair"></i>
@@ -153,6 +178,7 @@
           </div>
         }
       </div>
+      }
 
       @if (totalPages > 1) {
         <nav class="rl-pager" aria-label="Ride list pages">
@@ -204,9 +230,9 @@
         <div class="rl-empty-icon">🚗</div>
         <p>
           @if (hasFilters) {
-            No rides match these filters. Try a different date or route.
+            No rides match these filters. Try a different date{{ lockedRoute ? '' : ' or route' }}.
           } @else {
-            No live rides right now. Check back soon.
+            No upcoming rides{{ lockedRoute ? ' on this route' : '' }} right now. Check back soon.
           }
         </p>
         @if (hasFilters) {

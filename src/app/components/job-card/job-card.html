@@ -1,0 +1,38 @@
+@let j = job();
+<article class="job-card" role="link" tabindex="0" (click)="open()" (keydown.enter)="open()">
+  <div class="job-card__main">
+    <h3 class="job-card__title">{{ j.title }}</h3>
+    <div class="job-card__meta">
+      @if (!teaser()) {
+        <span class="job-card__company"><i class="ti ti-briefcase"></i>{{ j.company }}</span>
+      }
+      <span class="job-card__location"><i class="ti ti-map-pin"></i>{{ j.location }}</span>
+      @if (j.work_mode) {
+        <span class="job-card__pill">{{ j.work_mode }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="job-card__date">
+    @if (j.deadline) {
+      <span class="job-card__deadline">{{ j.deadline | date: 'dd MMM, yyyy' }}</span>
+    } @else {
+      <span class="job-card__deadline">Apply anytime</span>
+    }
+    @if (j.vacancies) {
+      <span class="job-card__vacancies">No of vacancies: {{ j.vacancies }}</span>
+    } @else {
+      <span class="job-card__vacancies">Posted {{ j.created_at | date: 'dd MMM, yyyy' }}</span>
+    }
+  </div>
+
+  @if (!teaser()) {
+    <div class="job-card__action">
+      <a class="job-card__apply" [routerLink]="['/careers', j._id]" (click)="$event.stopPropagation()">
+        Apply Now
+      </a>
+    </div>
+  }
+
+  <p class="job-card__posted">Posted by {{ j.posted_by_name || 'TrustRide user' }}</p>
+</article>

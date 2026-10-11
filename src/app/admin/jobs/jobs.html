@@ -1,0 +1,239 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="jobs-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex flex-wrap align-items-center gap-2 mb-2">
+        <h1 class="page-title m-0">Job Openings</h1>
+        <span class="badge rounded-pill total-badge">{{ jobs().length }}</span>
+        <span class="badge rounded-pill approved-badge">{{ approvedCount() }} live</span>
+      </div>
+
+      <p class="page-hint text-muted mb-3">
+        Openings posted by users on the public <strong>Careers</strong> page. New openings are
+        approved by default — disapprove one to hide it from the Careers page.
+      </p>
+
+      <!-- Filters -->
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <input
+          type="search"
+          class="form-control search-input"
+          placeholder="Search title, company, location or poster"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+        />
+        <select class="form-select status-filter" [ngModel]="status()" (ngModelChange)="status.set($event)">
+          <option value="">All statuses</option>
+          <option value="approved">Approved</option>
+          <option value="disapproved">Disapproved</option>
+        </select>
+      </div>
+
+      @if (error()) {
+        <div class="alert alert-danger py-2">{{ error() }}</div>
+      }
+      @if (loading()) {
+        <p class="text-muted">Loading…</p>
+      } @else if (filtered().length === 0) {
+        <div class="card border-0 shadow-sm"><div class="card-body text-muted">No job openings found.</div></div>
+      }
+
+      <div class="d-flex flex-column gap-3">
+        @for (job of filtered(); track job._id) {
+          <div class="card job-row border-0 shadow-sm" [class.job-row--off]="!job.is_approved">
+            <div class="card-body">
+
+              <div class="d-flex flex-wrap align-items-start gap-3">
+                @if (job.logo_url) {
+                  <img class="job-logo" [src]="fileUrl(job.logo_url)" [alt]="job.company" />
+                } @else {
+                  <div class="job-logo job-logo--empty">{{ (job.company || '?').charAt(0).toUpperCase() }}</div>
+                }
+                <div class="flex-grow-1 min-w-0">
+                  <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                    <h2 class="job-title m-0">{{ job.title }}</h2>
+                    @if (job.is_approved) {
+                      <span class="badge rounded-pill status-on">Approved</span>
+                    } @else {
+                      <span class="badge rounded-pill status-off">Disapproved</span>
+                    }
+                    @if (job.is_closed) {
+                      <span class="badge rounded-pill status-closed">Closed by poster</span>
+                    }
+                  </div>
+                  <div class="job-meta">
+                    <span><strong>{{ job.company }}</strong></span>
+                    <span>{{ job.location }}</span>
+                    <span>{{ job.apply_email }}</span>
+                    @if (job.category) { <span>{{ job.category }}</span> }
+                    @if (job.job_type || job.work_mode) {
+                      <span>{{ job.job_type }}{{ job.job_type && job.work_mode ? ' · ' : '' }}{{ job.work_mode }}</span>
+                    }
+                    @if (job.vacancies) { <span>{{ job.vacancies }} vacancies</span> }
+                    @if (job.deadline) { <span>Deadline {{ job.deadline | date: 'dd MMM yyyy' }}</span> }
+                  </div>
+                  @if (job.image_url || job.pdf_url) {
+                    <div class="job-files">
+                      @if (job.image_url) {
+                        <a [href]="fileUrl(job.image_url)" target="_blank" rel="noopener">🖼️ Opening image</a>
+                      }
+                      @if (job.pdf_url) {
+                        <a [href]="fileUrl(job.pdf_url)" target="_blank" rel="noopener">📄 PDF</a>
+                      }
+                    </div>
+                  }
+                  <div class="job-poster">
+                    Posted by <strong>{{ job.posted_by_name || 'Unknown user' }}</strong>
+                    @if (job.posted_by_email) { <span class="text-muted ms-1">({{ job.posted_by_email }})</span> }
+                    · {{ job.created_at | date: 'dd MMM yyyy, h:mm a' }}
+                  </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 job-actions">
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [class.btn-outline-warning]="job.is_approved"
+                    [class.btn-outline-success]="!job.is_approved"
+                    [disabled]="busyId() === job._id"
+                    (click)="toggle(job)"
+                  >
+                    {{ job.is_approved ? 'Disapprove' : 'Approve' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    (click)="editingId() === job._id ? cancelEdit() : startEdit(job)"
+                  >
+                    {{ editingId() === job._id ? 'Close' : 'Edit' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    [disabled]="busyId() === job._id"
+                    (click)="remove(job)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              <!-- Inline edit -->
+              @if (editingId() === job._id) {
+                <form class="row g-2 mt-3 edit-form" (ngSubmit)="saveEdit(job)">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label field-label">Job title *</label>
+                    <input class="form-control" name="title" [(ngModel)]="editForm.title" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label field-label">Company *</label>
+                    <input class="form-control" name="company" [(ngModel)]="editForm.company" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label field-label">Location *</label>
+                    <input class="form-control" name="location" [(ngModel)]="editForm.location" />
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <label class="form-label field-label">Category</label>
+                    <select class="form-select" name="category" [(ngModel)]="editForm.category">
+                      <option value="">—</option>
+                      @for (c of categories(); track c) { <option [value]="c">{{ c }}</option> }
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <label class="form-label field-label">Experience</label>
+                    <select class="form-select" name="experience" [(ngModel)]="editForm.experience">
+                      <option value="">—</option>
+                      @for (e of experienceLevels(); track e) { <option [value]="e">{{ e }}</option> }
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label field-label">Job type</label>
+                    <select class="form-select" name="job_type" [(ngModel)]="editForm.job_type">
+                      <option value="">—</option>
+                      @for (t of jobTypes(); track t) { <option [value]="t">{{ t }}</option> }
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label field-label">Work mode</label>
+                    <select class="form-select" name="work_mode" [(ngModel)]="editForm.work_mode">
+                      <option value="">—</option>
+                      @for (m of workModes(); track m) { <option [value]="m">{{ m }}</option> }
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label field-label">Vacancies</label>
+                    <input type="number" min="1" class="form-control" name="vacancies" [(ngModel)]="editForm.vacancies" />
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label field-label">Deadline</label>
+                    <input type="date" class="form-control" name="deadline" [(ngModel)]="editForm.deadline" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label field-label">Office time</label>
+                    <input class="form-control" name="office_time" [(ngModel)]="editForm.office_time" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label field-label">Salary</label>
+                    <input class="form-control" name="salary" [(ngModel)]="editForm.salary" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label field-label">HR contact email *</label>
+                    <input type="email" class="form-control" name="apply_email" [(ngModel)]="editForm.apply_email" />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label field-label">Apply link *</label>
+                    <input type="url" class="form-control" name="apply_link" [(ngModel)]="editForm.apply_link" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label field-label">Skills (comma separated)</label>
+                    <input class="form-control" name="skills" [(ngModel)]="editForm.skills" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label field-label">Company description</label>
+                    <textarea class="form-control" rows="2" name="company_description" [(ngModel)]="editForm.company_description"></textarea>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label field-label">Job description</label>
+                    <textarea class="form-control" rows="5" name="description" [(ngModel)]="editForm.description"></textarea>
+                  </div>
+                  @for (f of fileKinds; track f.kind) {
+                    <div class="col-12 col-md-4">
+                      <label class="form-label field-label">{{ f.label }}</label>
+                      <input type="file" class="form-control form-control-sm" [accept]="f.accept" (change)="onEditFile(f.kind, $event)" />
+                      @if (fileOf(job, f.kind) && !editFiles[f.kind]) {
+                        <div class="form-check mt-1">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [id]="'rm-' + f.kind + job._id"
+                            [name]="'remove_' + f.kind"
+                            [(ngModel)]="removeFiles[f.kind]"
+                          />
+                          <label class="form-check-label small" [for]="'rm-' + f.kind + job._id">
+                            Remove current
+                            <a [href]="fileUrl(fileOf(job, f.kind))" target="_blank" rel="noopener">(view)</a>
+                          </label>
+                        </div>
+                      }
+                    </div>
+                  }
+                  <div class="col-12 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-sm btn-light" (click)="cancelEdit()">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary" [disabled]="savingId() === job._id">
+                      {{ savingId() === job._id ? 'Saving…' : 'Save changes' }}
+                    </button>
+                  </div>
+                </form>
+              }
+
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+  </main>
+</div>

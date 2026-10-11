@@ -1,0 +1,552 @@
+/* ══════════════════════════════════════
+   CAREERS HERO
+   Blue diagonal background (clip-path) + text left, illustration right.
+   Desktop ≥ 992px · Tablet 576–991px · Phone < 576px
+══════════════════════════════════════ */
+.careers-hero {
+  position: relative;
+  /* header fixed hai — uske neeche se shuru karo */
+  margin-top: var(--h-height);
+  min-height: 810px;
+  background: #ffffff;
+  overflow: hidden;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+}
+
+.careers-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #0057ff;
+  clip-path: polygon(0 0, 100% 0, 100% 13%, 0 92%);
+  z-index: 0;
+}
+
+.careers-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 15px;
+  min-height: inherit;
+}
+
+/* ── Text ── */
+.careers-hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 500px;
+  padding-top: 100px;
+  color: #ffffff;
+}
+
+.careers-hero__eyebrow {
+  margin: 0 0 6px;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.careers-hero__title {
+  margin: 0 0 30px;
+  font-family: inherit;
+  font-size: 96px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.careers-hero__text {
+  margin: 0 0 54px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 2;
+}
+
+.careers-hero__btn {
+  display: inline-block;
+  padding: 18px 34px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  background: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 34px;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.careers-hero__btn:hover,
+.careers-hero__btn:focus-visible {
+  background: #ffffff;
+  color: #0057ff;
+  outline: none;
+}
+
+/* ── Illustration ── */
+.careers-hero__art {
+  position: absolute;
+  top: 20px;
+  left: 530px;
+  width: 600px;
+  z-index: 1;
+}
+
+.careers-hero__art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ══ Tablet ══ */
+@media (max-width: 991.98px) {
+  .careers-hero {
+    min-height: 560px;
+  }
+
+  .careers-hero__inner {
+    max-width: none;
+    padding: 0 22px;
+  }
+
+  .careers-hero__content {
+    max-width: 330px;
+    padding-top: 72px;
+  }
+
+  .careers-hero__eyebrow {
+    font-size: 32px;
+    margin-bottom: 2px;
+  }
+
+  .careers-hero__title {
+    font-size: 68px;
+    margin-bottom: 14px;
+  }
+
+  .careers-hero__text {
+    font-size: 17px;
+    line-height: 1.9;
+    margin-bottom: 30px;
+  }
+
+  .careers-hero__btn {
+    padding: 13px 22px;
+    font-size: 16px;
+  }
+
+  .careers-hero__art {
+    top: 38px;
+    left: auto;
+    right: 0;
+    width: min(52%, 390px);
+  }
+}
+
+/* ══ Phone ══ */
+@media (max-width: 575.98px) {
+  .careers-hero {
+    min-height: 0;
+  }
+
+  .careers-hero::before {
+    clip-path: polygon(0 0, 100% 0, 100% 53%, 0 91%);
+  }
+
+  .careers-hero__inner {
+    padding: 0 20px 40px;
+  }
+
+  .careers-hero__content {
+    max-width: none;
+    padding-top: 36px;
+  }
+
+  .careers-hero__eyebrow {
+    font-size: 28px;
+  }
+
+  .careers-hero__title {
+    font-size: 52px;
+    margin-bottom: 12px;
+  }
+
+  .careers-hero__text {
+    font-size: 15px;
+    line-height: 2;
+    margin-bottom: 30px;
+  }
+
+  .careers-hero__btn {
+    padding: 12px 20px;
+  }
+
+  .careers-hero__art {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-width: 320px;
+    margin: 28px auto 0;
+  }
+}
+
+/* ══════════════════════════════════════
+   OPENINGS — heading, filters, job cards
+══════════════════════════════════════ */
+.careers-openings {
+  scroll-margin-top: var(--h-height);
+  background: #edf3fd;
+  padding: 90px 0 100px;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+}
+
+.careers-openings__inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.openings-title {
+  margin: 0 0 12px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 46px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #0b1460;
+}
+
+.openings-title__accent {
+  color: #2770e8;
+}
+
+.openings-post {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 36px;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.openings-post__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2770e8;
+  background: #ffffff;
+  border: 1px solid #c9dbf8;
+  border-radius: 30px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.openings-post__mine {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2770e8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.openings-post__btn:hover {
+  background: #2770e8;
+  color: #ffffff;
+}
+
+/* ══════════════════════════════════════
+   FILTER — ek rounded search bar: icon wale fields, beech me divider,
+   solid blue Search aur halka Reset.
+══════════════════════════════════════ */
+.openings-filter {
+  display: flex;
+  align-items: stretch;
+  margin: 0 auto 46px;
+  max-width: 1000px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e3eaf7;
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(11, 20, 96, 0.08);
+}
+
+.openings-filter__group {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.openings-filter__group + .openings-filter__group::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background: #e5e9f2;
+}
+
+.openings-filter__group:focus-within {
+  background: #f3f7ff;
+}
+
+.openings-filter__group:focus-within::before,
+.openings-filter__group:focus-within + .openings-filter__group::before {
+  opacity: 0;
+}
+
+.openings-filter__icon {
+  flex-shrink: 0;
+  font-size: 19px;
+  color: #0057ff;
+}
+
+.openings-filter__label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 10px 0;
+}
+
+.openings-filter__caption {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #9aa3b5;
+}
+
+.openings-filter__field {
+  width: 100%;
+  padding: 2px 0 0;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #0b1460;
+  background: transparent;
+  border: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  text-overflow: ellipsis;
+}
+
+.openings-filter__field::placeholder {
+  font-weight: 400;
+  color: #a0a8b8;
+}
+
+select.openings-filter__field {
+  padding-right: 22px;
+  cursor: pointer;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa3b5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
+    right center / 16px no-repeat;
+}
+
+.openings-filter__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 8px;
+}
+
+.openings-filter__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 52px;
+  padding: 0 26px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.openings-filter__btn--submit {
+  color: #ffffff;
+  background: #0057ff;
+  box-shadow: 0 8px 20px rgba(0, 87, 255, 0.28);
+}
+
+.openings-filter__btn--submit:hover {
+  background: #0042cc;
+}
+
+.openings-filter__btn--reset {
+  padding: 0 16px;
+  color: #6b7280;
+  background: transparent;
+}
+
+.openings-filter__btn--reset:hover {
+  color: #0b1460;
+  background: #f1f4fa;
+}
+
+/* Tablet: teen fields ek line, buttons neeche poori chaudai */
+@media (max-width: 991.98px) {
+  .openings-filter {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .openings-filter__actions {
+    flex-basis: 100%;
+    padding: 6px 0 0;
+    border-top: 1px solid #eef1f7;
+  }
+
+  .openings-filter__btn--submit {
+    flex: 1;
+  }
+}
+
+/* Phone: sab ek ke neeche ek */
+@media (max-width: 575.98px) {
+  .openings-filter {
+    flex-direction: column;
+    padding: 6px;
+    border-radius: 16px;
+  }
+
+  .openings-filter__group {
+    flex: none;
+    padding: 0 14px;
+  }
+
+  .openings-filter__group + .openings-filter__group::before {
+    top: 0;
+    bottom: auto;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    height: 1px;
+  }
+}
+
+/* ── Pagination ── */
+.openings-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 36px;
+}
+
+.openings-pager__btn {
+  min-width: 42px;
+  height: 42px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2770e8;
+  background: #ffffff;
+  border: 1px solid #d6e2fb;
+  border-radius: 10px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.openings-pager__btn:hover:not(:disabled) {
+  border-color: #2770e8;
+}
+
+.openings-pager__btn--active,
+.openings-pager__btn--active:hover:not(:disabled) {
+  color: #ffffff;
+  background: #2770e8;
+  border-color: #2770e8;
+}
+
+.openings-pager__btn:disabled:not(.openings-pager__btn--active) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.openings-pager__gap {
+  padding: 0 4px;
+  color: #9ca3af;
+}
+
+.openings-pager__info {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.openings-empty {
+  margin: 0 0 24px;
+  text-align: center;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* ── Job card ── */
+.openings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ══ Openings — tablet ══ */
+@media (max-width: 991.98px) {
+  .careers-openings {
+    padding: 70px 0 80px;
+  }
+
+  .careers-openings__inner {
+    padding: 0 22px;
+  }
+
+  .openings-title {
+    font-size: 40px;
+  }
+}
+
+/* ══ Openings — phone ══ */
+@media (max-width: 575.98px) {
+  .openings-pager__btn--nav {
+    flex: 1 1 40%;
+    order: 1;
+  }
+
+  .careers-openings {
+    padding: 50px 0 60px;
+  }
+
+  .openings-title {
+    font-size: 34px;
+  }
+
+  .openings-title__accent {
+    display: block;
+  }
+
+  .openings-post {
+    margin-bottom: 20px;
+  }
+}

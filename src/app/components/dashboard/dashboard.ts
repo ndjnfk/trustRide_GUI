@@ -14,7 +14,6 @@ import { getSkippedReviewRides } from '../../helpers/review-skip';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
-
   constructor(
     private router: Router,
     private rideService: Ride
@@ -50,6 +49,7 @@ export class Dashboard {
 
     this.checkPendingReviews();
   }
+
   loadStyle(
     id: string,
     href: string,
@@ -80,8 +80,14 @@ export class Dashboard {
   }
 
   // Home par ab search form nahi hai — dono ride sources yahin se khulte hain.
+  // TrustRideSRE tile — seedha search page (from / to chun kar rides dhoondo).
   goToTrustRideRides(): void {
-    this.router.navigate(['/trustride-rides']);
+    this.router.navigate(['/search-rides']);
+  }
+
+  // Home ke route cards — /rides/saharanpur-gurgaon ya /rides/gurgaon-saharanpur.
+  goToRouteRides(routeId: string): void {
+    this.router.navigate(['/rides', routeId]);
   }
 
   goToBlablaRides(): void {

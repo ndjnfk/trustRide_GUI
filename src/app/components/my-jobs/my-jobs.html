@@ -1,0 +1,72 @@
+<section class="my-jobs">
+  <div class="my-jobs__inner">
+    <a class="my-jobs__back" routerLink="/careers" fragment="openings">
+      <i class="ti ti-arrow-left"></i> All openings
+    </a>
+
+    <div class="my-jobs__head">
+      <h1 class="my-jobs__title">My <span>Job Posts</span></h1>
+      <a class="my-jobs__new" routerLink="/careers/post"><i class="ti ti-plus"></i> Post a Job</a>
+    </div>
+
+    @if (loading()) {
+      <p class="my-jobs__state">Loading…</p>
+    } @else if (error()) {
+      <p class="my-jobs__state">{{ error() }}</p>
+    } @else if (jobs().length === 0) {
+      <p class="my-jobs__state">You haven't posted any job openings yet.</p>
+    }
+
+    <div class="my-jobs__list">
+      @for (job of jobs(); track job._id) {
+        <article class="my-job">
+          @if (job.logo_url) {
+            <img class="my-job__logo" [src]="fileUrl(job.logo_url)" [alt]="job.company" />
+          } @else {
+            <div class="my-job__logo my-job__logo--empty">{{ (job.company || '?').charAt(0).toUpperCase() }}</div>
+          }
+
+          <div class="my-job__body">
+            <div class="my-job__top">
+              <h2 class="my-job__name">{{ job.title }}</h2>
+              @if (job.is_closed) {
+                <span class="my-job__status my-job__status--closed">Closed</span>
+              } @else if (job.is_approved) {
+                <span class="my-job__status my-job__status--live">Live</span>
+              }
+              @if (!job.is_approved) {
+                <span class="my-job__status my-job__status--hidden">Hidden by admin</span>
+              }
+            </div>
+            <p class="my-job__meta">
+              {{ job.company }} · {{ job.location }} · Posted {{ job.created_at | date: 'dd MMM yyyy' }}
+            </p>
+          </div>
+
+          <div class="my-job__actions">
+            @if (job.is_approved && !job.is_closed) {
+              <a class="my-job__btn my-job__btn--ghost" [routerLink]="['/careers', job._id]">View</a>
+            }
+            <a class="my-job__btn" [routerLink]="['/careers', job._id, 'edit']">
+              <i class="ti ti-pencil"></i> Edit
+            </a>
+            <button
+              type="button"
+              class="my-job__btn"
+              [class.my-job__btn--danger]="!job.is_closed"
+              [class.my-job__btn--success]="job.is_closed"
+              [disabled]="busyId() === job._id"
+              (click)="toggleClose(job)"
+            >
+              @if (job.is_closed) {
+                <i class="ti ti-refresh"></i> Reopen
+              } @else {
+                <i class="ti ti-circle-x"></i> Close
+              }
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

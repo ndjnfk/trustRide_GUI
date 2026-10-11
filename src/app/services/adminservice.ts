@@ -839,4 +839,39 @@ deleteAllRideClicks(): Observable<RideClickDeleteResponse> {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }
+
+// ── Careers — job openings ───────────────────────────────────────
+// Saari openings (approved + disapproved) kisne daali uske naam ke saath.
+getJobs(): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/jobs`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// Multipart — logo/image/pdf replace ho sakti hain.
+updateJob(id: string, payload: FormData): Observable<any> {
+  return this.http.put(`${this.API_URL}/admin/jobs/${id}`, payload, {
+    headers: this.authOnlyHeader()
+  });
+}
+
+// Approve ⇄ disapprove — disapproved opening careers page par nahi dikhti.
+toggleJob(id: string): Observable<any> {
+  return this.http.patch(`${this.API_URL}/admin/jobs/${id}/toggle`, {}, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+deleteJob(id: string): Observable<any> {
+  return this.http.delete(`${this.API_URL}/admin/jobs/${id}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// User ka wallet — total fee due + har ride ka fee record (eye dialog).
+getUserWallet(userId: string): Observable<any> {
+  return this.http.get(`${this.API_URL}/admin/userWallet/${userId}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
 }

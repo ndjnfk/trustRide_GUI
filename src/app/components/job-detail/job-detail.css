@@ -1,0 +1,385 @@
+/* ══════════════════════════════════════
+   JOB DETAIL
+   Desktop: summary card left, company/skills right, description full width.
+   Tablet/phone: sab ek column me.
+══════════════════════════════════════ */
+.job-page {
+  position: relative;
+  margin-top: var(--h-height);
+  padding: 0 0 80px;
+  background: #f5f6fb;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  color: #1f2937;
+}
+
+/* upar ki halki mint patti — card iske upar se shuru hota hai */
+.job-page__band {
+  height: 150px;
+  margin: 0 24px;
+  background: #e0fbf4;
+}
+
+.job-page__inner {
+  max-width: 1040px;
+  margin: -130px auto 0;
+  padding: 0 24px;
+  position: relative;
+}
+
+.job-page__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.job-page__edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  background: #2770e8;
+  border-radius: 20px;
+}
+
+.job-page__edit:hover {
+  color: #ffffff;
+  background: #1d5fd0;
+}
+
+.job-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #2770e8;
+}
+
+.job-page__state {
+  padding: 60px 24px;
+  text-align: center;
+  color: #6b7280;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.job-top {
+  display: grid;
+  grid-template-columns: 370px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Summary card ── */
+.job-summary {
+  padding: 36px 38px 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(17, 24, 39, 0.04);
+}
+
+.job-summary__head {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 38px;
+}
+
+.job-summary__logo {
+  flex-shrink: 0;
+  width: 75px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 600;
+  color: #4f7cf7;
+  background: #e3e8fb;
+  border-radius: 4px;
+}
+
+.job-summary__logo--img {
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid #eef0f6;
+}
+
+.job-summary__mail {
+  color: #4f7cf7;
+  word-break: break-all;
+}
+
+.job-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.job-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4f7cf7;
+  background: #eef1fd;
+  border-radius: 20px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.job-download:hover {
+  color: #ffffff;
+  background: #4f7cf7;
+}
+
+.job-download i {
+  font-size: 16px;
+}
+
+.job-summary__company {
+  margin: 0;
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-word;
+}
+
+.job-summary__company i {
+  font-size: 17px;
+  color: #9ca3af;
+  vertical-align: -2px;
+}
+
+.job-summary__list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0;
+  row-gap: 16px;
+  margin: 0 0 36px;
+  font-size: 14px;
+}
+
+.job-summary__list dt {
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.job-summary__list dt::after {
+  content: ':';
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+  margin-left: 14px;
+}
+
+.job-summary__list dd {
+  margin: 0;
+  color: #6b7280;
+  word-break: break-word;
+}
+
+.job-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 5px 13px;
+  font-size: 12px;
+  color: #4f7cf7;
+  background: #e3e8fb;
+  border-radius: 20px;
+}
+
+.job-summary__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.job-apply {
+  display: inline-block;
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  background: #5b7cfa;
+  border-radius: 3px;
+  box-shadow: 0 8px 16px rgba(91, 124, 250, 0.35);
+  transition: background 0.2s ease;
+}
+
+.job-apply:hover {
+  color: #ffffff;
+  background: #4366f0;
+}
+
+.job-share {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #374151;
+}
+
+.job-share a {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #4f7cf7;
+  background: #eef1fd;
+  border-radius: 50%;
+}
+
+.job-summary__posted {
+  margin: 20px 0 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ── Content blocks ── */
+.job-side {
+  padding-top: 70px;
+}
+
+.job-block {
+  margin-bottom: 32px;
+}
+
+.job-block--wide {
+  margin-top: 36px;
+}
+
+.job-block__title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 22px;
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.job-block__icon {
+  flex-shrink: 0;
+  width: 37px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #5b7cfa;
+  background: #e3e8fb;
+  border-radius: 3px;
+}
+
+.job-block__text {
+  margin: 0;
+  padding-left: 53px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #6b7280;
+}
+
+.job-block--wide .job-block__text {
+  padding-left: 0;
+}
+
+.job-block__text--pre {
+  white-space: pre-line;
+}
+
+.job-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 10px;
+  padding-left: 53px;
+}
+
+.job-skill {
+  padding: 7px 15px;
+  font-size: 13px;
+  border-radius: 20px;
+}
+
+.job-skill--sky    { color: #22a6c7; background: #d8f1f8; }
+.job-skill--green  { color: #3fb86c; background: #ddf3e6; }
+.job-skill--indigo { color: #5b6ef0; background: #e0e5fb; }
+.job-skill--rose   { color: #e8506e; background: #fbe0e7; }
+.job-skill--amber  { color: #f28c28; background: #fde6d2; }
+
+/* ══ Tablet ══ */
+@media (max-width: 991.98px) {
+  .job-top {
+    grid-template-columns: 1fr;
+  }
+
+  .job-side {
+    padding-top: 12px;
+  }
+
+}
+
+/* ══ Phone ══ */
+@media (max-width: 575.98px) {
+  .job-page__band {
+    height: 110px;
+    margin: 0;
+  }
+
+  .job-page__inner {
+    margin-top: -96px;
+    padding: 0 16px;
+  }
+
+  .job-summary {
+    padding: 26px 20px 22px;
+  }
+
+  .job-summary__head {
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .job-summary__logo {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
+  /* label upar, value neeche — chhoti screen par do column tight padte the */
+  .job-summary__list {
+    grid-template-columns: 1fr;
+    row-gap: 2px;
+  }
+
+  .job-summary__list dt {
+    margin-top: 12px;
+  }
+
+  .job-summary__list dt::after {
+    content: none;
+  }
+
+  .job-block__title {
+    font-size: 22px;
+  }
+
+  .job-block__text,
+  .job-skills {
+    padding-left: 0;
+  }
+
+}
