@@ -461,7 +461,8 @@ export class RideRouteMap implements AfterViewInit, OnChanges, OnDestroy {
   }
 }
 
-function loadLeafletCss(): void {
+/** Live tracking page bhi yahi CSS loader use karta hai */
+export function loadLeafletCss(): void {
   if (document.querySelector(`link[href="${LEAFLET_CSS}"]`)) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';

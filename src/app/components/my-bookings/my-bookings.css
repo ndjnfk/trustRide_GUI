@@ -6,6 +6,25 @@
   margin-top: 12px;
 }
 
+.live-track-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #7c3aed;
+  background: rgba(124, 58, 237, 0.06);
+  color: #7c3aed;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.live-track-btn:hover {
+  background: #7c3aed;
+  color: #ffffff;
+}
+
 .cancel-booking-btn {
   width: 100%;
   padding: 10px 14px;

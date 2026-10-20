@@ -219,6 +219,15 @@
               </div>
             </div>
 
+            <!-- 📡 LIVE TRACKING (confirmed + ride abhi active) -->
+            <div class="card-actions" *ngIf="b.status_by_passenger !== 'cancelled'
+            && b.status !== 'cancelled'
+            && b.ride?.ride_status === 'active'">
+              <button class="live-track-btn" type="button" (click)="openLiveTracking(b)">
+                📡 Track ride live
+              </button>
+            </div>
+
             <!-- ✖ CANCEL BOOKING BUTTON (confirmed card) -->
             <div class="card-actions" *ngIf="b.status_by_passenger !== 'cancelled'
             && b.status !== 'cancelled'

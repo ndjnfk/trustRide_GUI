@@ -1,0 +1,102 @@
+<div class="lt-page">
+
+  <div class="lt-loading" *ngIf="loading">Loading live tracking…</div>
+
+  <div class="lt-error" *ngIf="!loading && error">
+    <div class="lt-error-icon">📍</div>
+    <p>{{ error }}</p>
+    <a *ngIf="!token" routerLink="/dashboard" class="lt-btn lt-btn--ghost">Go to home</a>
+  </div>
+
+  <ng-container *ngIf="!loading && !error && info">
+    <!-- ── ride header ── -->
+    <div class="lt-head">
+      <div class="lt-route">
+        <span class="lt-city">{{ info.ride.from }}</span>
+        <span class="lt-arrow">→</span>
+        <span class="lt-city">{{ info.ride.to }}</span>
+      </div>
+      <div class="lt-sub">
+        <span>🚗 {{ info.ride.driver_name }}</span>
+        <span *ngIf="info.ride.vehicle">
+          · {{ info.ride.vehicle.color }} {{ info.ride.vehicle.model }}
+          <b *ngIf="info.ride.vehicle.plate_number">({{ info.ride.vehicle.plate_number }})</b>
+        </span>
+      </div>
+    </div>
+
+    <!-- ── status strip — gaadi ki location kiske phone se aa rahi hai ── -->
+    <div class="lt-status"
+         [class.lt-status--live]="primary && !isStale(primary)"
+         [class.lt-status--warn]="active && (!primary || isStale(primary))"
+         [class.lt-status--off]="!active">
+      <ng-container *ngIf="ended">🏁 This ride has ended — live tracking is off</ng-container>
+      <ng-container *ngIf="!ended">
+        <ng-container *ngIf="primary && !isStale(primary)">
+          <span class="lt-dot"></span>
+          Live · updated {{ formatAge(ageS(primary)) }}
+          <span *ngIf="speedKmh() !== null"> · {{ speedKmh() }} km/h</span>
+          <span *ngIf="viaPassenger" class="lt-via">
+            · via {{ primary.name }}'s phone ({{ driverSharing ? "driver's phone is offline" : "driver isn't sharing location" }})
+          </span>
+        </ng-container>
+        <ng-container *ngIf="primary && isStale(primary)">
+          ⚠️ GPS signal lost · last seen {{ formatAge(ageS(primary)) }}
+        </ng-container>
+        <ng-container *ngIf="active && !primary">⏳ Waiting for GPS…</ng-container>
+        <ng-container *ngIf="!active">Nobody in this ride is sharing live location right now</ng-container>
+      </ng-container>
+    </div>
+
+    <!-- ── map ── -->
+    <div class="lt-map-wrap">
+      <div #mapEl class="lt-map"></div>
+      <button type="button" class="lt-recenter" *ngIf="primary && !follow" (click)="recenter()">◎ Follow car</button>
+    </div>
+
+    <!-- ── kaun-kaun share kar raha hai ── -->
+    <ul class="lt-people" *ngIf="rows.length">
+      <li *ngFor="let r of rows" [class.lt-person--stale]="!r.loc || isStale(r.loc)" [class.lt-person--off]="r.notSharing">
+        <span class="lt-person-dot" [style.background]="colorOf(r)"></span>
+        <b>{{ r.name }}</b>
+        <span class="lt-person-role">{{ r.role === 'driver' ? 'Driver' : 'Passenger' }}</span>
+        <span class="lt-person-age">
+          {{ r.notSharing ? 'not sharing'
+            : !r.loc ? 'phone offline / waiting for GPS'
+            : isStale(r.loc) ? 'offline · last seen ' + formatAge(ageS(r.loc)) : 'live' }}
+        </span>
+      </li>
+    </ul>
+
+    <!-- ── apni location share (driver + passenger) ── -->
+    <div class="lt-actions" *ngIf="canShare && !ended">
+      <button type="button" class="lt-btn lt-btn--primary" *ngIf="!sharing" [disabled]="starting" (click)="startSharing()">
+        {{ starting ? 'Starting…' : '📡 Share my live location' }}
+      </button>
+      <button type="button" class="lt-btn lt-btn--danger" *ngIf="sharing" [disabled]="stopping" (click)="stopSharing()">
+        {{ stopping ? 'Stopping…' : '■ Stop sharing my location' }}
+      </button>
+      <p class="lt-note" *ngIf="sendError">{{ sendError }}</p>
+      <p class="lt-note" *ngIf="!sharing && role === 'passenger'">
+        You're in the same car — share your location so your family can still see the car
+        if the driver's phone switches off or locks.
+      </p>
+      <p class="lt-note" *ngIf="sharing">
+        Keep the app open and the screen unlocked — location stops if the app is closed or the phone is locked.
+        If that happens, just open the app again and sharing resumes automatically.
+      </p>
+    </div>
+
+    <!-- ── share with family (driver + passenger) ── -->
+    <div class="lt-actions" *ngIf="canShare && !ended">
+      <button type="button" class="lt-btn lt-btn--ghost" [disabled]="sharingLink" (click)="shareWithFamily()">
+        {{ sharingLink ? 'Creating link…' : '👨‍👩‍👧 Share live tracking with family' }}
+      </button>
+      <p class="lt-note">Anyone with the link can see this ride's live location until the ride ends.</p>
+    </div>
+
+    <p class="lt-note lt-note--center" *ngIf="isGuest">
+      This link was shared by a TrustRides traveller and stops working when the ride ends.
+    </p>
+  </ng-container>
+</div>

@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, Injector, PLATFORM_ID, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   NavigationCancel,
@@ -34,9 +34,12 @@ export class App {
   private router = inject(Router);
   protected loader = inject(LoaderServices);
   private platformId = inject(PLATFORM_ID);
+  private injector = inject(Injector);
 
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
+
+    this.resumeLiveTracking();
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -49,6 +52,24 @@ export class App {
         this.loader.hide();
       }
     });
+  }
+
+  /**
+   * Driver location share kar raha tha aur app band ho gayi — khulte hi wapas chalu.
+   * Service + Snackbar lazy import — socket.io/GPS/Material snackbar ka code har
+   * page ke initial bundle me na aaye. 'live_tracking_ride' = TrackingService ka RESUME_KEY.
+   */
+  private async resumeLiveTracking(): Promise<void> {
+    try {
+      if (!localStorage.getItem('live_tracking_ride')) return;
+    } catch {
+      return;
+    }
+    const { TrackingService } = await import('./services/tracking-service');
+    const resumed = await this.injector.get(TrackingService).resumeIfNeeded();
+    if (!resumed) return;
+    const { Snackbar } = await import('./services/snackbar');
+    this.injector.get(Snackbar).success('Live location sharing resumed');
   }
 
 ngOnInit() {

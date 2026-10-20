@@ -545,6 +545,10 @@ goToProfile(userId: string) {
   this.router.navigate(['/my-profile'], { state: { user_id: userId } })
 }
 
+openLiveTracking(rideId: string): void {
+  this.router.navigate(['/live-tracking', rideId]);
+}
+
 copyRideLink(rideId: string): void {
   if (!rideId) return;
   const link = `${window.location.origin}/ride-detail/${rideId}`;

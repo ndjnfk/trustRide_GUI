@@ -52,6 +52,9 @@
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
           </select>
+          <button class="live-track-btn" (click)="openLiveTracking(ride._id)" title="Share your live location with passengers">
+            📡 Live tracking
+          </button>
           <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
             🔗 Copy link
           </button>

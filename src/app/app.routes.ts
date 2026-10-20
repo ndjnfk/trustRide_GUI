@@ -474,6 +474,17 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/components/one-ride-details/one-ride-details').then((m) => m.OneRideDetails),
   },
+  // Live ride tracking — driver / confirmed passenger (login), aur parents ka share link (bina login)
+  {
+    path: 'live-tracking/:rideId',
+    loadComponent: () =>
+      import('../app/components/live-tracking/live-tracking').then((m) => m.LiveTracking),
+  },
+  {
+    path: 'track/:token',
+    loadComponent: () =>
+      import('../app/components/live-tracking/live-tracking').then((m) => m.LiveTracking),
+  },
   // Backward compatible — in-app navigation that still passes the id via history.state
   {
     path: 'ride-detail',

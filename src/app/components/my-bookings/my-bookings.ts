@@ -403,6 +403,11 @@ export class MyBookings implements OnInit {
   // ── Cancel booking by passenger ─────────────────────────────────────────────
 
   /** Open popup for a booking */
+  openLiveTracking(booking: Booking): void {
+    const rideId = booking.ride?.ride_id;
+    if (rideId) this.router.navigate(['/live-tracking', rideId]);
+  }
+
   openCancelModal(booking: Booking): void {
     this.cancelModal = {
       open: true,

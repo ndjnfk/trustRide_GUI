@@ -44,7 +44,13 @@ export class AuthInterceptor implements HttpInterceptor {
         // Ride click counter background me chalta hai aur guest ke liye bhi —
         // uske fail hone par kisi ko logout nahi karna chahiye.
         // (admin ka /admin/ride-clicks isme nahi aata — wahan 401 par logout sahi hai)
-        const isBestEffort = !isAdminRequest && req.url.includes('/ride-clicks');
+        // Live tracking: driver ka GPS signal/network jaate hi status 0 aata hai —
+        // us par logout nahi. Parents ka /track/ link bina login ka hai.
+        const isTrackingCall =
+          /\/rides\/[^/]+\/(location|tracking)/.test(req.url) && error.status === 0;
+        const isBestEffort = !isAdminRequest && (
+          req.url.includes('/ride-clicks') || req.url.includes('/track/') || isTrackingCall
+        );
 
         if (sessionExpired && !isAuthEndpoint && !isBestEffort) {
           this.handleSessionExpired(isAdminRequest);
