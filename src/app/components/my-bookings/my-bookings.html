@@ -108,8 +108,13 @@
             <div class="card-footer">
               <div class="badge-row">
                 <span class="badge badge-pending"
-                  *ngIf="b.cancelled_by !== 'passenger' && b.ride?.ride_status !== 'cancelled'">⏳ Pending
+                  *ngIf="b.status !== 'waitlisted' && b.cancelled_by !== 'passenger' && b.ride?.ride_status !== 'cancelled'">⏳ Pending
                   Approval</span>
+
+                <!-- Backup (waitlisted) request: seat abhi kisi aur ki pending request ke paas hold hai -->
+                <span class="badge badge-waitlisted"
+                  *ngIf="b.status === 'waitlisted' && b.cancelled_by !== 'passenger' && b.ride?.ride_status !== 'cancelled'"
+                  title="A held seat frees up → this moves to pending automatically. The rider can also accept it directly.">🕒 Backup request · waiting for a seat</span>
 
                 <!-- Ride cancelled by rider -->
                 <div class="cancel-wrap" *ngIf="b.ride?.ride_status === 'cancelled'">

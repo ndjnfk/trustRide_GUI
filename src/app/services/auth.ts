@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core'
+import { Injectable, inject } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { catchError, Observable, tap, throwError } from 'rxjs'
+import { catchError, from, Observable, switchMap, tap, throwError } from 'rxjs'
+import { PushNotificationService } from './push-notification';
 
 import { Router } from '@angular/router';
 import { environment } from '../../../environment';
@@ -74,8 +75,13 @@ export class AuthService {
   }
 
   // // ── Logout ───────────────────────────────
+  // Logout se pehle is device ka push token backend se hata do (best effort),
+  // warna logout ke baad bhi is browser par purane user ki notifications aati rahengi.
+  private push = inject(PushNotificationService)
+
   logout(): Observable<LogoutResponse> {
-    return this.http.get<LogoutResponse>(`${this.api}/auth/logout`).pipe(
+    return from(this.push.unregisterCurrentDevice().catch(() => undefined)).pipe(
+      switchMap(() => this.http.get<LogoutResponse>(`${this.api}/auth/logout`)),
       tap(() => {
         AuthHelper.removeToken()
       }),

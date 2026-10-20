@@ -6,6 +6,8 @@ export interface BookingDialogResult {
   females: number;
   total: number;
   isSameFamily: boolean;
+  /** true → request free seats se zyada hai, backup (waitlist) request ke roop me jaayegi */
+  isBackup: boolean;
 }
 @Component({
   selector: 'app-booking-dialog',
@@ -40,8 +42,29 @@ ngOnInit(): void {
     return this.males + this.females;
   }
 
+  // ── Seat buckets ──
+  // freeSeats   → abhi turant book ho sakti hain
+  // pendingSeats→ kisi aur passenger ki pending request ke paas hold
+  // backupSeats → un hold seats par aur kitni backup requests allowed
+  get freeSeats(): number {
+    return Number(this.data.ride?.available_seats ?? 0);
+  }
+  get pendingSeats(): number {
+    return Number(this.data.ride?.pending_seats ?? 0);
+  }
+  get backupSeats(): number {
+    return Number(this.data.ride?.backup_seats_available ?? 0);
+  }
+  get maxSeats(): number {
+    return this.freeSeats + this.backupSeats;
+  }
+  /** Selection free seats se zyada → poori request backup ban jaayegi */
+  get isBackup(): boolean {
+    return this.total > this.freeSeats;
+  }
+
   increment(gender: 'male' | 'female'): void {
-    if (this.total >= this.data.ride.available_seats) return;
+    if (this.total >= this.maxSeats) return;
     if (gender === 'male') this.males++;
     else this.females++;
   }
@@ -53,7 +76,13 @@ ngOnInit(): void {
 
   confirm(): void {
     if (this.total === 0) return;
-    this.dialogRef.close({ males: this.males, females: this.females, total: this.total,isSameFamily: this.isSameFamily });
+    this.dialogRef.close({
+      males: this.males,
+      females: this.females,
+      total: this.total,
+      isSameFamily: this.isSameFamily,
+      isBackup: this.isBackup,
+    });
   }
 
   close(): void {

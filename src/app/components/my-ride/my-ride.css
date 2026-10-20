@@ -492,6 +492,12 @@
   color: #f57f17;
 }
 
+/* backup (waitlist) request — seat abhi hold nahi hui */
+.status-waitlisted {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
 .p-verify {
   display: flex;
   align-items: center;

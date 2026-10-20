@@ -137,8 +137,9 @@
                 class="booking-status-select"
                 [value]="booking.status"
                 [disabled]="updatingBookingId === booking.booking_id"
-                (change)="updateBookingStatus(booking, ride._id, $any($event.target).value)"
+                (change)="updateBookingStatus(booking, ride._id, $any($event.target).value, $any($event.target))"
               >
+                <option value="waitlisted" disabled>Backup (waitlisted)</option>
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="cancelled">Cancelled</option>
@@ -248,8 +249,9 @@
                 class="booking-status-select"
                 [value]="booking.status"
                 [disabled]="updatingBookingId === booking.booking_id"
-                (change)="updateBookingStatus(booking, ride._id, $any($event.target).value)"
+                (change)="updateBookingStatus(booking, ride._id, $any($event.target).value, $any($event.target))"
               >
+                <option value="waitlisted" disabled>Backup (waitlisted)</option>
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="cancelled">Cancelled</option>

@@ -23,6 +23,8 @@ export interface UserProfile {
   totalRides?: number | null;
   totalCancelledRides?: number;
   totalCancelledBookings?: number;
+  /** browser push ON hai (preference + kam se kam ek device) */
+  pushEnabled?: boolean;
 }
 
 export interface ProfessionalDoc {

@@ -29,10 +29,10 @@
     <div class="rd-wrap">
 
       <!-- Mobile-only Hero Card (combined route + driver + stats + book) -->
-      <div class="rd-card rd-hero-mobile" [class.is-full]="rideData.seatStatus === 'full' || rideData.available_seats <= 0 || cancelledByMe">
+      <div class="rd-card rd-hero-mobile" [class.is-full]="isRideFull() || cancelledByMe">
 
         <div class="full-watermark cancelled-watermark" *ngIf="cancelledByMe">Booking Cancelled</div>
-        <div class="full-watermark" *ngIf="!cancelledByMe && (rideData.seatStatus === 'full' || rideData.available_seats <= 0)">Ride Full</div>
+        <div class="full-watermark" *ngIf="!cancelledByMe && (isRideFull())">Ride Full</div>
 
         <div class="mh-head">
           <p class="section-title">Ride Details</p>
@@ -88,7 +88,7 @@
           <span class="mh-sep"></span>
           <div class="mh-stat">
             <i class="ti ti-armchair"></i>
-            <span>{{ rideData.available_seats }} Seats Left</span>
+            <span>{{ rideData.available_seats }} Seats Left<small *ngIf="(rideData.pending_seats ?? 0) > 0" class="seats-hold" title="Held by another passenger's pending request"> · {{ rideData.pending_seats }} on hold</small></span>
           </div>
         </div>
 
@@ -101,8 +101,8 @@
           </div>
           <button type="button" class="rd-book-btn btn" *ngIf="rideData.status === 'active'"
             (click)="bookRide()"
-            [disabled]="booking || rideData.seatStatus === 'full' || rideData.available_seats <= 0 || cancelledByMe">
-            {{ cancelledByMe ? 'Booking Cancelled' : ((rideData.seatStatus === 'full' || rideData.available_seats <= 0) ? 'Ride Full' : (booking ? 'Booking...' : 'Book Seat')) }}
+            [disabled]="booking || isRideFull() || cancelledByMe">
+            {{ cancelledByMe ? 'Booking Cancelled' : ((isRideFull()) ? 'Ride Full' : (booking ? 'Booking...' : (canBackup() ? 'Request Backup Seat' : 'Book Seat'))) }}
           </button>
         </div>
       </div>
@@ -135,13 +135,13 @@
       </div>
 
       <!-- Ride Details Card -->
-      <div class="rd-card rd-desktop-only" [class.is-full]="rideData.seatStatus === 'full' || rideData.available_seats <= 0 || cancelledByMe">
+      <div class="rd-card rd-desktop-only" [class.is-full]="isRideFull() || cancelledByMe">
 
         <!-- Booking cancelled by this user watermark -->
         <div class="full-watermark cancelled-watermark" *ngIf="cancelledByMe">Booking Cancelled</div>
 
         <!-- Ride Full watermark -->
-        <div class="full-watermark" *ngIf="!cancelledByMe && (rideData.seatStatus === 'full' || rideData.available_seats <= 0)">Ride Full</div>
+        <div class="full-watermark" *ngIf="!cancelledByMe && (isRideFull())">Ride Full</div>
 
         <p class="section-title">Ride Details</p>
         <div class="route-display">
@@ -166,7 +166,7 @@
           <div class="col-6 col-md-4">
             <div class="meta-item">
               <div class="meta-label"><i class="ti ti-armchair"></i> Seats</div>
-              <div class="meta-val">{{ rideData.available_seats }} available</div>
+              <div class="meta-val">{{ rideData.available_seats }} available<small *ngIf="(rideData.pending_seats ?? 0) > 0" class="seats-hold" title="Held by another passenger's pending request"> · {{ rideData.pending_seats }} on hold</small></div>
             </div>
           </div>
           <div class="col-6 col-md-4">
@@ -198,8 +198,8 @@
             <span class="rd-book-price-label">Per seat</span>
             <span class="rd-book-price-val">₹{{ rideData.price_per_seat }}</span>
           </div>
-          <button type="button" class="rd-book-btn btn" (click)="bookRide()" [disabled]="booking || rideData.seatStatus === 'full' || rideData.available_seats <= 0 || cancelledByMe">
-            {{ cancelledByMe ? 'Booking Cancelled' : ((rideData.seatStatus === 'full' || rideData.available_seats <= 0) ? 'Ride Full' : (booking ? 'Booking...' : 'Book Seat')) }}
+          <button type="button" class="rd-book-btn btn" (click)="bookRide()" [disabled]="booking || isRideFull() || cancelledByMe">
+            {{ cancelledByMe ? 'Booking Cancelled' : ((isRideFull()) ? 'Ride Full' : (booking ? 'Booking...' : (canBackup() ? 'Request Backup Seat' : 'Book Seat'))) }}
           </button>
         </div>
       </div>

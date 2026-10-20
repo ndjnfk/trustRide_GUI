@@ -1,0 +1,35 @@
+{
+  // Easy Deployment — TrustRideSRE GUI (Angular static build → nginx)
+  // Server: /var/www/TrustRideSRE/html/  (nginx try_files → index.html)
+  //
+  // Deploy se pehle environment.ts me apiUrl production URL ho (https://trustridesre.com/api).
+  // buildCmd localhost apiUrl par fail ho jaata hai (safety check).
+  // SSH password yahan bharo — ye file git me commit mat karna.
+  "easyDeployment.config": {
+    "configurations": [
+      {
+        "name": "TrustRideSRE GUI (html)",
+        "local": {
+          "projectPath": ".",
+          // 'web' config = static build (no SSR) + PWA service worker — angular.json me defined
+          "buildCmd": "node -e \"const s=require('fs').readFileSync('environment.ts','utf8');if(/^\\s*apiUrl:\\s*'http:\\/\\/localhost/m.test(s)){console.error('environment.ts apiUrl is localhost - set production URL before deploying');process.exit(1)}\" && npx ng build --configuration web",
+          "outputDir": "dist/realtime-app/browser"
+        },
+        "remote": {
+          "deploymentPath": "/var/www/TrustRideSRE/html",
+          "backupOriginalFiles": true,
+          "backupTo": "~/backup/TrustRideSRE/html",
+          // static site — purane hashed bundles hata do
+          "deleteOriginalFiles": true,
+          "postCmd": "cd /var/www/TrustRideSRE/html && ls -la index.html ngsw.json firebase-messaging-sw.js"
+        },
+        "ssh": {
+          "host": "200.141.12.102",
+          "port": 22,
+          "username": "root",
+          "password": "Dev@12345678@"
+        }
+      }
+    ]
+  }
+}

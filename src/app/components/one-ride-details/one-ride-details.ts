@@ -192,6 +192,9 @@ export class OneRideDetails {
       to: this.rideData.end_location?.name,
       departure_time: this.rideData.departure_time,
       available_seats: this.rideData.available_seats,
+      // waitlist / backup feature — dialog ko pata ho kitni seats hold par hain
+      pending_seats: this.rideData.pending_seats ?? 0,
+      backup_seats_available: this.rideData.backup_seats_available ?? 0,
       price_per_seat: this.rideData.price_per_seat,
     };
 
@@ -208,18 +211,27 @@ export class OneRideDetails {
       this.cdr.detectChanges();
 
       this.bookingService
-        .bookSeat(this.rideId, result.males, result.females, result.isSameFamily)
+        .bookSeat(this.rideId, result.males, result.females, result.isSameFamily, result.isBackup)
         .subscribe({
           next: (res: BookSeatResponse) => {
             this.booking = false;
             this.rideData = {
               ...this.rideData,
               available_seats: res.ride_status.remaining_seats,
+              pending_seats: res.ride_status.pending_seats ?? this.rideData.pending_seats,
+              backup_seats_available:
+                res.ride_status.backup_seats_available ?? this.rideData.backup_seats_available,
             };
             this.cdr.detectChanges();
-            this.snack.success(
-              `${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`
-            );
+            if (res.booking?.status === 'waitlisted') {
+              this.snack.success(
+                `Backup request sent for ${result.total} seat(s). You'll be notified if a held seat frees up.`
+              );
+            } else {
+              this.snack.success(
+                `${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`
+              );
+            }
           },
           error: (err) => {
             this.booking = false;
@@ -232,6 +244,20 @@ export class OneRideDetails {
         });
     });
   }
+  // ── Waitlist / backup helpers ──
+  // Ride tabhi "Full" hai jab free seats bhi nahi aur backup capacity bhi nahi.
+  isRideFull(): boolean {
+    const free = Number(this.rideData?.available_seats ?? 0);
+    const backup = Number(this.rideData?.backup_seats_available ?? 0);
+    return (this.rideData?.seatStatus === 'full' || free <= 0) && backup <= 0;
+  }
+
+  canBackup(): boolean {
+    const free = Number(this.rideData?.available_seats ?? 0);
+    const backup = Number(this.rideData?.backup_seats_available ?? 0);
+    return free <= 0 && backup > 0;
+  }
+
   goToProfile(userId: string) {
   this.router.navigate(['/my-profile'], { state: { user_id: userId } })
 }

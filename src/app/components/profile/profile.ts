@@ -20,12 +20,13 @@ import { Snackbar } from '../../services/snackbar';
 import { MaterialModule } from '../../shared/material/material-module';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { NotificationToggle } from '../notification-toggle/notification-toggle';
 
 type ActiveTab = 'personal' | 'professional' | 'vehicles';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, FormsModule, MaterialModule],
+  imports: [CommonModule, FormsModule, MaterialModule, NotificationToggle],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

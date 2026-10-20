@@ -285,6 +285,31 @@
   font-size: 1.15rem;
 }
 
+/* ── Backup (waitlist) notice ── */
+.bd-backup-note {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #92400e;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.bd-backup-note i {
+  font-size: 1.1rem;
+  color: #d97706;
+  margin-top: 2px;
+}
+.bd-backup-note strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #78350f;
+}
+
 .bd-empty {
   margin-top: 14px;
   display: flex;

@@ -203,6 +203,21 @@ export class AvailableRides {
   // }
 
 
+  // ── Waitlist / backup helpers ──
+  // Ride tabhi "Full" hai jab free seats bhi nahi aur backup capacity bhi nahi.
+  // Free seats 0 par pending hold ho to passenger backup request bhej sakta hai.
+  isRideFull(ride: any): boolean {
+    const free = Number(ride?.available_seats ?? 0);
+    const backup = Number(ride?.backup_seats_available ?? 0);
+    return (ride?.seatStatus === 'full' || free <= 0) && backup <= 0;
+  }
+
+  canBackup(ride: any): boolean {
+    const free = Number(ride?.available_seats ?? 0);
+    const backup = Number(ride?.backup_seats_available ?? 0);
+    return free <= 0 && backup > 0;
+  }
+
   bookRide(ride: any): void {
     console.log('ride id:', ride.ride_id);
 
@@ -225,7 +240,7 @@ export class AvailableRides {
       this.loadingRides.add(ride.ride_id);
       this.cdr.detectChanges();
 
-      this.bookingService.bookSeat(ride.ride_id, result.males, result.females, result.isSameFamily)
+      this.bookingService.bookSeat(ride.ride_id, result.males, result.females, result.isSameFamily, result.isBackup)
         .subscribe({
           next: (res: BookSeatResponse) => {
             this.loadingRides.delete(ride.ride_id);
@@ -236,13 +251,22 @@ export class AvailableRides {
 
             this.allRides = this.allRides.map(r =>
               r.ride_id === ride.ride_id
-                ? { ...r, available_seats: res.ride_status.remaining_seats }
+                ? {
+                    ...r,
+                    available_seats: res.ride_status.remaining_seats,
+                    pending_seats: res.ride_status.pending_seats ?? r.pending_seats,
+                    backup_seats_available: res.ride_status.backup_seats_available ?? r.backup_seats_available,
+                  }
                 : r
             );
             this.applyFilters();
             this.cdr.detectChanges();
 
-            this.snackBar.success(`${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`);
+            if (res.booking?.status === 'waitlisted') {
+              this.snackBar.success(`Backup request sent for ${result.total} seat(s). You'll be notified if a held seat frees up.`);
+            } else {
+              this.snackBar.success(`${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`);
+            }
           },
           // error: (err) => {
           //   this.loadingRides.delete(ride.ride_id);

@@ -1,0 +1,29 @@
+<div class="notif-row">
+  <div class="notif-info">
+    <div class="notif-icon" [class.on]="pushOn">🔔</div>
+    <div>
+      <div class="notif-label">Browser notifications</div>
+      <p class="notif-hint" [class.warn]="pushState === 'blocked' || pushState === 'unsupported'">{{ pushHint }}</p>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="notif-toggle"
+    role="switch"
+    [attr.aria-checked]="pushOn"
+    [class.active]="pushOn"
+    [class.busy]="pushBusy"
+    [disabled]="pushBusy || pushState === 'loading' || pushState === 'unsupported' || pushState === 'blocked'"
+    (click)="togglePush()"
+    [title]="pushOn ? 'Turn off' : 'Turn on'"
+  >
+    <span class="notif-knob"></span>
+  </button>
+</div>
+
+<div class="notif-actions" *ngIf="pushOn">
+  <button type="button" class="notif-test-btn" (click)="sendTestPush()" [disabled]="pushBusy">
+    Send test notification
+  </button>
+</div>

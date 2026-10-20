@@ -507,9 +507,10 @@ export class MyBookings implements OnInit {
 
 
 // ── Pending — passenger-cancelled + rider-cancelled + completed exclude ──
+// 'waitlisted' (backup request) bhi isi tab me dikhti hai, alag badge ke saath.
 get pendingBookings(): Booking[] {
   return this.allBookings.filter(
-    (b) => b.status === 'pending'
+    (b) => (b.status === 'pending' || b.status === 'waitlisted')
       && b.status_by_passenger !== 'cancelled'
       && b.ride?.ride_status !== 'cancelled'
       && b.ride?.ride_status !== 'completed'
@@ -558,6 +559,7 @@ historyLabel(b: Booking): string {
   if (b.status_by_passenger === 'cancelled') return 'You cancelled · ride completed';
   if (b.status === 'confirmed') return 'Confirmed · ride completed';
   if (b.status === 'pending') return 'Was pending · ride completed';
+  if (b.status === 'waitlisted') return 'Was a backup request · ride completed';
   if (b.status === 'rejected' || b.status === 'cancelled') return 'Not approved · ride completed';
   return 'Ride completed';
 }
@@ -567,7 +569,7 @@ historyLabelClass(b: Booking): string {
   if (b.ride?.ride_status === 'cancelled') return 'hist-tag hist-cancelled';
   if (b.status_by_passenger === 'cancelled') return 'hist-tag hist-cancelled';
   if (b.status === 'confirmed') return 'hist-tag hist-confirmed';
-  if (b.status === 'pending') return 'hist-tag hist-pending';
+  if (b.status === 'pending' || b.status === 'waitlisted') return 'hist-tag hist-pending';
   return 'hist-tag hist-rejected';
 }
 

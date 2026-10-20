@@ -10,7 +10,8 @@
           <span><i class="ti ti-calendar"></i> {{ formatDate(data.ride.departure_time) }}</span>
           <span><i class="ti ti-clock"></i> {{ formatTime(data.ride.departure_time) }}</span>
           <span><i class="ti ti-currency-rupee"></i> {{ data.ride.price_per_seat }}/seat</span>
-          <span><i class="ti ti-armchair"></i> {{ data.ride.available_seats }} seats left</span>
+          <span><i class="ti ti-armchair"></i> {{ freeSeats }} free</span>
+          <span *ngIf="pendingSeats > 0" title="Held by another passenger's pending request"><i class="ti ti-hourglass"></i> {{ pendingSeats }} on hold</span>
         </div>
       </div>
 
@@ -28,7 +29,7 @@
           <div class="bd-counter">
             <button class="bd-btn" (click)="decrement('male')" [disabled]="males <= 0">−</button>
             <span class="bd-count">{{ males }}</span>
-            <button class="bd-btn" (click)="increment('male')" [disabled]="total >= data.ride.available_seats">+</button>
+            <button class="bd-btn" (click)="increment('male')" [disabled]="total >= maxSeats">+</button>
           </div>
         </div>
 
@@ -45,7 +46,7 @@
           <div class="bd-counter">
             <button class="bd-btn" (click)="decrement('female')" [disabled]="females <= 0">−</button>
             <span class="bd-count">{{ females }}</span>
-            <button class="bd-btn" (click)="increment('female')" [disabled]="total >= data.ride.available_seats">+</button>
+            <button class="bd-btn" (click)="increment('female')" [disabled]="total >= maxSeats">+</button>
           </div>
         </div>
 
@@ -58,6 +59,20 @@
           <div class="bd-summary-row">
             <span>Total Fare</span>
             <span class="bd-fare">₹{{ total * data.ride.price_per_seat }}</span>
+          </div>
+        </div>
+
+        <!-- BACKUP (WAITLIST) NOTICE: selection free seats se zyada hai -->
+        <div class="bd-backup-note" *ngIf="isBackup">
+          <i class="ti ti-hourglass-high"></i>
+          <div>
+            <strong>This will be a backup request</strong>
+            <span>
+              Only {{ freeSeats }} seat{{ freeSeats === 1 ? '' : 's' }} free right now —
+              {{ pendingSeats }} seat{{ pendingSeats === 1 ? ' is' : 's are' }} waiting for another passenger's approval.
+              Your whole request goes to the rider as a backup: it becomes pending automatically if a held seat frees up,
+              or the rider can accept it directly. No seat is reserved until then.
+            </span>
           </div>
         </div>
         <div class="bd-family-row">
@@ -94,8 +109,9 @@
           [disabled]="total === 0"
           (click)="confirm()"
         >
-          <i class="ti ti-check"></i>
-          <span> Confirm {{ total > 0 ? total + ' Seat' + (total > 1 ? 's' : '') : 'Booking' }} </span>
+          <i class="ti" [class.ti-check]="!isBackup" [class.ti-hourglass-high]="isBackup"></i>
+          <span *ngIf="!isBackup"> Confirm {{ total > 0 ? total + ' Seat' + (total > 1 ? 's' : '') : 'Booking' }} </span>
+          <span *ngIf="isBackup"> Send Backup Request ({{ total }} seat{{ total > 1 ? 's' : '' }}) </span>
         </button>
       </div>
     </div>

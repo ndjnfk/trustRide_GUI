@@ -423,28 +423,39 @@ isCancelledByPassenger(b: any): boolean {
 
 
   // updateBookingStatus method replace karo
-updateBookingStatus(booking: any, rideId: string, newStatus: string): void {
+// selectEl: native <select> — [value] binding tabhi DOM update karta hai jab
+// booking.status badle. Error (jaise backup request ke liye seat free nahi)
+// ya cancel-dialog band karne par status badla hi nahi, isliye dropdown
+// manually wapas asli status par set karna padta hai.
+updateBookingStatus(booking: any, rideId: string, newStatus: string, selectEl?: HTMLSelectElement): void {
   if (booking.status === newStatus) return;
 
   if (newStatus === 'cancelled') {
     const dialogRef = this.dialog.open(BookingCancellationDialog, {
       data: { ride: booking, isBooking: true },
       panelClass: 'booking-dialog-panel',
-      
-     
+
+
     });
 
     dialogRef.afterClosed().subscribe((result: { reason: string } | null) => {
-      if (!result) return;
-      this.callUpdateBookingStatus(booking, rideId, newStatus, result.reason);
+      if (!result) {
+        this.resetSelect(selectEl, booking.status);
+        return;
+      }
+      this.callUpdateBookingStatus(booking, rideId, newStatus, result.reason, selectEl);
     });
 
   } else {
-    this.callUpdateBookingStatus(booking, rideId, newStatus, '');
+    this.callUpdateBookingStatus(booking, rideId, newStatus, '', selectEl);
   }
 }
 
-private callUpdateBookingStatus(booking: any, rideId: string, newStatus: string, reason: string): void {
+private resetSelect(selectEl: HTMLSelectElement | undefined, status: string): void {
+  if (selectEl && selectEl.value !== status) selectEl.value = status;
+}
+
+private callUpdateBookingStatus(booking: any, rideId: string, newStatus: string, reason: string, selectEl?: HTMLSelectElement): void {
   this.updatingBookingId = booking.booking_id;
 
   this.bookingService.updateBookingStatus(booking.booking_id, newStatus, reason).subscribe({
@@ -470,7 +481,12 @@ private callUpdateBookingStatus(booking: any, rideId: string, newStatus: string,
     },
     error: (err: any) => {
       this.updatingBookingId = null;
-      this.snackBar.error('Failed to update booking status');
+      // Backup (waitlisted) request accept karte waqt seat free na ho to backend
+      // 409 ke saath exact reason bhejta hai — wahi dikhao, aur dropdown wapas
+      // asli status (e.g. "Backup (waitlisted)") par le aao.
+      this.snackBar.error(err?.error?.message || 'Failed to update booking status');
+      this.resetSelect(selectEl, booking.status);
+      this.cdr.markForCheck();
     }
   });
 }

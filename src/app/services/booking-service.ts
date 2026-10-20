@@ -9,13 +9,16 @@ export interface BookSeatResponse {
     booking_id: string;
     ride_id: string;
     gender: string;
-    status: string;
+    status: string;          // 'pending' | 'waitlisted' (backup request)
+    is_backup?: boolean;
   };
   ride_status: {
     male: number;
     female: number;
     total: number;
     remaining_seats: number;
+    pending_seats?: number;
+    backup_seats_available?: number;
   };
 }
 
@@ -30,14 +33,17 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
 
- bookSeat(rideId: string, males: number, females: number,isSameFamily: boolean): Observable<BookSeatResponse> {
+ // allowWaitlist=true → free seats kam hon (pending hold ki wajah se) to backend
+ // request ko 'waitlisted' (backup) bana deta hai, seat hold nahi hoti.
+ bookSeat(rideId: string, males: number, females: number,isSameFamily: boolean, allowWaitlist: boolean = false): Observable<BookSeatResponse> {
   return this.http.post<BookSeatResponse>(
     `${this.baseUrl}/bookSeat`,
-    { 
+    {
       ride_id: rideId,
       males: males,
       females: females,
-       is_same_family: isSameFamily
+       is_same_family: isSameFamily,
+      allow_waitlist: allowWaitlist,
 
     }
   );

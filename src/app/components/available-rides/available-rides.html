@@ -117,11 +117,11 @@
   <section class="rides-section container" *ngIf="!loading && !error && filteredRides.length > 0">
     <div class="row g-3 g-md-4">
       <div class="col-12 col-md-6 col-xl-4" *ngFor="let ride of filteredRides">
-        <div class="ride-card card h-100 ride-card-clickable" [class.is-full]="ride.seatStatus === 'full' || ride.available_seats <= 0"
+        <div class="ride-card card h-100 ride-card-clickable" [class.is-full]="isRideFull(ride)"
           (click)="goToRideDetails(ride)">
 
           <!-- Ride Full watermark -->
-          <div class="full-watermark" *ngIf="ride.seatStatus === 'full' || ride.available_seats <= 0">Ride Full</div>
+          <div class="full-watermark" *ngIf="isRideFull(ride)">Ride Full</div>
 
           <!-- Card Top -->
           <div class="card-top d-flex align-items-start justify-content-between gap-2">
@@ -170,7 +170,7 @@
                   <span class="detail-icon">💺</span>
                   <div>
                     <span class="detail-label">Seats</span>
-                    <span class="detail-value">{{ ride.available_seats }} available</span>
+                    <span class="detail-value">{{ ride.available_seats }} available<small *ngIf="(ride.pending_seats ?? 0) > 0" class="seats-hold" title="Held by another passenger's pending request"> · {{ ride.pending_seats }} on hold</small></span>
                   </div>
                 </div>
               </div>
@@ -262,9 +262,9 @@
               type="button"
               class="book-btn btn"
               (click)="$event.stopPropagation(); bookRide(ride)"
-              [disabled]="loadingRides.has(ride.ride_id) || ride.seatStatus === 'full' || ride.available_seats <= 0"
+              [disabled]="loadingRides.has(ride.ride_id) || isRideFull(ride)"
             >
-              {{ (ride.seatStatus === 'full' || ride.available_seats <= 0) ? 'Ride Full' : (loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat') }}
+              {{ (isRideFull(ride)) ? 'Ride Full' : (loadingRides.has(ride.ride_id) ? 'Booking...' : (canBackup(ride) ? 'Request Backup Seat' : 'Book Seat')) }}
             </button>
           </div>
 

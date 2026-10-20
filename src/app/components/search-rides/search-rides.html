@@ -126,12 +126,12 @@
     <!-- Ride List -->
     <div *ngIf="rides.length" class="rp-list row g-3">
       <div class="rp-card col-12 col-md-6" *ngFor="let ride of rides"
-           [class.is-full]="ride.seatStatus === 'full' || ride.available_seats <= 0"
+           [class.is-full]="isRideFull(ride)"
            (click)="openRideDetail(ride.ride_id)"
            style="cursor:pointer">
 
         <!-- Ride Full watermark -->
-        <div class="full-watermark" *ngIf="ride.seatStatus === 'full' || ride.available_seats <= 0">Ride Full</div>
+        <div class="full-watermark" *ngIf="isRideFull(ride)">Ride Full</div>
 
         <div class="rp-driver-row">
           <div class="rp-avatar">
@@ -155,7 +155,7 @@
           </div>
           <div class="rp-detail-item">
             <i class="ti ti-armchair"></i>
-            <span>{{ ride.available_seats }} seat{{ ride.available_seats !== 1 ? 's' : '' }} available</span>
+            <span>{{ ride.available_seats }} seat{{ ride.available_seats !== 1 ? 's' : '' }} available<small *ngIf="(ride.pending_seats ?? 0) > 0" class="seats-hold" title="Held by another passenger's pending request"> · {{ ride.pending_seats }} on hold</small></span>
           </div>
         </div>
 
@@ -170,9 +170,9 @@
             type="button"
             class="book-btn btn"
             (click)="bookRide(ride, $event)"
-            [disabled]="loadingRides.has(ride.ride_id) || ride.seatStatus === 'full' || ride.available_seats <= 0"
+            [disabled]="loadingRides.has(ride.ride_id) || isRideFull(ride)"
           >
-            {{ (ride.seatStatus === 'full' || ride.available_seats <= 0) ? 'Ride Full' : (loadingRides.has(ride.ride_id) ? 'Booking...' : 'Book Seat') }}
+            {{ (isRideFull(ride)) ? 'Ride Full' : (loadingRides.has(ride.ride_id) ? 'Booking...' : (canBackup(ride) ? 'Request Backup Seat' : 'Book Seat')) }}
           </button>
         </div>
       </div>

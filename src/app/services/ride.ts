@@ -19,6 +19,11 @@ export interface RideData {
   routeVia?:string;
   status: string;
   seatStatus?: string;
+  // Waitlist / backup feature (backend seatHoldsByRide se):
+  //   pending_seats          → kitni seats abhi kisi pending request ke paas hold hain
+  //   backup_seats_available → un par aur kitni backup requests bheji ja sakti hain
+  pending_seats?: number;
+  backup_seats_available?: number;
 
 }
 

@@ -1,0 +1,121 @@
+/* Browser notifications (push) toggle — Profile aur /profile dono jagah use hota hai */
+
+.notif-card-unused {
+  margin-top: 16px;
+}
+
+.notif-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notif-info {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.notif-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  background: #f1f5f9;
+  flex-shrink: 0;
+  filter: grayscale(1);
+  transition: background 0.2s, filter 0.2s;
+}
+
+.notif-icon.on {
+  background: #fef3c7;
+  filter: none;
+}
+
+.notif-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.notif-hint {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.notif-hint.warn {
+  color: #b45309;
+}
+
+/* toggle switch */
+.notif-toggle {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: #cbd5e1;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.notif-toggle.active {
+  background: #16a34a;
+}
+
+.notif-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.notif-toggle.busy {
+  opacity: 0.7;
+}
+
+.notif-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s;
+}
+
+.notif-toggle.active .notif-knob {
+  transform: translateX(20px);
+}
+
+.notif-actions {
+  margin-top: 12px;
+  padding-left: 52px;
+}
+
+.notif-test-btn {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.notif-test-btn:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+@media (max-width: 480px) {
+  .notif-actions {
+    padding-left: 0;
+  }
+}

@@ -58,6 +58,27 @@
               "extractLicenses": false,
               "sourceMap": true
             },
+            "web": {
+              "outputMode": "static",
+              "ssr": false,
+              "server": false,
+              "prerender": false,
+              "optimization": true,
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1MB",
+                  "maximumError": "3MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
+                }
+              ]
+            },
             "capacitor": {
               "outputMode": "static",
               "ssr": false,

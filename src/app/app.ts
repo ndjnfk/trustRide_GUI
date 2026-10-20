@@ -40,6 +40,7 @@ export class App {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.resumeLiveTracking();
+    this.syncPushNotifications();
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -70,6 +71,20 @@ export class App {
     if (!resumed) return;
     const { Snackbar } = await import('./services/snackbar');
     this.injector.get(Snackbar).success('Live location sharing resumed');
+  }
+
+  /**
+   * Browser push: logged-in user ne profile me notifications ON ki hon to app
+   * khulte hi FCM token refresh + foreground listener. Lazy import — firebase
+   * ka code initial bundle me nahi aata. Fail ho to chup-chaap ignore.
+   */
+  private async syncPushNotifications(): Promise<void> {
+    try {
+      const { PushNotificationService } = await import('./services/push-notification');
+      await this.injector.get(PushNotificationService).syncOnStartup();
+    } catch {
+      /* optional feature */
+    }
   }
 
 ngOnInit() {

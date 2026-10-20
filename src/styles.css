@@ -3494,6 +3494,9 @@ app-my-bookings {
 .bookings-page .badge-pending   { background: var(--pending-bg);  border: 1px solid var(--pending-border);  color: var(--pending); }
 .bookings-page .badge-confirmed { background: var(--confirmed-bg); border: 1px solid var(--confirmed-border); color: var(--confirmed); }
 .bookings-page .badge-rejected  { background: var(--rejected-bg);  border: 1px solid var(--rejected-border);  color: var(--rejected); }
+/* ride cards: seats held by a pending request (waitlist feature) */
+.seats-hold { color: #d97706; font-weight: 500; }
+.bookings-page .badge-waitlisted { background: #ede9fe; border: 1px solid #c4b5fd; color: #6d28d9; } /* backup / waitlist request */
 .bookings-page .badge-ride-active    { background: var(--accent-soft); border: 1px solid rgba(59,130,246,0.18); color: var(--accent); }
 .bookings-page .badge-ride-completed { background: rgba(148,163,184,0.12); border: 1px solid rgba(148,163,184,0.18); color: #64748b; }
 .bookings-page .badge-ride-cancelled { background: var(--rejected-bg); border: 1px solid var(--rejected-border); color: var(--rejected); }

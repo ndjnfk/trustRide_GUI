@@ -6,10 +6,11 @@ import { environment } from '../../../../environment';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { Vehicle } from '../../servies/profile-service';
 import { VehicleDialog } from '../vehicle-dialog/vehicle-dialog';
+import { NotificationToggle } from '../notification-toggle/notification-toggle';
 
 @Component({
   selector: 'app-about-you',
-  imports: [CommonModule, RouterLink, VehicleDialog],
+  imports: [CommonModule, RouterLink, VehicleDialog, NotificationToggle],
   templateUrl: './about-you.html',
   styleUrl: './about-you.css',
 })

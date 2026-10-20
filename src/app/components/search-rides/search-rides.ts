@@ -28,6 +28,9 @@ export interface Ride {
   price_per_seat: number;
   status: string;
   seatStatus?: string;
+  // waitlist / backup feature
+  pending_seats?: number;
+  backup_seats_available?: number;
 }
 
 @Component({
@@ -212,7 +215,10 @@ export class SearchRides {
           const rideDate = new Date(r.departure_time).toLocaleDateString('en-CA', { timeZone: 'UTC' });
           const dateMatch = rideDate === targetDate;
 
-          const seatsMatch = (r.available_seats ?? 0) >= this.passengers;
+          // free seats + backup capacity (pending hold par bheji ja sakne wali
+          // backup requests) — taaki passenger backup request bhej sake
+          const seatsMatch =
+            (r.available_seats ?? 0) + (r.backup_seats_available ?? 0) >= this.passengers;
 
           return cityMatch && dateMatch && seatsMatch;
         });
@@ -363,6 +369,20 @@ export class SearchRides {
     this.router.navigate(['/ride-detail', rideId], { state: { ride_id: rideId } });
   }
 
+  // ── Waitlist / backup helpers ──
+  // Ride tabhi "Full" hai jab free seats bhi nahi aur backup capacity bhi nahi.
+  isRideFull(ride: Ride): boolean {
+    const free = Number(ride?.available_seats ?? 0);
+    const backup = Number(ride?.backup_seats_available ?? 0);
+    return (ride?.seatStatus === 'full' || free <= 0) && backup <= 0;
+  }
+
+  canBackup(ride: Ride): boolean {
+    const free = Number(ride?.available_seats ?? 0);
+    const backup = Number(ride?.backup_seats_available ?? 0);
+    return free <= 0 && backup > 0;
+  }
+
   bookRide(ride: Ride, event?: Event): void {
     if (event) {
       event.stopPropagation();
@@ -387,21 +407,32 @@ export class SearchRides {
       this.cdr.detectChanges();
 
       this.bookingService
-        .bookSeat(ride.ride_id, result.males, result.females, result.isSameFamily)
+        .bookSeat(ride.ride_id, result.males, result.females, result.isSameFamily, result.isBackup)
         .subscribe({
           next: (res: BookSeatResponse) => {
             this.loadingRides.delete(ride.ride_id);
 
             this.rides = this.rides.map((r) =>
               r.ride_id === ride.ride_id
-                ? { ...r, available_seats: res.ride_status.remaining_seats }
+                ? {
+                    ...r,
+                    available_seats: res.ride_status.remaining_seats,
+                    pending_seats: res.ride_status.pending_seats ?? r.pending_seats,
+                    backup_seats_available: res.ride_status.backup_seats_available ?? r.backup_seats_available,
+                  }
                 : r
             );
             this.cdr.detectChanges();
 
-            this.snack.success(
-              `${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`
-            );
+            if (res.booking?.status === 'waitlisted') {
+              this.snack.success(
+                `Backup request sent for ${result.total} seat(s). You'll be notified if a held seat frees up.`
+              );
+            } else {
+              this.snack.success(
+                `${result.total} seat(s) booked! (${result.males}M + ${result.females}F)`
+              );
+            }
           },
           error: (err) => {
             this.loadingRides.delete(ride.ride_id);
