@@ -86,8 +86,19 @@
                     }}</span></div>
               </div>
               <div class="detail-item"><span class="detail-icon">📞</span>
-                <div><span class="detail-label">Phone Number</span><span class="detail-val">{{ b.ride?.driver_phone ??
-                    '—' }}</span></div>
+                <div><span class="detail-label">Phone Number</span><span class="detail-val"
+                    [class.phone-masked]="b.ride?.driver_phone_masked">{{ b.ride?.driver_phone ?? '—' }}</span>
+                  <!-- Rider ka poora number approve hone ke baad hi dikhta hai -->
+                  <span class="detail-hint" *ngIf="b.ride?.driver_phone_masked">Full number shown once the rider approves</span>
+                </div>
+              </div>
+              <!-- Car — number plate bhi approve tak masked (XXXX89D) -->
+              <div class="detail-item" *ngIf="b.ride?.vehicle"><span class="detail-icon">🚗</span>
+                <div><span class="detail-label">Car</span><span class="detail-val">{{ b.ride?.vehicle?.color }} {{
+                    b.ride?.vehicle?.model }}
+                    <span class="plate-chip" [class.plate-masked]="b.ride?.vehicle?.plate_masked"
+                      *ngIf="b.ride?.vehicle?.plate_number">{{ b.ride?.vehicle?.plate_number }}</span></span>
+                </div>
               </div>
               
               <div class="detail-item"><span class="detail-icon">🪑</span>
@@ -181,6 +192,13 @@
               <div class="detail-item"><span class="detail-icon">📞</span>
                 <div><span class="detail-label">Phone Number</span><span class="detail-val">{{ b.ride?.driver_phone ??
                     '—' }}</span></div>
+              </div>
+              <!-- Approve ke baad rider ki car + number plate -->
+              <div class="detail-item" *ngIf="b.ride?.vehicle"><span class="detail-icon">🚗</span>
+                <div><span class="detail-label">Car</span><span class="detail-val">{{ b.ride?.vehicle?.color }} {{
+                    b.ride?.vehicle?.model }}
+                    <span class="plate-chip" *ngIf="b.ride?.vehicle?.plate_number">{{ b.ride?.vehicle?.plate_number }}</span></span>
+                </div>
               </div>
               <div class="detail-item"><span class="detail-icon">📅</span>
                 <div><span class="detail-label">Departure</span><span class="detail-val">{{

@@ -1,0 +1,262 @@
+/* header fixed hai (--h-height) — content uske neeche se shuru ho */
+.evp-page {
+  min-height: 70vh;
+  padding: calc(var(--h-height, 64px) + env(safe-area-inset-top, 0px) + 48px) 16px 56px;
+  background: #f6f8fb;
+}
+@media (max-width: 575px) {
+  .evp-page { padding-top: calc(var(--h-height, 64px) + env(safe-area-inset-top, 0px) + 24px); }
+}
+.evp-wrap { max-width: 900px; margin: 0 auto; }
+
+.evp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.evp-title { font-size: 1.4rem; font-weight: 700; margin: 0 0 4px; color: #0f172a; }
+.evp-sub { margin: 0; color: #64748b; font-size: 0.9rem; }
+.evp-head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.evp-btn-primary,
+.evp-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.evp-btn-primary { background: #2563eb; color: #fff; border: 1px solid #2563eb; }
+.evp-btn-primary:hover { background: #1d4ed8; color: #fff; }
+.evp-btn-outline { background: #fff; color: #334155; border: 1px solid #cbd5e1; }
+.evp-btn-outline:hover { background: #f8fafc; color: #0f172a; }
+.sm { padding: 7px 11px; font-size: 0.8rem; }
+
+.evp-price-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+}
+.evp-price-pill {
+  background: #047857;
+  color: #fff;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.evp-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.evp-filter label { font-size: 0.85rem; font-weight: 600; color: #334155; }
+.evp-filter select {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+.evp-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.evp-state {
+  text-align: center;
+  color: #64748b;
+  padding: 40px 12px;
+  background: #fff;
+  border-radius: 14px;
+}
+.evp-state.error { color: #b91c1c; }
+.evp-empty-icon { font-size: 2.2rem; margin-bottom: 8px; }
+.evp-state .evp-btn-primary { margin-top: 10px; }
+
+/* ── card ── */
+.evp-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+.evp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.evp-name { font-weight: 700; color: #0f172a; font-size: 1rem; }
+.evp-city { color: #64748b; font-size: 0.82rem; margin-top: 2px; }
+.evp-off { color: #94a3b8; }
+.evp-approx {
+  display: inline-block;
+  margin-left: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.evp-price {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.evp-address { color: #334155; font-size: 0.9rem; margin-top: 8px; line-height: 1.45; }
+.evp-meta, .evp-notes { color: #64748b; font-size: 0.82rem; margin-top: 6px; }
+.evp-eta { color: #1d4ed8; font-weight: 600; }
+.evp-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ── route mode: city-wise ── */
+.evp-route-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 4px 0 16px;
+  flex-wrap: wrap;
+}
+.evp-route-end {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+.evp-route-end.start { border-color: #86efac; }
+.evp-route-end.end { border-color: #fca5a5; }
+.evp-route-arrow { color: #94a3b8; }
+.evp-step {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.evp-km-chip {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 1px 9px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ── timeline (route mode) ── */
+.evp-timeline {
+  position: relative;
+  padding-left: 26px;
+}
+.evp-timeline::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  background: linear-gradient(#22c55e, #2563eb 50%, #ef4444);
+  border-radius: 2px;
+}
+.evp-tl-end {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.evp-tl-dot {
+  position: absolute;
+  left: -22px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #2563eb;
+}
+.evp-tl-dot.start { background: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
+.evp-tl-dot.end { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
+.evp-tl-label { font-size: 0.9rem; }
+
+.evp-tl-item { position: relative; margin-bottom: 14px; }
+.evp-tl-km {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+.evp-tl-km .evp-tl-dot { top: 3px; }
+.evp-km {
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+/* ── directory grid ── */
+.evp-group { margin-bottom: 22px; }
+.evp-group-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.evp-count {
+  background: #e2e8f0;
+  color: #334155;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+}
+.evp-unpinned { margin-top: 22px; }
+.evp-group-sub { color: #64748b; font-size: 0.82rem; margin: -4px 0 10px; }
+
+.evp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}

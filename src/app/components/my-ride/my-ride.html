@@ -58,6 +58,9 @@
           <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
             🔗 Copy link
           </button>
+          <button class="ev-btn" (click)="openChargingPoints(ride._id)" title="EV charging points on this route">
+            ⚡ Charging points
+          </button>
           <button
             class="edit-btn"
             [disabled]="editLoadingId === ride._id || updatingId === ride._id"

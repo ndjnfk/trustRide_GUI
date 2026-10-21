@@ -1,0 +1,137 @@
+<div class="ev-page">
+  <div class="ev-card">
+
+    <!-- Success -->
+    <div class="ev-success" *ngIf="submitted">
+      <div class="ev-success-icon">⚡</div>
+      <h2>Charger submitted</h2>
+      <p>Thanks! Our team will verify your charger and then it will appear to EV drivers on their route.</p>
+      <p class="ev-note" *ngIf="locationDetected">📍 Location detected from your Google Maps link.</p>
+      <p class="ev-note warn" *ngIf="!locationDetected">
+        📍 We could not read the exact location from the link. Our team will set it during verification —
+        a “Share location” link from the Google Maps app works best.
+      </p>
+      <div class="ev-success-actions">
+        <button type="button" class="ev-btn-secondary" (click)="listAnother()">List another charger</button>
+        <button type="button" class="ev-btn-primary" (click)="goToPoints()">See charging points</button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <ng-container *ngIf="!submitted">
+      <div class="ev-head">
+        <div class="ev-icon">⚡</div>
+        <div>
+          <h1 class="ev-title">List your EV charging point</h1>
+          <p class="ev-sub">
+            Have a charging socket at home, society, shop or dhaba? Share it with verified EV drivers on TrustRide.
+            No account needed — our team verifies every listing before it goes live.
+          </p>
+        </div>
+      </div>
+
+      <div class="ev-price-banner" *ngIf="pricing">
+        <span class="ev-price-pill">{{ pricing.label }}</span>
+        <span>Charging rate is fixed by TrustRide for all points. Drivers see this rate; you don't need to set a price.</span>
+      </div>
+
+      <form class="ev-form" (ngSubmit)="submit()" autocomplete="on" novalidate>
+
+        <div class="ev-row two">
+          <div class="ev-field">
+            <label for="ev-name">Your name <span class="req">*</span></label>
+            <input id="ev-name" type="text" [(ngModel)]="form.name" name="name" placeholder="e.g. Rahul Sharma" />
+            <small class="ev-err" *ngIf="errors['name']">{{ errors['name'] }}</small>
+          </div>
+          <div class="ev-field">
+            <label for="ev-phone">Mobile number <span class="req">*</span></label>
+            <input id="ev-phone" type="tel" inputmode="numeric" [(ngModel)]="form.phone" name="phone" placeholder="10-digit number" maxlength="13" />
+            <small class="ev-hint">Drivers will call you on this number to confirm.</small>
+            <small class="ev-err" *ngIf="errors['phone']">{{ errors['phone'] }}</small>
+          </div>
+        </div>
+
+        <div class="ev-field">
+          <label for="ev-city">City / area <span class="req">*</span></label>
+          <div class="ev-autocomplete">
+            <input
+              id="ev-city"
+              type="text"
+              name="city"
+              autocomplete="off"
+              [ngModel]="form.city"
+              (ngModelChange)="onCityInput($event)"
+              (keydown)="onCityKeydown($event)"
+              (focus)="showSuggestions = suggestions.length > 0"
+              (blur)="hideSuggestionsSoon()"
+              placeholder="Start typing — Gurgaon, Saharanpur, Panipat…"
+              [attr.aria-expanded]="showSuggestions"
+            />
+            <ul class="ev-suggestions" *ngIf="showSuggestions">
+              <li
+                *ngFor="let s of suggestions; let i = index"
+                [class.active]="i === activeIndex"
+                (mousedown)="pickCity(s)"
+              >
+                <span class="s-name">{{ s.name }}</span>
+                <span class="s-meta">{{ sourceLabel(s) }}</span>
+              </li>
+            </ul>
+          </div>
+          <small class="ev-err" *ngIf="errors['city']">{{ errors['city'] }}</small>
+        </div>
+
+        <div class="ev-field">
+          <label for="ev-address">Full address <span class="req">*</span></label>
+          <textarea id="ev-address" rows="2" [(ngModel)]="form.address" name="address"
+            placeholder="House no., street / society, landmark — as you'd tell a guest"></textarea>
+          <small class="ev-err" *ngIf="errors['address']">{{ errors['address'] }}</small>
+        </div>
+
+        <div class="ev-field">
+          <label for="ev-maps">Google Maps link of the charging point <span class="req">*</span></label>
+          <input id="ev-maps" type="url" [(ngModel)]="form.maps_link" name="maps_link"
+            placeholder="https://maps.app.goo.gl/… or https://www.google.com/maps/…" />
+          <small class="ev-hint">
+            Open Google Maps at your charging point → <strong>Share</strong> → <strong>Copy link</strong> and paste here.
+            We use it to show your point on the route map and for navigation.
+          </small>
+          <small class="ev-err" *ngIf="errors['maps_link']">{{ errors['maps_link'] }}</small>
+        </div>
+
+        <div class="ev-field">
+          <label>Timings <span class="req">*</span></label>
+          <div class="ev-time-row">
+            <label class="ev-time-lbl" for="ev-open-from">Open from</label>
+            <input id="ev-open-from" type="time" [(ngModel)]="form.open_from" name="open_from" [disabled]="form.open_24h" />
+            <label class="ev-time-lbl" for="ev-open-to">Open till</label>
+            <input id="ev-open-to" type="time" [(ngModel)]="form.open_to" name="open_to" [disabled]="form.open_24h" />
+            <label class="ev-check">
+              <input type="checkbox" [(ngModel)]="form.open_24h" name="open_24h" /> Open 24 hours
+            </label>
+          </div>
+          <small class="ev-hint">
+            Your point is shown to drivers <strong>only during these hours</strong> (at the time they would reach you).
+            Overnight timings like 8 pm – 6 am also work.
+          </small>
+          <small class="ev-err" *ngIf="errors['open_from']">{{ errors['open_from'] }}</small>
+        </div>
+
+        <div class="ev-field">
+          <label for="ev-notes">Rules / instructions <span class="opt">(optional)</span></label>
+          <textarea id="ev-notes" rows="2" [(ngModel)]="form.notes" name="notes" maxlength="500"
+            placeholder="e.g. call 15 min before, parking inside gate 2, 16A socket available"></textarea>
+        </div>
+
+        <div class="ev-actions">
+          <a class="ev-btn-secondary" routerLink="/ev-points">See charging points</a>
+          <button type="submit" class="ev-btn-primary" [disabled]="submitting">
+            <span *ngIf="!submitting">Submit for verification</span>
+            <span *ngIf="submitting">Submitting…</span>
+          </button>
+        </div>
+        <p class="ev-fine">By submitting you agree that drivers may contact you on the number above. You can ask us to remove the listing anytime.</p>
+      </form>
+    </ng-container>
+  </div>
+</div>

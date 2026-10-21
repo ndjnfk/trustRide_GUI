@@ -1,0 +1,131 @@
+.ev-admin { max-width: 980px; }
+
+/* platform price card */
+.ev-price-card { margin-bottom: 18px; }
+.ev-card-title { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; color: #0f172a; }
+.ev-price-now { font-size: 0.9rem; color: #334155; white-space: nowrap; }
+.ev-price-form { margin-top: 12px; }
+.ev-price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.ev-price-inputs .form-control { width: 130px; }
+.ev-price-inputs .form-select { width: auto; }
+.ev-rupee { font-weight: 700; color: #334155; }
+
+.ev-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.ev-tabs button {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ev-tabs button.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.ev-badge {
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 0.72rem;
+  background: #e2e8f0;
+  color: #334155;
+}
+.ev-badge.pending { background: #fef3c7; color: #92400e; }
+.ev-badge.approved { background: #dcfce7; color: #166534; }
+.ev-badge.rejected { background: #fee2e2; color: #991b1b; }
+.ev-tabs button.active .ev-badge { background: rgba(255, 255, 255, 0.2); color: #fff; }
+
+.ev-row { margin-bottom: 14px; }
+
+.ev-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.ev-name { font-weight: 700; font-size: 1.02rem; color: #0f172a; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ev-sub { color: #64748b; font-size: 0.82rem; margin-top: 2px; }
+.ev-price {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.ev-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 2px 8px;
+  letter-spacing: 0.02em;
+}
+.ev-status.pending { background: #fef3c7; color: #92400e; }
+.ev-status.approved { background: #dcfce7; color: #166534; }
+.ev-status.rejected { background: #fee2e2; color: #991b1b; }
+
+.ev-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 18px;
+  margin-bottom: 12px;
+}
+.ev-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #94a3b8; font-weight: 600; }
+.ev-val { font-size: 0.9rem; color: #0f172a; }
+.ev-link { font-size: 0.88rem; }
+
+.ev-loc {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.ev-loc.missing { background: #fffbeb; border-color: #fcd34d; }
+.ev-loc-head { font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 8px; }
+.ev-loc-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.ev-loc-row input {
+  width: 150px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+}
+
+.ev-reject-reason {
+  color: #991b1b;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.ev-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ev-reject input { max-width: 420px; }

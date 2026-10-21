@@ -41,6 +41,20 @@
       } @else {
         <div class="cr-grid">
           <div class="cr-wizard">
+            <!-- Car details mandatory — bina gaadi publish nahi hoga -->
+            @if (needsVehicle) {
+              <div class="cr-vehicle-gate" role="alert">
+                <i class="ti ti-car"></i>
+                <div class="cr-vehicle-gate-text">
+                  <strong>Car details required</strong>
+                  <p>Riders must add their car (model, colour and number plate) before publishing a ride. Passengers see it once you approve their booking.</p>
+                </div>
+                <button type="button" class="cr-vehicle-gate-btn" (click)="openVehicleDialog()">
+                  <i class="ti ti-circle-plus"></i> Add car details
+                </button>
+              </div>
+            }
+
             <!-- Step header -->
             <div class="cr-step-head">
               <span class="cr-step-count">Step {{ step + 1 }} of {{ steps.length }}</span>
@@ -280,7 +294,8 @@
                 }
               }
 
-              <button type="button" class="cr-continue" [disabled]="!canContinue" (click)="nextStep()">
+              <button type="button" class="cr-continue" [disabled]="!canContinue || (isLastStep && needsVehicle)"
+                [title]="isLastStep && needsVehicle ? 'Add your car details first' : ''" (click)="nextStep()">
                 {{ isLastStep ? 'Publish a ride' : 'Continue' }}
               </button>
             </div>
@@ -374,4 +389,7 @@
       </ol>
     </div>
   </section>
+
+  <!-- Car details dialog (mandatory for riders) -->
+  <app-vehicle-dialog (saved)="onVehicleSaved($event)"></app-vehicle-dialog>
 </div>

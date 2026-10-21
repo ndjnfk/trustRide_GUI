@@ -354,6 +354,11 @@ verifyCode_fn(booking: any, rideId: string): void {
 // }
 
 
+// Is ride ke route par verified EV charging points (pickup → drop order me)
+openChargingPoints(rideId: string): void {
+  this.router.navigate(['/ev-points'], { queryParams: { ride: rideId } });
+}
+
 togglePassengers(rideId: string): void {
   this.showPassengers[rideId] = !this.showPassengers[rideId];
 

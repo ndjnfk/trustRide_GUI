@@ -22,7 +22,12 @@ interface RideInfo {
   departure_time: string;
   price_per_seat: number;
   driver_name: string;
-  driver_phone: number;
+  /** Approve se pehle backend "XXXXXXX908" jaisa masked string bhejta hai */
+  driver_phone: number | string;
+  /** true → rider ne abhi approve nahi kiya, number masked hai */
+  driver_phone_masked?: boolean;
+  /** Rider ki car — approve ke baad card par number plate ke saath dikhti hai */
+  vehicle?: { vehicle_type: string; model: string; color: string; plate_number: string; plate_masked?: boolean } | null;
   ride_status: string;
 
   // Rider's user id — backend may send under any of these keys

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
@@ -20,19 +20,29 @@ import {
   formatDuration, hasMissingTolls, mergeTolls,
 } from '../../services/route-map-service';
 import { RideRouteMap } from '../ride-route-map/ride-route-map';
+import { ProfileService, Vehicle } from '../../servies/profile-service';
+import { VehicleDialog } from '../vehicle-dialog/vehicle-dialog';
 
 @Component({
   selector: 'app-create-ride',
-  imports: [MatSnackBarModule, ReactiveFormsModule, CommonModule, FormsModule, RideRouteMap],
+  imports: [MatSnackBarModule, ReactiveFormsModule, CommonModule, FormsModule, RideRouteMap, VehicleDialog],
   templateUrl: './create-ride.html',
   styleUrl: './create-ride.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateRide {
-  constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef, private route: ActivatedRoute, private locationService?: LocationService, private routeMaps?: RouteMapService) { }
+  constructor(private rideService: Ride, private snackBar: Snackbar, private router: Router, private cdr: ChangeDetectorRef, private route: ActivatedRoute, private profileService: ProfileService, private locationService?: LocationService, private routeMaps?: RouteMapService) { }
+
+  // ── Car details mandatory ──
+  // Rider bina gaadi (model, colour, number plate) ride publish nahi kar sakta —
+  // passengers ko approve ke baad yahi car dikhti hai. Server (createRide) bhi
+  // VEHICLE_REQUIRED se rokta hai; ye sirf pehle hi bata dene ke liye hai.
+  needsVehicle = false;
+  @ViewChild(VehicleDialog) vehicleDialog?: VehicleDialog;
 
     ngOnInit(): void {
       this.rideService.checkPendingReviews()
+      this.loadVehicleStatus()
 
       // Admin panel wali live list — hidden areas isme nahi aate
       this.locationService?.getCities().subscribe(cities => {
@@ -54,6 +64,27 @@ export class CreateRide {
       if (time) this.rideTime = time           // expected format: HH:MM
       if (from || to) this.syncPriceToRange()  // prefilled cities ki price range lagao
       if (from || to || date || time) this.cdr.markForCheck()
+    }
+
+    private loadVehicleStatus(): void {
+      if (!AuthHelper.isLoggedIn()) return
+      this.profileService.getProfile().subscribe({
+        next: res => {
+          this.needsVehicle = (res?.vehicles?.length ?? 0) === 0
+          this.cdr.markForCheck()
+        },
+        error: () => { /* profile na mile to server publish par rok dega */ },
+      })
+    }
+
+    openVehicleDialog(): void {
+      this.vehicleDialog?.open()
+    }
+
+    onVehicleSaved(_vehicle: Vehicle): void {
+      this.needsVehicle = false
+      this.snackBar.success('Car details saved — you can publish your ride now')
+      this.cdr.markForCheck()
     }
 
     // routeId ke hisaab se form prefill: from, to, selected route (via) aur price
@@ -697,6 +728,11 @@ selectRoute(route: typeof this.routeOptions[0]): void {
   }
   publishRide(): void {
     if (!this.isFormValid) return;
+    if (this.needsVehicle) {
+      this.snackBar.error('Please add your car details before publishing a ride.')
+      this.openVehicleDialog()
+      return
+    }
 console.log( this.rideTime)
     const localDateTimeString = `${this.rideDate}T${this.rideTime}:00`;
     // const departureDateUTC = new Date(localDateTimeString).toISOString();
@@ -751,6 +787,15 @@ console.log( this.rideTime)
 
   if (err?.status === 401) {
     this.snackBar.error('Please login to continue...')
+    return
+  }
+
+  // Server ne bina car details ride rok di — dialog khol do
+  if (err?.error?.code === 'VEHICLE_REQUIRED') {
+    this.needsVehicle = true
+    this.cdr.markForCheck()
+    this.snackBar.error(message)
+    this.openVehicleDialog()
     return
   }
 

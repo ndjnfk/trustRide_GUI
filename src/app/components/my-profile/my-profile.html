@@ -81,7 +81,11 @@
           @if (user?.phoneNumber) {
           <div class="about-item">
             <i class="ti ti-phone"></i>
-            <span>+91 {{ user.phoneNumber }}</span>
+            <span>+91 {{ user.phoneNumber }}
+              @if (user?.phoneMasked) {
+              <small class="text-muted d-block">Full number shown once your booking is approved</small>
+              }
+            </span>
           </div>
           }
  

@@ -1,0 +1,140 @@
+<div class="evp-page">
+  <div class="evp-wrap">
+
+    <!-- Header -->
+    <div class="evp-head">
+      <div>
+        <h1 class="evp-title">⚡ EV charging points</h1>
+        <p class="evp-sub" *ngIf="rideId && rideInfo">
+          On your route <strong>{{ rideInfo.from }}</strong> → <strong>{{ rideInfo.to }}</strong>
+          <span *ngIf="rideInfo.distance_km"> · {{ rideInfo.distance_km }} km</span>
+          <span *ngIf="rideInfo.departure_time"> · {{ formatDate(rideInfo.departure_time) }}</span>
+        </p>
+        <p class="evp-sub" *ngIf="!rideId">Verified home, society and shop chargers listed by EV owners.</p>
+      </div>
+      <div class="evp-head-actions">
+        <a class="evp-btn-outline" routerLink="/ev-points" *ngIf="rideId">All points</a>
+        <a class="evp-btn-primary" routerLink="/ev-points/add">+ List your charger</a>
+      </div>
+    </div>
+
+    <div class="evp-price-banner" *ngIf="pricing">
+      <span class="evp-price-pill">{{ pricing.label }}</span>
+      <span>Charging rate at every TrustRide point (set by TrustRide, not by the host).</span>
+    </div>
+
+    <!-- City filter (directory mode) -->
+    <div class="evp-filter" *ngIf="!rideId && cities.length">
+      <label for="evp-city">City</label>
+      <select id="evp-city" [ngModel]="selectedCity" (ngModelChange)="onCityChange($event)">
+        <option value="">All cities</option>
+        <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <div class="evp-info" *ngIf="rideId && routeMode === 'city' && routeMessage">ℹ️ {{ routeMessage }}</div>
+    <div class="evp-info" *ngIf="rideId && routeMode === 'route' && points.length">
+      Chargers in the cities on your route, in travel order from pickup — only those <strong>open when you reach them</strong>.
+      <span *ngIf="closedCount"> {{ closedCount }} more charger{{ closedCount > 1 ? 's are' : ' is' }} closed at your travel time.</span>
+    </div>
+    <div class="evp-info" *ngIf="!rideId && (points.length || closedCount)">
+      Showing chargers <strong>open now</strong><span *ngIf="checkedAtLabel"> ({{ checkedAtLabel }} IST)</span>.
+      <span *ngIf="closedCount"> {{ closedCount }} more {{ closedCount > 1 ? 'are' : 'is' }} closed right now.</span>
+    </div>
+
+    <!-- States -->
+    <div class="evp-state" *ngIf="loading">Loading charging points…</div>
+    <div class="evp-state error" *ngIf="!loading && error">{{ error }}</div>
+    <div class="evp-state" *ngIf="!loading && !error && points.length === 0 && unpinnedPoints.length === 0">
+      <div class="evp-empty-icon">🔌</div>
+      <p *ngIf="rideId && !closedCount">No verified chargers on this route yet.</p>
+      <p *ngIf="rideId && closedCount">{{ closedCount }} charger{{ closedCount > 1 ? 's are' : ' is' }} on this route, but closed at the time you would reach {{ closedCount > 1 ? 'them' : 'it' }}.</p>
+      <p *ngIf="!rideId && !closedCount">No verified chargers listed yet.</p>
+      <p *ngIf="!rideId && closedCount">{{ closedCount }} charger{{ closedCount > 1 ? 's are' : ' is' }} listed, but closed right now.</p>
+      <a class="evp-btn-primary" routerLink="/ev-points/add">Know a charger? List it</a>
+    </div>
+
+    <!-- ROUTE MODE: city-wise, pickup → drop ke order me -->
+    <ng-container *ngIf="!loading && !error && rideId && points.length">
+      <div class="evp-route-strip">
+        <span class="evp-route-end start">{{ rideInfo?.from }}</span>
+        <span class="evp-route-arrow">→</span>
+        <span class="evp-route-end end">{{ rideInfo?.to }}</span>
+      </div>
+
+      <section class="evp-group" *ngFor="let g of groupedByCity; let i = index">
+        <h2 class="evp-group-title">
+          <span class="evp-step">{{ i + 1 }}</span>
+          📍 {{ g.city }}
+          <span class="evp-km-chip" *ngIf="g.along_km != null">~{{ g.along_km }} km from {{ rideInfo?.from }}</span>
+          <span class="evp-count">{{ g.points.length }}</span>
+        </h2>
+        <div class="evp-grid">
+          <div class="evp-card" *ngFor="let p of g.points">
+            <div class="evp-card-top">
+              <div class="evp-name">{{ p.name }}</div>
+              <div class="evp-price" *ngIf="p.price_label">{{ p.price_label }}</div>
+            </div>
+            <div class="evp-address">{{ p.address }}</div>
+            <div class="evp-meta">🕒 {{ p.timing_label }}<span class="evp-eta" *ngIf="p.eta_label"> · you reach ~{{ p.eta_label }}</span></div>
+            <div class="evp-notes" *ngIf="p.notes">📝 {{ p.notes }}</div>
+            <div class="evp-actions">
+              <a class="evp-btn-primary sm" [href]="p.navigate_url || p.maps_link" target="_blank" rel="noopener">🧭 Navigate</a>
+              <a class="evp-btn-outline sm" [href]="telHref(p)">📞 Call host</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+    <!-- ROUTE MODE: points bina exact pin ke — pickup / drop city me -->
+    <ng-container *ngIf="!loading && !error && rideId && unpinnedPoints.length">
+      <section class="evp-group evp-unpinned">
+        <h2 class="evp-group-title">📍 Also in {{ rideInfo?.from }} / {{ rideInfo?.to }} <span class="evp-count">{{ unpinnedPoints.length }}</span></h2>
+        <p class="evp-group-sub">Exact spot not pinned on the map yet — open the host's map link or call to confirm.</p>
+        <div class="evp-grid">
+          <div class="evp-card" *ngFor="let p of unpinnedPoints">
+            <div class="evp-card-top">
+              <div>
+                <div class="evp-name">{{ p.name }}</div>
+                <div class="evp-city">📍 {{ p.city }}<span *ngIf="p.near_city"> · near {{ p.near_city }}</span></div>
+              </div>
+              <div class="evp-price" *ngIf="p.price_label">{{ p.price_label }}</div>
+            </div>
+            <div class="evp-address">{{ p.address }}</div>
+            <div class="evp-meta">🕒 {{ p.timing_label }}</div>
+            <div class="evp-notes" *ngIf="p.notes">📝 {{ p.notes }}</div>
+            <div class="evp-actions">
+              <a class="evp-btn-primary sm" [href]="p.maps_link" target="_blank" rel="noopener">🗺️ Open map link</a>
+              <a class="evp-btn-outline sm" [href]="telHref(p)">📞 Call host</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+    <!-- DIRECTORY MODE: city-wise -->
+    <ng-container *ngIf="!loading && !error && !rideId && points.length">
+      <section class="evp-group" *ngFor="let g of groupedByCity">
+        <h2 class="evp-group-title">📍 {{ g.city }} <span class="evp-count">{{ g.points.length }}</span></h2>
+        <div class="evp-grid">
+          <div class="evp-card" *ngFor="let p of g.points">
+            <div class="evp-card-top">
+              <div class="evp-name">{{ p.name }}</div>
+              <div class="evp-price" *ngIf="p.price_label">{{ p.price_label }}</div>
+            </div>
+            <div class="evp-address">{{ p.address }}</div>
+            <div class="evp-meta">🕒 {{ p.timing_label }}</div>
+            <div class="evp-notes" *ngIf="p.notes">📝 {{ p.notes }}</div>
+            <div class="evp-actions">
+              <a class="evp-btn-primary sm" [href]="p.navigate_url" target="_blank" rel="noopener">🧭 Navigate</a>
+              <a class="evp-btn-outline sm" [href]="p.maps_link" target="_blank" rel="noopener">🗺️ Map link</a>
+              <a class="evp-btn-outline sm" [href]="telHref(p)">📞 Call host</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+  </div>
+</div>

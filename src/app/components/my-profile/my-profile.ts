@@ -111,6 +111,8 @@ export class MyProfile implements OnInit {
           gender:             d.gender,
           userEmail:          d.user_Email,
           phoneNumber:        d.phone_Number ?? d.phone_number ?? d.phoneNumber ?? d.Phone_Number ?? d.mobile_number,
+          // Rider ka number tab tak "XXXXXXX908" rehta hai jab tak wo aapki booking approve na kare
+          phoneMasked:        !!d.phone_masked,
           verificationStatus: d.verification_Status,
           avatarUrl:          d.avatar_Url,
           avgRating:          d.avg_rating,

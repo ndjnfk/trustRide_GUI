@@ -51,6 +51,16 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../app/components/create-ticket/create-ticket').then((m) => m.CreateTicket),
   },
+  // EV charging points — directory + route-wise (?ride=<id>), public
+  {
+    path: 'ev-points',
+    loadComponent: () => import('../app/components/ev-points/ev-points').then((m) => m.EvPoints),
+  },
+  // Host form — bina login, admin verify ke baad live
+  {
+    path: 'ev-points/add',
+    loadComponent: () => import('../app/components/ev-point-form/ev-point-form').then((m) => m.EvPointForm),
+  },
   {
     path: 'chat',
     loadComponent: () =>
@@ -147,6 +157,10 @@ export const routes: Routes = [
     path: 'admin/locations',
     loadComponent: () =>
       import('../app/admin/locations/locations').then((m) => m.AdminLocations),
+  },
+  {
+    path: 'admin/ev-points',
+    loadComponent: () => import('../app/admin/ev-points/ev-points').then((m) => m.AdminEvPoints),
   },
   {
     path: 'admin/ride-pricing',

@@ -23,6 +23,8 @@ export class Footer {
       { label: 'Home',    route: '/dashboard' },
       { label: 'Create Ride',  route: '/create-ride'    },
       { label: 'My Ride',    route: '/get-ride' },
+      { label: 'EV Charging Points', route: '/ev-points' },
+      { label: 'List your EV charger', route: '/ev-points/add' },
       // { label: 'Analytics',    route: '/analytics' },
     ],
     company: [

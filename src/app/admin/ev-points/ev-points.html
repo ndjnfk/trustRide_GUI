@@ -1,0 +1,132 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="limit-container ev-admin">
+
+      <div class="page-header d-flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
+        <h1 class="page-title m-0">⚡ EV Charging Points</h1>
+        <a class="btn btn-sm btn-outline-primary" href="/ev-points/add" target="_blank" rel="noopener">Open public form ↗</a>
+      </div>
+
+      <!-- ═══ Platform price (sab points par same) ═══ -->
+      <div class="card limit-card border-0 shadow-sm ev-price-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+            <div>
+              <h2 class="ev-card-title">Charging price</h2>
+              <p class="text-muted mb-0 small">
+                Hosts don't set a price. This one rate is shown on every charging point — per hour or per 30 minutes.
+              </p>
+            </div>
+            <div class="ev-price-now">Current: <strong>{{ pricing?.label || '—' }}</strong></div>
+          </div>
+
+          <form class="ev-price-form" (ngSubmit)="savePricing()" novalidate>
+            <div class="ev-price-inputs">
+              <span class="ev-rupee">₹</span>
+              <input type="number" class="form-control" [(ngModel)]="priceAmount" name="priceAmount"
+                [min]="priceLimits.min" [max]="priceLimits.max" step="1" inputmode="decimal" [disabled]="priceSaving" />
+              <select class="form-select" [(ngModel)]="priceUnit" name="priceUnit" [disabled]="priceSaving">
+                <option *ngFor="let u of priceUnits" [value]="u[0]">{{ u[1] }}</option>
+              </select>
+              <button type="submit" class="btn btn-primary btn-sm" [disabled]="priceSaving || !priceDirty">
+                <span *ngIf="!priceSaving">Save</span>
+                <span *ngIf="priceSaving">Saving…</span>
+              </button>
+            </div>
+            <small class="text-muted">Preview: <strong>{{ pricePreview }}</strong> · allowed ₹{{ priceLimits.min }}–₹{{ priceLimits.max }}</small>
+          </form>
+        </div>
+      </div>
+
+      <!-- ═══ Verification ═══ -->
+      <div class="ev-tabs">
+        <button type="button" [class.active]="tab === 'pending'" (click)="setTab('pending')">
+          Pending <span class="ev-badge pending">{{ counts.pending }}</span>
+        </button>
+        <button type="button" [class.active]="tab === 'approved'" (click)="setTab('approved')">
+          Approved <span class="ev-badge approved">{{ counts.approved }}</span>
+        </button>
+        <button type="button" [class.active]="tab === 'rejected'" (click)="setTab('rejected')">
+          Rejected <span class="ev-badge rejected">{{ counts.rejected }}</span>
+        </button>
+        <button type="button" [class.active]="tab === 'all'" (click)="setTab('all')">All</button>
+      </div>
+
+      <div class="text-muted py-4" *ngIf="loading">Loading…</div>
+      <div class="card limit-card border-0 shadow-sm" *ngIf="!loading && points.length === 0">
+        <div class="card-body text-muted">No charging points in this list.</div>
+      </div>
+
+      <div class="card limit-card border-0 shadow-sm ev-row" *ngFor="let p of points">
+        <div class="card-body">
+          <div class="ev-top">
+            <div>
+              <div class="ev-name">
+                {{ p.name }}
+                <span class="ev-status" [class]="'ev-status ' + p.status">{{ p.status }}</span>
+              </div>
+              <div class="ev-sub">📍 {{ p.city }} · 📞 {{ p.phone }} · submitted {{ formatDate(p.created_at) }}</div>
+            </div>
+            <div class="ev-price" *ngIf="p.price_label">{{ p.price_label }}</div>
+          </div>
+
+          <div class="ev-grid">
+            <div>
+              <div class="ev-label">Address</div>
+              <div class="ev-val">{{ p.address }}</div>
+            </div>
+            <div>
+              <div class="ev-label">Timings (IST)</div>
+              <div class="ev-val">🕒 {{ p.timing_label }}</div>
+            </div>
+            <div *ngIf="p.notes">
+              <div class="ev-label">Rules / instructions</div>
+              <div class="ev-val">{{ p.notes }}</div>
+            </div>
+            <div>
+              <div class="ev-label">Google Maps link</div>
+              <div class="ev-val">
+                <a [href]="p.maps_link" target="_blank" rel="noopener" class="ev-link">Open link ↗</a>
+                <a *ngIf="p.navigate_url && p.location_detected" [href]="p.navigate_url" target="_blank" rel="noopener" class="ev-link ms-2">Navigate ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="ev-loc" [class.missing]="!p.location_detected">
+            <div class="ev-loc-head">
+              <span *ngIf="p.location_detected">📍 Location detected: {{ p.lat }}, {{ p.lng }}</span>
+              <span *ngIf="!p.location_detected">ℹ️ Exact location not detected from the link (optional). The point is still shown on routes that pass through <strong>{{ p.city }}</strong> (city-level, ≈). Set lat/lng only if you want the exact spot and km.</span>
+            </div>
+            <div class="ev-loc-row">
+              <input type="text" inputmode="decimal" placeholder="lat" [(ngModel)]="latlng[p._id].lat" [name]="'lat-' + p._id" />
+              <input type="text" inputmode="decimal" placeholder="lng" [(ngModel)]="latlng[p._id].lng" [name]="'lng-' + p._id" />
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="saveLocation(p)" [disabled]="busyId === p._id">Save</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="detectLocation(p)" [disabled]="busyId === p._id">Detect from link</button>
+            </div>
+            <small class="text-muted">Tip: open the link in Google Maps, right-click the pin → the first line shows “lat, lng”.</small>
+          </div>
+
+          <div class="ev-reject-reason" *ngIf="p.status === 'rejected' && p.rejection_reason">
+            ❌ Reason: {{ p.rejection_reason }}
+          </div>
+
+          <!-- Actions -->
+          <div class="ev-actions" *ngIf="!rejecting[p._id]">
+            <button type="button" class="btn btn-sm btn-success" *ngIf="p.status !== 'approved'" (click)="approve(p)" [disabled]="busyId === p._id">✅ Approve</button>
+            <button type="button" class="btn btn-sm btn-outline-danger" *ngIf="p.status !== 'rejected'" (click)="startReject(p)" [disabled]="busyId === p._id">Reject</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" *ngIf="p.status !== 'pending'" (click)="backToPending(p)" [disabled]="busyId === p._id">Back to pending</button>
+            <button type="button" class="btn btn-sm btn-link text-danger ms-auto" (click)="remove(p)" [disabled]="busyId === p._id">Delete</button>
+          </div>
+          <div class="ev-actions ev-reject" *ngIf="rejecting[p._id]">
+            <input type="text" class="form-control form-control-sm" placeholder="Reason (for our records)" [(ngModel)]="rejectReason[p._id]" [name]="'reason-' + p._id" />
+            <button type="button" class="btn btn-sm btn-danger" (click)="reject(p)" [disabled]="busyId === p._id">Confirm reject</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="cancelReject(p)">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

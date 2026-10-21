@@ -43,3 +43,21 @@
 .btn-copy-link:hover {
   background: #0747d4;
 }
+
+/* ─── Car details gate (rider ke liye mandatory) ─── */
+.cr-vehicle-gate {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 0 0 14px; padding: 12px 14px;
+  background: #fffbeb; border: 1px solid #f59e0b; border-radius: 12px;
+  color: #78350f;
+}
+.cr-vehicle-gate > .ti { font-size: 1.6rem; color: #d97706; }
+.cr-vehicle-gate-text { flex: 1 1 200px; min-width: 0; }
+.cr-vehicle-gate-text strong { display: block; font-size: 0.92rem; }
+.cr-vehicle-gate-text p { margin: 2px 0 0; font-size: 0.8rem; line-height: 1.4; color: #92400e; }
+.cr-vehicle-gate-btn {
+  font-size: 0.82rem; font-weight: 600; white-space: nowrap;
+  color: #fff; background: #d97706; border: none; border-radius: 8px;
+  padding: 8px 14px; cursor: pointer;
+}
+.cr-vehicle-gate-btn:hover { background: #b45309; }
