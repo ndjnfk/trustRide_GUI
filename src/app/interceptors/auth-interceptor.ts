@@ -4,18 +4,20 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpResponse
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthHelper } from '../helpers/auth-helper';
 import { AdminSessionHelper } from '../helpers/admin-session-helper';
+import { AppModeService } from '../services/app-mode';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private appMode: AppModeService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isAdminRequest = req.url.includes('/admin/');
@@ -32,7 +34,20 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     return next.handle(outgoing).pipe(
+      // Backend har authenticated user response me `x-render-profile` header deta hai
+      // (std / cmp). Yahin se pata chalta hai ki is user ke action buttons
+      // chalne hain ya nahi — admin panel ke requests isme nahi aate.
+      tap(event => {
+        if (!isAdminRequest && event instanceof HttpResponse) {
+          this.appMode.applyFromHeaders(event.headers);
+        }
+      }),
       catchError((error: HttpErrorResponse) => {
+        // Blocked write (503) bhi yahi header leke aata hai — mode turant update.
+        if (!isAdminRequest && error.status !== 0) {
+          this.appMode.applyFromHeaders(error.headers);
+        }
+
         // 401 = expired / invalid token. 0 = browser blocked the response
         // (an expired-token 401 without CORS headers shows up as status 0).
         const sessionExpired = error.status === 401 || error.status === 0;
@@ -73,6 +88,7 @@ export class AuthInterceptor implements HttpInterceptor {
     } else {
       if (this.router.url.startsWith('/login')) return;
       AuthHelper.logout();
+      this.appMode.reset();
       this.router.navigate(['/login'], {
         queryParams: { sessionExpired: '1' }
       });

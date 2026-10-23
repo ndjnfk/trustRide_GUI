@@ -39,6 +39,7 @@ export class AdminDashboard {
   isLoading = false;
   updatingUserId: string | null = null;
   updatingRoleUserId: string | null = null;
+  lockingUserId: string | null = null;
   roleOptions: Array<'passenger' | 'rider' | 'both' | 'admin'> = ['passenger', 'rider', 'both', 'admin'];
   activeFilter: 'all' | 'verified' | 'pending' | 'rejected' = 'all';
  
@@ -288,6 +289,46 @@ loadUsers(): void {
         if (select) select.value = this.getUserRole(user);
         console.error('Role update error:', err);
         this.showError(err?.error?.message || 'Role update failed. Try again.');
+      }
+    });
+  }
+
+  // ── Lock / unlock ───────────────────────────────────────────────────────────
+  /**
+   * Locked user login kar sakta hai aur sab dekh sakta hai, par uske action
+   * buttons (book, publish, chat, edit ...) faded/unresponsive ho jaate hain aur
+   * backend har write request generic error se rok deta hai. User ko kahin
+   * "locked" nahi dikhta — lagta hai app me dikkat hai.
+   */
+  toggleLock(user: User): void {
+    const locked = !user.isLocked;
+    const confirmMsg = locked
+      ? `Lock "${user.fullName}"? They can still log in and browse, but no button will work for them. They will NOT be told they are locked.`
+      : `Unlock "${user.fullName}"? All actions will work again.`;
+    if (!confirm(confirmMsg)) return;
+
+    this.lockingUserId = user._id;
+    this.adminService.setUserLock({ user_id: user._id, locked }).subscribe({
+      next: (res) => {
+        this.lockingUserId = null;
+        if (!res.success) {
+          this.cdr.markForCheck();
+          this.showError(res.message ?? 'Lock update failed.');
+          return;
+        }
+        user.isLocked = locked;
+        const masterIdx = this.allUsers.findIndex(u => u._id === user._id);
+        if (masterIdx !== -1) this.allUsers[masterIdx].isLocked = locked;
+        this.cdr.markForCheck(); // zoneless — HTTP callback se CD apne aap nahi chalta
+        this.showSuccess(locked
+          ? `${user.fullName} locked 🔒 — they can browse but nothing will work for them`
+          : `${user.fullName} unlocked 🔓`);
+      },
+      error: (err) => {
+        this.lockingUserId = null;
+        console.error('Lock update error:', err);
+        this.cdr.markForCheck();
+        this.showError(err?.error?.message || 'Lock update failed. Try again.');
       }
     });
   }

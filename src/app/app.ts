@@ -1,4 +1,4 @@
-import { Component, Injector, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, Injector, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   NavigationCancel,
@@ -11,6 +11,7 @@ import {
 import { Header } from './components/header/header';
 import { Footer } from './components/footer/footer';
 import { LoaderServices } from './services/loader-services';
+import { AppModeService } from './services/app-mode';
 import { AsyncPipe } from '@angular/common';
 import { filter } from 'rxjs/operators'
 import { HealthComponent } from './components/health/health';
@@ -30,9 +31,13 @@ export class App {
  isAdminRoute = true
  isMarketplaceRoute = false
  isChatThreadRoute = false
+  // Signal copy of isAdminRoute — body class effect ke liye (admin panel par
+  // limited mode kabhi apply nahi hota, chahe admin ka user account locked ho).
+  private readonly adminRoute = signal(true)
 
   private router = inject(Router);
   protected loader = inject(LoaderServices);
+  private appMode = inject(AppModeService);
   private platformId = inject(PLATFORM_ID);
   private injector = inject(Injector);
 
@@ -41,6 +46,13 @@ export class App {
 
     this.resumeLiveTracking();
     this.syncPushNotifications();
+
+    // Locked user → <body class="rp-cmp"> → styles.css page ke action
+    // buttons faded + unclickable kar deta hai. Header/footer/nav links chalte rahte hain.
+    effect(() => {
+      const on = this.appMode.limited() && !this.adminRoute();
+      document.body.classList.toggle(AppModeService.BODY_CLASS, on);
+    });
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -93,6 +105,7 @@ ngOnInit() {
       .subscribe((event: NavigationEnd) => {
         const url = event.urlAfterRedirects
         this.isAdminRoute = url.startsWith('/admin')
+        this.adminRoute.set(this.isAdminRoute)
         this.isMarketplaceRoute = url.startsWith('/marketplace')
         // A single chat conversation (/chat/:threadId) has its own composer send
         // button; hide the floating assistant here so the two don't overlap on mobile.
@@ -101,4 +114,3 @@ ngOnInit() {
   }
 
 }
-

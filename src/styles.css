@@ -3844,3 +3844,39 @@ app-my-bookings {
   border-radius: 14px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Limited mode — admin ne user ko lock kiya (backend `x-render-profile: cmp`,
+   AppModeService → body.rp-cmp). User ko kuch batana nahi: page ke sab
+   action buttons bilkul normal dikhte hain, bas click ka koi asar nahi hota.
+   Header/footer, nav links, logout, dialog close/cancel chalte rahte hain.
+   Asli rok backend Auth middleware me hai — ye sirf UI.
+   ═══════════════════════════════════════════════════════════════════════ */
+body.rp-cmp router-outlet ~ *:not(app-footer) button:not(.keep-live),
+body.rp-cmp router-outlet ~ *:not(app-footer) input[type="submit"],
+body.rp-cmp router-outlet ~ *:not(app-footer) mat-slide-toggle,
+body.rp-cmp router-outlet ~ *:not(app-footer) mat-checkbox,
+body.rp-cmp .cdk-overlay-container .mat-mdc-dialog-container button:not(.keep-live):not([mat-button]):not(.bd-cancel):not(.ed-btn-cancel):not(.cd-btn-cancel):not(.close-btn):not(.btn-keep):not(.rp-close),
+body.rp-cmp .cdk-overlay-container .mat-mdc-dialog-container input[type="submit"] {
+  /* Dikhne me bilkul normal — sirf click ka koi asar nahi (user ko shak na ho) */
+  pointer-events: none !important;
+}
+
+/* Dekhne ke kaam ke controls lock me bhi chalen: pagination, tabs, dialog close */
+body.rp-cmp .mat-mdc-paginator button,
+body.rp-cmp .mat-mdc-tab-header button,
+body.rp-cmp button[mat-dialog-close],
+body.rp-cmp .mat-mdc-dialog-container .close-btn,
+body.rp-cmp .mat-mdc-dialog-container .rp-close {
+  pointer-events: auto !important;
+}
+
+/* Admin users table — Account column lock toggle (dashboard CSS budget me jagah nahi thi) */
+app-admin-dashboard .account-cell{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+app-admin-dashboard .lock-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid #e5e7eb;background:#f9fafb;color:#374151;cursor:pointer;white-space:nowrap}
+app-admin-dashboard .lock-btn mat-icon{font-size:15px;width:15px;height:15px;line-height:15px}
+app-admin-dashboard .lock-btn:hover:not(:disabled){background:#fef3c7;border-color:#f59e0b;color:#92400e}
+app-admin-dashboard .lock-btn.is-locked{background:#fee2e2;border-color:#fca5a5;color:#b91c1c}
+app-admin-dashboard .lock-btn.is-locked:hover:not(:disabled){background:#dcfce7;border-color:#86efac;color:#166534}
+app-admin-dashboard .lock-btn:disabled{opacity:.6;cursor:wait}
+app-admin-dashboard .locked-status{color:#b91c1c}

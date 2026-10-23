@@ -261,10 +261,22 @@
                 </td>
 
                 <td data-label="Account">
-                  <span class="status" [class.active-status]="user.status === 'active'"
-                    [class.inactive-status]="user.status !== 'active'">
-                    ● {{ user.status | titlecase }}
-                  </span>
+                  <div class="account-cell">
+                    <span class="status" [class.active-status]="user.status === 'active' && !user.isLocked"
+                      [class.inactive-status]="user.status !== 'active' && !user.isLocked"
+                      [class.locked-status]="user.isLocked">
+                      ● {{ user.isLocked ? 'Locked' : (user.status | titlecase) }}
+                    </span>
+                    <!-- Lock: user login karega, sab dekhega, par koi button nahi chalega.
+                         Use kabhi "locked" nahi dikhta — lagta hai app me dikkat hai. -->
+                    <button type="button" class="lock-btn" [class.is-locked]="user.isLocked"
+                      [disabled]="lockingUserId === user._id"
+                      (click)="toggleLock(user)"
+                      [title]="user.isLocked ? 'Unlock — actions wapas chalu' : 'Lock — sab actions band (user ko pata nahi chalega)'">
+                      <mat-icon>{{ user.isLocked ? 'lock' : 'lock_open' }}</mat-icon>
+                      {{ user.isLocked ? 'Unlock' : 'Lock' }}
+                    </button>
+                  </div>
                 </td>
             <td class="action-cell" data-label="Delete">
 

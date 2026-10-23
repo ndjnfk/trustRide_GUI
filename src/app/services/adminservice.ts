@@ -49,6 +49,8 @@ export interface User {
   companyEmail:string,
   referredBy?: string;
   verificationStatus: string;
+  // Admin lock — user login karega, sab dekhega, par koi action nahi chala payega
+  isLocked?: boolean;
   professionalVerification: ProfessionalVerification | null;
   created_at?: string;
 }
@@ -81,6 +83,17 @@ export interface UpdateUserRoleRequest {
 export interface UpdateUserRoleResponse {
   success: boolean;
   message: string;
+}
+
+export interface SetUserLockRequest {
+  user_id: string;
+  locked: boolean;
+}
+
+export interface SetUserLockResponse {
+  success: boolean;
+  message: string;
+  data?: { user_id: string; locked: boolean };
 }
 
 export interface BounceCheckResponse {
@@ -372,6 +385,16 @@ private readonly API_URL = environment.apiUrl;
   updateUserRole(payload: UpdateUserRoleRequest): Observable<UpdateUserRoleResponse> {
     return this.http.put<UpdateUserRoleResponse>(
       `${this.API_URL}/admin/update-user-role`,
+      payload,
+      { headers: AdminSessionHelper.getAuthHeaders() }
+    );
+  }
+
+  // Admin: lock / unlock a user. Locked user ko "lock" kabhi nahi dikhta —
+  // bas uske action buttons chalna band ho jaate hain (app me dikkat jaisa).
+  setUserLock(payload: SetUserLockRequest): Observable<SetUserLockResponse> {
+    return this.http.put<SetUserLockResponse>(
+      `${this.API_URL}/admin/lock-user`,
       payload,
       { headers: AdminSessionHelper.getAuthHeaders() }
     );
