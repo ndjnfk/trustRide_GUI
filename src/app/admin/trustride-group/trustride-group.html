@@ -1,0 +1,106 @@
+<div class="admin-wrapper">
+  <app-side-bar></app-side-bar>
+  <main class="admin-main">
+    <div class="group-container">
+
+      <!-- Header -->
+      <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <div>
+          <h1 class="page-title m-0">TrustRide Group</h1>
+          <p class="text-muted small m-0">
+            Verified users join the TrustRide Chat group automatically. Removed users stay out until you add them back.
+          </p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary" (click)="load()" [disabled]="loading">Refresh</button>
+          <button class="btn btn-primary" (click)="showAdd = !showAdd">
+            {{ showAdd ? 'Close' : '+ Add member' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Add member panel -->
+      <div class="card add-card border-0 shadow-sm mb-3" *ngIf="showAdd">
+        <div class="card-body">
+          <h2 class="section-title">Add member back to the group</h2>
+          <p class="text-muted small">Only verified users who are not in the group (removed or left) are listed here.</p>
+          <input class="form-control mb-3" [(ngModel)]="addQ" placeholder="Search name, email or phone" />
+          <div class="text-muted small" *ngIf="!addable.length">No verified users outside the group.</div>
+          <div class="add-row" *ngFor="let m of addable">
+            <div>
+              <div class="m-name">{{ m.name }}</div>
+              <div class="m-sub">{{ m.email || m.phone || m.user_id }} · {{ statusLabel(m.status) }}</div>
+            </div>
+            <button class="btn btn-sm btn-success" (click)="add(m)" [disabled]="busyId === m.user_id">
+              {{ busyId === m.user_id ? 'Adding…' : 'Add' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs + search -->
+      <div class="toolbar mb-3">
+        <div class="tabs">
+          <button *ngFor="let t of tabs" class="tab" [class.is-active]="tab === t.key" (click)="tab = t.key">
+            {{ t.label }} <span class="tab-count">{{ countFor(t.key) }}</span>
+          </button>
+        </div>
+        <input class="form-control search" [(ngModel)]="q" placeholder="Search name, email or phone" />
+      </div>
+
+      <div class="alert alert-danger py-2" *ngIf="error">{{ error }}</div>
+      <div class="text-muted" *ngIf="loading">Loading members…</div>
+
+      <!-- List -->
+      <div class="card border-0 shadow-sm" *ngIf="!loading && !error">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Since</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let m of visible; let i = index">
+                <td class="text-muted">{{ i + 1 }}</td>
+                <td>
+                  <div class="m-name">{{ m.name }}</div>
+                  <div class="m-sub" *ngIf="m.muted_seconds > 0">🔇 muted {{ (m.muted_seconds / 60) | number: '1.0-0' }} min</div>
+                </td>
+                <td class="m-sub">
+                  <div *ngIf="m.email">{{ m.email }}</div>
+                  <div *ngIf="m.phone">{{ m.phone }}</div>
+                </td>
+                <td>
+                  <span class="badge-status" [ngClass]="'is-' + m.status">{{ statusLabel(m.status) }}</span>
+                  <div class="m-sub" *ngIf="m.reason && m.status !== 'active'">{{ m.reason }}</div>
+                </td>
+                <td class="m-sub">{{ (m.status === 'active' ? m.joined_at : m.updated_at) | date: 'd MMM y' }}</td>
+                <td class="text-end">
+                  <button *ngIf="m.status === 'active'" class="btn btn-sm btn-outline-danger"
+                          (click)="remove(m)" [disabled]="busyId === m.user_id">
+                    {{ busyId === m.user_id ? 'Removing…' : 'Remove' }}
+                  </button>
+                  <button *ngIf="m.status !== 'active' && m.verified" class="btn btn-sm btn-success"
+                          (click)="add(m)" [disabled]="busyId === m.user_id">
+                    {{ busyId === m.user_id ? 'Adding…' : 'Add' }}
+                  </button>
+                  <span *ngIf="m.status !== 'active' && !m.verified" class="m-sub">Verify first</span>
+                </td>
+              </tr>
+              <tr *ngIf="!visible.length">
+                <td colspan="6" class="text-center text-muted py-4">No members here.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

@@ -169,6 +169,26 @@ export interface RegistrationLimitResponse {
   data: RegistrationLimitData;
 }
 
+// ── TrustRide Chat group (admin) ───────────────────────────────────
+export type TrcMemberStatus = 'active' | 'removed' | 'left' | 'unverified';
+export interface TrcMember {
+  user_id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  verified: boolean;
+  status: TrcMemberStatus;
+  reason: string | null;
+  joined_at: string | null;
+  updated_at: string | null;
+  muted_seconds: number;
+}
+export interface TrcMembersResponse {
+  success: boolean;
+  members: TrcMember[];
+  counts: Record<TrcMemberStatus, number>;
+}
+
 // ── Ride pricing ────────────────────────────────────────────────────
 // Price/seat = (distance ÷ mileage × fuel price) ÷ seats
 //             + (toll plaza × toll_per_plaza) ÷ toll_sharing_seats,
@@ -894,6 +914,26 @@ deleteJob(id: string): Observable<any> {
 // User ka wallet — total fee due + har ride ka fee record (eye dialog).
 getUserWallet(userId: string): Observable<any> {
   return this.http.get(`${this.API_URL}/admin/userWallet/${userId}`, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+// ── TrustRide Chat group — list / remove / add ─────────────────────
+getTrcMembers(params: { q?: string; status?: string } = {}): Observable<TrcMembersResponse> {
+  return this.http.get<TrcMembersResponse>(`${this.API_URL}/admin/trustridechat/members`, {
+    headers: AdminSessionHelper.getAuthHeaders(),
+    params: params as any,
+  });
+}
+
+removeTrcMember(user_id: string, reason?: string): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/trustridechat/remove`, { user_id, reason }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
+
+addTrcMember(user_id: string): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/trustridechat/add`, { user_id }, {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }

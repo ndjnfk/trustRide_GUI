@@ -213,6 +213,7 @@
                         <span class="header__chat-badge" *ngIf="unreadChats > 0">{{ unreadChats > 99 ? '99+' : unreadChats }}</span>
                     </a>
 
+
                     <!-- 3. Marketplace / 4. Tiffin Service — dono filhaal website
                          se band. Admin panel me pages chaalu hain
                          (/admin/products, /admin/tiffin-service). Wapas dikhana
@@ -451,6 +452,17 @@
                 Messages
                 <span class="drawer__chat-badge" *ngIf="unreadChats > 0">{{ unreadChats > 99 ? '99+' : unreadChats }}</span>
             </a> -->
+
+
+            <!-- TrustRide Chat app install — chat.trustridesre.com alag app (alag icon); ?install=1 par install sheet -->
+            <a class="drawer__install" href="https://chat.trustridesre.com/?install=1" target="_blank" rel="noopener" (click)="closeMobileMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Install TrustRide Chat app
+            </a>
 
             <a class="drawer__signout" routerLink="/logout" (click)="closeMobileMenu()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

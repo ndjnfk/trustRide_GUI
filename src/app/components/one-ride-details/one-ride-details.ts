@@ -75,7 +75,9 @@ export class OneRideDetails {
     // URL param first (shareable link), fallback to history.state (in-app nav)
     const paramId = this.route.snapshot.paramMap.get('rideId');
     const stateId = history.state?.ride_id;
-    const rideId = paramId || stateId;
+    // Chat group ke purane ride cards /ride-detail?ride=<id> bhejte the
+    const queryId = this.route.snapshot.queryParamMap.get('ride');
+    const rideId = paramId || stateId || queryId;
 
   if (!rideId) {
     this.error = 'Ride not found.';

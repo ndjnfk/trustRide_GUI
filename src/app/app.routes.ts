@@ -173,6 +173,11 @@ export const routes: Routes = [
       import('../app/admin/registration-limit/registration-limit').then((m) => m.RegistrationLimit),
   },
   {
+    path: 'admin/trustride-group',
+    loadComponent: () =>
+      import('../app/admin/trustride-group/trustride-group').then((m) => m.TrustRideGroup),
+  },
+  {
     path: 'admin/reset-security',
     loadComponent: () =>
       import('../app/admin/reset-security/reset-security').then((m) => m.ResetSecurity),
