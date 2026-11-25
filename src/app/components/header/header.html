@@ -32,11 +32,12 @@
                        My Bookings
                     </a>
                 </li>
-                <li>
+                <!-- Jobs nav link filhaal band — wapas chahiye to uncomment karo -->
+                <!-- <li>
                     <a class="header__nav-link" routerLink="/careers" routerLinkActive="header__nav-link--active">
                        Jobs
                     </a>
-                </li>
+                </li> -->
                 <!-- BlaBla rides site se filhaal hata diye gaye hain — wapas
                      chalu karna ho to ye block uncomment kar do. -->
                 <!-- <li>
@@ -197,21 +198,16 @@
                         </svg>
                         Profile
                     </a>
-                    <a class="header__dropdown-item" routerLink="/ev-points">
+                    <!-- 2. Group Chat — filhaal band (one-to-one Messages bhi band). Wapas chahiye to uncomment karo. -->
+                    <!-- <a class="header__dropdown-item" href="https://chat.trustridesre.com/" target="_blank" rel="noopener">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
-                        EV Charging Points
-                    </a>
-
-                    <!-- 2. Messages -->
-                    <a class="header__dropdown-item" routerLink="/chat">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                        </svg>
-                        Messages
-                        <span class="header__chat-badge" *ngIf="unreadChats > 0">{{ unreadChats > 99 ? '99+' : unreadChats }}</span>
-                    </a>
+                        Group Chat
+                    </a> -->
 
 
                     <!-- 3. Marketplace / 4. Tiffin Service — dono filhaal website
@@ -276,8 +272,10 @@
                         User Preferences Matched
                     </a> -->
 
+                    <!-- My Job Posts + Company Members — filhaal band. Wapas chahiye
+                         to ye dono block uncomment karo aur header.ts ke navItems me bhi. -->
                     <!-- My Job Posts — user ki apni careers postings (edit yahin se) -->
-                    <a class="header__dropdown-item" routerLink="/careers/mine">
+                    <!-- <a class="header__dropdown-item" routerLink="/careers/mine">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
@@ -285,7 +283,6 @@
                         My Job Posts
                     </a>
 
-                    <!-- 8. Company Members -->
                     <a class="header__dropdown-item" routerLink="/company-members">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -294,6 +291,14 @@
                             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
                         Company Members
+                    </a> -->
+
+                    <!-- EV Charging Points — hamesha list me sabse last -->
+                    <a class="header__dropdown-item" routerLink="/ev-points">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                        EV Charging Points
                     </a>
 
                     <!-- Update Rides — filhaal band (laptop + mobile dono se
@@ -395,6 +400,9 @@
                                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
                                 </svg>
+                                <svg *ngSwitchCase="'bolt'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                                </svg>
                                 <svg *ngSwitchCase="'star'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                 </svg>
@@ -454,15 +462,15 @@
             </a> -->
 
 
-            <!-- TrustRide Chat app install — chat.trustridesre.com alag app (alag icon); ?install=1 par install sheet -->
-            <a class="drawer__install" href="https://chat.trustridesre.com/?install=1" target="_blank" rel="noopener" (click)="closeMobileMenu()">
+            <!-- TrustRide Chat app install filhaal band (chat.trustridesre.com, ?install=1). Wapas chahiye to uncomment karo. -->
+            <!-- <a class="drawer__install" href="https://chat.trustridesre.com/?install=1" target="_blank" rel="noopener" (click)="closeMobileMenu()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="7 10 12 15 17 10" />
                     <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
                 Install TrustRide Chat app
-            </a>
+            </a> -->
 
             <a class="drawer__signout" routerLink="/logout" (click)="closeMobileMenu()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -53,7 +53,7 @@ export class Footer {
     { name: 'Discord',   icon: 'discord',   href: 'https://discord.com' },
   ];
 
-  mobileNavItems = [
+  mobileNavItems: { key: string; label: string; route: string; external?: boolean }[] = [
     // Tiffin aur Emergency tabs filhaal website se band — admin panel me pages
     // chaalu hain. Tiffin ki jagah wapas Search aa gaya hai (jaisa pehle tha).
     // Inhe wapas chalu karo to footer.html ka *ngIf bhi dekh lena — logged-out
@@ -63,7 +63,9 @@ export class Footer {
     { key: 'search',      label: 'Search',      route: '/search-rides' },
     { key: 'publish',     label: 'Publish',     route: '/create-ride' },
     { key: 'rides',       label: 'Your rides',  route: '/get-ride' },
-    { key: 'chat',        label: 'Chat',        route: '/chat' },
+    // One-to-one chat (/chat) band — Chat tab ab TrustRide group chat kholta hai
+    // Group Chat tab filhaal band — wapas chahiye to uncomment karo
+    // { key: 'chat',        label: 'Group Chat',  route: 'https://chat.trustridesre.com/', external: true },
     { key: 'profile',     label: 'Profile',     route: '/about-you' },
   ];
 

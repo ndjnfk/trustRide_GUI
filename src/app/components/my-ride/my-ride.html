@@ -52,15 +52,6 @@
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
           </select>
-          <button class="live-track-btn" (click)="openLiveTracking(ride._id)" title="Share your live location with passengers">
-            📡 Live tracking
-          </button>
-          <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
-            🔗 Copy link
-          </button>
-          <button class="ev-btn" (click)="openChargingPoints(ride._id)" title="EV charging points on this route">
-            ⚡ Charging points
-          </button>
           <button
             class="edit-btn"
             [disabled]="editLoadingId === ride._id || updatingId === ride._id"
@@ -69,6 +60,15 @@
           >
             <span *ngIf="editLoadingId !== ride._id">✏️ Edit</span>
             <span *ngIf="editLoadingId === ride._id">⏳ ...</span>
+          </button>
+          <button class="live-track-btn" (click)="openLiveTracking(ride._id)" title="Share your live location with passengers">
+            📡 Live tracking
+          </button>
+          <button class="copy-link-btn" (click)="copyRideLink(ride._id)" title="Copy shareable link">
+            🔗 Copy link
+          </button>
+          <button class="ev-btn" (click)="openChargingPoints(ride._id)" title="EV charging points on this route">
+            ⚡ Charging points
           </button>
           <!-- <button
             class="delete-btn"

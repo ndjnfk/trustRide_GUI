@@ -903,6 +903,7 @@ button {
   box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
   transition: filter 0.18s ease;
 }
+a.rd-chat, a.mh-action { text-decoration: none; }
 .rd-chat:hover:not([disabled]) { filter: brightness(1.05); }
 .rd-chat[disabled] { opacity: 0.6; cursor: not-allowed; }
 .rd-chat i { font-size: 16px; }

@@ -13,6 +13,12 @@
         </div>
         <div class="d-flex gap-2">
           <button class="btn btn-outline-secondary" (click)="load()" [disabled]="loading">Refresh</button>
+          <button class="btn btn-outline-danger" (click)="clearChat('chats')" [disabled]="clearing">
+            {{ clearing === 'chats' ? 'Clearing…' : 'Clear chats' }}
+          </button>
+          <button class="btn btn-outline-danger" (click)="clearChat('rides')" [disabled]="clearing">
+            {{ clearing === 'rides' ? 'Clearing…' : 'Clear rides' }}
+          </button>
           <button class="btn btn-primary" (click)="showAdd = !showAdd">
             {{ showAdd ? 'Close' : '+ Add member' }}
           </button>

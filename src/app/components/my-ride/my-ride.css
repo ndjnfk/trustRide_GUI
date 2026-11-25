@@ -51,6 +51,9 @@
   padding: 1.1rem 1.25rem;
   margin-bottom: 12px;
   transition: box-shadow 0.2s ease;
+  /* andar ka content (buttons row) card ko chaura na kare */
+  min-width: 0;
+  max-width: 100%;
 }
 
 .ride-card:hover {
@@ -218,7 +221,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  /* buttons card se bahar na nikalein: ek line me horizontal scroll */
+  flex-wrap: nowrap;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.card-actions::-webkit-scrollbar { display: none; }
+.card-actions > * { flex: 0 0 auto; white-space: nowrap; }
 
 
 .live-track-btn {

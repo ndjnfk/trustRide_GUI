@@ -20,10 +20,11 @@
       <button class="rd-share btn" (click)="copyShareLink()" title="Copy shareable link">
         <i class="ti ti-link"></i> Copy link
       </button>
-      <button class="rd-chat btn" *ngIf="canChat" (click)="chatWithRider()" [disabled]="startingChat"
-        title="Chat with the rider">
-        <i class="ti ti-message-circle"></i> {{ startingChat ? 'Opening…' : 'Chat with rider' }}
-      </button>
+      <!-- Rider chat + Group chat dono filhaal band. Wapas chahiye to uncomment karo. -->
+      <!-- <a class="rd-chat btn" href="https://chat.trustridesre.com/" target="_blank" rel="noopener"
+        title="Open TrustRide group chat">
+        <i class="ti ti-users-group"></i> Group chat
+      </a> -->
     </div>
 
     <div class="rd-wrap">
@@ -53,12 +54,11 @@
               <button type="button" class="mh-action" (click)="copyShareLink()">
                 <i class="ti ti-share"></i> Share
               </button>
-              <ng-container *ngIf="canChat">
-                <span class="mh-action-sep"></span>
-                <button type="button" class="mh-action" (click)="chatWithRider()" [disabled]="startingChat">
-                  <i class="ti ti-message-circle"></i> {{ startingChat ? 'Opening…' : 'Chat' }}
-                </button>
-              </ng-container>
+              <!-- Group chat filhaal band -->
+              <!-- <span class="mh-action-sep"></span>
+              <a class="mh-action" href="https://chat.trustridesre.com/" target="_blank" rel="noopener">
+                <i class="ti ti-users-group"></i> Group chat
+              </a> -->
             </div>
           </div>
 

@@ -29,6 +29,7 @@ export class TrustRideGroup implements OnInit {
   loading = true;
   error = '';
   busyId: string | null = null;
+  clearing: 'chats' | 'rides' | null = null;
 
   // "Add member" panel — group se bahar wale verified users
   showAdd = false;
@@ -108,6 +109,26 @@ export class TrustRideGroup implements OnInit {
       error: (err) => {
         this.busyId = null;
         this.snackbar.error(err?.error?.message || 'Failed to remove user.');
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /** chats = users ke messages + bot replies; rides = ride cards wale bot messages. Sabke chat box live update. */
+  clearChat(scope: 'chats' | 'rides'): void {
+    const what = scope === 'rides' ? 'all ride posts (Rides tab)' : 'all chat messages';
+    if (!confirm(`Clear ${what} in TrustRide Chat for everyone?\n\nThis cannot be undone.`)) return;
+    this.clearing = scope;
+    this.cdr.markForCheck();
+    this.adminService.clearTrcChat(scope).subscribe({
+      next: (res) => {
+        this.clearing = null;
+        this.snackbar.success(`${res?.message || 'Cleared.'} (${res?.cleared ?? 0} messages)`);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.clearing = null;
+        this.snackbar.error(err?.error?.message || 'Failed to clear chat.');
         this.cdr.markForCheck();
       },
     });

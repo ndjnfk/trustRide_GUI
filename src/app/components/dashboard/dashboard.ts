@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Ride } from '../../services/ride';
 import { AuthHelper } from '../../helpers/auth-helper';
 import { HomeBanner } from '../home-banner/home-banner';
 import { getSkippedReviewRides } from '../../helpers/review-skip';
+
+// Page load par ek hi baar (har fresh app open par) — SPA navigation me dobara nahi.
+let noticeShown = false;
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +16,33 @@ import { getSkippedReviewRides } from '../../helpers/review-skip';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {
+export class Dashboard implements OnDestroy {
+  // Community notice popup: 5s tak band nahi hota, uske baad Skip/Close.
+  readonly noticeOpen = signal(false);
+  readonly noticeSeconds = signal(5);
+  private noticeTimer: any = null;
+  private platformId = inject(PLATFORM_ID);
+
+  private startNotice(): void {
+    if (noticeShown || typeof window === 'undefined') return;
+    noticeShown = true;
+    this.noticeOpen.set(true);
+    this.noticeTimer = setInterval(() => {
+      const left = this.noticeSeconds() - 1;
+      this.noticeSeconds.set(Math.max(left, 0));
+      if (left <= 0) { clearInterval(this.noticeTimer); this.noticeTimer = null; }
+    }, 1000);
+  }
+
+  closeNotice(): void {
+    if (this.noticeSeconds() > 0) return; // 5s se pehle skip nahi
+    this.noticeOpen.set(false);
+  }
+
+  ngOnDestroy(): void {
+    if (this.noticeTimer) clearInterval(this.noticeTimer);
+  }
+
   constructor(
     private router: Router,
     private rideService: Ride
@@ -47,6 +76,7 @@ export class Dashboard {
       'stylesheet'
     )
 
+    this.startNotice();
     this.checkPendingReviews();
   }
 

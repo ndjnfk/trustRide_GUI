@@ -180,8 +180,9 @@ Professionals, By the Professionals</p>
             </a> -->
           </div>
 
-          <!-- TrustRide Chat app install — chat.trustridesre.com alag app (alag icon); ?install=1 par install sheet -->
-          <a class="footer__install-chat" href="https://chat.trustridesre.com/?install=1" target="_blank" rel="noopener"
+          <!-- TrustRide Chat app install filhaal band (chat.trustridesre.com, ?install=1 par install sheet).
+               Wapas chahiye to niche wala block uncomment karo. -->
+          <!-- <a class="footer__install-chat" href="https://chat.trustridesre.com/?install=1" target="_blank" rel="noopener"
              title="Install the TrustRide Chat app on this device">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -189,7 +190,7 @@ Professionals, By the Professionals</p>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
             <span>Install TrustRide Chat app</span>
-          </a>
+          </a> -->
         </div>
 
       </div>
@@ -212,7 +213,22 @@ Professionals, By the Professionals</p>
     <!-- ── Internal routes (routerLink) ── -->
     <!-- Logout state me sirf Search — baaki sab tabs login ke baad hi.
          (/search-rides public route hai.) -->
-    <a *ngIf="isLoggedIn || item.key === 'search'"
+    <!-- ── External link (group chat) ── -->
+    <a *ngIf="item.external && isLoggedIn"
+       [href]="item.route" target="_blank" rel="noopener"
+       class="footer__mobile-nav-item">
+      <span class="footer__mobile-nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </span>
+      <span class="footer__mobile-nav-label">{{ item.label }}</span>
+    </a>
+
+    <a *ngIf="!item.external && (isLoggedIn || item.key === 'search')"
        [routerLink]="item.route"
        routerLinkActive="footer__mobile-nav-item--active"
        class="footer__mobile-nav-item">

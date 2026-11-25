@@ -111,6 +111,25 @@ ngOnInit() {
         // button; hide the floating assistant here so the two don't overlap on mobile.
         this.isChatThreadRoute = url.startsWith('/chat/')
       })
+
+    // Push notification click — firebase-messaging-sw.js alag scope par hai, tab ko
+    // navigate nahi kar sakta, isliye message bhejta hai; yahan router se us page par.
+    if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (e: MessageEvent) => {
+        const d = e.data
+        if (d?.type === 'push:navigate' && typeof d.url === 'string' && d.url.startsWith('/')) {
+          // ride-detail page snapshot se rideId padhta hai — ek ride se doosri par
+          // seedha jaane par component reuse hota (purani ride dikhti). Pehle hato.
+          if (this.router.url.startsWith('/ride-detail') && d.url.startsWith('/ride-detail')) {
+            this.router.navigateByUrl('/', { skipLocationChange: true })
+              .then(() => this.router.navigateByUrl(d.url))
+          } else {
+            this.router.navigateByUrl(d.url)
+          }
+        }
+      })
+      navigator.serviceWorker.startMessages?.()
+    }
   }
 
 }

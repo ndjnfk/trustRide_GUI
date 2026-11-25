@@ -453,3 +453,25 @@
     </div>
   </div>
 </section> -->
+
+
+<!-- ══ COMMUNITY NOTICE (5s lock) ══ -->
+@if (noticeOpen()) {
+  <div class="notice-backdrop" role="dialog" aria-modal="true" aria-labelledby="notice-title">
+    <div class="notice-card">
+      <h2 id="notice-title">TrustRidesre.com First – Our Community, Our Priority!</h2>
+      <div class="notice-body">
+        <p><strong>TrustRidesre.com First:</strong> Whenever you receive ride requests from both TrustRidesre.com and BlaBlaCar, preference must be given to TrustRidesre.com members.</p>
+        <p><strong>Regarding Female Passengers:</strong> If you have female passengers booking through BlaBlaCar, I am not asking you to cancel their rides. Instead, please encourage them to join www.trustridesre.com so they can also become part of our community.</p>
+        <p><strong>Regarding Male Passengers:</strong> If you receive a booking request from a male passenger on BlaBlaCar while members of our TrustRidesre.com group are also looking for the same ride, preference should be given to our own group members.</p>
+        <p><strong>Mandatory Listing:</strong> Every ride must be posted on TrustRidesre.com. If I find anyone regularly posting rides on BlaBlaCar but not listing them on TrustRidesre.com, I will have no choice but to remove them from this group.</p>
+        <p>I want everyone to understand that we are building our own community, and we need to support and prioritise our own platform.</p>
+        <p>Whether someone likes it or dislikes it, this decision is final.</p>
+        <p><strong>Let's support TrustRidesre.com first and grow together!</strong></p>
+      </div>
+      <button type="button" class="notice-btn" [disabled]="noticeSeconds() > 0" (click)="closeNotice()">
+        @if (noticeSeconds() > 0) { Please read — skip in {{ noticeSeconds() }}s } @else { Skip }
+      </button>
+    </div>
+  </div>
+}

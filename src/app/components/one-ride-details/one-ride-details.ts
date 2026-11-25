@@ -108,8 +108,11 @@ export class OneRideDetails {
       this.rideData = res.ride;
       this.loading = false;
     },
-    error: () => {
-      this.error = 'Failed to load ride details.';
+    error: (err: any) => {
+      // 404 = ride delete ho chuki (jaise "Ride deleted" notification se aaye)
+      this.error = err?.status === 404
+        ? 'This ride has been deleted by the rider and is no longer available.'
+        : 'Failed to load ride details.';
       this.loading = false;
     }
   });

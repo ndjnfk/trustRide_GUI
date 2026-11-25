@@ -8,6 +8,41 @@
  * service worker Angular bundle/environment ko import nahi kar sakta — GUI ke
  * environment.ts ke saath sync rakho.
  */
+// ── Notification click → usi ride/page par le jao ──
+// ZAROORI: ye listener firebase.messaging() se PEHLE register hona chahiye.
+// FCM SDK ka apna notificationclick listener stopImmediatePropagation() karta hai
+// aur fcmOptions.link na ho to kuch nahi kholta — baad wala listener chalta hi
+// nahi tha (click par notification band, redirect nahi). Isliye hum pehle chalte
+// hain aur khud propagation rokte hain.
+self.addEventListener('notificationclick', (event) => {
+  event.stopImmediatePropagation();
+  const n = event.notification;
+  n.close();
+
+  // FCM SDK original payload ko notification.data.FCM_MSG me rakhta hai
+  const fcmMsg = (n.data && n.data.FCM_MSG) || {};
+  const data = fcmMsg.data || n.data || {};
+  const path = data.url || '/';
+  const target = new URL(path, self.location.origin).href;
+  const rel = target.slice(self.location.origin.length) || '/';
+
+  event.waitUntil((async () => {
+    const list = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const client = list.find((c) => c.url.startsWith(self.location.origin));
+    if (!client) return clients.openWindow(target);
+
+    try { await client.focus(); } catch (e) { /* ignore */ }
+    if (client.url === target) return;
+    // Ye SW alag scope par hai, tab ko control nahi karta → client.navigate()
+    // reject hota hai. Isliye app ko message: Angular router khud navigate kare.
+    try {
+      client.postMessage({ type: 'push:navigate', url: rel });
+    } catch (e) {
+      return clients.openWindow(target);
+    }
+  })());
+});
+
 importScripts('https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/13.0.0/firebase-messaging-compat.js');
 
@@ -28,33 +63,6 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   // eslint-disable-next-line no-console
   console.log('[fcm-sw] background message', payload && payload.data && payload.data.type);
-});
-
-// Click → app ka sahi page kholo (ya pehle se khuli tab focus karo).
-// FCM SDK original payload ko notification.data.FCM_MSG me rakhta hai.
-self.addEventListener('notificationclick', (event) => {
-  const n = event.notification;
-  n.close();
-
-  const fcmMsg = (n.data && n.data.FCM_MSG) || {};
-  const data = fcmMsg.data || n.data || {};
-  const path = data.url || '/';
-  const target = new URL(path, self.location.origin).href;
-
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
-      for (const client of list) {
-        if (client.url.startsWith(self.location.origin) && 'focus' in client) {
-          client.focus();
-          if ('navigate' in client && client.url !== target) {
-            return client.navigate(target).catch(() => undefined);
-          }
-          return;
-        }
-      }
-      return clients.openWindow(target);
-    })
-  );
 });
 
 self.addEventListener('install', () => self.skipWaiting());

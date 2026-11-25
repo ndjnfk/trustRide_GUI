@@ -937,4 +937,10 @@ addTrcMember(user_id: string): Observable<any> {
     headers: AdminSessionHelper.getAuthHeaders()
   });
 }
+
+clearTrcChat(scope: 'chats' | 'rides'): Observable<any> {
+  return this.http.post(`${this.API_URL}/admin/trustridechat/clear`, { scope }, {
+    headers: AdminSessionHelper.getAuthHeaders()
+  });
+}
 }
